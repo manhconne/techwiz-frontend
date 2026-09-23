@@ -1,5 +1,3 @@
-export type Language = 'en' | 'vi';
-
 export type AlbumType = 'Full Album' | 'Mini Album' | 'Single' | 'Limited Kit' | 'Lightstick';
 
 export interface Track {
@@ -20,6 +18,12 @@ export interface Review {
   fandomTag: string;
 }
 
+export interface AlbumVersion {
+  id: string;
+  name: string;
+  extraPriceUSD: number;
+}
+
 export interface Album {
   id: string;
   title: string;
@@ -37,15 +41,9 @@ export interface Album {
   reviewCount: number;
   popularityScore: number;
   stock: number;
-  descriptionEn: string;
-  descriptionVi: string;
-  versions: {
-    id: string;
-    name: string;
-    extraPriceUSD: number;
-  }[];
-  inclusionsEn: string[];
-  inclusionsVi: string[];
+  description: string;
+  versions: AlbumVersion[];
+  inclusions: string[];
   photocards: {
     member: string;
     image: string;
@@ -64,8 +62,7 @@ export interface Artist {
   debutYear: number;
   members: string[];
   image: string;
-  bioEn: string;
-  bioVi: string;
+  bio: string;
   totalAlbums: number;
   bannerImage: string;
 }
@@ -74,10 +71,8 @@ export interface TourEvent {
   id: string;
   artistName: string;
   tourName: string;
-  cityEn: string;
-  cityVi: string;
-  countryEn: string;
-  countryVi: string;
+  city: string;
+  country: string;
   venue: string;
   date: string;
   status: 'Available' | 'Selling Fast' | 'Sold Out' | 'Presale Soon';
