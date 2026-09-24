@@ -483,30 +483,28 @@ if ($action === 'perform_update') {
 $isLoggedIn = checkAuth($config);
 ?>
 <!DOCTYPE html>
-<html lang="vi" class="dark">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechWiz Release Updater - aaPanel</title>
+  <title>Cập Nhật Máy Chủ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #090d16;
-      --card-bg: rgba(18, 24, 38, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-hover: rgba(255, 255, 255, 0.12);
-      --primary: #38bdf8;
-      --primary-hover: #0ea5e9;
-      --primary-glow: rgba(56, 189, 248, 0.25);
-      --accent: #10b981;
-      --accent-glow: rgba(16, 185, 129, 0.25);
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --terminal-bg: #050811;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --card-hover: #cbd5e1;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #16a34a;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --terminal-bg: #0f172a;
     }
     * {
       box-sizing: border-box;
@@ -515,12 +513,8 @@ $isLoggedIn = checkAuth($config);
     }
     body {
       background-color: var(--bg);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
-        radial-gradient(at 50% 50%, rgba(99, 102, 241, 0.05) 0px, transparent 50%);
       color: var(--text);
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -529,16 +523,16 @@ $isLoggedIn = checkAuth($config);
       font-family: 'JetBrains Mono', monospace;
     }
     header {
+      background: #ffffff;
       border-bottom: 1px solid var(--card-border);
-      background: rgba(9, 13, 22, 0.8);
-      backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
       z-index: 50;
-      padding: 16px 24px;
+      padding: 14px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
     .brand {
       display: flex;
@@ -546,67 +540,67 @@ $isLoggedIn = checkAuth($config);
       gap: 12px;
     }
     .brand-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #0ea5e9, #10b981);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #2563eb;
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px var(--primary-glow);
     }
     .brand-title {
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
     }
     .brand-subtitle {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
     }
     .container {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 24px 16px 60px;
+      padding: 24px 20px 60px;
       width: 100%;
     }
     .grid-2 {
       display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 24px;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 860px) {
       .grid-2 { grid-template-columns: 1fr; }
     }
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 20px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
       margin-bottom: 20px;
     }
     .card-title {
-      font-size: 1rem;
-      font-weight: 700;
+      font-size: 0.95rem;
+      font-weight: 600;
       display: flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 16px;
-      color: #fff;
+      color: var(--text);
     }
     .info-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
     .info-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 8px 12px;
-      background: rgba(255, 255, 255, 0.03);
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
       border-radius: 8px;
       font-size: 0.85rem;
     }
@@ -617,55 +611,45 @@ $isLoggedIn = checkAuth($config);
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 3px 8px;
+      padding: 2px 8px;
       border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 600;
     }
-    .badge-success { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-    .badge-info { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
-    .badge-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-    .badge-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-info { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .badge-warning { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .badge-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
     
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-size: 0.875rem;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
-      border: none;
-      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
       text-decoration: none;
     }
     .btn-primary {
-      background: linear-gradient(135deg, #0ea5e9, #0284c7);
-      color: #fff;
-      box-shadow: 0 4px 15px var(--primary-glow);
+      background: var(--primary);
+      color: #ffffff;
     }
     .btn-primary:hover {
-      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-      transform: translateY(-1px);
-    }
-    .btn-accent {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: #fff;
-      box-shadow: 0 4px 15px var(--accent-glow);
-    }
-    .btn-accent:hover {
-      background: linear-gradient(135deg, #34d399, #10b981);
-      transform: translateY(-1px);
+      background: var(--primary-hover);
     }
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
+      background: #ffffff;
       color: var(--text);
       border: 1px solid var(--card-border);
     }
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.14);
+      background: #f1f5f9;
+      border-color: var(--card-hover);
     }
     .btn-sm {
       padding: 6px 12px;
@@ -678,90 +662,87 @@ $isLoggedIn = checkAuth($config);
     }
     .release-item {
       border: 1px solid var(--card-border);
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 12px;
+      background: #ffffff;
+      border-radius: 10px;
       padding: 16px;
       margin-bottom: 12px;
-      transition: all 0.2s ease;
+      transition: border-color 0.15s ease;
     }
     .release-item:hover {
-      border-color: var(--card-hover);
-      background: rgba(255, 255, 255, 0.04);
+      border-color: #94a3b8;
     }
     .release-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
     .release-tag {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 700;
-      color: #fff;
+      color: var(--text);
     }
     .release-body {
       font-size: 0.85rem;
-      color: var(--text-muted);
+      color: #475569;
       white-space: pre-wrap;
       max-height: 120px;
       overflow-y: auto;
-      padding: 8px 12px;
-      background: rgba(0, 0, 0, 0.25);
-      border-radius: 8px;
-      margin: 10px 0;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 6px;
+      margin-top: 10px;
     }
     .terminal {
       background: var(--terminal-bg);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      height: 380px;
+      border-radius: 8px;
+      height: 360px;
       overflow-y: auto;
-      padding: 16px;
+      padding: 14px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
       line-height: 1.5;
       color: #94a3b8;
+      margin-top: 12px;
     }
     .log-line {
       margin-bottom: 4px;
       word-break: break-all;
     }
     .log-info { color: #38bdf8; }
-    .log-success { color: #34d399; font-weight: 600; }
-    .log-warn { color: #fbbf24; }
+    .log-success { color: #4ade80; font-weight: 600; }
+    .log-warn { color: #fde047; }
     .log-error { color: #f87171; font-weight: 600; }
-    .log-terminal { color: #cbd5e1; }
+    .log-terminal { color: #f1f5f9; }
     
     .steps-container {
       display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
+      gap: 6px;
+      margin-bottom: 10px;
       overflow-x: auto;
-      padding-bottom: 8px;
+      padding-bottom: 4px;
     }
     .step-pill {
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.05);
+      font-size: 0.725rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #f1f5f9;
       color: var(--text-muted);
-      border: 1px solid transparent;
+      border: 1px solid #e2e8f0;
       white-space: nowrap;
     }
     .step-pill.active {
-      background: rgba(56, 189, 248, 0.15);
-      color: #38bdf8;
-      border-color: rgba(56, 189, 248, 0.4);
-      animation: pulse 1.5s infinite;
+      background: #dbeafe;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+      font-weight: 600;
     }
     .step-pill.completed {
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border-color: rgba(16, 185, 129, 0.4);
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+      background: #dcfce7;
+      color: #15803d;
+      border-color: #bbf7d0;
     }
     .form-group {
       margin-bottom: 14px;
@@ -770,43 +751,43 @@ $isLoggedIn = checkAuth($config);
       display: block;
       font-size: 0.8rem;
       font-weight: 600;
-      color: var(--text-muted);
+      color: var(--text);
       margin-bottom: 6px;
     }
     .form-input {
       width: 100%;
-      background: rgba(0, 0, 0, 0.3);
+      background: #ffffff;
       border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      color: #fff;
+      border-radius: 6px;
+      padding: 9px 12px;
+      color: var(--text);
       font-size: 0.875rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.15s;
     }
     .form-input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 10px var(--primary-glow);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
       z-index: 100;
       align-items: center;
       justify-content: center;
     }
     .modal.active { display: flex; }
     .modal-content {
-      background: #0f172a;
+      background: #ffffff;
       border: 1px solid var(--card-border);
-      border-radius: 16px;
+      border-radius: 12px;
       width: 90%;
-      max-width: 520px;
+      max-width: 500px;
       padding: 24px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
     }
   </style>
 </head>
@@ -815,19 +796,19 @@ $isLoggedIn = checkAuth($config);
   <header>
     <div class="brand">
       <div class="brand-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
           <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
           <line x1="12" y1="22.08" x2="12" y2="12"></line>
         </svg>
       </div>
       <div>
-        <div class="brand-title">TechWiz Deploy & Update Center</div>
-        <div class="brand-subtitle">aaPanel Release Manager • manhconne/techwiz-frontend</div>
+        <div class="brand-title">Cập Nhật Máy Chủ</div>
+        <div class="brand-subtitle"><?= htmlspecialchars($config['github_repo'] ?? '') ?></div>
       </div>
     </div>
 
-    <div style="display:flex; gap:10px;">
+    <div style="display:flex; gap:8px;">
       <?php if ($isLoggedIn): ?>
         <button class="btn btn-secondary btn-sm" onclick="openSettingsModal()">
           ⚙️ Cấu hình
@@ -842,21 +823,21 @@ $isLoggedIn = checkAuth($config);
   <div class="container">
     <?php if (!$isLoggedIn): ?>
       <!-- LOGIN CARD -->
-      <div style="max-width: 420px; margin: 60px auto;">
-        <div class="card" style="text-align: center; padding: 32px 24px;">
-          <div style="font-size: 2.5rem; margin-bottom: 12px;">🔐</div>
-          <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">Xác thực Quản trị</h2>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px;">
-            Nhập Secret Key cấu hình trong <code class="mono">config.json</code> để thao tác cập nhật.
+      <div style="max-width: 380px; margin: 60px auto;">
+        <div class="card" style="text-align: center; padding: 30px 20px;">
+          <div style="font-size: 2rem; margin-bottom: 10px;">🔐</div>
+          <h2 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 6px;">Đăng Nhập Quản Trị</h2>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 20px;">
+            Nhập Secret Key bảo mật để thực hiện thao tác cập nhật.
           </p>
           <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="form-group" style="text-align: left;">
-              <label class="form-label">Secret Key / Mật mã</label>
-              <input type="password" id="loginSecret" class="form-input" placeholder="Nhập Secret Key..." required autofocus>
+              <label class="form-label">Mật khẩu Secret Key</label>
+              <input type="password" id="loginSecret" class="form-input" placeholder="Nhập mật khẩu..." required autofocus>
             </div>
-            <div id="loginError" style="color: var(--danger); font-size: 0.8rem; margin-bottom: 14px; display: none;"></div>
+            <div id="loginError" style="color: var(--danger); font-size: 0.8rem; margin-bottom: 12px; display: none;"></div>
             <button type="submit" class="btn btn-primary" style="width: 100%;">
-              Mở khóa hệ thống
+              Đăng nhập
             </button>
           </form>
         </div>
@@ -869,12 +850,12 @@ $isLoggedIn = checkAuth($config);
         <div>
           <div class="card">
             <div class="card-title">
-              <span>🖥️</span> Trạng thái Môi trường
+              <span>📊</span> Thông Tin Hệ Thống
             </div>
             <div class="info-list">
               <div class="info-item">
-                <span class="info-label">Phiên bản hiện tại:</span>
-                <span id="currentVer" class="badge badge-info mono">Đang tải...</span>
+                <span class="info-label">Phiên bản:</span>
+                <span id="currentVer" class="badge badge-info mono">Đang nạp...</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Node.js:</span>
@@ -885,7 +866,7 @@ $isLoggedIn = checkAuth($config);
                 <span id="npmVer" class="mono">--</span>
               </div>
               <div class="info-item">
-                <span class="info-label">PM2 Status:</span>
+                <span class="info-label">PM2:</span>
                 <span id="pm2Status" class="badge badge-warning">--</span>
               </div>
               <div class="info-item">
@@ -894,23 +875,23 @@ $isLoggedIn = checkAuth($config);
               </div>
             </div>
             
-            <div style="margin-top: 16px;">
+            <div style="margin-top: 14px;">
               <button class="btn btn-secondary btn-sm" style="width:100%" onclick="loadStatus()">
-                🔄 Kiểm tra lại trạng thái
+                🔄 Kiểm tra lại
               </button>
             </div>
           </div>
 
           <div class="card">
             <div class="card-title">
-              <span>⚡</span> Tùy chọn Cập nhật
+              <span>⚡</span> Tùy Chọn
             </div>
-            <div style="display:flex; flex-direction:column; gap:10px;">
+            <div>
               <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer;">
                 <input type="checkbox" id="skipBuildCheck"> Bỏ qua lệnh build (<code class="mono">npm run build</code>)
               </label>
-              <div style="font-size:0.75rem; color:var(--text-muted); line-height: 1.4;">
-                * Các tệp <code class="mono">.env, .env.local</code> sẽ luôn được bảo tồn tự động.
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top: 8px; line-height: 1.4;">
+                * File cấu hình môi trường <code class="mono">.env</code> luôn được giữ nguyên an toàn.
               </div>
             </div>
           </div>
@@ -922,7 +903,7 @@ $isLoggedIn = checkAuth($config);
           <div class="card" id="terminalCard" style="display:none;">
             <div class="card-title" style="justify-content: space-between;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span>📟</span> Tiến trình Cập nhật Trực tiếp
+                <span>📟</span> Tiến Trình Cập Nhật
               </div>
               <span id="statusBadge" class="badge badge-info">CHỜ</span>
             </div>
@@ -938,7 +919,7 @@ $isLoggedIn = checkAuth($config);
             </div>
 
             <div class="terminal" id="terminalLogs">
-              <div class="log-line log-info">[Hệ thống sẵn sàng] Chọn phiên bản release bên dưới để bắt đầu...</div>
+              <div class="log-line log-info">[Hệ thống sẵn sàng] Bấm cập nhật phiên bản bên dưới để bắt đầu...</div>
             </div>
           </div>
 
@@ -946,7 +927,7 @@ $isLoggedIn = checkAuth($config);
           <div class="card">
             <div class="card-title" style="justify-content: space-between;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span>📦</span> Danh sách Phiên bản Releases
+                <span>📦</span> Danh Sách Phiên Bản Releases
               </div>
               <button class="btn btn-secondary btn-sm" onclick="loadReleases()">
                 Làm mới
@@ -954,7 +935,7 @@ $isLoggedIn = checkAuth($config);
             </div>
 
             <div id="releasesList">
-              <div style="text-align:center; padding: 30px; color:var(--text-muted);">
+              <div style="text-align:center; padding: 24px; color:var(--text-muted); font-size:0.875rem;">
                 Đang nạp danh sách releases từ GitHub...
               </div>
             </div>
@@ -966,21 +947,20 @@ $isLoggedIn = checkAuth($config);
       <div class="modal" id="settingsModal">
         <div class="modal-content">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <h3 style="font-size:1.1rem; font-weight:700;">⚙️ Cấu hình Hệ thống Updater</h3>
+            <h3 style="font-size:1rem; font-weight:700;">⚙️ Cấu Hình Máy Chủ</h3>
             <button class="btn btn-secondary btn-sm" onclick="closeSettingsModal()">✕</button>
           </div>
           <form onsubmit="handleSaveConfig(event)">
             <div class="form-group">
-              <label class="form-label">GitHub Repository (owner/repo)</label>
+              <label class="form-label">GitHub Repository</label>
               <input type="text" id="cfgRepo" class="form-input" value="<?= htmlspecialchars($config['github_repo'] ?? '') ?>" required>
             </div>
             <div class="form-group">
-              <label class="form-label">GitHub Personal Access Token (PAT)</label>
-              <input type="password" id="cfgToken" class="form-input" placeholder="Để trống nếu repo Public hoặc giữ nguyên">
-              <small style="color:var(--text-muted); font-size:0.75rem;">Cần thiết nếu repo là Private hoặc tránh giới hạn rate limit của GitHub.</small>
+              <label class="form-label">GitHub Token</label>
+              <input type="password" id="cfgToken" class="form-input" placeholder="Để trống nếu giữ nguyên">
             </div>
             <div class="form-group">
-              <label class="form-label">Thư mục Dự án Frontend trên Máy chủ aaPanel</label>
+              <label class="form-label">Thư mục Dự án Frontend trên Server</label>
               <input type="text" id="cfgTarget" class="form-input" value="<?= htmlspecialchars($config['target_dir'] ?? '') ?>" required>
             </div>
             <div class="form-group">
@@ -992,7 +972,7 @@ $isLoggedIn = checkAuth($config);
               <input type="text" id="cfgPm2" class="form-input" value="<?= htmlspecialchars($config['pm2_process_name'] ?? '') ?>" required>
             </div>
             <div class="form-group">
-              <label class="form-label">Mật khẩu Secret Key Quản trị</label>
+              <label class="form-label">Mật khẩu Secret Key</label>
               <input type="text" id="cfgSecret" class="form-input" value="<?= htmlspecialchars($config['secret_key'] ?? '') ?>" required>
             </div>
             <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
@@ -1066,35 +1046,68 @@ $isLoggedIn = checkAuth($config);
       }
     }
 
+    function normalizeVer(v) {
+      if (!v) return '';
+      return String(v).trim().toLowerCase().replace(/^v/, '');
+    }
+
     async function loadReleases() {
       const container = document.getElementById('releasesList');
-      container.innerHTML = '<div style="text-align:center; padding: 30px; color:var(--text-muted);">Đang nạp danh sách releases từ GitHub...</div>';
+      container.innerHTML = '<div style="text-align:center; padding: 24px; color:var(--text-muted); font-size:0.875rem;">Đang kiểm tra phiên bản mới từ GitHub...</div>';
       try {
         const res = await fetch('?action=releases');
         const data = await res.json();
         if (!data.success) {
-          container.innerHTML = `<div style="padding:20px; color:var(--danger)">❌ ${data.message}</div>`;
+          container.innerHTML = `<div style="padding:16px; color:var(--danger); font-size:0.875rem;">❌ ${data.message}</div>`;
           return;
         }
 
         const releases = data.releases;
         if (!releases || releases.length === 0) {
-          container.innerHTML = `<div style="padding:30px; text-align:center; color:var(--text-muted)">
-            Chưa có Release nào trên Repository. Hãy tạo Release hoặc Tag phiên bản đầu tiên trên GitHub!
+          container.innerHTML = `<div style="padding:24px; text-align:center; color:var(--text-muted); font-size:0.875rem;">
+            Chưa có Release nào trên Repository. Khi bạn tạo Release trên GitHub, phiên bản mới sẽ xuất hiện ở đây.
           </div>`;
           return;
         }
 
+        const latestRelease = releases[0];
+        const isUpToDate = currentInstalledVer && 
+          currentInstalledVer !== 'Chưa xác định' && 
+          normalizeVer(currentInstalledVer) === normalizeVer(latestRelease.tag_name);
+
+        if (isUpToDate) {
+          container.innerHTML = `
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 24px 20px; text-align: center;">
+              <div style="font-size: 2rem; margin-bottom: 6px;">🎉</div>
+              <div style="font-weight: 700; color: #15803d; font-size: 1rem; margin-bottom: 4px;">
+                Máy chủ đang ở phiên bản mới nhất (${latestRelease.tag_name})
+              </div>
+              <div style="font-size: 0.82rem; color: #475569; max-width: 440px; margin: 0 auto 14px;">
+                Hiện tại không có bản cập nhật nào mới hơn. Khi bạn đẩy code và tạo Release mới trên GitHub, nút cập nhật sẽ tự động xuất hiện tại đây.
+              </div>
+              <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.75rem; color:#166534; background:#dcfce7; padding:4px 12px; border-radius:20px;">
+                <span>●</span> Đã bảo vệ chống bấm nhầm
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        // When a new version is available or version is not yet determined
         container.innerHTML = releases.map((rel, index) => {
-          const isCurrent = currentInstalledVer && currentInstalledVer.includes(rel.tag_name);
+          const isCurrent = currentInstalledVer && 
+            currentInstalledVer !== 'Chưa xác định' && 
+            normalizeVer(currentInstalledVer) === normalizeVer(rel.tag_name);
+          const isLatest = index === 0;
           const dateStr = new Date(rel.published_at).toLocaleString('vi-VN');
+
           return `
-            <div class="release-item">
+            <div class="release-item" style="${isLatest ? 'border-color: #93c5fd; background: #f8fafc;' : ''}">
               <div class="release-header">
                 <div>
                   <div style="display:flex; align-items:center; gap:8px;">
                     <span class="release-tag mono">${rel.tag_name}</span>
-                    ${index === 0 ? '<span class="badge badge-success">MỚI NHẤT</span>' : ''}
+                    ${isLatest ? '<span class="badge badge-success">BẢN MỚI NHẤT</span>' : ''}
                     ${isCurrent ? '<span class="badge badge-info">ĐANG DÙNG</span>' : ''}
                   </div>
                   <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
@@ -1102,9 +1115,12 @@ $isLoggedIn = checkAuth($config);
                   </div>
                 </div>
                 <div>
-                  <button class="btn btn-primary btn-sm" onclick="triggerUpdate('${rel.tag_name}')">
-                    🚀 Cập nhật bản này
-                  </button>
+                  ${isCurrent 
+                    ? '<span class="badge badge-success" style="padding:6px 12px; font-size:0.8rem;">✅ Đang chạy bản này</span>' 
+                    : `<button class="btn btn-primary btn-sm" onclick="triggerUpdate('${rel.tag_name}')">
+                        🚀 Cập nhật bản này
+                       </button>`
+                  }
                 </div>
               </div>
               ${rel.body ? `<div class="release-body">${escapeHtml(rel.body)}</div>` : ''}
