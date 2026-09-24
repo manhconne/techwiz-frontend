@@ -41,7 +41,7 @@ export const HeroBanner: React.FC = () => {
     {
       album: mockAlbums[3],
       badgeText: 'BILLBOARD 200 #1',
-      headline: '5-STAR',
+      headline: '6-STAR',
       subheadline: 'STRAY KIDS  •  3RD ALBUM',
       description: 'Explosive energy and self-produced masterpieces including the global anthem "S-Class". Includes full 104-page photobook, cartoon postcard, mini poster, and limited edition sticker pack.',
       bgColor: '#FEF9EC', // Elegant soft warm tint
@@ -69,7 +69,7 @@ export const HeroBanner: React.FC = () => {
   const handlePrev = () => setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <section 
+    <section
       className="relative w-full overflow-hidden transition-colors duration-700 ease-in-out"
       style={{
         background: `linear-gradient(135deg, ${current.bgColor} 0%, #ffffff 82%)`,
@@ -82,7 +82,7 @@ export const HeroBanner: React.FC = () => {
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* Background Artistic Watermark Typography */}
-      <div 
+      <div
         style={{
           position: 'absolute',
           right: '4%',
@@ -105,7 +105,7 @@ export const HeroBanner: React.FC = () => {
         {current.headline}
       </div>
 
-      <div 
+      <div
         style={{
           position: 'relative',
           zIndex: 10,
@@ -121,23 +121,23 @@ export const HeroBanner: React.FC = () => {
         }}
         className="flex-col md:flex-row"
       >
-        
+
         {/* Left Side: Artistic Typography & Clean Layout */}
-        <div 
-          style={{ 
-            flex: '1 1 0%', 
-            maxWidth: '620px', 
+        <div
+          style={{
+            flex: '1 1 0%',
+            maxWidth: '620px',
             minHeight: '440px',
-            display: 'flex', 
-            flexDirection: 'column', 
+            display: 'flex',
+            flexDirection: 'column',
             alignItems: 'flex-start',
             justifyContent: 'center',
           }}
         >
-          
+
           {/* Eyebrow Badge */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-            <span 
+            <span
               style={{
                 backgroundColor: '#000000',
                 color: '#ffffff',
@@ -157,30 +157,30 @@ export const HeroBanner: React.FC = () => {
           </div>
 
           {/* Subheadline with Wide Letter Spacing */}
-          <h2 
-            style={{ 
-              fontSize: '13px', 
-              fontWeight: 800, 
-              letterSpacing: '0.25em', 
-              textTransform: 'uppercase', 
-              color: '#475569', 
-              margin: '0 0 10px 0' 
+          <h2
+            style={{
+              fontSize: '13px',
+              fontWeight: 800,
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+              color: '#475569',
+              margin: '0 0 10px 0'
             }}
           >
             {current.subheadline}
           </h2>
 
           {/* Main Title - Artistic Editorial Display Headline */}
-          <h1 
-            style={{ 
+          <h1
+            style={{
               fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: 'clamp(54px, 6.8vw, 82px)', 
-              fontWeight: 800, 
+              fontSize: 'clamp(54px, 6.8vw, 82px)',
+              fontWeight: 800,
               fontStyle: 'italic',
-              textTransform: 'uppercase', 
-              lineHeight: 0.96, 
-              letterSpacing: '-0.02em', 
-              color: '#0f172a', 
+              textTransform: 'uppercase',
+              lineHeight: 0.96,
+              letterSpacing: '-0.02em',
+              color: '#0f172a',
               margin: '0 0 16px 0',
               minHeight: '80px',
               display: 'flex',
@@ -191,38 +191,38 @@ export const HeroBanner: React.FC = () => {
           </h1>
 
           {/* Description */}
-          <p 
-            style={{ 
-              fontSize: '15px', 
-              color: '#475569', 
-              lineHeight: 1.7, 
-              maxWidth: '520px', 
+          <p
+            style={{
+              fontSize: '15px',
+              color: '#475569',
+              lineHeight: 1.7,
+              maxWidth: '520px',
               minHeight: '76px',
-              margin: '0 0 18px 0', 
-              fontWeight: 500 
+              margin: '0 0 18px 0',
+              fontWeight: 500
             }}
           >
             {current.description}
           </p>
 
           {/* Minimalist inclusions metadata text */}
-          <div 
-            style={{ 
-              fontSize: '13px', 
-              color: '#64748b', 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '8px', 
+          <div
+            style={{
+              fontSize: '13px',
+              color: '#64748b',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
               marginBottom: '22px',
               minHeight: '24px',
               flexWrap: 'wrap'
             }}
           >
-            <span 
-              style={{ 
-                color: '#0f172a', 
-                fontWeight: 800, 
-                letterSpacing: '0.12em', 
+            <span
+              style={{
+                color: '#0f172a',
+                fontWeight: 800,
+                letterSpacing: '0.12em',
                 fontSize: '11px',
                 textTransform: 'uppercase',
                 borderBottom: '1.5px solid #000000',
@@ -236,10 +236,10 @@ export const HeroBanner: React.FC = () => {
 
           {/* Price display */}
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', marginBottom: '28px', minHeight: '44px' }}>
-            <span 
-              style={{ 
-                fontSize: '36px', 
-                fontWeight: 800, 
+            <span
+              style={{
+                fontSize: '36px',
+                fontWeight: 800,
                 color: '#0f172a',
                 letterSpacing: '-0.02em'
               }}
@@ -251,13 +251,13 @@ export const HeroBanner: React.FC = () => {
                 {formatPrice(album.originalPriceUSD, (album.priceVND || 600000) * 1.2)}
               </span>
             )}
-            <span 
-              style={{ 
-                backgroundColor: '#000000', 
-                color: '#ffffff', 
-                fontSize: '10px', 
-                fontWeight: 800, 
-                padding: '3px 8px', 
+            <span
+              style={{
+                backgroundColor: '#000000',
+                color: '#ffffff',
+                fontSize: '10px',
+                fontWeight: 800,
+                padding: '3px 8px',
                 borderRadius: '4px',
                 letterSpacing: '0.06em'
               }}
@@ -293,7 +293,7 @@ export const HeroBanner: React.FC = () => {
               <ShoppingCart size={16} />
               <span>Pre-Order</span>
             </button>
-            
+
             <button
               onClick={() => playTrack(album)}
               style={{
@@ -348,8 +348,8 @@ export const HeroBanner: React.FC = () => {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: '6px' }}>
-              <button 
-                onClick={handlePrev} 
+              <button
+                onClick={handlePrev}
                 style={{
                   width: '32px',
                   height: '32px',
@@ -369,8 +369,8 @@ export const HeroBanner: React.FC = () => {
               >
                 <ChevronLeft size={16} />
               </button>
-              <button 
-                onClick={handleNext} 
+              <button
+                onClick={handleNext}
                 style={{
                   width: '32px',
                   height: '32px',
@@ -396,14 +396,14 @@ export const HeroBanner: React.FC = () => {
         </div>
 
         {/* Right Side: Elegant Album Showcase (ROTATES on hover, NO scale / phóng to) */}
-        <div 
-          style={{ 
-            flex: '1 1 0%', 
-            maxWidth: '460px', 
-            width: '100%', 
+        <div
+          style={{
+            flex: '1 1 0%',
+            maxWidth: '460px',
+            width: '100%',
             minHeight: '440px',
-            display: 'flex', 
-            justifyContent: 'center', 
+            display: 'flex',
+            justifyContent: 'center',
             alignItems: 'center',
             position: 'relative'
           }}
@@ -411,7 +411,7 @@ export const HeroBanner: React.FC = () => {
           onMouseLeave={() => setIsAlbumHovered(false)}
         >
           {/* Card Container with fixed aspect ratio */}
-          <div 
+          <div
             style={{
               position: 'relative',
               width: '100%',
@@ -425,7 +425,7 @@ export const HeroBanner: React.FC = () => {
             }}
           >
             {/* Ambient Lighting Glow Behind Album */}
-            <div 
+            <div
               style={{
                 position: 'absolute',
                 inset: '-20px',
@@ -439,8 +439,8 @@ export const HeroBanner: React.FC = () => {
             />
 
             {/* Vinyl Record: Completely concealed inside/behind album, slides out to the right and spins on hover */}
-            <div 
-              style={{ 
+            <div
+              style={{
                 position: 'absolute',
                 top: '5%',
                 bottom: '5%',
@@ -455,8 +455,8 @@ export const HeroBanner: React.FC = () => {
                 justifyContent: 'center',
                 zIndex: 1,
                 right: '0px',
-                transform: isAlbumHovered 
-                  ? 'translateX(70px) rotate(180deg)' 
+                transform: isAlbumHovered
+                  ? 'translateX(70px) rotate(180deg)'
                   : 'translateX(0px) rotate(0deg)',
                 opacity: isAlbumHovered ? 1 : 0,
                 transition: 'transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease',
@@ -465,7 +465,7 @@ export const HeroBanner: React.FC = () => {
               className={isThisPlaying ? 'animate-spin' : ''}
             >
               {/* Vinyl grooves */}
-              <div 
+              <div
                 style={{
                   width: '34%',
                   height: '34%',
@@ -485,7 +485,7 @@ export const HeroBanner: React.FC = () => {
             </div>
 
             {/* Album Cover Card: ROTATES gracefully on hover instead of zoom/scale */}
-            <div 
+            <div
               style={{
                 position: 'relative',
                 zIndex: 10,
@@ -494,8 +494,8 @@ export const HeroBanner: React.FC = () => {
                 borderRadius: '12px',
                 overflow: 'hidden',
                 backgroundColor: '#ffffff',
-                boxShadow: isAlbumHovered 
-                  ? '0 30px 60px -12px rgba(0, 0, 0, 0.38)' 
+                boxShadow: isAlbumHovered
+                  ? '0 30px 60px -12px rgba(0, 0, 0, 0.38)'
                   : '0 20px 40px -10px rgba(0, 0, 0, 0.2)',
                 border: '1px solid rgba(0, 0, 0, 0.08)',
                 transform: isAlbumHovered ? 'rotate(-7deg)' : 'rotate(0deg)',

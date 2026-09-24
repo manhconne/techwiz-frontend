@@ -60,11 +60,11 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div 
+      <div
         className="bg-white max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden"
         style={{ borderRadius: '8px' }}
       >
-        
+
         {/* Header */}
         <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -85,10 +85,10 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
 
         {/* Content */}
         <div className="p-6 overflow-y-auto flex-1 space-y-6">
-          
+
           {/* Stats Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div 
+            <div
               className="p-3.5 border"
               style={{ backgroundColor: '#fafafa', borderColor: '#d4d4d4', borderRadius: '8px' }}
             >
@@ -100,7 +100,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               <div className="text-[10px] text-emerald-600 font-semibold">↑ +14.2% this week</div>
             </div>
 
-            <div 
+            <div
               className="p-3.5 border"
               style={{ backgroundColor: '#f8fafc', borderColor: '#e2e8f0', borderRadius: '8px' }}
             >
@@ -112,7 +112,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               <div className="text-[10px] text-emerald-600 font-semibold">100% Hanteo synced</div>
             </div>
 
-            <div 
+            <div
               className="p-3.5 border"
               style={{ backgroundColor: '#fafafa', borderColor: '#d4d4d4', borderRadius: '8px' }}
             >
@@ -124,7 +124,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               <div className="text-[10px] text-slate-400 font-medium">Seoul & Global hubs</div>
             </div>
 
-            <div 
+            <div
               className="p-3.5 border"
               style={{ backgroundColor: '#ecfdf5', borderColor: '#a7f3d0', borderRadius: '8px' }}
             >
@@ -264,7 +264,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                         </span>
                       </td>
                       <td className="py-2.5 px-3">
-                        <span 
+                        <span
                           className="text-[10px] font-bold px-2 py-0.5 rounded-full"
                           style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c' }}
                         >
