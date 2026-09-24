@@ -39,6 +39,26 @@ interface HeaderProps {
   setSearchQuery: (query: string) => void;
 }
 
+const extractApiError = (data: any, fallbackMsg: string): string => {
+  if (!data) return fallbackMsg;
+  if (typeof data.message === 'string' && data.message.trim()) return data.message;
+  if (data.errors && typeof data.errors === 'object') {
+    const messages: string[] = [];
+    for (const key of Object.keys(data.errors)) {
+      const val = data.errors[key];
+      if (Array.isArray(val)) {
+        messages.push(...val);
+      } else if (typeof val === 'string' && val.trim()) {
+        messages.push(val);
+      }
+    }
+    if (messages.length > 0) return messages.join('. ');
+  }
+  if (typeof data.title === 'string' && data.title.trim()) return data.title;
+  if (typeof data.error === 'string' && data.error.trim()) return data.error;
+  return fallbackMsg;
+};
+
 export const Header: React.FC<HeaderProps> = ({
   onOpenAdmin,
   onOpenFeedback,
@@ -969,7 +989,7 @@ export const Header: React.FC<HeaderProps> = ({
                             setAuthError(null);
                           }, 1000);
                         } else {
-                          setAuthError(data.message || `Lỗi ${response.status}: Đăng nhập thất bại.`);
+                          setAuthError(extractApiError(data, `Lỗi ${response.status}: Đăng nhập thất bại.`));
                         }
                       } catch (err: any) {
                         setAuthError(err.message || 'Không thể kết nối tới server /api/v1/auth/login');
@@ -1122,17 +1142,35 @@ export const Header: React.FC<HeaderProps> = ({
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({
                             email: signupEmail,
+                            Email: signupEmail,
                             password: signupPassword,
+                            Password: signupPassword,
                             fullName: signupName,
+                            full_name: signupName,
+                            FullName: signupName,
                             confirmPassword: signupConfirmPassword,
+                            confirm_password: signupConfirmPassword,
+                            ConfirmPassword: signupConfirmPassword,
                             phoneNumber: signupPhone,
+                            phone_number: signupPhone,
+                            PhoneNumber: signupPhone,
+                            phone: signupPhone,
                           }),
                         });
 
                         const data = await response.json().catch(() => ({}));
 
-                        if (response.status === 201) {
-                          setAuthNotification(data.message || 'Đăng ký thành công');
+                        if (response.ok || response.status === 200 || response.status === 201) {
+                          if (data.access_token) {
+                            document.cookie = `access_token=${data.access_token}; path=/; max-age=604800; SameSite=Lax`;
+                            localStorage.setItem('access_token', data.access_token);
+                          }
+                          if (data.refresh_token) {
+                            document.cookie = `refresh_token=${data.refresh_token}; path=/; max-age=2592000; SameSite=Lax`;
+                            localStorage.setItem('refresh_token', data.refresh_token);
+                          }
+
+                          setAuthNotification(data.message || 'Đăng ký thành công!');
                           loginAs('registered', {
                             id: data.user_id || 'usr_' + Date.now(),
                             name: signupName,
@@ -1144,8 +1182,7 @@ export const Header: React.FC<HeaderProps> = ({
                             setAuthError(null);
                           }, 1200);
                         } else {
-                          // Any status other than 201 is treated as error
-                          setAuthError(data.message || 'Registration failed. Please try again.');
+                          setAuthError(extractApiError(data, 'Registration failed. Please try again.'));
                         }
                       } catch (err: any) {
                         setAuthError(err.message || 'Unable to connect to auth server (/api/v1/auth/register)');
