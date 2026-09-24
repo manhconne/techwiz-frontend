@@ -14,6 +14,7 @@ import { AdminModal } from '../components/AdminModal';
 import { FeedbackModal } from '../components/FeedbackModal';
 import { SitemapSection } from '../components/SitemapSection';
 import { Footer } from '../components/Footer';
+import { TestConnection } from '../components/TestConnection';
 import { Album } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
 
@@ -54,6 +55,8 @@ export default function Home() {
 
       {/* Main Content Sections */}
       <main className="flex-1">
+        <TestConnection />
+        
         {/* Fandom Content Explorer & Official Album Drops */}
         <AlbumGrid
           onSelectAlbum={(album) => setSelectedAlbum(album)}

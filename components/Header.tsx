@@ -1123,7 +1123,7 @@ export const Header: React.FC<HeaderProps> = ({
                           body: JSON.stringify({
                             email: signupEmail,
                             password: signupPassword,
-                            full_name: signupName,
+                            fullName: signupName,
                             confirmPassword: signupConfirmPassword,
                             phoneNumber: signupPhone,
                           }),
