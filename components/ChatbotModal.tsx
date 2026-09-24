@@ -113,7 +113,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 p-3.5 text-white rounded-full shadow-lg hover:scale-105 transition-all cursor-pointer flex items-center gap-2 group"
-        style={{ backgroundColor: '#0284c7', boxShadow: '0 8px 24px rgba(2, 132, 199, 0.35)' }}
+        style={{ backgroundColor: '#000000', boxShadow: '0 8px 24px rgba(0, 0, 0, 0.35)' }}
         title="Open AI Fandom Assistant"
         type="button"
       >
@@ -126,13 +126,13 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
       {isOpen && (
         <div 
           className="fixed bottom-20 right-4 sm:right-6 z-50 w-[92vw] sm:w-96 max-h-[560px] h-[520px] bg-white shadow-2xl border flex flex-col overflow-hidden"
-          style={{ borderColor: '#bae6fd', borderRadius: '8px' }}
+          style={{ borderColor: '#d4d4d4', borderRadius: '8px' }}
         >
           
           {/* Header - Solid Sky Blue */}
           <div 
             className="text-white px-4 py-3 flex items-center justify-between"
-            style={{ backgroundColor: '#0284c7' }}
+            style={{ backgroundColor: '#000000' }}
           >
             <div className="flex items-center gap-2.5">
               <div 
@@ -179,7 +179,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
                 <div
                   className="max-w-[85%] p-3 text-xs leading-relaxed"
                   style={{
-                    backgroundColor: msg.sender === 'user' ? '#0284c7' : '#ffffff',
+                    backgroundColor: msg.sender === 'user' ? '#000000' : '#ffffff',
                     color: msg.sender === 'user' ? '#ffffff' : '#1e293b',
                     borderRadius: '8px',
                     border: msg.sender === 'user' ? 'none' : '1px solid #e2e8f0',
@@ -197,7 +197,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
                             setIsOpen(false);
                           }}
                           className="px-2.5 py-1 font-bold flex items-center gap-1 transition-colors cursor-pointer text-[11px]"
-                          style={{ backgroundColor: '#e0f2fe', color: '#0369a1', borderRadius: '8px' }}
+                          style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c', borderRadius: '8px' }}
                           type="button"
                         >
                           <Disc className="w-3 h-3" />
@@ -211,7 +211,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
                             setIsOpen(false);
                           }}
                           className="px-2.5 py-1 font-bold flex items-center gap-1 transition-colors cursor-pointer text-[11px]"
-                          style={{ backgroundColor: '#e0f2fe', color: '#0369a1', borderRadius: '8px' }}
+                          style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c', borderRadius: '8px' }}
                           type="button"
                         >
                           <span>Open Fan Cart</span>
@@ -240,7 +240,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
             <button
               onClick={() => handleSend()}
               className="p-2.5 text-white transition-colors cursor-pointer shadow-xs"
-              style={{ backgroundColor: '#0284c7', borderRadius: '8px' }}
+              style={{ backgroundColor: '#000000', borderRadius: '8px' }}
               title="Send"
               type="button"
             >

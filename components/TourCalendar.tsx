@@ -53,7 +53,7 @@ export const TourCalendar: React.FC = () => {
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#0284c7' }}>
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#000000' }}>
             <Ticket className="w-4 h-4 text-sky-600" />
             <span>Global Stadium & Arena Schedules</span>
           </div>
@@ -73,9 +73,9 @@ export const TourCalendar: React.FC = () => {
               onClick={() => setSelectedCity(c.id)}
               className="px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-all cursor-pointer"
               style={{
-                backgroundColor: selectedCity === c.id ? '#0284c7' : '#ffffff',
+                backgroundColor: selectedCity === c.id ? '#000000' : '#ffffff',
                 color: selectedCity === c.id ? '#ffffff' : '#334155',
-                border: selectedCity === c.id ? '1px solid #0284c7' : '1px solid #e2e8f0',
+                border: selectedCity === c.id ? '1px solid #000000' : '1px solid #e2e8f0',
                 padding: '0.45rem 0.95rem',
                 borderRadius: '8px',
               }}
@@ -103,7 +103,7 @@ export const TourCalendar: React.FC = () => {
                   </span>
                   <span 
                     className="text-xs font-bold px-2 py-0.5 rounded"
-                    style={{ backgroundColor: '#e0f2fe', color: '#0369a1' }}
+                    style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c' }}
                   >
                     {tour.artistName}
                   </span>
@@ -133,7 +133,7 @@ export const TourCalendar: React.FC = () => {
               <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] text-slate-400 uppercase font-bold block">Starting From</span>
-                  <span className="text-base font-extrabold" style={{ color: '#0284c7' }}>
+                  <span className="text-base font-extrabold" style={{ color: '#000000' }}>
                     {formatPrice(tour.ticketPriceFromUSD, tour.ticketPriceFromVND)}
                   </span>
                 </div>
@@ -143,7 +143,7 @@ export const TourCalendar: React.FC = () => {
                   disabled={tour.status === 'Sold Out'}
                   className="px-3.5 py-2 text-white text-xs font-bold flex items-center gap-1.5 transition-colors disabled:opacity-40 cursor-pointer"
                   style={{
-                    backgroundColor: tour.status === 'Sold Out' ? '#cbd5e1' : '#0284c7',
+                    backgroundColor: tour.status === 'Sold Out' ? '#cbd5e1' : '#000000',
                     borderRadius: '8px',
                     padding: '0.5rem 1.1rem',
                   }}
@@ -186,7 +186,7 @@ export const TourCalendar: React.FC = () => {
 
             <div 
               className="mt-4 p-3 text-xs border"
-              style={{ backgroundColor: '#f0f9ff', borderColor: '#bae6fd', color: '#0369a1', borderRadius: '8px' }}
+              style={{ backgroundColor: '#fafafa', borderColor: '#d4d4d4', color: '#1c1c1c', borderRadius: '8px' }}
             >
               🎫 Official Fan Club Pre-sale Priority code: <strong>FANHUB-VIP-99</strong>
             </div>

@@ -73,7 +73,7 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
           <div className="flex items-center gap-2">
             <span 
               className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded"
-              style={{ backgroundColor: '#e0f2fe', color: '#0369a1' }}
+              style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c' }}
             >
               {album.artist}
             </span>
@@ -122,7 +122,7 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                     onClick={() => setSelectedImage(album.coverImage)}
                     className="overflow-hidden border-2 transition-all cursor-pointer"
                     style={{
-                      borderColor: selectedImage === album.coverImage ? '#0284c7' : '#e2e8f0',
+                      borderColor: selectedImage === album.coverImage ? '#000000' : '#e2e8f0',
                       borderRadius: '8px',
                       width: '56px',
                       height: '56px',
@@ -137,7 +137,7 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                       onClick={() => setSelectedImage(img)}
                       className="overflow-hidden border-2 transition-all cursor-pointer"
                       style={{
-                        borderColor: selectedImage === img ? '#0284c7' : '#e2e8f0',
+                        borderColor: selectedImage === img ? '#000000' : '#e2e8f0',
                         borderRadius: '8px',
                         width: '56px',
                         height: '56px',
@@ -159,7 +159,7 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                     <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
                       {album.title}
                     </h2>
-                    <p className="text-sm font-semibold mt-0.5" style={{ color: '#0284c7' }}>
+                    <p className="text-sm font-semibold mt-0.5" style={{ color: '#000000' }}>
                       {album.artist}
                     </p>
                   </div>
@@ -167,9 +167,9 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                     onClick={() => toggleWishlist(album)}
                     className="p-2 border transition-all cursor-pointer"
                     style={{
-                      backgroundColor: isFav ? '#0284c7' : '#ffffff',
+                      backgroundColor: isFav ? '#000000' : '#ffffff',
                       color: isFav ? '#ffffff' : '#334155',
-                      borderColor: isFav ? '#0284c7' : '#e2e8f0',
+                      borderColor: isFav ? '#000000' : '#e2e8f0',
                       borderRadius: '8px',
                     }}
                     title="Wishlist"
@@ -196,9 +196,9 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                 {/* Price Display */}
                 <div 
                   className="mt-4 p-3 border flex items-baseline gap-3"
-                  style={{ backgroundColor: '#f0f9ff', borderColor: '#bae6fd', borderRadius: '8px' }}
+                  style={{ backgroundColor: '#fafafa', borderColor: '#d4d4d4', borderRadius: '8px' }}
                 >
-                  <span className="text-2xl font-black" style={{ color: '#0284c7' }}>
+                  <span className="text-2xl font-black" style={{ color: '#000000' }}>
                     {formatPrice(album.priceUSD + extraCostUSD, album.priceVND + extraCostUSD * 25000)}
                   </span>
                   {album.originalPriceUSD && (
@@ -208,7 +208,7 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                   )}
                   <span 
                     className="text-[11px] font-bold px-2 py-0.5 rounded-full ml-auto"
-                    style={{ backgroundColor: '#e0f2fe', color: '#0369a1' }}
+                    style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c' }}
                   >
                     {album.tag}
                   </span>
@@ -232,16 +232,16 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                           onClick={() => setSelectedVersion(ver.name)}
                           className="p-2.5 text-left text-xs font-semibold border transition-all cursor-pointer flex items-center justify-between"
                           style={{
-                            borderColor: selectedVersion === ver.name ? '#0284c7' : '#e2e8f0',
-                            backgroundColor: selectedVersion === ver.name ? '#f0f9ff' : '#ffffff',
-                            color: selectedVersion === ver.name ? '#0369a1' : '#334155',
+                            borderColor: selectedVersion === ver.name ? '#000000' : '#e2e8f0',
+                            backgroundColor: selectedVersion === ver.name ? '#fafafa' : '#ffffff',
+                            color: selectedVersion === ver.name ? '#1c1c1c' : '#334155',
                             borderRadius: '8px',
                           }}
                           type="button"
                         >
                           <span className="truncate">{ver.name}</span>
                           {ver.extraPriceUSD > 0 && (
-                            <span className="text-[10px] font-bold ml-1" style={{ color: '#0284c7' }}>
+                            <span className="text-[10px] font-bold ml-1" style={{ color: '#000000' }}>
                               +${ver.extraPriceUSD}
                             </span>
                           )}
@@ -284,7 +284,7 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                       onClose();
                     }}
                     className="flex-1 text-xs sm:text-sm py-2.5 text-white font-bold flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-                    style={{ backgroundColor: '#0284c7', borderRadius: '8px' }}
+                    style={{ backgroundColor: '#000000', borderRadius: '8px' }}
                     type="button"
                   >
                     <ShoppingCart className="w-4 h-4" />
@@ -303,8 +303,8 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                 onClick={() => setActiveTab('details')}
                 className="px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer"
                 style={{
-                  backgroundColor: activeTab === 'details' ? '#e0f2fe' : 'transparent',
-                  color: activeTab === 'details' ? '#0369a1' : '#475569',
+                  backgroundColor: activeTab === 'details' ? '#f4f4f5' : 'transparent',
+                  color: activeTab === 'details' ? '#1c1c1c' : '#475569',
                   borderRadius: '8px',
                 }}
                 type="button"
@@ -315,8 +315,8 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                 onClick={() => setActiveTab('tracks')}
                 className="px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer"
                 style={{
-                  backgroundColor: activeTab === 'tracks' ? '#e0f2fe' : 'transparent',
-                  color: activeTab === 'tracks' ? '#0369a1' : '#475569',
+                  backgroundColor: activeTab === 'tracks' ? '#f4f4f5' : 'transparent',
+                  color: activeTab === 'tracks' ? '#1c1c1c' : '#475569',
                   borderRadius: '8px',
                 }}
                 type="button"
@@ -327,8 +327,8 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                 onClick={() => setActiveTab('photocards')}
                 className="px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer"
                 style={{
-                  backgroundColor: activeTab === 'photocards' ? '#e0f2fe' : 'transparent',
-                  color: activeTab === 'photocards' ? '#0369a1' : '#475569',
+                  backgroundColor: activeTab === 'photocards' ? '#f4f4f5' : 'transparent',
+                  color: activeTab === 'photocards' ? '#1c1c1c' : '#475569',
                   borderRadius: '8px',
                 }}
                 type="button"
@@ -339,8 +339,8 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                 onClick={() => setActiveTab('reviews')}
                 className="px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer"
                 style={{
-                  backgroundColor: activeTab === 'reviews' ? '#e0f2fe' : 'transparent',
-                  color: activeTab === 'reviews' ? '#0369a1' : '#475569',
+                  backgroundColor: activeTab === 'reviews' ? '#f4f4f5' : 'transparent',
+                  color: activeTab === 'reviews' ? '#1c1c1c' : '#475569',
                   borderRadius: '8px',
                 }}
                 type="button"
@@ -384,8 +384,8 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                             onClick={() => playTrack(album, track)}
                             className="rounded-full flex items-center justify-center transition-all cursor-pointer"
                             style={{
-                              backgroundColor: isTrackPlaying ? '#0284c7' : '#f0f9ff',
-                              color: isTrackPlaying ? '#ffffff' : '#0284c7',
+                              backgroundColor: isTrackPlaying ? '#000000' : '#fafafa',
+                              color: isTrackPlaying ? '#ffffff' : '#000000',
                               borderRadius: '50%',
                               width: '28px',
                               height: '28px',
@@ -401,7 +401,7 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                             {track.isTitleTrack && (
                               <span 
                                 className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded"
-                                style={{ backgroundColor: '#e0f2fe', color: '#0369a1' }}
+                                style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c' }}
                               >
                                 Title Track
                               </span>
@@ -431,7 +431,7 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                         <img src={pc.image} alt={pc.member} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </div>
                       <div className="text-xs font-bold text-slate-700">{pc.member}</div>
-                      <div className="text-[10px] font-semibold" style={{ color: '#0284c7' }}>Holo Card</div>
+                      <div className="text-[10px] font-semibold" style={{ color: '#000000' }}>Holo Card</div>
                     </div>
                   ))}
                 </div>
@@ -469,7 +469,7 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                     <button
                       type="submit"
                       className="px-3 py-2 text-white text-xs font-bold cursor-pointer"
-                      style={{ backgroundColor: '#0284c7', borderRadius: '8px' }}
+                      style={{ backgroundColor: '#000000', borderRadius: '8px' }}
                     >
                       Submit Review
                     </button>
@@ -483,7 +483,7 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                         <div className="flex items-center gap-2">
                           <img src={rev.avatar} alt="user" className="w-6 h-6 rounded-full object-cover" style={{ width: '24px', height: '24px', borderRadius: '50%' }} />
                           <span className="text-xs font-bold text-slate-800">{rev.userName}</span>
-                          <span className="text-[10px] px-1.5 py-0.2 rounded font-semibold" style={{ backgroundColor: '#e0f2fe', color: '#0369a1' }}>
+                          <span className="text-[10px] px-1.5 py-0.2 rounded font-semibold" style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c' }}>
                             {rev.fandomTag}
                           </span>
                         </div>

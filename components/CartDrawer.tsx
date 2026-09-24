@@ -51,7 +51,7 @@ export const CartDrawer: React.FC = () => {
               </h2>
               <span 
                 className="text-xs font-bold px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: '#e0f2fe', color: '#0369a1' }}
+                style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c' }}
               >
                 {cartCount}
               </span>
@@ -81,7 +81,7 @@ export const CartDrawer: React.FC = () => {
                 </p>
                 <div 
                   className="p-3 border text-xs"
-                  style={{ backgroundColor: '#f0f9ff', borderColor: '#bae6fd', color: '#0369a1', borderRadius: '8px' }}
+                  style={{ backgroundColor: '#fafafa', borderColor: '#d4d4d4', color: '#1c1c1c', borderRadius: '8px' }}
                 >
                   ✨ Tracking Order ID: <strong>HANTEO-2026-KR-8839</strong>
                 </div>
@@ -91,7 +91,7 @@ export const CartDrawer: React.FC = () => {
                     setIsCartOpen(false);
                   }}
                   className="px-6 py-2 text-white text-xs font-bold cursor-pointer"
-                  style={{ backgroundColor: '#0284c7', borderRadius: '8px' }}
+                  style={{ backgroundColor: '#000000', borderRadius: '8px' }}
                   type="button"
                 >
                   Close
@@ -105,7 +105,7 @@ export const CartDrawer: React.FC = () => {
                     type="button"
                     onClick={() => setIsCheckingOut(false)}
                     className="text-xs font-semibold hover:underline"
-                    style={{ color: '#0284c7' }}
+                    style={{ color: '#000000' }}
                   >
                     ← Back to Cart
                   </button>
@@ -143,9 +143,9 @@ export const CartDrawer: React.FC = () => {
                       onClick={() => setPaymentMethod('card')}
                       className="p-2 text-xs font-semibold border text-center transition-all"
                       style={{
-                        borderColor: paymentMethod === 'card' ? '#0284c7' : '#e2e8f0',
-                        backgroundColor: paymentMethod === 'card' ? '#f0f9ff' : '#ffffff',
-                        color: paymentMethod === 'card' ? '#0284c7' : '#475569',
+                        borderColor: paymentMethod === 'card' ? '#000000' : '#e2e8f0',
+                        backgroundColor: paymentMethod === 'card' ? '#fafafa' : '#ffffff',
+                        color: paymentMethod === 'card' ? '#000000' : '#475569',
                         borderRadius: '8px',
                       }}
                     >
@@ -156,9 +156,9 @@ export const CartDrawer: React.FC = () => {
                       onClick={() => setPaymentMethod('momo')}
                       className="p-2 text-xs font-semibold border text-center transition-all"
                       style={{
-                        borderColor: paymentMethod === 'momo' ? '#0284c7' : '#e2e8f0',
-                        backgroundColor: paymentMethod === 'momo' ? '#f0f9ff' : '#ffffff',
-                        color: paymentMethod === 'momo' ? '#0284c7' : '#475569',
+                        borderColor: paymentMethod === 'momo' ? '#000000' : '#e2e8f0',
+                        backgroundColor: paymentMethod === 'momo' ? '#fafafa' : '#ffffff',
+                        color: paymentMethod === 'momo' ? '#000000' : '#475569',
                         borderRadius: '8px',
                       }}
                     >
@@ -169,9 +169,9 @@ export const CartDrawer: React.FC = () => {
                       onClick={() => setPaymentMethod('vnpay')}
                       className="p-2 text-xs font-semibold border text-center transition-all"
                       style={{
-                        borderColor: paymentMethod === 'vnpay' ? '#0284c7' : '#e2e8f0',
-                        backgroundColor: paymentMethod === 'vnpay' ? '#f0f9ff' : '#ffffff',
-                        color: paymentMethod === 'vnpay' ? '#0284c7' : '#475569',
+                        borderColor: paymentMethod === 'vnpay' ? '#000000' : '#e2e8f0',
+                        backgroundColor: paymentMethod === 'vnpay' ? '#fafafa' : '#ffffff',
+                        color: paymentMethod === 'vnpay' ? '#000000' : '#475569',
                         borderRadius: '8px',
                       }}
                     >
@@ -188,7 +188,7 @@ export const CartDrawer: React.FC = () => {
                 <button
                   type="submit"
                   className="w-full py-3 text-white text-xs font-bold shadow-xs cursor-pointer mt-4"
-                  style={{ backgroundColor: '#0284c7', borderRadius: '8px' }}
+                  style={{ backgroundColor: '#000000', borderRadius: '8px' }}
                 >
                   Pay {formatPrice(cartTotalUSD, cartTotalVND)} & Confirm
                 </button>
@@ -229,7 +229,7 @@ export const CartDrawer: React.FC = () => {
                         </button>
                       </div>
 
-                      <p className="text-[11px] font-semibold" style={{ color: '#0284c7' }}>{item.album.artist}</p>
+                      <p className="text-[11px] font-semibold" style={{ color: '#000000' }}>{item.album.artist}</p>
                       <p className="text-[11px] text-slate-500 mt-0.5">
                         Version: <span className="font-medium text-slate-700">{item.selectedVersion}</span>
                       </p>
@@ -281,7 +281,7 @@ export const CartDrawer: React.FC = () => {
               </div>
               <div className="flex items-center justify-between text-sm font-extrabold text-slate-900 pt-2 border-t border-slate-200">
                 <span>Total</span>
-                <span className="text-base" style={{ color: '#0284c7' }}>
+                <span className="text-base" style={{ color: '#000000' }}>
                   {formatPrice(cartTotalUSD, cartTotalVND)}
                 </span>
               </div>
@@ -289,7 +289,7 @@ export const CartDrawer: React.FC = () => {
               <button
                 onClick={() => setIsCheckingOut(true)}
                 className="w-full text-white text-xs py-3 mt-2 flex items-center justify-center gap-1.5 cursor-pointer font-bold"
-                style={{ backgroundColor: '#0284c7', borderRadius: '8px' }}
+                style={{ backgroundColor: '#000000', borderRadius: '8px' }}
                 type="button"
               >
                 <span>Proceed to Checkout</span>

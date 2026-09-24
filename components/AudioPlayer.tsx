@@ -12,7 +12,7 @@ export const AudioPlayer: React.FC = () => {
   return (
     <div 
       className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-40 bg-white border shadow-2xl p-3"
-      style={{ borderColor: '#bae6fd', borderRadius: '8px', boxShadow: '0 10px 25px -3px rgba(2, 132, 199, 0.2)' }}
+      style={{ borderColor: '#d4d4d4', borderRadius: '8px', boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.2)' }}
     >
       <div className="flex items-center gap-3">
         
@@ -41,7 +41,7 @@ export const AudioPlayer: React.FC = () => {
           <div className="flex items-center gap-1.5">
             <span 
               className="text-[10px] font-bold px-1 rounded uppercase tracking-wider"
-              style={{ backgroundColor: '#e0f2fe', color: '#0369a1' }}
+              style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c' }}
             >
               Now Playing
             </span>
@@ -58,7 +58,7 @@ export const AudioPlayer: React.FC = () => {
         <button
           onClick={togglePlay}
           className="text-white flex items-center justify-center shadow-xs cursor-pointer shrink-0"
-          style={{ backgroundColor: '#0284c7', borderRadius: '8px', width: '36px', height: '36px' }}
+          style={{ backgroundColor: '#000000', borderRadius: '8px', width: '36px', height: '36px' }}
           type="button"
         >
           {isPlaying ? (
@@ -82,7 +82,7 @@ export const AudioPlayer: React.FC = () => {
       <div className="mt-2.5 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
         <div
           className="h-full transition-all duration-300"
-          style={{ width: `${progress}%`, backgroundColor: '#0284c7' }}
+          style={{ width: `${progress}%`, backgroundColor: '#000000' }}
         />
       </div>
     </div>

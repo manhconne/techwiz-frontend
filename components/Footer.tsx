@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useGoogleLanguage } from './GoogleTranslate';
-import { Heart, Globe } from 'lucide-react';
+import { Heart, Globe, Music, ShoppingBag, Users, Headphones, ChevronRight } from 'lucide-react';
 
 interface FooterProps {
   onOpenAdmin: () => void;
@@ -12,112 +12,300 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) => {
   const { language, toggleLanguage } = useGoogleLanguage();
 
+  const footerLinks = [
+    {
+      heading: 'Shop',
+      icon: <ShoppingBag size={13} />,
+      links: [
+        { label: 'K-Pop Albums', href: '#albums' },
+        { label: 'Anime OSTs', href: '#albums' },
+        { label: 'Game Soundtracks', href: '#albums' },
+        { label: 'Limited Editions', href: '#albums' },
+        { label: 'Pre-Orders', href: '#albums' },
+      ],
+    },
+    {
+      heading: 'Fandom',
+      icon: <Users size={13} />,
+      links: [
+        { label: 'Bunnies (NewJeans)', href: '#artists' },
+        { label: 'BLINK (BLACKPINK)', href: '#artists' },
+        { label: 'A.R.M.Y (BTS)', href: '#artists' },
+        { label: 'STAY (Stray Kids)', href: '#artists' },
+        { label: 'DIVE (IVE) & MY (aespa)', href: '#artists' },
+      ],
+    },
+    {
+      heading: 'Discover',
+      icon: <Headphones size={13} />,
+      links: [
+        { label: 'World Tour Calendar', href: '#tours' },
+        { label: 'Artist Profiles', href: '#artists' },
+        { label: 'Fan Community', href: '#community' },
+        { label: 'Audio Previews', href: '#albums' },
+        { label: 'New Releases', href: '#albums' },
+      ],
+    },
+    {
+      heading: 'Support',
+      icon: <Music size={13} />,
+      links: [
+        { label: 'Worldwide Shipping', href: '#' },
+        { label: 'Tour Schedule Guide', href: '#tours' },
+        { label: 'Send Feedback', href: '#', onClick: onOpenFeedback },
+        { label: 'Admin Panel', href: '#', onClick: onOpenAdmin, highlight: true },
+      ],
+    },
+  ];
+
   return (
-    <footer className="text-white pt-14 pb-8 border-t border-slate-800" style={{ backgroundColor: '#0f172a' }}>
-      <div className="max-w-7xl mx-auto px-4 lg:px-8">
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-slate-800" style={{ borderBottomColor: '#1e293b' }}>
-          
-          {/* Brand info with Horizontal Logo */}
-          <div className="lg:col-span-2 flex flex-col gap-4">
-            <div className="flex items-center notranslate">
+    <footer
+      style={{
+        backgroundColor: '#ffffff',
+        borderTop: '1px solid #e2e8f0',
+        color: '#0f172a',
+      }}
+    >
+      {/* Top Section */}
+      <div
+        style={{
+          maxWidth: '1440px',
+          margin: '0 auto',
+          padding: '64px 36px 48px',
+        }}
+      >
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr 1fr 1.2fr',
+            gap: '48px',
+            alignItems: 'start',
+          }}
+          className="grid-cols-1 md:grid-cols-2 lg:grid-cols-5"
+        >
+
+          {/* Brand Column */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
+              gridColumn: 'span 1',
+            }}
+          >
+            {/* Logo */}
+            <div className="notranslate">
               <img
-                src="/logo.png"
+                src="/logo-dark.png?v=2"
                 alt="Fan Hub Plus"
                 style={{
-                  height: '36px',
+                  height: '38px',
                   width: 'auto',
                   objectFit: 'contain',
                   display: 'block',
-                  filter: 'brightness(1.2)',
                 }}
               />
             </div>
-            <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
-              Official destination for global K-pop fans. Certified direct imports from Seoul, guaranteed album charts count, and official pre-order photocards.
+
+            {/* Tagline */}
+            <p
+              style={{
+                fontSize: '13px',
+                color: '#64748b',
+                lineHeight: 1.7,
+                maxWidth: '220px',
+              }}
+            >
+              Official destination for global K-pop fans. Certified direct imports from Seoul with guaranteed Hanteo &amp; Circle chart counts.
             </p>
-            <div className="flex items-center gap-3 pt-2 flex-wrap notranslate">
-              <span 
-                className="text-[11px] font-bold px-2.5 py-1 rounded"
-                style={{ backgroundColor: '#1e293b', color: '#7dd3fc', border: '1px solid #334155' }}
+
+            {/* Chart Badges */}
+            <div
+              className="notranslate"
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignSelf: 'flex-start',
+                  fontSize: '10px',
+                  fontWeight: 800,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: '#334155',
+                  border: '1px solid #e2e8f0',
+                  padding: '4px 10px',
+                  borderRadius: '4px',
+                  backgroundColor: '#f8fafc',
+                }}
               >
-                HANTEO CHART FAMILY MEMBER
+                Hanteo Chart Official
               </span>
-              <span 
-                className="text-[11px] font-bold px-2.5 py-1 rounded"
-                style={{ backgroundColor: '#1e293b', color: '#38bdf8', border: '1px solid #334155' }}
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignSelf: 'flex-start',
+                  fontSize: '10px',
+                  fontWeight: 800,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: '#334155',
+                  border: '1px solid #e2e8f0',
+                  padding: '4px 10px',
+                  borderRadius: '4px',
+                  backgroundColor: '#f8fafc',
+                }}
               >
-                CIRCLE CHART VERIFIED
+                Circle Chart Verified
               </span>
             </div>
           </div>
 
-          {/* Column 2: Fandom Circles */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-              Fandom Communities
-            </h4>
-            <ul className="space-y-2 text-xs text-slate-400" style={{ listStyle: 'none', padding: 0 }}>
-              <li style={{ marginBottom: '0.4rem' }}><a href="#albums" className="hover:text-sky-400 transition-colors">Bunnies (NewJeans)</a></li>
-              <li style={{ marginBottom: '0.4rem' }}><a href="#albums" className="hover:text-sky-400 transition-colors">BLINK (BLACKPINK)</a></li>
-              <li style={{ marginBottom: '0.4rem' }}><a href="#albums" className="hover:text-sky-400 transition-colors">A.R.M.Y (BTS)</a></li>
-              <li style={{ marginBottom: '0.4rem' }}><a href="#albums" className="hover:text-sky-400 transition-colors">STAY (Stray Kids)</a></li>
-              <li style={{ marginBottom: '0.4rem' }}><a href="#albums" className="hover:text-sky-400 transition-colors">DIVE (IVE) & MY (aespa)</a></li>
-            </ul>
-          </div>
-
-          {/* Column 3: Collector Care */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-              Customer Support
-            </h4>
-            <ul className="space-y-2 text-xs text-slate-400" style={{ listStyle: 'none', padding: 0 }}>
-              <li style={{ marginBottom: '0.4rem' }}><a href="#albums" className="hover:text-sky-400 transition-colors">Worldwide Shipping Policy</a></li>
-              <li style={{ marginBottom: '0.4rem' }}><a href="#tours" className="hover:text-sky-400 transition-colors">Tour Schedule Guide</a></li>
-              <li style={{ marginBottom: '0.4rem' }}>
-                <button onClick={onOpenFeedback} className="hover:text-sky-400 transition-colors cursor-pointer text-left text-slate-400" type="button">
-                  Send Feedback & Suggestions
-                </button>
-              </li>
-              <li style={{ marginBottom: '0.4rem' }}>
-                <button onClick={onOpenAdmin} className="hover:text-amber-300 font-semibold transition-colors cursor-pointer text-left" style={{ color: '#fbbf24' }} type="button">
-                  Admin Control Panel
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 4: Language & SRS Note */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-              Languages & System
-            </h4>
-            <div className="flex flex-col gap-2 text-xs text-slate-400">
-              <button
-                onClick={toggleLanguage}
-                className="flex items-center gap-2 px-3 py-1.5 text-white transition-colors cursor-pointer notranslate"
-                style={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', alignSelf: 'flex-start' }}
-                type="button"
+          {/* Link Columns */}
+          {footerLinks.map((col) => (
+            <div
+              key={col.heading}
+              style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+            >
+              {/* Column Heading */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
               >
-                <Globe className="w-3.5 h-3.5 text-sky-400" />
-                <span>Current: {language === 'en' ? 'English (EN)' : 'Tiếng Việt (VI)'}</span>
-              </button>
-              <p className="text-[11px] text-slate-500 pt-1">
-                TechWiz 7: Fan Hub Plus Official Web Template.
-              </p>
+                <span style={{ color: '#94a3b8' }}>{col.icon}</span>
+                <h4
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: 800,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    margin: 0,
+                    color: '#0f172a',
+                  }}
+                >
+                  {col.heading}
+                </h4>
+              </div>
+
+              {/* Links */}
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {col.links.map((link) => (
+                  <li key={link.label}>
+                    {link.onClick ? (
+                      <button
+                        onClick={link.onClick}
+                        type="button"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          cursor: 'pointer',
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          color: link.highlight ? '#d97706' : '#64748b',
+                          textAlign: 'left',
+                          transition: 'color 0.15s ease',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                        }}
+                        className={link.highlight ? 'hover:text-amber-500' : 'hover:text-slate-900'}
+                      >
+                        {link.highlight && <ChevronRight size={11} />}
+                        {link.label}
+                      </button>
+                    ) : (
+                      <a
+                        href={link.href}
+                        style={{
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          color: '#64748b',
+                          textDecoration: 'none',
+                          transition: 'color 0.15s ease',
+                          display: 'block',
+                        }}
+                        className="hover:text-slate-900"
+                      >
+                        {link.label}
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
+          ))}
 
         </div>
 
-        {/* Bottom copyright */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
-          <p>© 2026 Fan Hub Plus. All Rights Reserved. Official Charts Sync Partner.</p>
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1">
-              Crafted with <Heart className="w-3 h-3 text-sky-500 fill-current" /> for K-Pop Fans
-            </span>
-          </div>
+        {/* Divider */}
+        <div
+          style={{
+            height: '1px',
+            backgroundColor: '#e2e8f0',
+            margin: '48px 0 28px',
+          }}
+        />
+
+        {/* Bottom bar */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '16px',
+          }}
+        >
+          {/* Copyright */}
+          <p
+            style={{
+              fontSize: '12px',
+              color: '#94a3b8',
+              margin: 0,
+            }}
+          >
+            © 2026 Fan Hub Plus. All Rights Reserved. Official Charts Sync Partner.
+          </p>
+
+          {/* Center: Crafted with */}
+          <span
+            style={{
+              fontSize: '12px',
+              color: '#94a3b8',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}
+          >
+            Crafted with <Heart size={11} style={{ color: '#f43f5e', fill: '#f43f5e' }} /> for K-Pop Fans
+          </span>
+
+          {/* Language Toggle */}
+          <button
+            onClick={toggleLanguage}
+            type="button"
+            className="notranslate hover:border-slate-400 transition-colors"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '12px',
+              fontWeight: 600,
+              color: '#475569',
+              backgroundColor: 'transparent',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              padding: '6px 12px',
+              cursor: 'pointer',
+            }}
+          >
+            <Globe size={13} style={{ color: '#3b82f6' }} />
+            {language === 'en' ? 'English (EN)' : 'Tiếng Việt (VI)'}
+          </button>
         </div>
 
       </div>
