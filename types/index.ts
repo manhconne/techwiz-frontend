@@ -1,4 +1,6 @@
-export type AlbumType = 'Full Album' | 'Mini Album' | 'Single' | 'Limited Kit' | 'Lightstick';
+export type CategoryType = 'K-Pop' | 'Anime' | 'Movie' | 'Gaming';
+
+export type AlbumType = 'Full Album' | 'Mini Album' | 'Single' | 'Limited Kit' | 'Lightstick' | 'OST & Vinyl' | 'Collector Box' | 'Figure & Merch';
 
 export interface Track {
   id: number;
@@ -29,6 +31,7 @@ export interface Album {
   title: string;
   artist: string;
   artistId: string;
+  category?: CategoryType;
   priceUSD: number;
   priceVND: number;
   originalPriceUSD?: number;
@@ -58,6 +61,7 @@ export interface Artist {
   name: string;
   koreanName: string;
   agency: string;
+  category?: CategoryType;
   fandomName: string;
   debutYear: number;
   members: string[];

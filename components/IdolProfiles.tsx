@@ -23,10 +23,10 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
             <span>Fandom Universe Showcase</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Featured K-Pop Artists & Idols
+            Featured Artists, Anime & Gaming Franchises
           </h2>
           <p className="text-sm text-slate-500 mt-2">
-            Get closer to your bias. Explore members, fandom community lore, and discographies.
+            Get closer to your favorite idols and universes. Explore key characters, fandom lore, and catalog collections.
           </p>
         </div>
 

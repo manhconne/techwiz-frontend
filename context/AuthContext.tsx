@@ -6,7 +6,7 @@ import { UserProfile } from '../types';
 interface AuthContextType {
   user: UserProfile;
   isLoggedIn: boolean;
-  loginAs: (role: 'registered' | 'admin') => void;
+  loginAs: (role: 'registered' | 'admin', customData?: { id?: string; name?: string; email?: string }) => void;
   logout: () => void;
   toggleFavoriteFandom: (fandom: string) => void;
 }
@@ -40,18 +40,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const loginAs = (role: 'registered' | 'admin') => {
+  const loginAs = (role: 'registered' | 'admin', customData?: { id?: string; name?: string; email?: string }) => {
     const newUser: UserProfile = {
-      id: role === 'admin' ? 'admin-001' : 'user-777',
-      name: role === 'admin' ? 'Fandom Director (Admin)' : 'Haerin Star ⭐',
-      email: role === 'admin' ? 'admin@fanhubplus.com' : 'fan_tokki@gmail.com',
+      id: customData?.id || (role === 'admin' ? 'admin-001' : 'user-777'),
+      name: customData?.name || (role === 'admin' ? 'Fandom Director (Admin)' : 'Haerin Star ⭐'),
+      email: customData?.email || (role === 'admin' ? 'admin@fanhubplus.com' : 'fan_tokki@gmail.com'),
       role,
       avatar:
         role === 'admin'
           ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80'
           : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
       favoriteFandoms: ['Bunnies', 'STAY', 'MY'],
-      memberSince: '2023',
+      memberSince: '2024',
     };
     setUser(newUser);
     setIsLoggedIn(true);
@@ -62,6 +62,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(defaultGuestUser);
     setIsLoggedIn(false);
     localStorage.removeItem('kpop_user');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;';
+    document.cookie = 'refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;';
   };
 
   const toggleFavoriteFandom = (fandom: string) => {

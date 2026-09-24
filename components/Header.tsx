@@ -4,15 +4,15 @@ import React, { useState } from 'react';
 import { useGoogleLanguage } from './GoogleTranslate';
 import { useCartWishlist } from '../context/CartWishlistContext';
 import { useAuth } from '../context/AuthContext';
-import { 
-  Menu, 
-  Search, 
-  User, 
-  ShoppingBag, 
-  FileText, 
-  Globe, 
-  X, 
-  ShieldCheck, 
+import {
+  Menu,
+  Search,
+  User,
+  ShoppingBag,
+  FileText,
+  Globe,
+  X,
+  ShieldCheck,
   Sparkles,
   Disc,
   Users,
@@ -22,6 +22,14 @@ import {
   Building2,
   CheckCircle2,
   Palette,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  UserCheck,
+  ArrowRight,
+  Phone,
+  Loader2,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -44,6 +52,20 @@ export const Header: React.FC<HeaderProps> = ({
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
   const [isLargeFont, setIsLargeFont] = useState(false);
+
+  // Form & Tab State for Auth Modal
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [signupName, setSignupName] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
+  const [signupPhone, setSignupPhone] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [authNotification, setAuthNotification] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(false);
 
   // Sub-header navigation dropdown (Exact matching user's image)
   const [isAllMdDropdownOpen, setIsAllMdDropdownOpen] = useState(false);
@@ -87,28 +109,28 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200">
-      
+
       {/* Top slim announcement bar */}
-      <div 
+      <div
         className="text-white text-xs py-1 px-4 text-center font-medium flex items-center justify-center gap-2"
         style={{ backgroundColor: '#0284c7' }}
       >
-        <span>Worldwide Shipping Available! Pre-Order Official K-Pop Albums & Win Exclusive Fansign Slots!</span>
+        <span style={{ fontSize: '14px', padding: "4px" }}>Worldwide Shipping Available! Pre-Order Official K-Pop Albums & Win Exclusive Fansign Slots!</span>
       </div>
 
       {/* Main Bar exactly matching user design */}
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-3 flex items-center justify-between gap-4">
-        
+
         {/* LEFT: Menu Button + Horizontal Logo */}
         <div className="flex items-center gap-3 shrink-0">
           {/* Circular Hamburger Menu Button - Also toggles the exact category dropdown */}
           <button
             onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
             className="rounded-full flex items-center justify-center transition-colors cursor-pointer text-white"
-            style={{ 
-              backgroundColor: '#1e293b', 
-              width: '38px', 
-              height: '38px', 
+            style={{
+              backgroundColor: '#1e293b',
+              width: '38px',
+              height: '38px',
               borderRadius: '50%',
               flexShrink: 0
             }}
@@ -129,14 +151,14 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* CENTER: Minimalist Underline Search Bar - ONLY ONE SINGLE SEARCH BAR */}
-        <div 
-          className="flex-1 mx-4" 
+        <div
+          className="flex-1 mx-4"
           style={{ maxWidth: '460px', minWidth: '180px' }}
         >
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%' }}>
             <input
               type="text"
-              placeholder="Search album, artist (e.g. NewJeans, BTS, Stray Kids)..."
+              placeholder="Search album, OST, anime, game (e.g. Demon Slayer, Genshin, NewJeans, Dune)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
@@ -176,7 +198,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* RIGHT: User Profile, Cart, Wishlist Doc, Language Pill */}
         <div className="flex items-center gap-3 shrink-0">
-          
+
           {/* User Profile Icon */}
           <button
             onClick={() => setIsAuthModalOpen(true)}
@@ -197,11 +219,11 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <ShoppingBag style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
             {cartCount > 0 && (
-              <span 
+              <span
                 className="absolute text-white font-bold rounded-full flex items-center justify-center notranslate"
-                style={{ 
-                  backgroundColor: '#0284c7', 
-                  width: '16px', 
+                style={{
+                  backgroundColor: '#0284c7',
+                  width: '16px',
                   height: '16px',
                   fontSize: '10px',
                   top: '-2px',
@@ -223,11 +245,11 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <FileText style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
             {wishlistCount > 0 && (
-              <span 
+              <span
                 className="absolute text-white font-bold rounded-full flex items-center justify-center notranslate"
-                style={{ 
-                  backgroundColor: '#0284c7', 
-                  width: '16px', 
+                style={{
+                  backgroundColor: '#0284c7',
+                  width: '16px',
                   height: '16px',
                   fontSize: '10px',
                   top: '-2px',
@@ -282,15 +304,15 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* SECONDARY CATEGORY NAVIGATION BAR (EXACTLY MATCHING USER'S SCREENSHOT) */}
-      <div 
+      <div
         className="w-full bg-white border-t border-slate-200"
         style={{ borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', overflow: 'visible', position: 'relative' }}
       >
-        <div 
+        <div
           className="max-w-7xl mx-auto px-4 lg:px-8 flex items-center justify-between"
           style={{ overflow: 'visible', position: 'relative' }}
         >
-          
+
           {/* [ ≡ ALL MD ] Black Button with Exact Dropdown */}
           <div className="relative shrink-0 py-1.5" style={{ overflow: 'visible', zIndex: 60 }}>
             <button
@@ -314,13 +336,13 @@ export const Header: React.FC<HeaderProps> = ({
             {isAllMdDropdownOpen && (
               <>
                 {/* Backdrop to close on click outside */}
-                <div 
+                <div
                   className="fixed inset-0 bg-transparent"
                   style={{ zIndex: 9990 }}
                   onClick={() => setIsAllMdDropdownOpen(false)}
                 />
 
-                <div 
+                <div
                   className="absolute left-0 top-full mt-2.5 bg-white animate-in fade-in zoom-in-95 duration-100"
                   style={{
                     width: '260px',
@@ -337,7 +359,7 @@ export const Header: React.FC<HeaderProps> = ({
                   }}
                 >
                   {/* Top pointer caret triangle pointing UP matching user screenshot */}
-                  <div 
+                  <div
                     style={{
                       position: 'absolute',
                       top: '-10px',
@@ -417,7 +439,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* CUSTOM ZONE MODAL */}
       {isCustomZoneOpen && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             inset: 0,
@@ -430,7 +452,7 @@ export const Header: React.FC<HeaderProps> = ({
             padding: '16px'
           }}
         >
-          <div 
+          <div
             style={{
               backgroundColor: '#ffffff',
               borderRadius: '8px',
@@ -508,7 +530,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* B2B / Bulk Order Modal (From Image 2 & Dropdown CONTACT FOR BULK ORDER) */}
       {isB2BModalOpen && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             inset: 0,
@@ -521,7 +543,7 @@ export const Header: React.FC<HeaderProps> = ({
             padding: '16px'
           }}
         >
-          <div 
+          <div
             style={{
               backgroundColor: '#ffffff',
               borderRadius: '8px',
@@ -551,7 +573,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             {b2bSubmitted ? (
               <div className="text-center py-6 space-y-3">
-                <div 
+                <div
                   className="bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto"
                   style={{ width: '48px', height: '48px', borderRadius: '50%' }}
                 >
@@ -563,7 +585,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto">
                   Thank you! Our Global Wholesale & Group Order department will send tier-discount quotations to your contact within 2 hours.
                 </p>
-                <div 
+                <div
                   className="p-3 border text-xs text-sky-800"
                   style={{ backgroundColor: '#f0f9ff', borderColor: '#bae6fd', borderRadius: '8px' }}
                 >
@@ -689,79 +711,107 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       )}
 
-      {/* User Login / Auth Modal */}
+      {/* User Login / Auth Modal - Clean Root Styled Sign In & Sign Up */}
       {isAuthModalOpen && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             inset: 0,
-            zIndex: 50,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(2px)',
+            zIndex: 9999,
+            backgroundColor: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             padding: '16px'
           }}
         >
-          <div 
+          <div
             style={{
-              backgroundColor: '#ffffff',
-              borderRadius: '8px',
-              maxWidth: '380px',
+              backgroundColor: 'var(--bg-card)',
+              borderRadius: 'var(--radius-lg, 16px)',
+              maxWidth: '430px',
               width: '100%',
-              padding: '24px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              position: 'relative'
+              padding: '28px 24px',
+              boxShadow: 'var(--shadow-lg)',
+              position: 'relative',
+              border: '1px solid var(--border-color)'
             }}
           >
+            {/* Close Button */}
             <button
-              onClick={() => setIsAuthModalOpen(false)}
+              onClick={() => {
+                setIsAuthModalOpen(false);
+                setAuthNotification(null);
+              }}
               style={{
                 position: 'absolute',
                 top: '16px',
                 right: '16px',
-                color: '#94a3b8',
-                cursor: 'pointer'
+                color: 'var(--text-muted)',
+                backgroundColor: 'var(--bg-body)',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                border: '1px solid var(--border-color)',
+                transition: 'all var(--transition-fast)'
               }}
               type="button"
+              title="Close"
             >
-              <X style={{ width: '20px', height: '20px' }} />
+              <X style={{ width: '18px', height: '18px' }} />
             </button>
 
-            <div className="text-center mb-6">
-              <div 
-                className="bg-sky-50 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-3"
-                style={{ width: '48px', height: '48px', borderRadius: '50%' }}
-              >
-                <User style={{ width: '24px', height: '24px' }} />
-              </div>
-              <h3 className="text-lg font-bold text-slate-800">
-                {isLoggedIn ? `Welcome back, ${user.name}` : 'Fan Hub Plus Member Sign In'}
-              </h3>
-              <p className="text-xs text-slate-500 mt-1">
-                {isLoggedIn
-                  ? `Logged in as ${user.role.toUpperCase()}`
-                  : 'Select a persona to test the TechWiz 7 user privileges:'}
-              </p>
-            </div>
-
             {isLoggedIn ? (
-              <div className="space-y-4">
-                <div className="p-3 bg-slate-50 rounded border border-slate-200 text-xs space-y-1.5" style={{ borderRadius: '8px' }}>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Email:</span>
-                    <span className="font-semibold text-slate-700">{user.email}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Favorite Fandoms:</span>
-                    <span className="font-semibold text-sky-600">
-                      {user.favoriteFandoms.join(', ')}
+              /* LOGGED IN USER PROFILE CARD */
+              <div>
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    style={{
+                      width: '72px',
+                      height: '72px',
+                      borderRadius: '50%',
+                      margin: '0 auto 12px auto',
+                      objectFit: 'cover',
+                      border: '3px solid var(--color-primary)',
+                      boxShadow: 'var(--shadow-md)'
+                    }}
+                  />
+                  <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px 0' }}>
+                    {user.name}
+                  </h3>
+                  <p style={{ fontSize: '12px', color: 'var(--color-primary)', fontWeight: 600, margin: 0 }}>
+                    {user.email}
+                  </p>
+                </div>
+
+                <div
+                  style={{
+                    padding: '12px 14px',
+                    backgroundColor: 'var(--bg-body)',
+                    borderRadius: 'var(--radius)',
+                    border: '1px solid var(--border-color)',
+                    fontSize: '12px',
+                    marginBottom: '20px'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Vai trò:</span>
+                    <span style={{ fontWeight: 800, textTransform: 'uppercase', color: 'var(--color-primary)' }}>
+                      {user.role}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Privilege:</span>
-                    <span className="font-semibold text-slate-800 uppercase">{user.role}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Fandom:</span>
+                    <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
+                      {user.favoriteFandoms.join(', ')}
+                    </span>
                   </div>
                 </div>
 
@@ -771,12 +821,26 @@ export const Header: React.FC<HeaderProps> = ({
                       setIsAuthModalOpen(false);
                       onOpenAdmin();
                     }}
-                    className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded text-xs font-bold flex items-center justify-center gap-1.5 shadow"
-                    style={{ borderRadius: '8px', cursor: 'pointer' }}
+                    style={{
+                      width: '100%',
+                      padding: '11px',
+                      backgroundColor: 'var(--color-gold)',
+                      color: '#ffffff',
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      borderRadius: 'var(--radius)',
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      marginBottom: '10px'
+                    }}
                     type="button"
                   >
                     <ShieldCheck style={{ width: '16px', height: '16px' }} />
-                    Open Admin Control Panel
+                    Mở Bảng Quản Trị Admin
                   </button>
                 )}
 
@@ -785,46 +849,545 @@ export const Header: React.FC<HeaderProps> = ({
                     logout();
                     setIsAuthModalOpen(false);
                   }}
-                  className="w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded text-xs font-bold border border-red-200 transition-colors"
-                  style={{ borderRadius: '8px', cursor: 'pointer' }}
+                  style={{
+                    width: '100%',
+                    padding: '11px',
+                    backgroundColor: '#fef2f2',
+                    color: '#dc2626',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    borderRadius: 'var(--radius)',
+                    border: '1px solid #fecaca',
+                    cursor: 'pointer'
+                  }}
                   type="button"
                 >
-                  Sign Out
+                  Đăng Xuất Tài Khoản
                 </button>
               </div>
             ) : (
-              <div className="space-y-3">
-                <button
-                  onClick={() => {
-                    loginAs('registered');
-                    setIsAuthModalOpen(false);
-                  }}
-                  className="w-full p-3 text-white rounded text-xs font-bold transition-all text-left flex items-center justify-between shadow-xs cursor-pointer"
-                  style={{ backgroundColor: '#0284c7', borderRadius: '8px' }}
-                  type="button"
-                >
-                  <div>
-                    <div className="font-bold text-sm">Demo: Registered Fan User</div>
-                    <div className="text-[11px] opacity-90">Access bookmarks, ratings, and checkout perks</div>
-                  </div>
-                  <Sparkles style={{ width: '20px', height: '20px', color: '#e0f2fe' }} />
-                </button>
+              /* SIGN IN / SIGN UP FORM MODAL */
+              <div>
+                {/* Brand Logo Header */}
+                <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                  <img
+                    src="/logo.png"
+                    alt="Fan Hub Plus Logo"
+                    style={{ height: '40px', width: 'auto', margin: '0 auto 12px auto', objectFit: 'contain' }}
+                  />
+                  <h3 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: '0 0 4px 0' }}>
+                    {authMode === 'signin' ? 'Sign In' : 'Create Account'}
+                  </h3>
+                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>
+                    {authMode === 'signin'
+                      ? 'Welcome back to Fan Hub Plus'
+                      : 'Join now for exclusive fan perks & pre-order access'}
+                  </p>
+                </div>
 
-                <button
-                  onClick={() => {
-                    loginAs('admin');
-                    setIsAuthModalOpen(false);
-                  }}
-                  className="w-full p-3 bg-slate-900 text-white rounded text-xs font-bold hover:bg-slate-800 transition-all text-left flex items-center justify-between shadow-xs cursor-pointer"
-                  style={{ borderRadius: '8px' }}
-                  type="button"
-                >
-                  <div>
-                    <div className="font-bold text-sm">Demo: Platform Administrator</div>
-                    <div className="text-[11px] text-slate-300">Manage catalog drops, stock, and live analytics</div>
+                {authNotification && (
+                  <div
+                    style={{
+                      marginBottom: '16px',
+                      padding: '10px 12px',
+                      backgroundColor: '#ecfdf5',
+                      border: '1px solid #a7f3d0',
+                      color: '#047857',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      borderRadius: 'var(--radius)',
+                      textAlign: 'center'
+                    }}
+                  >
+                    {authNotification}
                   </div>
-                  <ShieldCheck style={{ width: '20px', height: '20px', color: '#fbbf24' }} />
-                </button>
+                )}
+
+                {authError && (
+                  <div
+                    style={{
+                      marginBottom: '16px',
+                      padding: '10px 12px',
+                      backgroundColor: '#fef2f2',
+                      border: '1px solid #fecaca',
+                      color: '#b91c1c',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      borderRadius: 'var(--radius)',
+                      textAlign: 'center'
+                    }}
+                  >
+                    {authError}
+                  </div>
+                )}
+
+                {/* SIGN IN FORM */}
+                {authMode === 'signin' && (
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      setAuthError(null);
+                      setAuthNotification(null);
+                      setIsLoadingAuth(true);
+
+                      try {
+                        const response = await fetch('/api/v1/auth/login', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            email: loginEmail,
+                            password: loginPassword,
+                          }),
+                        });
+
+                        const data = await response.json().catch(() => ({}));
+
+                        if (response.status === 200 || response.status === 201) {
+                          // Save access_token to cookie
+                          if (data.access_token) {
+                            document.cookie = `access_token=${data.access_token}; path=/; max-age=604800; SameSite=Lax`;
+                            localStorage.setItem('access_token', data.access_token);
+                          }
+                          if (data.refresh_token) {
+                            document.cookie = `refresh_token=${data.refresh_token}; path=/; max-age=2592000; SameSite=Lax`;
+                            localStorage.setItem('refresh_token', data.refresh_token);
+                          }
+
+                          const userInfo = data.user_info || {};
+                          const userRole = (userInfo.role || loginEmail).toLowerCase().includes('admin') ? 'admin' : 'registered';
+
+                          setAuthNotification(data.message || 'Đăng nhập thành công!');
+                          loginAs(userRole, {
+                            id: userInfo.id || data.user_id || 'usr_' + Date.now(),
+                            name: userInfo.full_name || userInfo.name || data.full_name || loginEmail.split('@')[0],
+                            email: userInfo.email || loginEmail,
+                          });
+
+                          setTimeout(() => {
+                            setIsAuthModalOpen(false);
+                            setAuthNotification(null);
+                            setAuthError(null);
+                          }, 1000);
+                        } else {
+                          setAuthError(data.message || `Lỗi ${response.status}: Đăng nhập thất bại.`);
+                        }
+                      } catch (err: any) {
+                        setAuthError(err.message || 'Không thể kết nối tới server /api/v1/auth/login');
+                      } finally {
+                        setIsLoadingAuth(false);
+                      }
+                    }}
+                  >
+                    <div style={{ marginBottom: '14px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px' }}>
+                        Email Address
+                      </label>
+                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+                        <Mail style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                        <input
+                          type="email"
+                          required
+                          placeholder="e.g. user@example.com"
+                          value={loginEmail}
+                          onChange={(e) => setLoginEmail(e.target.value)}
+                          style={{
+                            width: '100%',
+                            paddingLeft: '38px',
+                            paddingRight: '14px',
+                            paddingTop: '10px',
+                            paddingBottom: '10px',
+                            fontSize: '13px',
+                            backgroundColor: 'var(--bg-body)',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: 'var(--radius)',
+                            outline: 'none',
+                            color: 'var(--text-primary)',
+                            transition: 'all var(--transition-fast)'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                        <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                          Password
+                        </label>
+                        <a href="#" onClick={(e) => e.preventDefault()} style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-primary)' }}>
+                          Forgot password?
+                        </a>
+                      </div>
+                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+                        <Lock style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          required
+                          placeholder="••••••••"
+                          value={loginPassword}
+                          onChange={(e) => setLoginPassword(e.target.value)}
+                          style={{
+                            width: '100%',
+                            paddingLeft: '38px',
+                            paddingRight: '38px',
+                            paddingTop: '10px',
+                            paddingBottom: '10px',
+                            fontSize: '13px',
+                            backgroundColor: 'var(--bg-body)',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: 'var(--radius)',
+                            outline: 'none',
+                            color: 'var(--text-primary)',
+                            transition: 'all var(--transition-fast)'
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          style={{
+                            position: 'absolute',
+                            right: '10px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: 'var(--text-muted)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '4px'
+                          }}
+                          title={showPassword ? 'Hide password' : 'Show password'}
+                        >
+                          {showPassword ? <EyeOff style={{ width: '16px', height: '16px' }} /> : <Eye style={{ width: '16px', height: '16px' }} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isLoadingAuth}
+                      style={{
+                        width: '100%',
+                        padding: '11px',
+                        backgroundColor: 'var(--color-primary)',
+                        color: '#ffffff',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        borderRadius: 'var(--radius)',
+                        border: 'none',
+                        cursor: isLoadingAuth ? 'not-allowed' : 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        boxShadow: 'var(--shadow-sm)',
+                        opacity: isLoadingAuth ? 0.7 : 1,
+                        transition: 'all var(--transition-fast)'
+                      }}
+                    >
+                      {isLoadingAuth ? (
+                        <>
+                          <Loader2 className="animate-spin" style={{ width: '16px', height: '16px' }} />
+                          <span>Signing in...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Sign In</span>
+                          <ArrowRight style={{ width: '16px', height: '16px' }} />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                )}
+
+                {/* SIGN UP FORM */}
+                {authMode === 'signup' && (
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      setAuthError(null);
+                      setAuthNotification(null);
+
+                      if (signupPassword !== signupConfirmPassword) {
+                        setAuthError('Confirm password does not match');
+                        return;
+                      }
+
+                      setIsLoadingAuth(true);
+
+                      try {
+                        const response = await fetch('/api/v1/auth/register', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            email: signupEmail,
+                            password: signupPassword,
+                            full_name: signupName,
+                            confirmPassword: signupConfirmPassword,
+                            phoneNumber: signupPhone,
+                          }),
+                        });
+
+                        const data = await response.json().catch(() => ({}));
+
+                        if (response.status === 201) {
+                          setAuthNotification(data.message || 'Đăng ký thành công');
+                          loginAs('registered', {
+                            id: data.user_id || 'usr_' + Date.now(),
+                            name: signupName,
+                            email: signupEmail,
+                          });
+                          setTimeout(() => {
+                            setIsAuthModalOpen(false);
+                            setAuthNotification(null);
+                            setAuthError(null);
+                          }, 1200);
+                        } else {
+                          // Any status other than 201 is treated as error
+                          setAuthError(data.message || 'Registration failed. Please try again.');
+                        }
+                      } catch (err: any) {
+                        setAuthError(err.message || 'Unable to connect to auth server (/api/v1/auth/register)');
+                      } finally {
+                        setIsLoadingAuth(false);
+                      }
+                    }}
+                  >
+                    <div style={{ marginBottom: '12px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                        Full Name
+                      </label>
+                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+                        <User style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Nguyễn Văn A"
+                          value={signupName}
+                          onChange={(e) => setSignupName(e.target.value)}
+                          style={{
+                            width: '100%',
+                            paddingLeft: '38px',
+                            paddingRight: '14px',
+                            paddingTop: '9px',
+                            paddingBottom: '9px',
+                            fontSize: '13px',
+                            backgroundColor: 'var(--bg-body)',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: 'var(--radius)',
+                            outline: 'none',
+                            color: 'var(--text-primary)',
+                            transition: 'all var(--transition-fast)'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '12px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                        Email Address
+                      </label>
+                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+                        <Mail style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                        <input
+                          type="email"
+                          required
+                          placeholder="user@example.com"
+                          value={signupEmail}
+                          onChange={(e) => setSignupEmail(e.target.value)}
+                          style={{
+                            width: '100%',
+                            paddingLeft: '38px',
+                            paddingRight: '14px',
+                            paddingTop: '9px',
+                            paddingBottom: '9px',
+                            fontSize: '13px',
+                            backgroundColor: 'var(--bg-body)',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: 'var(--radius)',
+                            outline: 'none',
+                            color: 'var(--text-primary)',
+                            transition: 'all var(--transition-fast)'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '12px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                        Phone Number
+                      </label>
+                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+                        <Phone style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                        <input
+                          type="tel"
+                          placeholder="e.g. 0912345678"
+                          value={signupPhone}
+                          onChange={(e) => setSignupPhone(e.target.value)}
+                          style={{
+                            width: '100%',
+                            paddingLeft: '38px',
+                            paddingRight: '14px',
+                            paddingTop: '9px',
+                            paddingBottom: '9px',
+                            fontSize: '13px',
+                            backgroundColor: 'var(--bg-body)',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: 'var(--radius)',
+                            outline: 'none',
+                            color: 'var(--text-primary)',
+                            transition: 'all var(--transition-fast)'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '12px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                        Password
+                      </label>
+                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+                        <Lock style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          required
+                          placeholder="Min 6 characters"
+                          value={signupPassword}
+                          onChange={(e) => setSignupPassword(e.target.value)}
+                          style={{
+                            width: '100%',
+                            paddingLeft: '38px',
+                            paddingRight: '38px',
+                            paddingTop: '9px',
+                            paddingBottom: '9px',
+                            fontSize: '13px',
+                            backgroundColor: 'var(--bg-body)',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: 'var(--radius)',
+                            outline: 'none',
+                            color: 'var(--text-primary)',
+                            transition: 'all var(--transition-fast)'
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          style={{
+                            position: 'absolute',
+                            right: '10px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: 'var(--text-muted)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '4px'
+                          }}
+                          title={showPassword ? 'Hide password' : 'Show password'}
+                        >
+                          {showPassword ? <EyeOff style={{ width: '16px', height: '16px' }} /> : <Eye style={{ width: '16px', height: '16px' }} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '16px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                        Confirm Password
+                      </label>
+                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+                        <Lock style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          required
+                          placeholder="Repeat password"
+                          value={signupConfirmPassword}
+                          onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                          style={{
+                            width: '100%',
+                            paddingLeft: '38px',
+                            paddingRight: '14px',
+                            paddingTop: '9px',
+                            paddingBottom: '9px',
+                            fontSize: '13px',
+                            backgroundColor: 'var(--bg-body)',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: 'var(--radius)',
+                            outline: 'none',
+                            color: 'var(--text-primary)',
+                            transition: 'all var(--transition-fast)'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isLoadingAuth}
+                      style={{
+                        width: '100%',
+                        padding: '11px',
+                        backgroundColor: 'var(--color-primary)',
+                        color: '#ffffff',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        borderRadius: 'var(--radius)',
+                        border: 'none',
+                        cursor: isLoadingAuth ? 'not-allowed' : 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        boxShadow: 'var(--shadow-sm)',
+                        opacity: isLoadingAuth ? 0.7 : 1,
+                        transition: 'all var(--transition-fast)'
+                      }}
+                    >
+                      {isLoadingAuth ? (
+                        <>
+                          <Loader2 className="animate-spin" style={{ width: '16px', height: '16px' }} />
+                          <span>Creating Account...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Create Account</span>
+                          <UserCheck style={{ width: '16px', height: '16px' }} />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                )}
+
+                {/* Bottom Switch Link - Removes top tab buttons */}
+                <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--border-color)', textAlign: 'center' }}>
+                  {authMode === 'signin' ? (
+                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
+                      {"Don't have an account?"}{' '}
+                      <button
+                        type="button"
+                        onClick={() => { setAuthMode('signup'); setAuthNotification(null); }}
+                        style={{ fontWeight: 800, color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                      >
+                        Sign up now
+                      </button>
+                    </p>
+                  ) : (
+                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
+                      Already have an account?{' '}
+                      <button
+                        type="button"
+                        onClick={() => { setAuthMode('signin'); setAuthNotification(null); }}
+                        style={{ fontWeight: 800, color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                      >
+                        Sign in now
+                      </button>
+                    </p>
+                  )}
+                </div>
+
               </div>
             )}
           </div>

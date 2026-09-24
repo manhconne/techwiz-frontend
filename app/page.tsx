@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Header } from '../components/Header';
-import { HeroBanner } from '../components/HeroBanner';
 import { AlbumGrid } from '../components/AlbumGrid';
 import { AlbumDetailModal } from '../components/AlbumDetailModal';
 import { IdolProfiles } from '../components/IdolProfiles';
@@ -55,9 +54,6 @@ export default function Home() {
 
       {/* Main Content Sections */}
       <main className="flex-1">
-        {/* Comeback Hero Banner & Countdown */}
-        <HeroBanner />
-
         {/* Fandom Content Explorer & Official Album Drops */}
         <AlbumGrid
           onSelectAlbum={(album) => setSelectedAlbum(album)}
