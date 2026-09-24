@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import { Header } from '../components/Header';
+import { HeroBanner } from '../components/HeroBanner';
 import { AlbumGrid } from '../components/AlbumGrid';
+import { FanCommunityFeed } from '../components/FanCommunityFeed';
 import { AlbumDetailModal } from '../components/AlbumDetailModal';
 import { IdolProfiles } from '../components/IdolProfiles';
 import { TourCalendar } from '../components/TourCalendar';
@@ -12,7 +14,7 @@ import { ChatbotModal } from '../components/ChatbotModal';
 import { AudioPlayer } from '../components/AudioPlayer';
 import { AdminModal } from '../components/AdminModal';
 import { FeedbackModal } from '../components/FeedbackModal';
-import { SitemapSection } from '../components/SitemapSection';
+
 import { Footer } from '../components/Footer';
 // import { TestConnection } from '../components/TestConnection';
 import { Album } from '../types';
@@ -56,6 +58,9 @@ export default function Home() {
       {/* Main Content Sections */}
       <main className="flex-1">
 
+        {/* Hero Section */}
+        <HeroBanner />
+
         {/* Fandom Content Explorer & Official Album Drops */}
         <AlbumGrid
           onSelectAlbum={(album) => setSelectedAlbum(album)}
@@ -70,11 +75,10 @@ export default function Home() {
         {/* Location-Aware Event Discovery & World Tour Calendar */}
         <TourCalendar />
 
-        {/* TechWiz 7 Mandatory Sitemap Section */}
-        <SitemapSection
-          onOpenAdmin={() => setIsAdminOpen(true)}
-          onOpenFeedback={() => setIsFeedbackOpen(true)}
-        />
+        {/* Fan Community Social Feed */}
+        <FanCommunityFeed />
+
+
       </main>
 
       {/* Interactive Modals and Drawers */}

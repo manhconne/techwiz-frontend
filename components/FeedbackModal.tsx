@@ -56,7 +56,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                 onClose();
               }}
               className="mt-4 px-6 py-2 text-white text-xs font-bold cursor-pointer"
-              style={{ backgroundColor: '#0284c7', borderRadius: '8px' }}
+              style={{ backgroundColor: '#000000', borderRadius: '8px' }}
               type="button"
             >
               Close
@@ -99,9 +99,9 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                     onClick={() => setCategory('suggestion')}
                     className="p-2 border text-center transition-all cursor-pointer"
                     style={{
-                      borderColor: category === 'suggestion' ? '#0284c7' : '#e2e8f0',
-                      backgroundColor: category === 'suggestion' ? '#f0f9ff' : '#ffffff',
-                      color: category === 'suggestion' ? '#0284c7' : '#475569',
+                      borderColor: category === 'suggestion' ? '#000000' : '#e2e8f0',
+                      backgroundColor: category === 'suggestion' ? '#fafafa' : '#ffffff',
+                      color: category === 'suggestion' ? '#000000' : '#475569',
                       borderRadius: '8px',
                       fontWeight: category === 'suggestion' ? 700 : 500,
                     }}
@@ -113,9 +113,9 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                     onClick={() => setCategory('query')}
                     className="p-2 border text-center transition-all cursor-pointer"
                     style={{
-                      borderColor: category === 'query' ? '#0284c7' : '#e2e8f0',
-                      backgroundColor: category === 'query' ? '#f0f9ff' : '#ffffff',
-                      color: category === 'query' ? '#0284c7' : '#475569',
+                      borderColor: category === 'query' ? '#000000' : '#e2e8f0',
+                      backgroundColor: category === 'query' ? '#fafafa' : '#ffffff',
+                      color: category === 'query' ? '#000000' : '#475569',
                       borderRadius: '8px',
                       fontWeight: category === 'query' ? 700 : 500,
                     }}
@@ -143,7 +143,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
               <button
                 type="submit"
                 className="w-full text-white text-xs py-2.5 flex items-center justify-center gap-1.5 cursor-pointer font-bold"
-                style={{ backgroundColor: '#0284c7', borderRadius: '8px' }}
+                style={{ backgroundColor: '#000000', borderRadius: '8px' }}
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>Submit Feedback</span>

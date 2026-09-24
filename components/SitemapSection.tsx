@@ -74,7 +74,7 @@ export const SitemapSection: React.FC<SitemapSectionProps> = ({ onOpenAdmin, onO
         <div className="text-center max-w-2xl mx-auto mb-10">
           <div 
             className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider mb-2 px-3 py-1"
-            style={{ backgroundColor: '#e0f2fe', color: '#0369a1', borderRadius: '8px' }}
+            style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c', borderRadius: '8px' }}
           >
             <Map className="w-3.5 h-3.5 text-sky-600" />
             <span>SRS Section 1.9 Architecture</span>
@@ -111,10 +111,10 @@ export const SitemapSection: React.FC<SitemapSectionProps> = ({ onOpenAdmin, onO
                           <button
                             onClick={link.onClick}
                             className="hover:underline font-semibold transition-colors flex items-center gap-1.5 text-left cursor-pointer"
-                            style={{ color: '#0284c7' }}
+                            style={{ color: '#000000' }}
                             type="button"
                           >
-                            <span style={{ color: '#0284c7', fontWeight: 'bold' }}>→</span>
+                            <span style={{ color: '#000000', fontWeight: 'bold' }}>→</span>
                             <span>{link.label}</span>
                           </button>
                         </li>

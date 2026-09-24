@@ -1,21 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Italiana&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700;1,800;1,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Syne:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   font-size: 16px;
-  --radius: 8px;
-  --radius-sm: 4px;
-  --radius-lg: 12px;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
   --radius-full: 9999px;
 
   /* Bright & Light Aesthetic Colors - Sky Blue Theme */
   --bg-body: #f8fafc;
   --bg-card: #ffffff;
   --bg-elevated: #ffffff;
-  --bg-subtle: #f0f9ff;
+  --bg-subtle: #fafafa;
   --bg-glass: rgba(255, 255, 255, 0.96);
 
   /* Borders & Dividers */
   --border-color: #e2e8f0;
   --border-light: #f1f5f9;
-  --border-focus: #0284c7;
+  --border-focus: #000000;
 
   /* Typography Colors */
   --text-primary: #0f172a;
@@ -24,17 +30,17 @@
   --text-light: #94a3b8;
 
   /* Sky Blue Brand Colors - Solid, NO Gradients */
-  --color-primary: #0284c7;        /* Sky Blue 600 */
-  --color-primary-hover: #0369a1;  /* Sky Blue 700 */
-  --color-primary-light: #f0f9ff;  /* Sky Blue 50 */
-  --color-primary-badge: #e0f2fe;  /* Sky Blue 100 */
-  --color-primary-border: #bae6fd; /* Sky Blue 200 */
+  --color-primary: #000000;        /* Sky Blue 600 */
+  --color-primary-hover: #1c1c1c;  /* Sky Blue 700 */
+  --color-primary-light: #fafafa;  /* Sky Blue 50 */
+  --color-primary-badge: #f4f4f5;  /* Sky Blue 100 */
+  --color-primary-border: #d4d4d4; /* Sky Blue 200 */
 
   --color-secondary: #0f172a;      /* Navy Slate 900 */
   --color-secondary-hover: #1e293b;
   --color-secondary-light: #f8fafc;
 
-  --color-accent: #0ea5e9;
+  --color-accent: #333333;
   --color-gold: #f59e0b;
   --color-success: #10b981;
   --color-danger: #ef4444;
@@ -43,7 +49,7 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 14px -2px rgba(15, 23, 42, 0.06);
   --shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08);
-  --shadow-sky: 0 8px 20px -3px rgba(2, 132, 199, 0.18);
+  --shadow-sky: 0 8px 20px -3px rgba(0, 0, 0, 0.18);
 
   /* Transitions */
   --transition-fast: 0.15s ease;
@@ -95,6 +101,7 @@ img {
   display: block;
   object-fit: cover;
 }
+
 
 /* Core Container & Layout Utilities */
 .max-w-7xl {
@@ -310,11 +317,11 @@ img {
 .bg-slate-800 { background-color: #1e293b; }
 .bg-slate-900 { background-color: #0f172a; }
 
-.bg-sky-50 { background-color: #f0f9ff; }
-.bg-sky-100 { background-color: #e0f2fe; }
-.bg-sky-500 { background-color: #0ea5e9; }
-.bg-sky-600 { background-color: #0284c7; }
-.bg-sky-700 { background-color: #0369a1; }
+.bg-sky-50 { background-color: #fafafa; }
+.bg-sky-100 { background-color: #f4f4f5; }
+.bg-sky-500 { background-color: #333333; }
+.bg-sky-600 { background-color: #000000; }
+.bg-sky-700 { background-color: #1c1c1c; }
 
 .bg-amber-50 { background-color: #fffbeb; }
 .bg-amber-100 { background-color: #fef3c7; }
@@ -335,10 +342,10 @@ img {
 .text-slate-400 { color: #94a3b8; }
 .text-slate-300 { color: #cbd5e1; }
 
-.text-sky-500 { color: #0ea5e9; }
-.text-sky-600 { color: #0284c7; }
-.text-sky-700 { color: #0369a1; }
-.text-sky-800 { color: #075985; }
+.text-sky-500 { color: #333333; }
+.text-sky-600 { color: #000000; }
+.text-sky-700 { color: #1c1c1c; }
+.text-sky-800 { color: #111111; }
 
 .text-amber-400 { color: #fbbf24; }
 .text-amber-500 { color: #f59e0b; }
@@ -367,10 +374,10 @@ img {
 .border-slate-700 { border-color: #334155; }
 .border-slate-800 { border-color: #1e293b; }
 
-.border-sky-100 { border-color: #e0f2fe; }
-.border-sky-200 { border-color: #bae6fd; }
-.border-sky-300 { border-color: #7dd3fc; }
-.border-sky-600 { border-color: #0284c7; }
+.border-sky-100 { border-color: #f4f4f5; }
+.border-sky-200 { border-color: #d4d4d4; }
+.border-sky-300 { border-color: #a3a3a3; }
+.border-sky-600 { border-color: #000000; }
 
 .border-emerald-300 { border-color: #6ee7b7; }
 .border-amber-300 { border-color: #fcd34d; }
@@ -441,7 +448,7 @@ img {
 
 .kpop-card:hover {
   box-shadow: var(--shadow-sky);
-  border-color: #7dd3fc;
+  border-color: #a3a3a3;
   transform: translateY(-2px);
 }
 
@@ -458,13 +465,13 @@ img {
   border: none;
   cursor: pointer;
   transition: var(--transition-normal);
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .kpop-button-primary:hover {
   background-color: var(--color-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .kpop-button-secondary {
@@ -500,7 +507,7 @@ img {
   border-radius: var(--radius);
 }
 
-.badge-limited { background-color: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; }
+.badge-limited { background-color: #fafafa; color: #000000; border: 1px solid #d4d4d4; }
 .badge-preorder { background-color: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; }
 .badge-hot { background-color: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
 .badge-collector { background-color: #ecfeff; color: #0891b2; border: 1px solid #a5f3fc; }
@@ -556,4 +563,27 @@ body {
   background: transparent !important;
   box-shadow: none !important;
 }
+
+/* Color and background utilities */
+.bg-black { background-color: #000000 !important; }
+.bg-white { background-color: #ffffff !important; }
+.bg-slate-900 { background-color: #0f172a !important; }
+.bg-slate-800 { background-color: #1e293b !important; }
+.bg-slate-100 { background-color: #f1f5f9 !important; }
+.bg-slate-50 { background-color: #f8fafc !important; }
+
+.text-black { color: #000000 !important; }
+.text-white { color: #ffffff !important; }
+.text-slate-900 { color: #0f172a !important; }
+.text-slate-800 { color: #1e293b !important; }
+.text-slate-700 { color: #334155 !important; }
+.text-slate-600 { color: #475569 !important; }
+.text-slate-500 { color: #64748b !important; }
+.text-slate-400 { color: #94a3b8 !important; }
+
+.border-black { border-color: #000000 !important; }
+.border-slate-100 { border-color: #f1f5f9 !important; }
+.border-slate-200 { border-color: #e2e8f0 !important; }
+.border-slate-300 { border-color: #cbd5e1 !important; }
+
 

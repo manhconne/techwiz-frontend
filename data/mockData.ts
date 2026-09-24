@@ -212,7 +212,7 @@ export const mockAlbums: Album[] = [
     priceUSD: 24.99,
     priceVND: 620000,
     originalPriceUSD: 29.99,
-    coverImage: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=600&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=600&h=600&q=80',
     galleryImages: [
       'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80',
@@ -273,7 +273,8 @@ export const mockAlbums: Album[] = [
     category: 'K-Pop',
     priceUSD: 32.50,
     priceVND: 790000,
-    coverImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
+    originalPriceUSD: 36.99,
+    coverImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&h=600&q=80',
     galleryImages: [
       'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80',
     ],
@@ -329,7 +330,7 @@ export const mockAlbums: Album[] = [
     priceUSD: 54.00,
     priceVND: 1350000,
     originalPriceUSD: 65.00,
-    coverImage: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&h=600&q=80',
     galleryImages: [
       'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80',
     ],
@@ -372,7 +373,8 @@ export const mockAlbums: Album[] = [
     category: 'K-Pop',
     priceUSD: 23.99,
     priceVND: 595000,
-    coverImage: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=600&q=80',
+    originalPriceUSD: 28.00,
+    coverImage: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=600&h=600&q=80',
     galleryImages: [
       'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=800&q=80',
     ],

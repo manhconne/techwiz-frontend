@@ -90,9 +90,9 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div 
               className="p-3.5 border"
-              style={{ backgroundColor: '#f0f9ff', borderColor: '#bae6fd', borderRadius: '8px' }}
+              style={{ backgroundColor: '#fafafa', borderColor: '#d4d4d4', borderRadius: '8px' }}
             >
-              <div className="flex items-center gap-1.5 mb-1" style={{ color: '#0284c7' }}>
+              <div className="flex items-center gap-1.5 mb-1" style={{ color: '#000000' }}>
                 <Users className="w-4 h-4" />
                 <span className="text-[11px] font-bold uppercase">Active Fandom Members</span>
               </div>
@@ -114,9 +114,9 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
 
             <div 
               className="p-3.5 border"
-              style={{ backgroundColor: '#f0f9ff', borderColor: '#bae6fd', borderRadius: '8px' }}
+              style={{ backgroundColor: '#fafafa', borderColor: '#d4d4d4', borderRadius: '8px' }}
             >
-              <div className="flex items-center gap-1.5 mb-1" style={{ color: '#0284c7' }}>
+              <div className="flex items-center gap-1.5 mb-1" style={{ color: '#000000' }}>
                 <TrendingUp className="w-4 h-4" />
                 <span className="text-[11px] font-bold uppercase">Global Page Views</span>
               </div>
@@ -146,7 +146,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               <button
                 onClick={() => setIsAdding(!isAdding)}
                 className="px-3 py-1.5 text-white text-xs font-bold flex items-center gap-1 cursor-pointer"
-                style={{ backgroundColor: '#0284c7', borderRadius: '8px' }}
+                style={{ backgroundColor: '#000000', borderRadius: '8px' }}
                 type="button"
               >
                 <Plus className="w-3.5 h-3.5" />
@@ -225,7 +225,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                   <button
                     type="submit"
                     className="px-4 py-1.5 text-white text-xs font-bold cursor-pointer"
-                    style={{ backgroundColor: '#0284c7', borderRadius: '8px' }}
+                    style={{ backgroundColor: '#000000', borderRadius: '8px' }}
                   >
                     Save Album to Catalog
                   </button>
@@ -266,7 +266,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                       <td className="py-2.5 px-3">
                         <span 
                           className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                          style={{ backgroundColor: '#e0f2fe', color: '#0369a1' }}
+                          style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c' }}
                         >
                           {alb.tag}
                         </span>
