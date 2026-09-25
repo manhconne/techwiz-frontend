@@ -145,12 +145,12 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200">
 
       {/* Main Bar - Responsive Header Bar */}
-      <div className="max-w-[1440px] mx-auto px-3 sm:px-6 md:px-9 py-2.5 sm:py-4 flex items-center justify-between gap-3 md:gap-6 bg-white">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-2.5 sm:py-4 flex items-center justify-between gap-4 md:gap-8 bg-white">
         {/* LEFT: Menu button (Mobile only, hidden on PC) & Logo */}
         <div className="flex items-center gap-2.5 sm:gap-4 md:gap-5 shrink-0">
           <button
             onClick={() => setIsMenuDrawerOpen(true)}
-            className="md:hidden w-9 h-9 rounded-full bg-black text-white flex items-center justify-center cursor-pointer hover:opacity-90 shrink-0 border-0 transition-transform active:scale-95"
+            className="mobile-menu-btn w-9 h-9 rounded-full bg-black text-white items-center justify-center cursor-pointer hover:opacity-90 shrink-0 border-0 transition-transform active:scale-95"
             title="Menu"
             type="button"
           >
@@ -167,7 +167,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* CENTER: Wide Underline Search Bar (Desktop) - Clean Flex Layout, Icon separated from text */}
-        <div className="hidden md:flex flex-1 max-w-[640px] mx-4 lg:mx-8">
+        <div className="hidden md:flex flex-1 justify-center max-w-[560px] mx-4 lg:mx-8">
           <div
             style={{
               position: 'relative',
@@ -367,18 +367,37 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* SECONDARY CATEGORY NAVIGATION BAR */}
-      <div className="w-full bg-white border-t border-b border-slate-200 relative z-30">
-        <div className="max-w-[1440px] mx-auto px-3 sm:px-9 flex items-center justify-between h-11 sm:h-[54px] relative gap-4">
+      {/* SECONDARY CATEGORY NAVIGATION BAR (Desktop Only) */}
+      <div className="desktop-subnav w-full bg-white border-t border-b border-slate-200 relative z-30">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between h-11 sm:h-[54px] relative gap-4">
           {/* [ ≡ ALL MD ] Black Button with Exact Dropdown */}
           <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center', zIndex: 60 }}>
             <button
               onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
               type="button"
-              className="flex items-center gap-2 px-5 sm:px-6 text-xs sm:text-[13px] font-black uppercase tracking-wider text-white bg-black h-8 sm:h-9 hover:opacity-90 border-0 cursor-pointer shrink-0 transition-all active:scale-95"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '8px 22px',
+                height: '38px',
+                backgroundColor: '#000000',
+                color: '#ffffff',
+                fontSize: '13px',
+                fontWeight: 900,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                flexShrink: 0,
+                transition: 'opacity 0.15s ease',
+              }}
+              className="hover:opacity-90 active:scale-95"
             >
-              <Menu style={{ width: '15px', height: '15px' }} />
-              <span>ALL MD</span>
+              <Menu style={{ width: '16px', height: '16px', flexShrink: 0 }} />
+              <span style={{ whiteSpace: 'nowrap' }}>ALL MD</span>
             </button>
 
             {/* Dropdown Menu under [ ≡ ALL MD ] (border radius 8px, English default, library icons) */}
@@ -549,7 +568,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Horizontal Links */}
-          <nav className="flex items-center gap-6 sm:gap-10 lg:gap-14 flex-nowrap h-full shrink-0 overflow-x-auto scrollbar-none pl-3 sm:pl-0">
+          <nav className="flex items-center gap-5 sm:gap-7 lg:gap-9 xl:gap-11 flex-nowrap h-full shrink-0 overflow-x-auto scrollbar-none">
             <Link
               href="/artist"
               style={{

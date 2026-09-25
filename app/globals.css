@@ -882,14 +882,24 @@ body, header, footer, main, nav, section, article, div, button, input, select, t
 }
 
 @media (min-width: 768px) {
-  .mobile-search-btn {
+  .mobile-search-btn,
+  .mobile-menu-btn {
     display: none !important;
+  }
+
+  .desktop-subnav {
+    display: block !important;
   }
 }
 
 @media (max-width: 767px) {
-  .mobile-search-btn {
+  .mobile-search-btn,
+  .mobile-menu-btn {
     display: flex !important;
+  }
+
+  .desktop-subnav {
+    display: none !important;
   }
 }
 
