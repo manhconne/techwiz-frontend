@@ -2,12 +2,11 @@
 
 import React, { useState } from 'react';
 import { Header } from '../components/Header';
-import { HeroBanner } from '../components/HeroBanner';
+import { EventHeroBanner } from '../components/EventHeroBanner';
 import { AlbumGrid } from '../components/AlbumGrid';
 import { FanCommunityFeed } from '../components/FanCommunityFeed';
 import { AlbumDetailModal } from '../components/AlbumDetailModal';
 import { IdolProfiles } from '../components/IdolProfiles';
-import { TourCalendar } from '../components/TourCalendar';
 import { CartDrawer } from '../components/CartDrawer';
 import { WishlistModal } from '../components/WishlistModal';
 import { ChatbotModal } from '../components/ChatbotModal';
@@ -58,10 +57,10 @@ export default function Home() {
       {/* Main Content Sections */}
       <main className="flex-1">
 
-        {/* Hero Section */}
-        <HeroBanner />
+        {/* 1. Global Fandom Events Showcase Carousel Banner (Top of Homepage) */}
+        <EventHeroBanner />
 
-        {/* Fandom Content Explorer & Official Album Drops */}
+        {/* 2. Fandom Content Explorer & Official Album Drops with Embedded Category Spotlight Banner */}
         <AlbumGrid
           onSelectAlbum={(album) => setSelectedAlbum(album)}
           searchQuery={searchQuery}
@@ -69,13 +68,10 @@ export default function Home() {
           setSelectedArtistFilter={setSelectedArtistFilter}
         />
 
-        {/* Character & Idol Group Profiles */}
+        {/* 4. Character & Idol Group Profiles */}
         <IdolProfiles onSelectArtist={handleSelectArtistFromProfiles} />
 
-        {/* Location-Aware Event Discovery & World Tour Calendar */}
-        <TourCalendar />
-
-        {/* Fan Community Social Feed */}
+        {/* 5. Fan Community Social Feed */}
         <FanCommunityFeed />
 
 

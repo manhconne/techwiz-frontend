@@ -71,6 +71,25 @@ export interface Artist {
   bannerImage: string;
 }
 
+export type EventPlatform = 'Weverse' | 'Withmuu' | 'Mubeat' | 'Official';
+export type EventType = 'concert' | 'fansign' | 'luckydraw' | 'voting' | 'popup' | 'convention';
+
+export interface VotingContender {
+  rank: number;
+  name: string;
+  percentage: number;
+  votes: number;
+  avatar?: string;
+}
+
+export interface VotingProgress {
+  target: number;
+  current: number;
+  unit: string;
+  percentage: number;
+  topContenders?: VotingContender[];
+}
+
 export interface TourEvent {
   id: string;
   artistName: string;
@@ -79,10 +98,29 @@ export interface TourEvent {
   country: string;
   venue: string;
   date: string;
-  status: 'Available' | 'Selling Fast' | 'Sold Out' | 'Presale Soon';
+  status: 'Available' | 'Selling Fast' | 'Sold Out' | 'Presale Soon' | 'Live Now' | 'Apply Open' | 'Voting Active';
   ticketPriceFromUSD: number;
   ticketPriceFromVND: number;
   mapQuery: string;
+
+  // Extensions for Weverse, Withmuu, and Mubeat fandom event styles
+  eventType?: EventType;
+  sourcePlatform?: EventPlatform;
+  badgeText?: string;
+  coverImage?: string;
+  artistAvatar?: string;
+  fandomName?: string;
+  description?: string;
+  perks?: string[];
+  organizer?: string;
+  applyPeriod?: string;
+  winnerAnnouncementDate?: string;
+  winnerCount?: number;
+  votingProgress?: VotingProgress;
+  actionLabel?: string;
+  category?: CategoryType;
+  externalUrl?: string;
+  isOnlineLive?: boolean;
 }
 
 export interface CartItem {

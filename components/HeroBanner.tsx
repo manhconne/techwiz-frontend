@@ -8,7 +8,11 @@ import { filterAlbumsByDomain } from '../utils/domainFilters';
 import { mockAlbums } from '../data/mockData';
 import { Play, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
 
-export const HeroBanner: React.FC = () => {
+interface HeroBannerProps {
+  embedded?: boolean;
+}
+
+export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
   const { playTrack, currentAlbum, isPlaying } = usePlayer();
   const { addToCart, formatPrice } = useCartWishlist();
   const { currentDomain, activeSubCategory, activeConfig } = useDomainTheme();
@@ -57,8 +61,12 @@ export const HeroBanner: React.FC = () => {
   const handlePrev = () => setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <section
-      className="relative w-full overflow-hidden transition-colors duration-700 ease-in-out min-h-[480px] md:min-h-[580px] flex items-center justify-center"
+    <div
+      className={`relative w-full overflow-hidden transition-colors duration-700 ease-in-out flex items-center justify-center ${
+        embedded 
+          ? 'rounded-2xl border border-slate-200/90 shadow-sm my-6 min-h-[420px] md:min-h-[500px]' 
+          : 'min-h-[480px] md:min-h-[580px]'
+      }`}
       style={{
         background: `linear-gradient(135deg, ${current.bgColor} 0%, #ffffff 82%)`,
       }}
@@ -90,7 +98,7 @@ export const HeroBanner: React.FC = () => {
       </div>
 
       <div
-        className="relative z-10 w-full max-w-[1440px] mx-auto py-8 sm:py-12 px-4 sm:px-9 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 min-h-auto md:min-h-[520px]"
+        className={`relative z-10 w-full max-w-[1440px] mx-auto ${embedded ? 'py-5 sm:py-8 px-4 sm:px-8 min-h-auto md:min-h-[440px]' : 'py-8 sm:py-12 px-4 sm:px-9 min-h-auto md:min-h-[520px]'} flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12`}
       >
         {/* Left Side: Artistic Typography & Clean Layout */}
         <div className="flex-1 w-full max-w-[620px] flex flex-col items-start justify-center">
@@ -459,6 +467,6 @@ export const HeroBanner: React.FC = () => {
         </div>
 
       </div>
-    </section>
+    </div>
   );
 };

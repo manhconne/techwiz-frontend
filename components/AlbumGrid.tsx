@@ -7,6 +7,7 @@ import { useDomainTheme } from '../context/DomainContext';
 import { filterAlbumsByDomain, filterArtistsByDomain } from '../utils/domainFilters';
 import { mockAlbums, mockArtists } from '../data/mockData';
 import { Album } from '../types';
+import { HeroBanner } from './HeroBanner';
 import { 
   Heart, 
   ShoppingCart, 
@@ -111,6 +112,11 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
 
   const hasActiveFilters = activeArtist !== 'all' || activeType !== 'all' || inStockOnly || activeCategory !== 'all' || activeSubCategory !== 'all';
   const selectedArtistObj = mockArtists.find((a) => a.id === activeArtist);
+
+  const currentSubCatObj = activeConfig.subCategories.find((s) => s.id === activeSubCategory);
+  const activeCategoryTitle = activeSubCategory === 'all' 
+    ? (activeConfig.id === 'classic' ? 'All Products' : activeConfig.name)
+    : (currentSubCatObj?.name || activeConfig.name);
 
   // Custom artist dropdown state
   const [artistDropdownOpen, setArtistDropdownOpen] = useState(false);
@@ -237,7 +243,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                 margin: 0,
               }}
             >
-              {activeConfig.name}{' '}
+              {activeCategoryTitle}{' '}
               <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic', fontFamily: 'serif' }}>
                 Collection
               </em>
@@ -260,6 +266,9 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
             </span>
           </div>
         </div>
+
+        {/* ==================== 1.5. Dynamic Category Spotlight Banner (NewJeans, BTS, Anime, Gaming, Art) ==================== */}
+        <HeroBanner embedded />
 
         {/* ==================== 2. Premium Filter Toolbar ==================== */}
         <div
