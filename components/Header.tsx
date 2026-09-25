@@ -1268,7 +1268,7 @@ export const Header: React.FC<HeaderProps> = ({
                         <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                           Password
                         </label>
-                        <a href="#" onClick={(e) => e.preventDefault()} style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-primary)' }}>
+                        <a href="#" onClick={(e) => e.preventDefault()} style={{ fontSize: '11px', fontWeight: 700, color: '#000000' }} className="dark:text-white hover:underline">
                           Forgot password?
                         </a>
                       </div>
@@ -1325,12 +1325,12 @@ export const Header: React.FC<HeaderProps> = ({
                       style={{
                         width: '100%',
                         padding: '11px',
-                        backgroundColor: 'var(--color-primary)',
+                        backgroundColor: '#000000',
                         color: '#ffffff',
                         fontSize: '13px',
                         fontWeight: 700,
                         borderRadius: 'var(--radius)',
-                        border: 'none',
+                        border: '1px solid #000000',
                         cursor: isLoadingAuth ? 'not-allowed' : 'pointer',
                         display: 'flex',
                         alignItems: 'center',
@@ -1340,6 +1340,7 @@ export const Header: React.FC<HeaderProps> = ({
                         opacity: isLoadingAuth ? 0.7 : 1,
                         transition: 'all var(--transition-fast)'
                       }}
+                      className="dark:bg-white dark:text-black dark:border-white"
                     >
                       {isLoadingAuth ? (
                         <>
@@ -1602,12 +1603,12 @@ export const Header: React.FC<HeaderProps> = ({
                       style={{
                         width: '100%',
                         padding: '11px',
-                        backgroundColor: 'var(--color-primary)',
+                        backgroundColor: '#000000',
                         color: '#ffffff',
                         fontSize: '13px',
                         fontWeight: 700,
                         borderRadius: 'var(--radius)',
-                        border: 'none',
+                        border: '1px solid #000000',
                         cursor: isLoadingAuth ? 'not-allowed' : 'pointer',
                         display: 'flex',
                         alignItems: 'center',
@@ -1617,6 +1618,7 @@ export const Header: React.FC<HeaderProps> = ({
                         opacity: isLoadingAuth ? 0.7 : 1,
                         transition: 'all var(--transition-fast)'
                       }}
+                      className="dark:bg-white dark:text-black dark:border-white"
                     >
                       {isLoadingAuth ? (
                         <>
@@ -1633,7 +1635,7 @@ export const Header: React.FC<HeaderProps> = ({
                   </form>
                 )}
 
-                {/* Bottom Switch Link - Removes top tab buttons */}
+                {/* Bottom Switch Link */}
                 <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--border-color)', textAlign: 'center' }}>
                   {authMode === 'signin' ? (
                     <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
@@ -1641,7 +1643,8 @@ export const Header: React.FC<HeaderProps> = ({
                       <button
                         type="button"
                         onClick={() => { setAuthMode('signup'); setAuthNotification(null); }}
-                        style={{ fontWeight: 800, color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                        style={{ fontWeight: 800, color: '#000000', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                        className="dark:text-white hover:underline"
                       >
                         Sign up now
                       </button>
@@ -1652,7 +1655,8 @@ export const Header: React.FC<HeaderProps> = ({
                       <button
                         type="button"
                         onClick={() => { setAuthMode('signin'); setAuthNotification(null); }}
-                        style={{ fontWeight: 800, color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                        style={{ fontWeight: 800, color: '#000000', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                        className="dark:text-white hover:underline"
                       >
                         Sign in now
                       </button>
