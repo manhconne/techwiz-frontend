@@ -195,7 +195,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Search Icon Button -> Opens Dedicated Mobile Search Modal */}
           <button
             onClick={() => setIsSearchModalOpen(true)}
-            className="md:hidden w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
+            className="mobile-search-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
             title="Search"
             type="button"
           >
@@ -317,9 +317,9 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* SECONDARY CATEGORY NAVIGATION BAR (Hidden on mobile, moved to sidebar) */}
-      <div className="hidden md:block w-full bg-white border-t border-b border-slate-200 relative z-30 overflow-x-auto scrollbar-none">
-        <div className="max-w-[1440px] mx-auto px-3 sm:px-9 flex items-center justify-start sm:justify-between h-11 sm:h-[54px] relative min-w-max">
+      {/* SECONDARY CATEGORY NAVIGATION BAR */}
+      <div className="w-full bg-white border-t border-b border-slate-200 relative z-30">
+        <div className="max-w-[1440px] mx-auto px-3 sm:px-9 flex items-center justify-between h-11 sm:h-[54px] relative gap-4">
           {/* [ ≡ ALL MD ] Black Button with Exact Dropdown */}
           <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center', zIndex: 60 }}>
             <button
@@ -406,7 +406,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Horizontal Links */}
-          <nav className="flex items-center gap-6 sm:gap-10 lg:gap-14 flex-nowrap h-full shrink-0 pl-3 sm:pl-0">
+          <nav className="flex items-center gap-6 sm:gap-10 lg:gap-14 flex-nowrap h-full shrink-0 overflow-x-auto scrollbar-none pl-3 sm:pl-0">
             <Link
               href="/artist"
               style={{

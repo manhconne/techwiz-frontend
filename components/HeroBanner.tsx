@@ -229,19 +229,22 @@ export const HeroBanner: React.FC = () => {
               style={{
                 backgroundColor: '#000000',
                 color: '#ffffff',
+                padding: '13px 30px',
                 borderRadius: '9999px',
-                fontWeight: 700,
+                fontSize: '13px',
+                fontWeight: 800,
                 textTransform: 'uppercase',
                 letterSpacing: '0.08em',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '8px',
                 border: 'none',
                 cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
+                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.18)',
                 transition: 'opacity 0.15s ease, transform 0.15s ease',
               }}
-              className="px-5 sm:px-8 py-2.5 sm:py-3.5 text-xs hover:opacity-90 hover:scale-105 active:scale-95"
+              className="hover:opacity-90 hover:scale-105 active:scale-95"
               type="button"
             >
               <ShoppingCart size={16} />
@@ -253,18 +256,21 @@ export const HeroBanner: React.FC = () => {
               style={{
                 backgroundColor: isThisPlaying ? '#000000' : 'transparent',
                 color: isThisPlaying ? '#ffffff' : '#000000',
+                padding: '12px 28px',
                 borderRadius: '9999px',
-                fontWeight: 700,
+                fontSize: '13px',
+                fontWeight: 800,
                 textTransform: 'uppercase',
                 letterSpacing: '0.08em',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '8px',
-                border: '1.5px solid #000000',
+                border: '2px solid #000000',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
-              className="px-5 sm:px-7 py-2.5 sm:py-3.5 text-xs hover:bg-black hover:text-white active:scale-95"
+              className="hover:bg-black hover:text-white active:scale-95"
               type="button"
             >
               <Play size={16} style={{ fill: isThisPlaying ? '#ffffff' : '#000000' }} />
