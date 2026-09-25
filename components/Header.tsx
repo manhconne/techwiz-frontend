@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useGoogleLanguage } from './GoogleTranslate';
 import { useCartWishlist } from '../context/CartWishlistContext';
 import { useAuth } from '../context/AuthContext';
@@ -65,6 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
   searchQuery,
   setSearchQuery,
 }) => {
+  const pathname = usePathname();
   const { language, toggleLanguage } = useGoogleLanguage();
   const { cartCount, wishlistCount, setIsCartOpen, setIsWishlistOpen, currency, toggleCurrency } = useCartWishlist();
   const { user, isLoggedIn, loginAs, logout } = useAuth();
@@ -116,15 +119,15 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const allMdItems = [
-    { label: 'EVENT', action: () => scrollToSection('tours') },
-    { label: 'CD&DVD', action: () => scrollToSection('albums') },
-    { label: 'MD', action: () => scrollToSection('albums') },
-    { label: "ALL MD SEASON'S GREETINGS", action: () => scrollToSection('albums') },
+    { label: 'EVENT', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/event'; } },
+    { label: 'CD&DVD', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/cd-dvd-book'; } },
+    { label: 'MD', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
+    { label: "ALL MD SEASON'S GREETINGS", action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/cd-dvd-book'; } },
     { label: 'CUSTOM ZONE', action: () => { setIsAllMdDropdownOpen(false); setIsCustomZoneOpen(true); } },
-    { label: 'DUCKJIL ZONE', action: () => scrollToSection('artists') },
-    { label: 'ALLMD BEAUTY', action: () => scrollToSection('albums') },
-    { label: 'CONTACT FOR BULK ORDER', action: () => { setIsAllMdDropdownOpen(false); setIsB2BModalOpen(true); } },
-    { label: 'ALLMD TV', action: () => { setIsAllMdDropdownOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); } },
+    { label: 'DUCKJIL ZONE', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/artist'; } },
+    { label: 'ALLMD BEAUTY', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
+    { label: 'CONTACT FOR BULK ORDER', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/b2b'; } },
+    { label: 'ALLMD TV', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/'; } },
   ];
 
   return (
@@ -168,13 +171,13 @@ export const Header: React.FC<HeaderProps> = ({
             <Menu style={{ width: '22px', height: '22px' }} />
           </button>
 
-          <a href="#" style={{ display: 'flex', alignItems: 'center' }} className="notranslate">
+          <Link href="/" style={{ display: 'flex', alignItems: 'center' }} className="notranslate">
             <img
               src="/logo-dark.png?v=2"
               alt="Fan Hub Plus"
               style={{ height: '46px', width: 'auto', objectFit: 'contain', display: 'block' }}
             />
-          </a>
+          </Link>
         </div>
 
         {/* CENTER: Wide Underline Search Bar (Matching Reference Image 2) */}
@@ -553,8 +556,8 @@ export const Header: React.FC<HeaderProps> = ({
               height: '100%',
             }}
           >
-            <a
-              href="#artists"
+            <Link
+              href="/artist"
               style={{
                 fontSize: '14px',
                 fontWeight: 900,
@@ -565,14 +568,16 @@ export const Header: React.FC<HeaderProps> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
-                transition: 'opacity 0.15s ease',
+                transition: 'all 0.15s ease',
+                borderBottom: pathname?.startsWith('/artist') ? '2.5px solid #000000' : '2.5px solid transparent',
+                textDecoration: 'none',
               }}
               className="hover:opacity-60"
             >
               ARTIST
-            </a>
-            <a
-              href="#tours"
+            </Link>
+            <Link
+              href="/event"
               style={{
                 fontSize: '14px',
                 fontWeight: 900,
@@ -583,14 +588,16 @@ export const Header: React.FC<HeaderProps> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
-                transition: 'opacity 0.15s ease',
+                transition: 'all 0.15s ease',
+                borderBottom: pathname?.startsWith('/event') ? '2.5px solid #000000' : '2.5px solid transparent',
+                textDecoration: 'none',
               }}
               className="hover:opacity-60"
             >
               EVENT
-            </a>
-            <a
-              href="#albums"
+            </Link>
+            <Link
+              href="/cd-dvd-book"
               style={{
                 fontSize: '14px',
                 fontWeight: 900,
@@ -601,14 +608,16 @@ export const Header: React.FC<HeaderProps> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
-                transition: 'opacity 0.15s ease',
+                transition: 'all 0.15s ease',
+                borderBottom: pathname === '/cd-dvd-book' ? '2.5px solid #000000' : '2.5px solid transparent',
+                textDecoration: 'none',
               }}
               className="hover:opacity-60"
             >
               CD/DVD/BOOK
-            </a>
-            <a
-              href="#albums"
+            </Link>
+            <Link
+              href="/md"
               style={{
                 fontSize: '14px',
                 fontWeight: 900,
@@ -619,15 +628,16 @@ export const Header: React.FC<HeaderProps> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
-                transition: 'opacity 0.15s ease',
+                transition: 'all 0.15s ease',
+                borderBottom: pathname === '/md' ? '2.5px solid #000000' : '2.5px solid transparent',
+                textDecoration: 'none',
               }}
               className="hover:opacity-60"
             >
               MD
-            </a>
-            <button
-              onClick={() => setIsB2BModalOpen(true)}
-              type="button"
+            </Link>
+            <Link
+              href="/b2b"
               style={{
                 fontSize: '14px',
                 fontWeight: 900,
@@ -638,14 +648,14 @@ export const Header: React.FC<HeaderProps> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
-                background: 'none',
-                border: 'none',
-                transition: 'opacity 0.15s ease',
+                transition: 'all 0.15s ease',
+                borderBottom: pathname?.startsWith('/b2b') ? '2.5px solid #000000' : '2.5px solid transparent',
+                textDecoration: 'none',
               }}
               className="hover:opacity-60"
             >
               B2B/BULK
-            </button>
+            </Link>
           </nav>
         </div>
       </div>
