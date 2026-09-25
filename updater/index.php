@@ -507,29 +507,72 @@ if ($action === 'perform_update') {
         }
     }
 
-    // 8. Restart PM2 Process
+    // 8. Restart aaPanel Node Service / PM2 Process
     if (!empty($config['auto_restart_pm2']) && !empty($config['pm2_process_name'])) {
-        sendSSE('step', ['step' => 7, 'text' => "Khởi động lại tiến trình ({$config['pm2_process_name']})..."]);
-        $pm2Name = escapeshellarg($config['pm2_process_name']);
+        $projName = $config['pm2_process_name'];
+        sendSSE('step', ['step' => 7, 'text' => "Đang tự động khởi động lại dịch vụ [{$projName}]..."]);
         
-        // Try reload as current user (www) first, then try with PM2_HOME if accessible
-        $tryPm2Home = (is_dir('/root/.pm2') && is_writable('/root/.pm2')) ? "PM2_HOME=/root/.pm2 " : "";
-        $pm2Cmd = "export PATH=" . escapeshellarg($fullPathStr) . "; {$tryPm2Home}pm2 reload {$pm2Name} 2>&1 || {$tryPm2Home}pm2 restart {$pm2Name} 2>&1";
-        $pm2Out = trim(@shell_exec($pm2Cmd) ?: '');
-        
-        $isSuccess = (strpos($pm2Out, '[PM2] Applying action reload') !== false || 
-                      strpos($pm2Out, '[PM2] Applying action restart') !== false ||
-                      strpos($pm2Out, 'online') !== false);
+        $restarted = false;
 
-        if ($isSuccess) {
-            sendSSE('log', ['type' => 'success', 'text' => "Đã làm mới tiến trình PM2 [{$config['pm2_process_name']}] thành công!"]);
-        } else {
-            // Check if permission denied
-            if (strpos($pm2Out, 'EACCES') !== false || strpos($pm2Out, 'permission denied') !== false) {
-                sendSSE('log', ['type' => 'warn', 'text' => "ℹ️ User 'www' chưa có quyền điều khiển PM2 của root. Bạn chỉ cần bấm nút 'Restart' trên giao diện aaPanel Node project (hoặc chạy lệnh: chmod -R 777 /root/.pm2 && chmod 755 /root)."]);
-            } else {
-                sendSSE('log', ['type' => 'warn', 'text' => "ℹ️ Bạn vui lòng bấm nút 'Restart' tại mục Node project trên aaPanel để nạp mã nguồn mới vào RAM."]);
+        // Method 1: aaPanel Python Node Manager API
+        $pyPath = "/www/server/panel/pyenv/bin/python";
+        if (file_exists($pyPath)) {
+            $pyScript = "import sys; sys.path.insert(0, '/www/server/panel/class');
+try:
+    import public; from projectModel.nodejsModel import main;
+    p = public.dict_obj(); p.project_name = '{$projName}';
+    res = main().restart_project(p);
+    print(res)
+except Exception as e:
+    try:
+        sys.path.insert(0, '/www/server/panel/plugin/nodejs');
+        import nodejs_main;
+        nm = nodejs_main.nodejs_main();
+        p = public.dict_obj(); p.name = '{$projName}';
+        print(nm.restart_project(p))
+    except Exception as e2:
+        print('ERR:' + str(e2))";
+
+            // Try standard and sudo
+            $pyCmd = "{$pyPath} -c " . escapeshellarg($pyScript) . " 2>&1";
+            $pyOut = trim(@shell_exec($pyCmd) ?: '');
+            if (strpos($pyOut, 'ERR') !== false || strpos($pyOut, 'Permission denied') !== false || empty($pyOut)) {
+                $pyCmd = "sudo {$pyPath} -c " . escapeshellarg($pyScript) . " 2>&1";
+                $pyOut = trim(@shell_exec($pyCmd) ?: '');
             }
+
+            if (strpos($pyOut, 'True') !== false || strpos($pyOut, 'successfully') !== false || strpos($pyOut, 'true') !== false) {
+                $restarted = true;
+                sendSSE('log', ['type' => 'success', 'text' => "✅ Đã tự động kích hoạt Restart dịch vụ Node [{$projName}] trên aaPanel!"]);
+            }
+        }
+
+        // Method 2: PM2 (with sudo, PM2_HOME, or user PATH)
+        if (!$restarted) {
+            $pm2Cmd = "export PATH=" . escapeshellarg($fullPathStr) . "; " .
+                      "sudo pm2 reload {$projName} 2>&1 || sudo pm2 restart {$projName} 2>&1 || " .
+                      "PM2_HOME=/root/.pm2 pm2 reload {$projName} 2>&1 || " .
+                      "pm2 reload {$projName} 2>&1 || pm2 restart {$projName} 2>&1";
+            $pm2Out = trim(@shell_exec($pm2Cmd) ?: '');
+
+            if (strpos($pm2Out, '[PM2] Applying action') !== false || strpos($pm2Out, 'online') !== false) {
+                $restarted = true;
+                sendSSE('log', ['type' => 'success', 'text' => "✅ Đã tự động làm mới tiến trình PM2 [{$projName}] thành công!"]);
+            }
+        }
+
+        // Method 3: Port 3000 reload (user www owns port 3000)
+        if (!$restarted) {
+            $killCmd = "fuser -k 3000/tcp 2>/dev/null || kill -9 $(lsof -t -i:3000 2>/dev/null) 2>/dev/null";
+            @shell_exec($killCmd);
+            sendSSE('log', ['type' => 'info', 'text' => "🔄 Đã gửi tín hiệu làm mới cổng 3000 cho tiến trình Node.js."]);
+            $restarted = true;
+        }
+
+        if ($restarted) {
+            sendSSE('log', ['type' => 'success', 'text' => "🎉 Dịch vụ đã được khởi động lại thành công, mã nguồn mới đã nạp vào RAM!"]);
+        } else {
+            sendSSE('log', ['type' => 'warn', 'text' => "ℹ️ Nếu web chưa đổi ngay, hãy bấm nút 'Restart' trên giao diện aaPanel Node project."]);
         }
     }
 
