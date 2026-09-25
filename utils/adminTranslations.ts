@@ -8,6 +8,7 @@ export interface TranslationDictionary {
   catalog: string;
   orders: string;
   customers: string;
+  users: string;
   analytics: string;
   aiSupport: string;
   settings: string;
@@ -118,6 +119,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     catalog: 'Products & Albums',
     orders: 'Orders Management',
     customers: 'Customers & Fandom',
+    users: 'User Management',
     analytics: 'Analytics & Revenue',
     aiSupport: 'AI Support & Telemetry',
     settings: 'System Settings',
@@ -219,6 +221,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     catalog: 'Sản Phẩm & Album',
     orders: 'Quản Lý Đơn Hàng',
     customers: 'Khách Hàng & Fandom',
+    users: 'Quản lý người dùng',
     analytics: 'Thống Kê & Doanh Thu',
     aiSupport: 'Hỗ Trợ AI & Nhật Ký',
     settings: 'Cài Đặt Hệ Thống',
