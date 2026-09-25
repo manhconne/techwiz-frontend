@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const IDENTITY_SERVICE_URL = process.env.IDENTITY_SERVICE_URL || 'http://127.0.0.1:5000';
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -13,7 +15,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/v1/auth/:path*',
-        destination: 'http://localhost:5100/api/v1/auth/:path*', // Proxy to IdentityService
+        destination: `${IDENTITY_SERVICE_URL}/api/v1/auth/:path*`, // Proxy to IdentityService (.NET)
       },
     ];
   },
