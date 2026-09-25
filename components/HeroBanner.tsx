@@ -41,7 +41,7 @@ export const HeroBanner: React.FC = () => {
     {
       album: mockAlbums[3],
       badgeText: 'BILLBOARD 200 #1',
-      headline: '6-STAR',
+      headline: '5-STAR',
       subheadline: 'STRAY KIDS  •  3RD ALBUM',
       description: 'Explosive energy and self-produced masterpieces including the global anthem "S-Class". Includes full 104-page photobook, cartoon postcard, mini poster, and limited edition sticker pack.',
       bgColor: '#FEF9EC', // Elegant soft warm tint
