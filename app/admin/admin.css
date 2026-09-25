@@ -12,8 +12,89 @@ aside.admin-sidebar,
   border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
+.bg-danger {
+  background-color: #e11d48;
+}
+
+@media (min-width: 768px) {
+
+  aside.admin-sidebar.sidebar-open,
+  .admin-sidebar.sidebar-open {
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+  }
+
+  aside.admin-sidebar.sidebar-closed,
+  .admin-sidebar.sidebar-closed {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  aside.admin-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    z-index: 50 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease !important;
+  }
+
+  aside.admin-sidebar.sidebar-open,
+  .admin-sidebar.sidebar-open {
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  aside.admin-sidebar.sidebar-closed,
+  .admin-sidebar.sidebar-closed {
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+    transform: translateX(-100%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+/* Mobile Backdrop: Strictly hidden on PC/Desktop (>= 768px), only visible on mobile */
+.admin-mobile-backdrop {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .admin-mobile-backdrop {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    z-index: 40 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-hide-on-mobile {
+    display: none !important;
+  }
+}
+
 .admin-sidebar * {
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+.w-100 {
+  width: 100% !important;
 }
 
 /* Active Nav Item - Vibrant Indigo/Cyan Gradient with Glow */

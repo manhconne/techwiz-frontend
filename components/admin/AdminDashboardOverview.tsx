@@ -149,95 +149,12 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
   );
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6 bg-slate-50 dark:bg-slate-950 min-h-screen admin-typography">
-      
-      {/* Header Bar & Time Range Selectors */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4" style={{ borderRadius: '8px' }}>
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              {t('overviewTitle')}
-            </h1>
-            <span className="admin-badge-live">
-              Live
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-            {t('overviewSubtitle')}
-          </p>
-        </div>
-
-        {/* Action Controls & Range Filter */}
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Filter Range Pill Buttons */}
-          <div className="bg-slate-100 dark:bg-slate-800 p-1 flex items-center shadow-2xs border border-slate-200/80 dark:border-slate-700" style={{ borderRadius: '8px' }}>
-            <button
-              onClick={() => setTimeRange('today')}
-              type="button"
-              className={`px-3.5 py-1.5 text-xs font-bold transition-all cursor-pointer ${
-                timeRange === 'today' ? 'admin-pill-active' : 'admin-pill-inactive'
-              }`}
-            >
-              {t('timeRangeToday')}
-            </button>
-            <button
-              onClick={() => setTimeRange('7d')}
-              type="button"
-              className={`px-3.5 py-1.5 text-xs font-bold transition-all cursor-pointer ${
-                timeRange === '7d' ? 'admin-pill-active' : 'admin-pill-inactive'
-              }`}
-            >
-              {t('timeRange7Days')}
-            </button>
-            <button
-              onClick={() => setTimeRange('30d')}
-              type="button"
-              className={`px-3.5 py-1.5 text-xs font-bold transition-all cursor-pointer ${
-                timeRange === '30d' ? 'admin-pill-active' : 'admin-pill-inactive'
-              }`}
-            >
-              {t('timeRange30Days')}
-            </button>
-            <button
-              onClick={() => setTimeRange('year')}
-              type="button"
-              className={`px-3.5 py-1.5 text-xs font-bold transition-all cursor-pointer ${
-                timeRange === 'year' ? 'admin-pill-active' : 'admin-pill-inactive'
-              }`}
-            >
-              {t('timeRangeYear')}
-            </button>
-          </div>
-
-          <button
-            onClick={() => alert('Exporting sales telemetry CSV...')}
-            type="button"
-            style={{ borderRadius: '8px' }}
-            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold shadow-2xs transition-all cursor-pointer"
-          >
-            <Download className="w-4 h-4 text-indigo-500" />
-            <span>{t('exportReport')}</span>
-          </button>
-
-          {onAddNewAlbumClick && (
-            <button
-              onClick={onAddNewAlbumClick}
-              type="button"
-              style={{ borderRadius: '8px' }}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-xs font-extrabold shadow-md shadow-indigo-500/25 transition-all cursor-pointer"
-            >
-              <Plus className="w-4 h-4" />
-              <span>{t('addNewAlbum')}</span>
-            </button>
-          )}
-        </div>
-      </div>
-
+    <div className="p-3 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 bg-slate-50 dark:bg-slate-950 min-h-screen admin-typography">
       {/* KPI STATS CARDS GRID - Spacious responsive grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
-        
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+
         {/* KPI 1: Total Revenue */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-4" style={{ borderRadius: '8px' }}>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-3 sm:space-y-4" style={{ borderRadius: '8px' }}>
           <div className="flex items-center justify-between">
             <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {t('totalRevenue')}
@@ -247,7 +164,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
             </div>
           </div>
           <div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               $128,450.00
             </div>
             <div className="text-xs text-slate-400 font-bold mt-1">
@@ -262,7 +179,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
         </div>
 
         {/* KPI 2: Total Orders */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-4" style={{ borderRadius: '8px' }}>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-3 sm:space-y-4" style={{ borderRadius: '8px' }}>
           <div className="flex items-center justify-between">
             <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {t('totalOrders')}
@@ -272,7 +189,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
             </div>
           </div>
           <div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               3,842
             </div>
             <div className="text-xs text-slate-400 font-bold mt-1">
@@ -287,7 +204,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
         </div>
 
         {/* KPI 3: Active Fandom Members */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-4" style={{ borderRadius: '8px' }}>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-3 sm:space-y-4" style={{ borderRadius: '8px' }}>
           <div className="flex items-center justify-between">
             <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {t('activeFandomMembers')}
@@ -297,7 +214,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
             </div>
           </div>
           <div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               142,850
             </div>
             <div className="text-xs text-purple-600 dark:text-purple-400 font-bold mt-1">
@@ -312,7 +229,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
         </div>
 
         {/* KPI 4: Albums & Merch Sold */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-4" style={{ borderRadius: '8px' }}>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-3 sm:space-y-4" style={{ borderRadius: '8px' }}>
           <div className="flex items-center justify-between">
             <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {t('albumsSold')}
@@ -322,7 +239,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
             </div>
           </div>
           <div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               28,690
             </div>
             <div className="text-[11px] text-amber-600 dark:text-amber-400 font-extrabold mt-1 flex items-center gap-1">
@@ -338,7 +255,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
         </div>
 
         {/* KPI 5: AI Queries Handled */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-4" style={{ borderRadius: '8px' }}>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-3 sm:space-y-4" style={{ borderRadius: '8px' }}>
           <div className="flex items-center justify-between">
             <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {t('aiQueries')}
@@ -348,7 +265,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
             </div>
           </div>
           <div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               19,530
             </div>
             <div className="text-xs text-pink-600 dark:text-pink-400 font-bold mt-1">
@@ -365,8 +282,8 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
       </div>
 
       {/* ANALYTICS CHARTS & BREAKDOWN SECTION */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-3">
+
         {/* Main Chart: Revenue & Sales Trend */}
         <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs flex flex-col justify-between" style={{ borderRadius: '8px' }}>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -385,11 +302,10 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
                 onClick={() => setMetricView('revenue')}
                 type="button"
                 style={{ borderRadius: '8px' }}
-                className={`px-4 py-1.5 text-xs font-bold transition-all cursor-pointer ${
-                  metricView === 'revenue'
-                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                }`}
+                className={`px-4 py-1.5 text-xs font-bold transition-all cursor-pointer ${metricView === 'revenue'
+                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                  }`}
               >
                 {t('monthlyRevenue')}
               </button>
@@ -397,11 +313,10 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
                 onClick={() => setMetricView('orders')}
                 type="button"
                 style={{ borderRadius: '8px' }}
-                className={`px-4 py-1.5 text-xs font-bold transition-all cursor-pointer ${
-                  metricView === 'orders'
-                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                }`}
+                className={`px-4 py-1.5 text-xs font-bold transition-all cursor-pointer ${metricView === 'orders'
+                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                  }`}
               >
                 {t('monthlyOrders')}
               </button>
@@ -409,42 +324,43 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
           </div>
 
           {/* Interactive Bar Chart Visualization */}
-          <div className="w-full flex items-end justify-between gap-3 pt-6 pb-4 border-b border-slate-100 dark:border-slate-800 px-2 min-h-[260px]">
-            {trendData.map((item, idx) => {
-              const val = metricView === 'revenue' ? item.revenue : item.orders;
-              const maxVal = metricView === 'revenue' ? maxRevenue : 1100;
-              const heightPercent = Math.max(16, Math.round((val / maxVal) * 100));
+          <div className="overflow-x-auto admin-custom-scrollbar pb-2">
+            <div className="w-full min-w-[520px] lg:min-w-0 flex items-end justify-between gap-2 sm:gap-3 pt-6 pb-4 border-b border-slate-100 dark:border-slate-800 px-2 min-h-[260px]">
+              {trendData.map((item, idx) => {
+                const val = metricView === 'revenue' ? item.revenue : item.orders;
+                const maxVal = metricView === 'revenue' ? maxRevenue : 1100;
+                const heightPercent = Math.max(16, Math.round((val / maxVal) * 100));
 
-              return (
-                <div key={idx} className="flex-1 flex flex-col items-center justify-end gap-3 group relative h-[220px]">
-                  {/* Tooltip on hover */}
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-10 bg-slate-900 text-white text-[10px] font-bold px-2.5 py-1.5 shadow-lg pointer-events-none z-10 whitespace-nowrap" style={{ borderRadius: '8px' }}>
-                    {metricView === 'revenue' ? `$${val.toLocaleString()}` : `${val} orders`}
-                  </div>
+                return (
+                  <div key={idx} className="flex-1 flex flex-col items-center justify-end gap-3 group relative h-[220px]">
+                    {/* Tooltip on hover */}
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-10 bg-slate-900 text-white text-[10px] font-bold px-2.5 py-1.5 shadow-lg pointer-events-none z-10 whitespace-nowrap" style={{ borderRadius: '8px' }}>
+                      {metricView === 'revenue' ? `$${val.toLocaleString()}` : `${val} orders`}
+                    </div>
 
-                  {/* Bar Outer Track */}
-                  <div className="w-full max-w-[42px] bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-end h-[170px]" style={{ borderRadius: '8px 8px 0 0' }}>
-                    <div
-                      style={{ height: `${heightPercent}%` }}
-                      className={`w-full transition-all duration-500 group-hover:brightness-110 ${
-                        idx === trendData.length - 1
+                    {/* Bar Outer Track */}
+                    <div className="w-full max-w-[42px] bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-end h-[170px]" style={{ borderRadius: '8px 8px 0 0' }}>
+                      <div
+                        style={{ height: `${heightPercent}%` }}
+                        className={`w-full transition-all duration-500 group-hover:brightness-110 ${idx === trendData.length - 1
                           ? 'admin-chart-bar-active'
                           : 'admin-chart-bar'
-                      }`}
-                    />
-                  </div>
+                          }`}
+                      />
+                    </div>
 
-                  {/* X Axis Label */}
-                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-                    {item.month}
-                  </span>
-                </div>
-              );
-            })}
+                    {/* X Axis Label */}
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
+                      {item.month}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Chart Legend Footer */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-6 text-xs font-medium text-slate-500 dark:text-slate-400">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-6 text-xs font-medium text-slate-500 dark:text-slate-400 mt-3">
             <div className="flex items-center gap-6">
               <span className="flex items-center gap-2">
                 <span className="admin-legend-dot-active" />
@@ -475,7 +391,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
             </p>
 
             {/* Visual Bars for Artists */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 mt-3">
               {artistSales.map((artist, idx) => (
                 <div key={idx} className="space-y-2">
                   <div className="flex items-center justify-between text-xs font-bold">
@@ -507,10 +423,10 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
       </div>
 
       {/* SECONDARY GRID: Top Selling Albums & Regional Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
         {/* Top Performing Albums */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs" style={{ borderRadius: '8px' }}>
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs mt-3" style={{ borderRadius: '8px' }}>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
               {t('topSellingAlbums')}
@@ -566,7 +482,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
         </div>
 
         {/* Regional Fandom Sales Distribution */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs flex flex-col justify-between" style={{ borderRadius: '8px' }}>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs flex flex-col justify-between mt-3" style={{ borderRadius: '8px' }}>
           <div>
             <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mb-1">
               {t('regionalBreakdown')}
@@ -601,8 +517,8 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
       </div>
 
       {/* TABLES SECTION: Recent Orders & Live Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-3">
+
         {/* Recent Customer Orders Table */}
         <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs" style={{ borderRadius: '8px' }}>
           <div className="flex items-center justify-between mb-6">
@@ -760,7 +676,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
       </div>
 
       {/* CATALOG MANAGEMENT SECTION */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6" style={{ borderRadius: '8px' }}>
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6 mt-3" style={{ borderRadius: '8px' }}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
@@ -776,7 +692,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
               onClick={onAddNewAlbumClick}
               type="button"
               style={{ borderRadius: '8px' }}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold shadow-2xs hover:opacity-90 transition-all cursor-pointer self-start sm:self-auto"
+              className="flex items-center gap-2 px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold shadow-2xs hover:opacity-90 transition-all cursor-pointer self-start sm:self-auto mb-3"
             >
               <Plus className="w-4 h-4" />
               <span>{t('addNewAlbum')}</span>
@@ -819,11 +735,10 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
                   </td>
                   <td className="py-3.5 px-4">
                     <span
-                      className={`font-bold ${
-                        alb.stock < 20
-                          ? 'text-rose-600 dark:text-rose-400 font-black'
-                          : 'text-emerald-600 dark:text-emerald-400'
-                      }`}
+                      className={`font-bold ${alb.stock < 20
+                        ? 'text-rose-600 dark:text-rose-400 font-black'
+                        : 'text-emerald-600 dark:text-emerald-400'
+                        }`}
                     >
                       {alb.stock} units
                     </span>
