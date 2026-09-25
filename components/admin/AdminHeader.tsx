@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAdminLanguage } from '../../context/AdminLanguageContext';
+import { setGoogleLanguage } from '../GoogleTranslate';
 import {
   Menu,
   LogOut,
@@ -25,7 +26,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
   setSearchQuery,
   activeTab = 'dashboard',
 }) => {
-  const { language, toggleLanguage, t } = useAdminLanguage();
+  const { language, setLanguage, t } = useAdminLanguage();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   return (
@@ -49,41 +50,60 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             style={{ borderRadius: '8px' }}
             className="admin-hide-on-mobile hidden md:flex items-center gap-2 px-3.5 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-sky-400 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 border border-slate-200 dark:border-slate-700 transition-all shadow-2xs"
             target='_blank'
-            title={language === 'vi' ? 'Quay lại cửa hàng chính' : 'Back to Main Store'}
+            title={language === 'vi' ? 'Quay lại cửa hàng chính' : 'Back to Store'}
           >
             <Store className="w-4 h-4 text-indigo-600 dark:text-sky-400" />
-            <span>{language === 'vi' ? 'Quay lại Trang Khách' : 'Back to client'}</span>
+            <span>{language === 'vi' ? 'Quay lại Trang Khách' : 'Back to Store'}</span>
           </Link>
 
-          <button
-            onClick={toggleLanguage}
-            type="button"
+          {/* Dual Segmented Language Switcher [ EN | VI ] */}
+          <div
+            translate="no"
             style={{ borderRadius: '8px' }}
-            className="flex items-center gap-2 px-2.5 md:px-3.5 py-1.5 text-xs font-extrabold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:border-indigo-500 hover:shadow-xs transition-all cursor-pointer"
-            title={language === 'en' ? 'Chuyển sang Tiếng Việt' : 'Switch to English'}
+            className="notranslate flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700"
           >
-            {language === 'en' ? (
-              <>
-                <img
-                  src="https://flagcdn.com/w40/gb.png"
-                  alt="UK Flag"
-                  className="w-5 h-3.5 object-cover shadow-2xs"
-                  style={{ borderRadius: '2px' }}
-                />
-                <span className="admin-hide-on-mobile hidden md:inline">English</span>
-              </>
-            ) : (
-              <>
-                <img
-                  src="https://flagcdn.com/w40/vn.png"
-                  alt="Vietnam Flag"
-                  className="w-5 h-3.5 object-cover shadow-2xs"
-                  style={{ borderRadius: '2px' }}
-                />
-                <span className="admin-hide-on-mobile hidden md:inline">Vietnamese</span>
-              </>
-            )}
-          </button>
+            <button
+              type="button"
+              onClick={() => {
+                setLanguage('en');
+                setGoogleLanguage('en');
+              }}
+              style={{ borderRadius: '6px' }}
+              className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold transition-all cursor-pointer ${
+                language === 'en'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+              title="English (Default)"
+            >
+              <img
+                src="https://flagcdn.com/w40/gb.png"
+                alt="UK Flag"
+                className="w-4 h-3 object-cover shadow-2xs"
+                style={{ borderRadius: '2px' }}
+              />
+              <span>EN</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setLanguage('vi')}
+              style={{ borderRadius: '6px' }}
+              className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold transition-all cursor-pointer ${
+                language === 'vi'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+              title="Tiếng Việt"
+            >
+              <img
+                src="https://flagcdn.com/w40/vn.png"
+                alt="Vietnam Flag"
+                className="w-4 h-3 object-cover shadow-2xs"
+                style={{ borderRadius: '2px' }}
+              />
+              <span>VI</span>
+            </button>
+          </div>
 
           <div className="relative">
             <button
@@ -126,7 +146,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                     className="w-full flex items-center gap-2 px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-left cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
-                    <span>{t('logout')}</span>
+                    <span>{language === 'vi' ? 'Đăng xuất' : 'Sign Out'}</span>
                   </button>
                 </div>
               </>
