@@ -1,10 +1,4 @@
 <?php
-/**
- * TechWiz Release Updater Dashboard for aaPanel
- * Standalone Release Deployment & Auto-Updater Tool
- * Supports GitHub Releases, Zipball unwrapping, Env preservation, Build & PM2 restart
- */
-
 error_reporting(E_ALL & ~E_NOTICE);
 ini_set('display_errors', 0);
 ini_set('max_execution_time', 600);
@@ -168,26 +162,51 @@ if ($action && !checkAuth($config)) {
 // Get current system status
 if ($action === 'status') {
     $targetDir = realpath($config['target_dir']) ?: $config['target_dir'];
-    $currentVersion = 'Chưa xác định';
     
-    if (file_exists($targetDir . '/.current_version')) {
-        $currentVersion = trim(file_get_contents($targetDir . '/.current_version'));
-    } elseif (file_exists($targetDir . '/package.json')) {
-        $pkg = json_decode(file_get_contents($targetDir . '/package.json'), true);
-        $currentVersion = $pkg['version'] ?? 'Chưa xác định';
+    // Auto-detect Node paths on aaPanel
+    $nodePath = trim(@shell_exec('which node 2>/dev/null') ?: '');
+    $nodeDir = $nodePath ? dirname($nodePath) : '';
+    $nodeVersionDirs = glob('/www/server/nodejs/*/bin') ?: [];
+    $pathDirs = array_merge(
+        [rtrim($targetDir, '/') . '/node_modules/.bin', $nodeDir],
+        $nodeVersionDirs,
+        ['/www/server/nodejs/v24.16.0/bin', '/www/server/nodejs/current/bin', '/usr/local/bin', '/usr/bin', '/bin']
+    );
+    $fullPathStr = implode(':', array_unique(array_filter($pathDirs))) . ':' . (getenv('PATH') ?: '');
+
+    $currentVersion = 'Chưa xác định';
+    if (@file_exists($targetDir . '/.current_version')) {
+        $currentVersion = trim(@file_get_contents($targetDir . '/.current_version'));
+    } else {
+        // Fallback to shell cat to bypass open_basedir
+        $catVer = trim(@shell_exec("cat " . escapeshellarg($targetDir . '/.current_version') . " 2>/dev/null") ?: '');
+        if (!empty($catVer)) {
+            $currentVersion = $catVer;
+        } elseif (@file_exists($targetDir . '/package.json')) {
+            $pkg = json_decode(@file_get_contents($targetDir . '/package.json'), true);
+            $currentVersion = $pkg['version'] ?? 'Chưa xác định';
+        } else {
+            $catPkg = trim(@shell_exec("cat " . escapeshellarg($targetDir . '/package.json') . " 2>/dev/null") ?: '');
+            if (!empty($catPkg)) {
+                $pkg = json_decode($catPkg, true);
+                $currentVersion = $pkg['version'] ?? 'Chưa xác định';
+            }
+        }
     }
 
-    $isWritable = is_dir($targetDir) && is_writable($targetDir);
+    $isTargetDir = @is_dir($targetDir) || (trim(@shell_exec("[ -d " . escapeshellarg($targetDir) . " ] && echo 1 2>/dev/null") ?: '') === '1');
+    $isWritable = ($isTargetDir && @is_writable($targetDir)) || (trim(@shell_exec("[ -w " . escapeshellarg($targetDir) . " ] && echo 1 2>/dev/null") ?: '') === '1');
     
-    // Check commands
-    $nodeVer = @shell_exec('node -v 2>&1') ?: 'Chưa cài đặt';
-    $npmVer = @shell_exec('npm -v 2>&1') ?: 'Chưa cài đặt';
-    $pm2Ver = @shell_exec('pm2 -v 2>&1') ?: 'Chưa cài đặt';
+    // Check commands with full PATH
+    $nodeVer = trim(@shell_exec("export PATH=" . escapeshellarg($fullPathStr) . "; node -v 2>&1") ?: 'Chưa cài đặt');
+    $npmVer = trim(@shell_exec("export PATH=" . escapeshellarg($fullPathStr) . "; npm -v 2>&1") ?: 'Chưa cài đặt');
+    $pm2Ver = trim(@shell_exec("export PATH=" . escapeshellarg($fullPathStr) . "; pm2 -v 2>/dev/null") ?: 'Chưa cài đặt');
     
     // Check pm2 status for target
     $pm2Status = 'Không rõ';
-    if ($pm2Ver !== 'Chưa cài đặt' && !empty($config['pm2_process_name'])) {
-        $pm2Check = @shell_exec("pm2 jlist 2>&1");
+    if (!empty($config['pm2_process_name'])) {
+        $tryPm2Home = (is_dir('/root/.pm2') && is_readable('/root/.pm2')) ? "PM2_HOME=/root/.pm2 " : "";
+        $pm2Check = @shell_exec("export PATH=" . escapeshellarg($fullPathStr) . "; {$tryPm2Home}pm2 jlist 2>/dev/null");
         if ($pm2Check && ($list = json_decode($pm2Check, true))) {
             $found = false;
             foreach ($list as $proc) {
@@ -427,17 +446,44 @@ if ($action === 'perform_update') {
         sendSSE('step', ['step' => 6, 'text' => 'Bỏ qua bước build (theo yêu cầu).']);
     } else {
         sendSSE('step', ['step' => 6, 'text' => 'Chạy lệnh build (npm install & build)...']);
-        $cmd = "cd " . escapeshellarg($targetDir) . " && " . $config['build_command'] . " 2>&1";
+
+        // Auto-detect Node paths on aaPanel
+        $nodePath = trim(@shell_exec('which node 2>/dev/null') ?: '');
+        $nodeDir = $nodePath ? dirname($nodePath) : '';
+        $targetBin = rtrim($targetDir, '/') . '/node_modules/.bin';
+        $nodeVersionDirs = glob('/www/server/nodejs/*/bin') ?: [];
         
-        sendSSE('log', ['type' => 'info', 'text' => "⚙️ Thực thi: {$config['build_command']}"]);
+        $pathDirs = array_merge(
+            [$targetBin, $nodeDir],
+            $nodeVersionDirs,
+            [
+                '/www/server/nodejs/v24.16.0/bin',
+                '/www/server/nodejs/current/bin',
+                '/usr/local/bin',
+                '/usr/bin',
+                '/bin'
+            ]
+        );
+        $fullPathStr = implode(':', array_unique(array_filter($pathDirs))) . ':' . (getenv('PATH') ?: '');
+
+        $cmd = "export PATH=" . escapeshellarg($fullPathStr) . " && cd " . escapeshellarg($targetDir) . " && " . $config['build_command'] . " 2>&1";
+        
+        sendSSE('log', ['type' => 'info', 'text' => "Thực thi: {$config['build_command']}"]);
 
         $descriptors = [
             0 => ['pipe', 'r'],
             1 => ['pipe', 'w'],
             2 => ['pipe', 'w']
         ];
-        $process = proc_open($cmd, $descriptors, $pipes, $targetDir);
+        $pipes = [];
+        $env = array_merge($_ENV, [
+            'PATH' => $fullPathStr,
+            'HOME' => getenv('HOME') ?: '/root',
+            'PM2_HOME' => '/root/.pm2'
+        ]);
+        $process = proc_open($cmd, $descriptors, $pipes, $targetDir, $env);
 
+        $buildSuccess = false;
         if (is_resource($process)) {
             fclose($pipes[0]);
             while (!feof($pipes[1])) {
@@ -451,30 +497,44 @@ if ($action === 'perform_update') {
             $exitCode = proc_close($process);
 
             if ($exitCode === 0) {
-                sendSSE('log', ['type' => 'success', 'text' => "✅ Quá trình Build hoàn tất xuất sắc (Mã thoát: 0)!"]);
+                $buildSuccess = true;
+                sendSSE('log', ['type' => 'success', 'text' => "Quá trình Build hoàn tất xuất sắc (Mã thoát: 0)!"]);
             } else {
-                sendSSE('log', ['type' => 'warn', 'text' => "⚠️ Quá trình build kết thúc với mã {$exitCode}. Hãy kiểm tra log terminal bên trên nếu ứng dụng gặp lỗi."]);
+                sendSSE('log', ['type' => 'warn', 'text' => "Quá trình build kết thúc với mã {$exitCode}. Xem chi tiết lỗi bên trên."]);
             }
         } else {
-            sendSSE('log', ['type' => 'error', 'text' => "❌ Không thể khởi tạo tiến trình proc_open để build!"]);
+            sendSSE('log', ['type' => 'error', 'text' => "Không thể khởi tạo tiến trình proc_open để build!"]);
         }
     }
 
     // 8. Restart PM2 Process
     if (!empty($config['auto_restart_pm2']) && !empty($config['pm2_process_name'])) {
-        sendSSE('step', ['step' => 7, 'text' => "Khởi động lại PM2 ({$config['pm2_process_name']})..."]);
+        sendSSE('step', ['step' => 7, 'text' => "Khởi động lại tiến trình ({$config['pm2_process_name']})..."]);
         $pm2Name = escapeshellarg($config['pm2_process_name']);
         
-        // Try reload first (zero-downtime) or restart
-        $pm2Cmd = "pm2 reload {$pm2Name} 2>&1 || pm2 restart {$pm2Name} 2>&1";
-        $pm2Out = @shell_exec($pm2Cmd);
+        // Try reload as current user (www) first, then try with PM2_HOME if accessible
+        $tryPm2Home = (is_dir('/root/.pm2') && is_writable('/root/.pm2')) ? "PM2_HOME=/root/.pm2 " : "";
+        $pm2Cmd = "export PATH=" . escapeshellarg($fullPathStr) . "; {$tryPm2Home}pm2 reload {$pm2Name} 2>&1 || {$tryPm2Home}pm2 restart {$pm2Name} 2>&1";
+        $pm2Out = trim(@shell_exec($pm2Cmd) ?: '');
         
-        sendSSE('log', ['type' => 'info', 'text' => "🔄 Kết quả PM2: " . trim($pm2Out)]);
-        sendSSE('log', ['type' => 'success', 'text' => "✅ Đã gửi lệnh làm mới tiến trình PM2 [{$config['pm2_process_name']}]!"]);
+        $isSuccess = (strpos($pm2Out, '[PM2] Applying action reload') !== false || 
+                      strpos($pm2Out, '[PM2] Applying action restart') !== false ||
+                      strpos($pm2Out, 'online') !== false);
+
+        if ($isSuccess) {
+            sendSSE('log', ['type' => 'success', 'text' => "Đã làm mới tiến trình PM2 [{$config['pm2_process_name']}] thành công!"]);
+        } else {
+            // Check if permission denied
+            if (strpos($pm2Out, 'EACCES') !== false || strpos($pm2Out, 'permission denied') !== false) {
+                sendSSE('log', ['type' => 'warn', 'text' => "ℹ️ User 'www' chưa có quyền điều khiển PM2 của root. Bạn chỉ cần bấm nút 'Restart' trên giao diện aaPanel Node project (hoặc chạy lệnh: chmod -R 777 /root/.pm2 && chmod 755 /root)."]);
+            } else {
+                sendSSE('log', ['type' => 'warn', 'text' => "ℹ️ Bạn vui lòng bấm nút 'Restart' tại mục Node project trên aaPanel để nạp mã nguồn mới vào RAM."]);
+            }
+        }
     }
 
-    sendSSE('step', ['step' => 8, 'text' => 'Cập nhật thành công hoàn tất!']);
-    sendSSE('log', ['type' => 'success', 'text' => "🎉 CHÚC MỪNG: Dự án đã được nâng cấp thành công lên phiên bản [{$actualTag}]!"]);
+    sendSSE('step', ['step' => 8, 'text' => 'Cập nhật hoàn tất!']);
+    sendSSE('log', ['type' => 'success', 'text' => "CHÚC MỪNG: Dự án đã được nâng cấp thành công lên phiên bản [{$actualTag}]!"]);
     sendSSE('finish', ['success' => true, 'new_version' => $actualTag]);
     exit;
 }
@@ -487,7 +547,7 @@ $isLoggedIn = checkAuth($config);
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cập Nhật Máy Chủ</title>
+  <title>Cập Nhật Code</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -542,7 +602,7 @@ $isLoggedIn = checkAuth($config);
     .brand-icon {
       width: 36px;
       height: 36px;
-      border-radius: 8px;
+      border-radius: 4px;
       background: #2563eb;
       color: #ffffff;
       display: flex;
@@ -575,7 +635,7 @@ $isLoggedIn = checkAuth($config);
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: 4px;
       padding: 20px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
       margin-bottom: 20px;
@@ -601,7 +661,7 @@ $isLoggedIn = checkAuth($config);
       padding: 8px 12px;
       background: #f8fafc;
       border: 1px solid #f1f5f9;
-      border-radius: 8px;
+      border-radius: 4px;
       font-size: 0.85rem;
     }
     .info-label {
@@ -612,7 +672,7 @@ $isLoggedIn = checkAuth($config);
       align-items: center;
       gap: 4px;
       padding: 2px 8px;
-      border-radius: 6px;
+      border-radius: 4px;
       font-size: 0.75rem;
       font-weight: 600;
     }
@@ -627,7 +687,7 @@ $isLoggedIn = checkAuth($config);
       justify-content: center;
       gap: 6px;
       padding: 8px 14px;
-      border-radius: 8px;
+      border-radius: 4px;
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
@@ -663,7 +723,7 @@ $isLoggedIn = checkAuth($config);
     .release-item {
       border: 1px solid var(--card-border);
       background: #ffffff;
-      border-radius: 10px;
+      border-radius: 4px;
       padding: 16px;
       margin-bottom: 12px;
       transition: border-color 0.15s ease;
@@ -692,12 +752,12 @@ $isLoggedIn = checkAuth($config);
       padding: 10px 12px;
       background: #f8fafc;
       border: 1px solid #f1f5f9;
-      border-radius: 6px;
+      border-radius: 4px;
       margin-top: 10px;
     }
     .terminal {
       background: var(--terminal-bg);
-      border-radius: 8px;
+      border-radius: 4px;
       height: 360px;
       overflow-y: auto;
       padding: 14px;
@@ -727,7 +787,7 @@ $isLoggedIn = checkAuth($config);
     .step-pill {
       font-size: 0.725rem;
       padding: 3px 8px;
-      border-radius: 6px;
+      border-radius: 4px;
       background: #f1f5f9;
       color: var(--text-muted);
       border: 1px solid #e2e8f0;
@@ -758,7 +818,7 @@ $isLoggedIn = checkAuth($config);
       width: 100%;
       background: #ffffff;
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: 4px;
       padding: 9px 12px;
       color: var(--text);
       font-size: 0.875rem;
@@ -783,7 +843,7 @@ $isLoggedIn = checkAuth($config);
     .modal-content {
       background: #ffffff;
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: 4px;
       width: 90%;
       max-width: 500px;
       padding: 24px;
@@ -792,34 +852,6 @@ $isLoggedIn = checkAuth($config);
   </style>
 </head>
 <body>
-
-  <header>
-    <div class="brand">
-      <div class="brand-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-          <line x1="12" y1="22.08" x2="12" y2="12"></line>
-        </svg>
-      </div>
-      <div>
-        <div class="brand-title">Cập Nhật Máy Chủ</div>
-        <div class="brand-subtitle"><?= htmlspecialchars($config['github_repo'] ?? '') ?></div>
-      </div>
-    </div>
-
-    <div style="display:flex; gap:8px;">
-      <?php if ($isLoggedIn): ?>
-        <button class="btn btn-secondary btn-sm" onclick="openSettingsModal()">
-          ⚙️ Cấu hình
-        </button>
-        <a href="?action=logout" class="btn btn-secondary btn-sm" style="color:var(--danger)">
-          Đăng xuất
-        </a>
-      <?php endif; ?>
-    </div>
-  </header>
-
   <div class="container">
     <?php if (!$isLoggedIn): ?>
       <!-- LOGIN CARD -->
@@ -850,7 +882,14 @@ $isLoggedIn = checkAuth($config);
         <div>
           <div class="card">
             <div class="card-title">
-              <span>📊</span> Thông Tin Hệ Thống
+                <?php if ($isLoggedIn): ?>
+                    <button class="btn btn-secondary btn-sm" onclick="openSettingsModal()">
+                      Cấu hình
+                    </button>
+                    <a href="?action=logout" class="btn btn-secondary btn-sm" style="color:var(--danger)">
+                      Đăng xuất
+                    </a>
+                  <?php endif; ?>
             </div>
             <div class="info-list">
               <div class="info-item">
@@ -876,15 +915,15 @@ $isLoggedIn = checkAuth($config);
             </div>
             
             <div style="margin-top: 14px;">
-              <button class="btn btn-secondary btn-sm" style="width:100%" onclick="loadStatus()">
-                🔄 Kiểm tra lại
+              <button class="btn btn-secondary" style="width:100%" onclick="loadStatus()">
+                Kiểm tra lại
               </button>
             </div>
           </div>
 
           <div class="card">
             <div class="card-title">
-              <span>⚡</span> Tùy Chọn
+                Tùy Chọn
             </div>
             <div>
               <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer;">
@@ -903,7 +942,7 @@ $isLoggedIn = checkAuth($config);
           <div class="card" id="terminalCard" style="display:none;">
             <div class="card-title" style="justify-content: space-between;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span>📟</span> Tiến Trình Cập Nhật
+                Tiến Trình Cập Nhật
               </div>
               <span id="statusBadge" class="badge badge-info">CHỜ</span>
             </div>
@@ -927,7 +966,7 @@ $isLoggedIn = checkAuth($config);
           <div class="card">
             <div class="card-title" style="justify-content: space-between;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span>📦</span> Danh Sách Phiên Bản Releases
+                Danh Sách Phiên Bản
               </div>
               <button class="btn btn-secondary btn-sm" onclick="loadReleases()">
                 Làm mới
@@ -936,7 +975,7 @@ $isLoggedIn = checkAuth($config);
 
             <div id="releasesList">
               <div style="text-align:center; padding: 24px; color:var(--text-muted); font-size:0.875rem;">
-                Đang nạp danh sách releases từ GitHub...
+                Đang nạp danh sách...
               </div>
             </div>
           </div>
@@ -947,7 +986,7 @@ $isLoggedIn = checkAuth($config);
       <div class="modal" id="settingsModal">
         <div class="modal-content">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <h3 style="font-size:1rem; font-weight:700;">⚙️ Cấu Hình Máy Chủ</h3>
+            <h3 style="font-size:1rem; font-weight:700;">Cấu Hình Máy Chủ</h3>
             <button class="btn btn-secondary btn-sm" onclick="closeSettingsModal()">✕</button>
           </div>
           <form onsubmit="handleSaveConfig(event)">
@@ -1037,7 +1076,7 @@ $isLoggedIn = checkAuth($config);
             targetBadge.textContent = 'Thiếu quyền ghi (chown www)';
             targetBadge.className = 'badge badge-warning';
           } else {
-            targetBadge.textContent = 'Chưa tồn tại (sẽ tự tạo)';
+            targetBadge.textContent = 'Tự tạo';
             targetBadge.className = 'badge badge-info';
           }
         }
@@ -1077,7 +1116,7 @@ $isLoggedIn = checkAuth($config);
 
         if (isUpToDate) {
           container.innerHTML = `
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 24px 20px; text-align: center;">
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px; padding: 24px 20px; text-align: center;">
               <div style="font-size: 2rem; margin-bottom: 6px;">🎉</div>
               <div style="font-weight: 700; color: #15803d; font-size: 1rem; margin-bottom: 4px;">
                 Máy chủ đang ở phiên bản mới nhất (${latestRelease.tag_name})
@@ -1085,7 +1124,7 @@ $isLoggedIn = checkAuth($config);
               <div style="font-size: 0.82rem; color: #475569; max-width: 440px; margin: 0 auto 14px;">
                 Hiện tại không có bản cập nhật nào mới hơn. Khi bạn đẩy code và tạo Release mới trên GitHub, nút cập nhật sẽ tự động xuất hiện tại đây.
               </div>
-              <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.75rem; color:#166534; background:#dcfce7; padding:4px 12px; border-radius:20px;">
+              <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.75rem; color:#166534; background:#dcfce7; padding:4px 12px; border-radius:4px;">
                 <span>●</span> Đã bảo vệ chống bấm nhầm
               </div>
             </div>
@@ -1116,9 +1155,9 @@ $isLoggedIn = checkAuth($config);
                 </div>
                 <div>
                   ${isCurrent 
-                    ? '<span class="badge badge-success" style="padding:6px 12px; font-size:0.8rem;">✅ Đang chạy bản này</span>' 
+                    ? '<span class="badge badge-success" style="padding:6px 12px; font-size:0.8rem;">Đang chạy bản này</span>' 
                     : `<button class="btn btn-primary btn-sm" onclick="triggerUpdate('${rel.tag_name}')">
-                        🚀 Cập nhật bản này
+                        Cập nhật
                        </button>`
                   }
                 </div>
@@ -1145,7 +1184,7 @@ $isLoggedIn = checkAuth($config);
 
       document.getElementById('terminalCard').style.display = 'block';
       const terminalLogs = document.getElementById('terminalLogs');
-      terminalLogs.innerHTML = `<div class="log-line log-info">🚀 Đang kết nối tiến trình cập nhật [${tag}]...</div>`;
+      terminalLogs.innerHTML = `<div class="log-line log-info">Đang kết nối tiến trình cập nhật [${tag}]...</div>`;
       
       const statusBadge = document.getElementById('statusBadge');
       statusBadge.textContent = 'ĐANG CHẠY';
