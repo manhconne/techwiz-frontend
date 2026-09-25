@@ -5,6 +5,12 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 export type DomainThemeId = 'music' | 'tech' | 'art' | 'sports' | 'fandom' | 'classic';
 export type ThemeMode = 'light' | 'dark';
 
+export interface SubCategoryConfig {
+  id: string;
+  name: string;
+  description?: string;
+}
+
 export interface DomainThemeConfig {
   id: DomainThemeId;
   name: string;
@@ -13,6 +19,7 @@ export interface DomainThemeConfig {
   tagline: string;
   iconType: string;
   vibeText: string;
+  subCategories: SubCategoryConfig[];
 }
 
 export const DOMAIN_THEMES: DomainThemeConfig[] = [
@@ -21,74 +28,120 @@ export const DOMAIN_THEMES: DomainThemeConfig[] = [
     name: 'Music & Audio',
     fontFamily: "'Montserrat', sans-serif",
     fontDisplayName: 'Montserrat Bold',
-    tagline: 'Âm nhạc & Sound Hub hiện đại.',
+    tagline: 'Modern Audio & Sound Hub.',
     iconType: 'music',
     vibeText: 'Synthwave & Electronic Beats',
+    subCategories: [
+      { id: 'all', name: 'All Music' },
+      { id: 'kpop', name: 'K-Pop & Asian Pop' },
+      { id: 'usuk', name: 'US-UK Pop & Rock' },
+      { id: 'ost', name: 'Film & Cinema OST' },
+      { id: 'edm', name: 'EDM & Vinyl Collectors' },
+    ],
   },
   {
     id: 'tech',
     name: 'Tech & Gaming',
     fontFamily: "'Fira Code', monospace",
     fontDisplayName: 'Fira Code Monospace',
-    tagline: 'Công nghệ, máy tính & game thủ.',
+    tagline: 'Technology, Hardware & Gaming Hub.',
     iconType: 'tech',
     vibeText: 'Monospace Developer Code',
+    subCategories: [
+      { id: 'all', name: 'All Tech & Gaming' },
+      { id: 'gaming', name: 'Game OST (Elden Ring, Genshin)' },
+      { id: 'cyber', name: 'Cyberpunk & Synthesizer' },
+      { id: 'hardware', name: 'Gaming Merch & Gear Setup' },
+      { id: 'anime_tech', name: 'Sci-Fi & Mecha Audio' },
+    ],
   },
   {
     id: 'art',
     name: 'Art & Fashion',
     fontFamily: "'Playfair Display', Georgia, serif",
     fontDisplayName: 'Playfair Serif',
-    tagline: 'Nghệ thuật, thiết kế & thời trang.',
+    tagline: 'Design, Fine Art & High Fashion.',
     iconType: 'art',
     vibeText: 'Editorial High Fashion Serif',
+    subCategories: [
+      { id: 'all', name: 'All Art & Fashion' },
+      { id: 'ghibli', name: 'Studio Ghibli & Classical' },
+      { id: 'editorial', name: 'High Fashion & Vinyl' },
+      { id: 'artbook', name: 'Artbooks & Collector Kits' },
+      { id: 'indie', name: 'Indie Acoustic & Visual Art' },
+    ],
   },
   {
     id: 'sports',
     name: 'Sports & Fitness',
     fontFamily: "'Oswald', sans-serif",
     fontDisplayName: 'Oswald Dynamic',
-    tagline: 'Thể thao, vận động & thể hình.',
+    tagline: 'High Energy Sports & Fitness Motion.',
     iconType: 'sports',
     vibeText: 'High Energy Athletic Motion',
+    subCategories: [
+      { id: 'all', name: 'All Sports & Fitness' },
+      { id: 'stadium', name: 'Stadium World Tours & Anthems' },
+      { id: 'workout', name: 'High Energy Workout Beats' },
+      { id: 'athletic', name: 'Activewear & Athletic Merch' },
+      { id: 'esports', name: 'E-Sports Arena & Gaming Stadium' },
+    ],
   },
   {
     id: 'fandom',
     name: 'K-Pop & Anime Fandom',
     fontFamily: "'Quicksand', sans-serif",
     fontDisplayName: 'Quicksand Rounded',
-    tagline: 'Thế giới K-Pop Idol, Anime & Fandom.',
+    tagline: 'K-Pop Idol & Anime Universe.',
     iconType: 'fandom',
     vibeText: 'Pastel Idol Dreamland',
+    subCategories: [
+      { id: 'all', name: 'All Fandom' },
+      { id: 'kpop_fandom', name: 'K-Pop Lightsticks & Fan Kits' },
+      { id: 'anime_fandom', name: 'Anime Figures & Cards' },
+      { id: 'vocaloid', name: 'Vocaloid & Virtual Idol J-Pop' },
+      { id: 'fanart', name: 'Fanmade Art & Zines' },
+    ],
   },
   {
     id: 'classic',
-    name: 'Tổng Hợp / Standard',
+    name: 'All / Standard',
     fontFamily: "'Plus Jakarta Sans', sans-serif",
     fontDisplayName: 'Plus Jakarta Sans',
-    tagline: 'Giao diện tiêu chuẩn tối giản.',
+    tagline: 'Standard Minimalist Interface.',
     iconType: 'classic',
     vibeText: 'Modern Sky Standard',
+    subCategories: [
+      { id: 'all', name: 'All Products' },
+      { id: 'kpop', name: 'K-Pop Top Hits' },
+      { id: 'anime', name: 'Anime & Cinema OST' },
+      { id: 'gaming', name: 'Gaming & Tech Audio' },
+      { id: 'art', name: 'Art & High Fashion' },
+    ],
   },
 ];
 
 interface DomainContextType {
   currentDomain: DomainThemeId;
+  activeSubCategory: string;
   activeConfig: DomainThemeConfig;
   isModalOpen: boolean;
   themeMode: ThemeMode;
   toggleThemeMode: () => void;
   selectDomain: (id: DomainThemeId) => void;
+  selectSubCategory: (subId: string) => void;
   closeDomainModal: () => void;
 }
 
 const CACHE_KEY_DOMAIN = 'techwiz_user_domain_preference';
+const CACHE_KEY_SUBCAT = 'techwiz_user_subcategory_preference';
 const CACHE_KEY_MODE = 'techwiz_user_theme_mode';
 
 const DomainContext = createContext<DomainContextType | undefined>(undefined);
 
 export const DomainProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentDomain, setCurrentDomain] = useState<DomainThemeId>('classic');
+  const [activeSubCategory, setActiveSubCategory] = useState<string>('all');
   const [themeMode, setThemeModeState] = useState<ThemeMode>('light');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -130,9 +183,14 @@ export const DomainProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     // Check cached domain theme
     try {
       const cachedDomain = localStorage.getItem(CACHE_KEY_DOMAIN) as DomainThemeId | null;
+      const cachedSubCat = localStorage.getItem(CACHE_KEY_SUBCAT);
+
       if (cachedDomain && DOMAIN_THEMES.some((t) => t.id === cachedDomain)) {
         setCurrentDomain(cachedDomain);
         applyDomainThemeToDom(cachedDomain);
+        if (cachedSubCat) {
+          setActiveSubCategory(cachedSubCat);
+        }
       } else {
         applyDomainThemeToDom('classic');
         const timer = setTimeout(() => {
@@ -147,11 +205,22 @@ export const DomainProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const selectDomain = (id: DomainThemeId) => {
     setCurrentDomain(id);
+    setActiveSubCategory('all');
     applyDomainThemeToDom(id);
     try {
       localStorage.setItem(CACHE_KEY_DOMAIN, id);
+      localStorage.setItem(CACHE_KEY_SUBCAT, 'all');
     } catch (e) {
       console.warn('LocalStorage write error', e);
+    }
+  };
+
+  const selectSubCategory = (subId: string) => {
+    setActiveSubCategory(subId);
+    try {
+      localStorage.setItem(CACHE_KEY_SUBCAT, subId);
+    } catch (e) {
+      console.warn('LocalStorage write error subcategory', e);
     }
   };
 
@@ -172,11 +241,13 @@ export const DomainProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     <DomainContext.Provider
       value={{
         currentDomain,
+        activeSubCategory,
         activeConfig,
         isModalOpen,
         themeMode,
         toggleThemeMode,
         selectDomain,
+        selectSubCategory,
         closeDomainModal: () => setIsModalOpen(false),
       }}
     >

@@ -883,16 +883,24 @@ interface IdolProfilesProps {
   onSelectArtist: (artistId: string) => void;
 }
 
+import { useDomainTheme } from '../context/DomainContext';
+import { filterArtistsByDomain } from '../utils/domainFilters';
+
 export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) => {
+  const { currentDomain, activeSubCategory, activeConfig } = useDomainTheme();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeDossierArtist, setActiveDossierArtist] = useState<Artist | null>(null);
   const [activeCardTab, setActiveCardTab] = useState<Record<string, 'lore' | 'catalog' | 'fan'>>({});
   const [modalActiveTab, setModalActiveTab] = useState<'lore' | 'characters' | 'catalog' | 'fan'>('lore');
 
+  const domainFilteredArtists = useMemo(() => {
+    return filterArtistsByDomain(mockArtists, currentDomain, activeSubCategory);
+  }, [currentDomain, activeSubCategory]);
+
   // Filter artists
   const filteredArtists = useMemo(() => {
-    return mockArtists.filter((artist) => {
+    return domainFilteredArtists.filter((artist) => {
       const matchCat = 
         selectedCategory === 'all' 
           ? true 
@@ -918,7 +926,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
 
       return matchCat && matchQuery;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [domainFilteredArtists, selectedCategory, searchQuery]);
 
   const categories = [
     { id: 'all', label: 'All Universes', count: mockArtists.length },
@@ -1041,7 +1049,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
             <div>
               <h2
                 style={{
-                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontFamily: activeConfig.fontFamily,
                   fontSize: 'clamp(28px, 3.2vw, 48px)',
                   lineHeight: 1.15,
                   fontWeight: 800,
@@ -1051,7 +1059,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                 }}
               >
                 Fandom Universes{' '}
-                <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic' }}>
+                <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic', fontFamily: 'serif' }}>
                   & Character Dossiers
                 </em>
               </h2>

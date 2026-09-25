@@ -71,8 +71,11 @@ const DEFAULT_MEDIA = {
   perks: ['VIP Soundcheck', 'Official Commemorative Pass', 'Priority Entrance'],
 };
 
+import { useDomainTheme } from '../context/DomainContext';
+
 export const TourCalendar: React.FC = () => {
   const { formatPrice } = useCartWishlist();
+  const { activeConfig } = useDomainTheme();
 
   const [selectedCity, setSelectedCity] = useState<string>('all');
   const [bookedTour, setBookedTour] = useState<TourEvent | null>(null);
@@ -216,7 +219,7 @@ export const TourCalendar: React.FC = () => {
             <div>
               <h2 
                 style={{
-                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontFamily: activeConfig.fontFamily,
                   fontSize: 'clamp(28px, 3.2vw, 44px)',
                   lineHeight: 1.15,
                   fontWeight: 800,
@@ -226,7 +229,7 @@ export const TourCalendar: React.FC = () => {
                 }}
               >
                 Upcoming World Tours{' '}
-                <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic' }}>
+                <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic', fontFamily: 'serif' }}>
                   & Fan Meetings
                 </em>
               </h2>

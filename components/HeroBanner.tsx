@@ -1,68 +1,56 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { usePlayer } from '../context/PlayerContext';
 import { useCartWishlist } from '../context/CartWishlistContext';
+import { useDomainTheme } from '../context/DomainContext';
+import { filterAlbumsByDomain } from '../utils/domainFilters';
 import { mockAlbums } from '../data/mockData';
 import { Play, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const HeroBanner: React.FC = () => {
   const { playTrack, currentAlbum, isPlaying } = usePlayer();
   const { addToCart, formatPrice } = useCartWishlist();
+  const { currentDomain, activeSubCategory, activeConfig } = useDomainTheme();
 
-  const slides = [
-    {
-      album: mockAlbums[0],
-      badgeText: 'COMEBACK EXCLUSIVE',
-      headline: 'GET UP',
-      subheadline: 'NEWJEANS  •  2ND EP',
-      description: 'Experience the global viral comeback featuring "Super Shy", "ETA", and "Cool With You". Packaged in nostalgic Y2K bag edition with complete photocard set.',
-      bgColor: '#EAF3FD', // Elegant soft blue tint
-      inclusions: '104p Photobook  •  CD-R  •  Selfie Photocard Set'
-    },
-    {
-      album: mockAlbums[1],
-      badgeText: 'WORLD TOUR SPECIAL',
-      headline: 'BORN PINK',
-      subheadline: 'BLACKPINK  •  2ND FULL ALBUM',
-      description: 'The historic record-breaking studio album featuring global hits "Pink Venom" and "Shut Down". Includes official concert photobook and package box.',
-      bgColor: '#FDF0F6', // Elegant soft pink tint
-      inclusions: 'Special Package Box  •  CD-R  •  Random Holographic POB'
-    },
-    {
-      album: mockAlbums[2],
-      badgeText: 'ANNIVERSARY ANTHOLOGY',
-      headline: 'PROOF',
-      subheadline: 'BTS  •  ANTHOLOGY ALBUM',
-      description: 'The definitive 9-year anniversary anthology celebrating BTS music history with unreleased demo tracks and exclusive member memoir booklet.',
-      bgColor: '#F3F5F8', // Elegant soft slate tint
-      inclusions: '3 CD Set  •  4 Thematic Booklets  •  Lenticular Card'
-    },
-    {
-      album: mockAlbums[3],
-      badgeText: 'BILLBOARD 200 #1',
-      headline: '5-STAR',
-      subheadline: 'STRAY KIDS  •  3RD ALBUM',
-      description: 'Explosive energy and self-produced masterpieces including the global anthem "S-Class". Includes full 104-page photobook, cartoon postcard, mini poster, and limited edition sticker pack.',
-      bgColor: '#FEF9EC', // Elegant soft warm tint
-      inclusions: '104p Photobook  •  OOTD Poster  •  Random Selfie POB'
-    }
-  ];
+  const domainFilteredAlbums = useMemo(() => {
+    const filtered = filterAlbumsByDomain(mockAlbums, currentDomain, activeSubCategory);
+    return filtered.length >= 2 ? filtered : mockAlbums;
+  }, [currentDomain, activeSubCategory]);
+
+  const bgColors = ['#EAF3FD', '#FDF0F6', '#F3F5F8', '#FEF9EC', '#F5F3FF', '#ECFDF5'];
+
+  const slides = useMemo(() => {
+    return domainFilteredAlbums.slice(0, 5).map((alb, index) => ({
+      album: alb,
+      badgeText: alb.tag || 'FEATURED SELECTION',
+      headline: alb.title,
+      subheadline: `${alb.artist.toUpperCase()}  •  ${alb.type.toUpperCase()}`,
+      description: alb.description,
+      bgColor: bgColors[index % bgColors.length],
+      inclusions: alb.inclusions?.slice(0, 2).join('  •  ') || 'Sealed Official Package',
+    }));
+  }, [domainFilteredAlbums]);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isAlbumHovered, setIsAlbumHovered] = useState(false);
 
+  // Reset index when domain/slides change
   useEffect(() => {
-    if (isPaused) return;
+    setActiveIndex(0);
+  }, [currentDomain, activeSubCategory]);
+
+  useEffect(() => {
+    if (isPaused || slides.length === 0) return;
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % slides.length);
     }, 6000);
     return () => clearInterval(interval);
   }, [isPaused, slides.length]);
 
-  const current = slides[activeIndex];
-  const album = current.album;
+  const current = slides[activeIndex] || slides[0];
+  const album = current?.album || mockAlbums[0];
   const isThisPlaying = isPlaying && currentAlbum?.id === album.id;
 
   const handleNext = () => setActiveIndex((prev) => (prev + 1) % slides.length);
@@ -173,7 +161,7 @@ export const HeroBanner: React.FC = () => {
           {/* Main Title - Artistic Editorial Display Headline */}
           <h1
             style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
+              fontFamily: activeConfig.fontFamily,
               fontSize: 'clamp(54px, 6.8vw, 82px)',
               fontWeight: 800,
               fontStyle: 'italic',

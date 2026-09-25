@@ -16,17 +16,28 @@ import {
 export const DomainSelectionModal: React.FC = () => {
   const {
     currentDomain,
+    activeSubCategory,
     isModalOpen,
     closeDomainModal,
     selectDomain,
+    selectSubCategory,
   } = useDomainTheme();
 
-  const [selectedTemp, setSelectedTemp] = useState<DomainThemeId>(currentDomain);
+  const [selectedDomainTemp, setSelectedDomainTemp] = useState<DomainThemeId>(currentDomain);
+  const [selectedSubTemp, setSelectedSubTemp] = useState<string>(activeSubCategory || 'all');
 
   if (!isModalOpen) return null;
 
+  const activeThemeConfig = DOMAIN_THEMES.find((t) => t.id === selectedDomainTemp) || DOMAIN_THEMES[0];
+
+  const handleDomainClick = (id: DomainThemeId) => {
+    setSelectedDomainTemp(id);
+    setSelectedSubTemp('all');
+  };
+
   const handleConfirm = () => {
-    selectDomain(selectedTemp);
+    selectDomain(selectedDomainTemp);
+    selectSubCategory(selectedSubTemp);
     closeDomainModal();
   };
 
@@ -66,7 +77,7 @@ export const DomainSelectionModal: React.FC = () => {
       <div
         style={{
           width: '100%',
-          maxWidth: '560px',
+          maxWidth: '580px',
           backgroundColor: '#ffffff',
           color: '#0f172a',
           borderRadius: '4px',
@@ -95,7 +106,7 @@ export const DomainSelectionModal: React.FC = () => {
               letterSpacing: '0.04em',
             }}
           >
-            Lĩnh Vực Bạn Quan Tâm
+            SELECT YOUR INTERESTED DOMAIN
           </h3>
           <p
             style={{
@@ -104,11 +115,11 @@ export const DomainSelectionModal: React.FC = () => {
               margin: '3px 0 0 0',
             }}
           >
-            Chọn lĩnh vực bạn yêu thích nhất để tùy biến giao diện và font chữ phù hợp.
+            Select your favorite domain &amp; genre to customize interface, typography, and content.
           </p>
         </div>
 
-        {/* Compact Category List/Grid - Vector Icons, 4px Radius */}
+        {/* Category Grid - Vector Icons, 4px Radius */}
         <div
           style={{
             padding: '16px 20px',
@@ -119,15 +130,12 @@ export const DomainSelectionModal: React.FC = () => {
           }}
         >
           {DOMAIN_THEMES.map((theme) => {
-            const isSelected = selectedTemp === theme.id;
+            const isSelected = selectedDomainTemp === theme.id;
 
             return (
               <div
                 key={theme.id}
-                onClick={() => {
-                  setSelectedTemp(theme.id);
-                  selectDomain(theme.id);
-                }}
+                onClick={() => handleDomainClick(theme.id)}
                 style={{
                   borderRadius: '4px',
                   padding: '10px 12px',
@@ -211,7 +219,64 @@ export const DomainSelectionModal: React.FC = () => {
           })}
         </div>
 
-        {/* Compact Footer Action Button */}
+        {/* Sub-Category Pills for Selected Domain */}
+        {activeThemeConfig && activeThemeConfig.subCategories && activeThemeConfig.subCategories.length > 0 && (
+          <div
+            style={{
+              padding: '12px 20px',
+              backgroundColor: '#ffffff',
+              borderTop: '1px solid #f1f5f9',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '11px',
+                fontWeight: 800,
+                color: '#64748b',
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                marginBottom: '8px',
+              }}
+            >
+              GENRES IN {activeThemeConfig.name.toUpperCase()}:
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '6px',
+              }}
+            >
+              {activeThemeConfig.subCategories.map((sub) => {
+                const isSubSelected = selectedSubTemp === sub.id;
+                return (
+                  <button
+                    key={sub.id}
+                    type="button"
+                    onClick={() => setSelectedSubTemp(sub.id)}
+                    style={{
+                      padding: '5px 10px',
+                      fontSize: '11px',
+                      fontWeight: isSubSelected ? 800 : 600,
+                      borderRadius: '4px',
+                      border: isSubSelected ? '1.5px solid #000000' : '1px solid #cbd5e1',
+                      backgroundColor: isSubSelected ? '#000000' : '#f8fafc',
+                      color: isSubSelected ? '#ffffff' : '#334155',
+                      cursor: 'pointer',
+                      transition: 'all 0.12s ease',
+                      fontFamily: activeThemeConfig.fontFamily,
+                    }}
+                    className="hover:border-slate-800"
+                  >
+                    {sub.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Footer Action Button */}
         <div
           style={{
             padding: '14px 20px',
@@ -240,7 +305,7 @@ export const DomainSelectionModal: React.FC = () => {
             className="hover:bg-slate-800"
             type="button"
           >
-            <span>Bắt Đầu Khám Phá</span>
+            <span>Start Exploring</span>
             <ArrowRight style={{ width: '15px', height: '15px' }} />
           </button>
         </div>

@@ -3,6 +3,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useCartWishlist } from '../context/CartWishlistContext';
 import { usePlayer } from '../context/PlayerContext';
+import { useDomainTheme } from '../context/DomainContext';
+import { filterAlbumsByDomain, filterArtistsByDomain } from '../utils/domainFilters';
 import { mockAlbums, mockArtists } from '../data/mockData';
 import { Album } from '../types';
 import { 
@@ -33,6 +35,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
 }) => {
   const { addToCart, toggleWishlist, isWishlisted, formatPrice } = useCartWishlist();
   const { playTrack, currentAlbum, isPlaying } = usePlayer();
+  const { currentDomain, activeSubCategory, selectSubCategory, activeConfig } = useDomainTheme();
 
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [activeArtist, setActiveArtist] = useState<string>(selectedArtistFilter || 'all');
@@ -62,16 +65,26 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
     setActiveArtist('all');
     setActiveType('all');
     setInStockOnly(false);
+    selectSubCategory('all');
     if (setSelectedArtistFilter) setSelectedArtistFilter('all');
   };
 
+  // 1. First filter by Domain & Subcategory from DomainContext
+  const domainFilteredAlbums = useMemo(() => {
+    return filterAlbumsByDomain(mockAlbums, currentDomain, activeSubCategory);
+  }, [currentDomain, activeSubCategory]);
+
+  const domainFilteredArtists = useMemo(() => {
+    return filterArtistsByDomain(mockArtists, currentDomain, activeSubCategory);
+  }, [currentDomain, activeSubCategory]);
+
   const filteredArtists = useMemo(() => {
-    if (activeCategory === 'all') return mockArtists;
-    return mockArtists.filter((artist) => artist.category === activeCategory);
-  }, [activeCategory]);
+    if (activeCategory === 'all') return domainFilteredArtists;
+    return domainFilteredArtists.filter((artist) => artist.category === activeCategory);
+  }, [activeCategory, domainFilteredArtists]);
 
   const filteredAlbums = useMemo(() => {
-    return mockAlbums.filter((album) => {
+    return domainFilteredAlbums.filter((album) => {
       if (activeCategory !== 'all' && album.category !== activeCategory) return false;
       if (activeArtist !== 'all' && album.artistId !== activeArtist) return false;
       if (activeType !== 'all' && album.type !== activeType) return false;
@@ -94,9 +107,9 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
       if (activeSort === 'price-desc') return b.priceUSD - a.priceUSD;
       return 0;
     });
-  }, [activeCategory, activeArtist, activeType, activeSort, inStockOnly, searchQuery]);
+  }, [domainFilteredAlbums, activeCategory, activeArtist, activeType, activeSort, inStockOnly, searchQuery]);
 
-  const hasActiveFilters = activeArtist !== 'all' || activeType !== 'all' || inStockOnly || activeCategory !== 'all';
+  const hasActiveFilters = activeArtist !== 'all' || activeType !== 'all' || inStockOnly || activeCategory !== 'all' || activeSubCategory !== 'all';
   const selectedArtistObj = mockArtists.find((a) => a.id === activeArtist);
 
   // Custom artist dropdown state
@@ -173,26 +186,20 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
               </span>
             </div>
 
-            {/* Universe Tabs — right-aligned, underline style */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '28px', overflowX: 'auto' }}>
-              {[
-                { id: 'all', label: 'All' },
-                { id: 'K-Pop', label: 'K-Pop' },
-                { id: 'Anime', label: 'Anime' },
-                { id: 'Movie', label: 'Cinema' },
-                { id: 'Gaming', label: 'Gaming' },
-              ].map((cat) => {
-                const isActive = activeCategory === cat.id;
+            {/* Universe Sub-Category Tabs — right-aligned, underline style */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', overflowX: 'auto', maxWidth: '100%' }}>
+              {activeConfig.subCategories.map((sub) => {
+                const isActive = activeSubCategory === sub.id;
                 return (
                   <button
-                    key={cat.id}
-                    onClick={() => handleCategoryChange(cat.id)}
+                    key={sub.id}
+                    onClick={() => selectSubCategory(sub.id)}
                     type="button"
                     style={{
                       padding: '0 0 10px 0',
                       fontSize: '11px',
                       fontWeight: isActive ? 800 : 600,
-                      letterSpacing: '0.14em',
+                      letterSpacing: '0.08em',
                       textTransform: 'uppercase',
                       color: isActive ? '#0f172a' : '#94a3b8',
                       background: 'none',
@@ -201,9 +208,10 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                       cursor: 'pointer',
                       whiteSpace: 'nowrap',
                       transition: 'all 0.2s ease',
+                      fontFamily: activeConfig.fontFamily,
                     }}
                   >
-                    {cat.label}
+                    {sub.name}
                   </button>
                 );
               })}
@@ -224,7 +232,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
           >
             <h2
               style={{
-                fontFamily: "'Playfair Display', Georgia, serif",
+                fontFamily: activeConfig.fontFamily,
                 fontSize: 'clamp(28px, 3.2vw, 48px)',
                 lineHeight: 1.1,
                 fontWeight: 800,
@@ -233,9 +241,9 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                 margin: 0,
               }}
             >
-              Curated{' '}
-              <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic' }}>
-                Discography
+              {activeConfig.name}{' '}
+              <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic', fontFamily: 'serif' }}>
+                Collection
               </em>
             </h2>
 
