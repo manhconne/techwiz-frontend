@@ -1872,6 +1872,10 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                   alignItems: 'center',
                   gap: '4px',
                   overflowX: 'auto',
+                  flexShrink: 0,
+                  position: 'sticky',
+                  top: 0,
+                  zIndex: 20,
                 }}
               >
                 {[
@@ -1899,6 +1903,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                         color: isActive ? '#000000' : '#64748b',
                         cursor: 'pointer',
                         whiteSpace: 'nowrap',
+                        flexShrink: 0,
                       }}
                     >
                       {t.label}
@@ -2303,6 +2308,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
+                  flexShrink: 0,
                 }}
               >
                 <span style={{ fontSize: '10px', fontFamily: 'monospace', color: '#94a3b8' }}>
