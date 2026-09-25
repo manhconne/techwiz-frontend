@@ -1503,12 +1503,10 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                                   style={{
                                     fontSize: '10px',
                                     fontFamily: 'monospace',
-                                    backgroundColor: '#f1f5f9',
-                                    color: '#1e293b',
                                     padding: '2px 6px',
-                                    border: '1px solid #e2e8f0',
                                     fontWeight: 600,
                                   }}
+                                  className="bg-slate-100 text-slate-800 border border-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700"
                                 >
                                   {m}
                                 </span>
@@ -1518,11 +1516,10 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                                   style={{
                                     fontSize: '10px',
                                     fontFamily: 'monospace',
-                                    backgroundColor: '#e2e8f0',
-                                    color: '#475569',
                                     padding: '2px 5px',
                                     fontWeight: 700,
                                   }}
+                                  className="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200"
                                 >
                                   +{artist.members.length - 4} more
                                 </span>

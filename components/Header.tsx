@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useGoogleLanguage } from './GoogleTranslate';
 import { useCartWishlist } from '../context/CartWishlistContext';
 import { useAuth } from '../context/AuthContext';
+import { useDomainTheme } from '../context/DomainContext';
 import {
   Menu,
   Search,
@@ -13,6 +14,8 @@ import {
   ShoppingBag,
   FileText,
   Globe,
+  Sun,
+  Moon,
   X,
   ShieldCheck,
   Sparkles,
@@ -71,6 +74,7 @@ export const Header: React.FC<HeaderProps> = ({
   const { language, toggleLanguage } = useGoogleLanguage();
   const { cartCount, wishlistCount, setIsCartOpen, setIsWishlistOpen, currency, toggleCurrency } = useCartWishlist();
   const { user, isLoggedIn, loginAs, logout } = useAuth();
+  const { themeMode, toggleThemeMode } = useDomainTheme();
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
@@ -390,6 +394,34 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <Globe style={{ width: '17px', height: '17px' }} />
             <span>{language === 'en' ? 'EN' : 'VI'}</span>
+          </button>
+
+          {/* Light / Dark Mode Toggle Button */}
+          <button
+            onClick={toggleThemeMode}
+            title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            type="button"
+            className="notranslate hover:bg-slate-100 hover:scale-105"
+            style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: themeMode === 'dark' ? '#f59e0b' : '#000000',
+              backgroundColor: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+              marginLeft: '2px',
+            }}
+          >
+            {themeMode === 'dark' ? (
+              <Sun style={{ width: '22px', height: '22px', strokeWidth: 2 }} />
+            ) : (
+              <Moon style={{ width: '22px', height: '22px', strokeWidth: 2 }} />
+            )}
           </button>
 
           {/* Admin shortcut if admin */}

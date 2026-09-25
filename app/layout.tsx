@@ -4,7 +4,9 @@ import './globals.css';
 import { CartWishlistProvider } from '../context/CartWishlistContext';
 import { AuthProvider } from '../context/AuthContext';
 import { PlayerProvider } from '../context/PlayerContext';
+import { DomainProvider } from '../context/DomainContext';
 import { GoogleTranslate } from '../components/GoogleTranslate';
+import { DomainSelectionModal } from '../components/DomainSelectionModal';
 
 const fontSans = Plus_Jakarta_Sans({
   subsets: ['latin', 'vietnamese'],
@@ -29,11 +31,14 @@ export default function RootLayout({
       <body>
         <GoogleTranslate />
         <AuthProvider>
-          <CartWishlistProvider>
-            <PlayerProvider>
-              {children}
-            </PlayerProvider>
-          </CartWishlistProvider>
+          <DomainProvider>
+            <CartWishlistProvider>
+              <PlayerProvider>
+                {children}
+                <DomainSelectionModal />
+              </PlayerProvider>
+            </CartWishlistProvider>
+          </DomainProvider>
         </AuthProvider>
       </body>
     </html>
