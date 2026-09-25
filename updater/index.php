@@ -24,7 +24,44 @@ if (!file_exists($configFile)) {
 
 $config = json_decode(file_get_contents($configFile), true) ?: [];
 
+// CLI Worker Mode
+if (php_sapi_name() === 'cli' && isset($argv[1]) && $argv[1] === '--run-update') {
+    $cliTag = $argv[2] ?? 'latest';
+    $cliSkip = ($argv[3] ?? '0') === '1';
+    execute_full_update($cliTag, $cliSkip, $config);
+    exit(0);
+}
+
 // Helper functions
+function getUpdateStatusFile() {
+    return __DIR__ . '/.update_status.json';
+}
+
+function updateState($step = null, $log = null, $finished = null, $success = null, $newVersion = null) {
+    $statusFile = getUpdateStatusFile();
+    $state = [];
+    if (file_exists($statusFile)) {
+        $raw = @file_get_contents($statusFile);
+        $state = json_decode($raw, true) ?: [];
+    }
+    
+    if ($step !== null) $state['step'] = $step;
+    if ($finished !== null) {
+        $state['finished'] = (bool)$finished;
+        $state['running'] = !$finished;
+    }
+    if ($success !== null) $state['success'] = (bool)$success;
+    if ($newVersion !== null) $state['new_version'] = $newVersion;
+    
+    if ($log !== null) {
+        if (!isset($state['logs']) || !is_array($state['logs'])) $state['logs'] = [];
+        $state['logs'][] = $log;
+    }
+    
+    $state['updated_at'] = time();
+    @file_put_contents($statusFile, json_encode($state, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+}
+
 function checkAuth($config) {
     if (empty($config['secret_key'])) return true;
     if (isset($_SESSION['updater_auth']) && $_SESSION['updater_auth'] === true) return true;
@@ -41,15 +78,6 @@ function sendJson($data, $statusCode = 200) {
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     exit;
-}
-
-function sendSSE($event, $data) {
-    echo "event: {$event}\n";
-    echo "data: " . json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n\n";
-    if (ob_get_level() > 0) {
-        ob_flush();
-    }
-    flush();
 }
 
 function githubApiRequest($url, $token) {
@@ -157,6 +185,11 @@ if ($action === 'logout') {
 
 if ($action && !checkAuth($config)) {
     sendJson(['success' => false, 'message' => 'Chưa xác thực hoặc phiên đăng nhập đã hết hạn.'], 403);
+}
+
+// Release session lock to allow concurrent requests without blocking
+if ($action !== 'login') {
+    @session_write_close();
 }
 
 // Get current system status
@@ -283,33 +316,29 @@ if ($action === 'save_config' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     sendJson(['success' => true, 'message' => 'Lưu cấu hình thành công!']);
 }
 
-// Perform Live Update with SSE Stream
-if ($action === 'perform_update') {
-    header('Content-Type: text/event-stream');
-    header('Cache-Control: no-cache');
-    header('Connection: keep-alive');
-    header('X-Accel-Buffering: no'); // Disable FastCGI buffer on aaPanel Nginx
+function execute_full_update($tag, $skipBuild, $config) {
+    @ignore_user_abort(true);
+    @set_time_limit(0);
+    @ini_set('max_execution_time', '0');
+    @ini_set('memory_limit', '1024M');
 
-    $tag = $_GET['tag'] ?? 'latest';
-    $skipBuild = isset($_GET['skip_build']) && $_GET['skip_build'] === '1';
     $targetDir = realpath($config['target_dir']) ?: $config['target_dir'];
     $backupDir = $config['backup_dir'] ?? ($targetDir . '_backups');
     $repo = $config['github_repo'];
     $token = $config['github_token'];
 
-    sendSSE('log', ['type' => 'info', 'text' => "🚀 Bắt đầu tiến trình cập nhật phiên bản: [{$tag}]..."]);
+    updateState(1, ['type' => 'info', 'text' => "🚀 Bắt đầu tiến trình cập nhật phiên bản: [{$tag}]..."]);
 
     // 1. Resolve release info
-    sendSSE('step', ['step' => 1, 'text' => 'Truy vấn thông tin Release từ GitHub...']);
+    updateState(1, ['type' => 'info', 'text' => 'Truy vấn thông tin Release từ GitHub...']);
     $releaseUrl = ($tag === 'latest') 
         ? "https://api.github.com/repos/{$repo}/releases/latest"
         : "https://api.github.com/repos/{$repo}/releases/tags/{$tag}";
 
     $relRes = githubApiRequest($releaseUrl, $token);
     if ($relRes['code'] !== 200) {
-        sendSSE('log', ['type' => 'error', 'text' => "❌ Không lấy được thông tin release {$tag}. Mã lỗi: {$relRes['code']}"]);
-        sendSSE('finish', ['success' => false]);
-        exit;
+        updateState(null, ['type' => 'error', 'text' => "❌ Không lấy được thông tin release {$tag}. Mã lỗi: {$relRes['code']}"], true, false);
+        return;
     }
 
     $relData = json_decode($relRes['body'], true);
@@ -321,17 +350,17 @@ if ($action === 'perform_update') {
         foreach ($relData['assets'] as $asset) {
             if (substr($asset['name'], -4) === '.zip') {
                 $zipballUrl = $asset['browser_download_url'];
-                sendSSE('log', ['type' => 'info', 'text' => "📦 Tìm thấy tệp asset đính kèm: {$asset['name']}"]);
+                updateState(null, ['type' => 'info', 'text' => "📦 Tìm thấy tệp asset đính kèm: {$asset['name']}"]);
                 break;
             }
         }
     }
 
-    sendSSE('log', ['type' => 'success', 'text' => "✅ Đã xác định phiên bản [{$actualTag}] (Tên: " . ($relData['name'] ?? $actualTag) . ")"]);
+    updateState(null, ['type' => 'success', 'text' => "✅ Đã xác định phiên bản [{$actualTag}] (Tên: " . ($relData['name'] ?? $actualTag) . ")"]);
 
     // 2. Backup current directory
     if (!empty($config['max_backups']) && $config['max_backups'] > 0 && is_dir($targetDir)) {
-        sendSSE('step', ['step' => 2, 'text' => 'Tạo bản sao lưu dự phòng (Backup)...']);
+        updateState(2, ['type' => 'info', 'text' => 'Tạo bản sao lưu dự phòng (Backup)...']);
         if (!is_dir($backupDir)) {
             @mkdir($backupDir, 0755, true);
         }
@@ -339,14 +368,14 @@ if ($action === 'perform_update') {
         $cmdBackup = "tar --exclude='node_modules' --exclude='.next' --exclude='.git' -czf " . escapeshellarg($backupFile) . " -C " . escapeshellarg($targetDir) . " . 2>&1";
         @exec($cmdBackup, $bOutput, $bCode);
         if ($bCode === 0) {
-            sendSSE('log', ['type' => 'success', 'text' => "✅ Bản sao lưu đã lưu: " . basename($backupFile)]);
+            updateState(null, ['type' => 'success', 'text' => "✅ Bản sao lưu đã lưu: " . basename($backupFile)]);
         } else {
-            sendSSE('log', ['type' => 'warn', 'text' => "⚠️ Không tạo được bản nén backup (bỏ qua): " . implode(' ', $bOutput)]);
+            updateState(null, ['type' => 'warn', 'text' => "⚠️ Không tạo được bản nén backup (bỏ qua): " . implode(' ', $bOutput)]);
         }
     }
 
     // 3. Preserve critical environment files
-    sendSSE('step', ['step' => 3, 'text' => 'Bảo vệ các tệp cấu hình môi trường (.env, .env.local...)...']);
+    updateState(3, ['type' => 'info', 'text' => 'Bảo vệ các tệp cấu hình môi trường (.env, .env.local...)...']);
     $tempEnvDir = sys_get_temp_dir() . '/techwiz_env_' . time();
     @mkdir($tempEnvDir, 0777, true);
     $preservedList = $config['preserve_files'] ?? ['.env', '.env.local', '.env.production', 'updater'];
@@ -356,30 +385,27 @@ if ($action === 'perform_update') {
         $sourcePath = rtrim($targetDir, '/') . '/' . ltrim($item, '/');
         if (file_exists($sourcePath)) {
             $destPath = $tempEnvDir . '/' . ltrim($item, '/');
-            if (is_dir($sourcePath)) {
-                // Ignore updater dir itself or copy
-            } else {
+            if (!is_dir($sourcePath)) {
                 @copy($sourcePath, $destPath);
                 $savedPreserved[] = $item;
-                sendSSE('log', ['type' => 'info', 'text' => "🔒 Đã lưu trữ an toàn: {$item}"]);
+                updateState(null, ['type' => 'info', 'text' => "🔒 Đã lưu trữ an toàn: {$item}"]);
             }
         }
     }
 
     // 4. Download Release Zip
-    sendSSE('step', ['step' => 4, 'text' => "Đang tải mã nguồn bản phát hành [{$actualTag}]..."]);
+    updateState(4, ['type' => 'info', 'text' => "Đang tải mã nguồn bản phát hành [{$actualTag}]..."]);
     $tempZip = sys_get_temp_dir() . '/techwiz_release_' . time() . '.zip';
     $downloadOk = downloadGithubZip($zipballUrl, $token, $tempZip);
     
     if (!$downloadOk || !file_exists($tempZip) || filesize($tempZip) < 100) {
-        sendSSE('log', ['type' => 'error', 'text' => "❌ Tải file nén Release thất bại từ GitHub. Vui lòng kiểm tra GitHub Token hoặc đường truyền!"]);
-        sendSSE('finish', ['success' => false]);
-        exit;
+        updateState(null, ['type' => 'error', 'text' => "❌ Tải file nén Release thất bại từ GitHub. Vui lòng kiểm tra GitHub Token hoặc đường truyền!"], true, false);
+        return;
     }
-    sendSSE('log', ['type' => 'success', 'text' => "✅ Đã tải về file nén (" . round(filesize($tempZip) / 1024 / 1024, 2) . " MB)"]);
+    updateState(null, ['type' => 'success', 'text' => "✅ Đã tải về file nén (" . round(filesize($tempZip) / 1024 / 1024, 2) . " MB)"]);
 
     // 5. Extract & Unwrap Zip
-    sendSSE('step', ['step' => 5, 'text' => 'Giải nén và cập nhật mã nguồn...']);
+    updateState(5, ['type' => 'info', 'text' => 'Giải nén và cập nhật mã nguồn...']);
     $extractTemp = sys_get_temp_dir() . '/techwiz_extracted_' . time();
     @mkdir($extractTemp, 0777, true);
 
@@ -389,17 +415,14 @@ if ($action === 'perform_update') {
         $zip->extractTo($extractTemp);
         $zip->close();
     } else {
-        // Fallback to system unzip
         @exec("unzip -q " . escapeshellarg($tempZip) . " -d " . escapeshellarg($extractTemp), $uOut, $uCode);
         if ($uCode !== 0) {
-            sendSSE('log', ['type' => 'error', 'text' => "❌ Giải nén thất bại. ZipArchive và unzip đều không mở được file!"]);
-            sendSSE('finish', ['success' => false]);
-            exit;
+            updateState(null, ['type' => 'error', 'text' => "❌ Giải nén thất bại. ZipArchive và unzip đều không mở được file!"], true, false);
+            return;
         }
     }
     @unlink($tempZip);
 
-    // GitHub zipball wraps all files inside a root folder: manhconne-techwiz-frontend-xxxx
     $files = scandir($extractTemp);
     $subDirs = array_values(array_filter($files, function($f) use ($extractTemp) {
         return !in_array($f, ['.', '..']) && is_dir($extractTemp . '/' . $f);
@@ -408,15 +431,14 @@ if ($action === 'perform_update') {
     $sourceRoot = $extractTemp;
     if (count($subDirs) === 1 && count(array_diff($files, ['.', '..'])) === 1) {
         $sourceRoot = $extractTemp . '/' . $subDirs[0];
-        sendSSE('log', ['type' => 'info', 'text' => "📦 Tự động nhận diện và bóc tách thư mục gốc: {$subDirs[0]}"]);
+        updateState(null, ['type' => 'info', 'text' => "📦 Tự động nhận diện và bóc tách thư mục gốc: {$subDirs[0]}"]);
     }
 
     if (!is_dir($targetDir)) {
         @mkdir($targetDir, 0755, true);
     }
 
-    // Sync files using rsync or cp
-    sendSSE('log', ['type' => 'info', 'text' => "🔄 Đang đồng bộ tệp tin vào thư mục: {$targetDir}..."]);
+    updateState(null, ['type' => 'info', 'text' => "🔄 Đang đồng bộ tệp tin vào thư mục: {$targetDir}..."]);
     $rsyncAvailable = trim(@shell_exec("which rsync 2>/dev/null") ?: '');
     if (!empty($rsyncAvailable)) {
         $syncCmd = "rsync -a --delete --exclude='node_modules' --exclude='.next' --exclude='.git' --exclude='updater' " . escapeshellarg($sourceRoot . '/') . " " . escapeshellarg($targetDir . '/') . " 2>&1";
@@ -425,29 +447,25 @@ if ($action === 'perform_update') {
     }
     @exec($syncCmd, $sOutput, $sCode);
 
-    // 6. Restore preserved files
+    // Restore preserved files
     foreach ($savedPreserved as $item) {
         $src = $tempEnvDir . '/' . ltrim($item, '/');
         $dst = rtrim($targetDir, '/') . '/' . ltrim($item, '/');
         if (file_exists($src)) {
             @copy($src, $dst);
-            sendSSE('log', ['type' => 'info', 'text' => "🔄 Khôi phục tệp bảo vệ: {$item}"]);
+            updateState(null, ['type' => 'info', 'text' => "🔄 Khôi phục tệp bảo vệ: {$item}"]);
         }
     }
-    // Record new version
     file_put_contents(rtrim($targetDir, '/') . '/.current_version', $actualTag);
-
-    // Clean temp dirs
     @exec("rm -rf " . escapeshellarg($extractTemp) . " " . escapeshellarg($tempEnvDir));
-    sendSSE('log', ['type' => 'success', 'text' => "✅ Cập nhật mã nguồn thành công!"]);
+    updateState(null, ['type' => 'success', 'text' => "✅ Cập nhật mã nguồn thành công!"]);
 
-    // 7. Run Build Commands
+    // 6. Run Build Commands
     if ($skipBuild) {
-        sendSSE('step', ['step' => 6, 'text' => 'Bỏ qua bước build (theo yêu cầu).']);
+        updateState(6, ['type' => 'info', 'text' => 'Bỏ qua bước build (theo yêu cầu).']);
     } else {
-        sendSSE('step', ['step' => 6, 'text' => 'Chạy lệnh build (npm install & build)...']);
+        updateState(6, ['type' => 'info', 'text' => 'Chạy lệnh build (npm install & build)...']);
 
-        // Auto-detect Node paths on aaPanel
         $nodePath = trim(@shell_exec('which node 2>/dev/null') ?: '');
         $nodeDir = $nodePath ? dirname($nodePath) : '';
         $targetBin = rtrim($targetDir, '/') . '/node_modules/.bin';
@@ -467,8 +485,7 @@ if ($action === 'perform_update') {
         $fullPathStr = implode(':', array_unique(array_filter($pathDirs))) . ':' . (getenv('PATH') ?: '');
 
         $cmd = "export PATH=" . escapeshellarg($fullPathStr) . " && cd " . escapeshellarg($targetDir) . " && " . $config['build_command'] . " 2>&1";
-        
-        sendSSE('log', ['type' => 'info', 'text' => "Thực thi: {$config['build_command']}"]);
+        updateState(null, ['type' => 'info', 'text' => "Thực thi: {$config['build_command']}"]);
 
         $descriptors = [
             0 => ['pipe', 'r'],
@@ -483,103 +500,265 @@ if ($action === 'perform_update') {
         ]);
         $process = proc_open($cmd, $descriptors, $pipes, $targetDir, $env);
 
-        $buildSuccess = false;
         if (is_resource($process)) {
             fclose($pipes[0]);
+            
+            $batchLines = [];
+            $lastWriteTime = microtime(true);
+            $statusFile = getUpdateStatusFile();
+
             while (!feof($pipes[1])) {
                 $line = fgets($pipes[1]);
                 if ($line !== false && trim($line) !== '') {
-                    sendSSE('log', ['type' => 'terminal', 'text' => rtrim($line)]);
+                    $batchLines[] = ['type' => 'terminal', 'text' => rtrim($line)];
+                }
+                if ((microtime(true) - $lastWriteTime > 0.15 && !empty($batchLines)) || count($batchLines) >= 8) {
+                    $raw = @file_get_contents($statusFile);
+                    $st = json_decode($raw, true) ?: [];
+                    if (!isset($st['logs'])) $st['logs'] = [];
+                    foreach ($batchLines as $bl) {
+                        $st['logs'][] = $bl;
+                    }
+                    $st['updated_at'] = time();
+                    @file_put_contents($statusFile, json_encode($st, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+                    $batchLines = [];
+                    $lastWriteTime = microtime(true);
                 }
             }
+            if (!empty($batchLines)) {
+                $raw = @file_get_contents($statusFile);
+                $st = json_decode($raw, true) ?: [];
+                if (!isset($st['logs'])) $st['logs'] = [];
+                foreach ($batchLines as $bl) {
+                    $st['logs'][] = $bl;
+                }
+                $st['updated_at'] = time();
+                @file_put_contents($statusFile, json_encode($st, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+            }
+
             fclose($pipes[1]);
             fclose($pipes[2]);
             $exitCode = proc_close($process);
 
             if ($exitCode === 0) {
-                $buildSuccess = true;
-                sendSSE('log', ['type' => 'success', 'text' => "Quá trình Build hoàn tất xuất sắc (Mã thoát: 0)!"]);
+                updateState(null, ['type' => 'success', 'text' => "Quá trình Build hoàn tất xuất sắc (Mã thoát: 0)!"]);
             } else {
-                sendSSE('log', ['type' => 'warn', 'text' => "Quá trình build kết thúc với mã {$exitCode}. Xem chi tiết lỗi bên trên."]);
+                updateState(null, ['type' => 'warn', 'text' => "Quá trình build kết thúc với mã {$exitCode}. Xem chi tiết log bên trên."]);
             }
         } else {
-            sendSSE('log', ['type' => 'error', 'text' => "Không thể khởi tạo tiến trình proc_open để build!"]);
+            updateState(null, ['type' => 'error', 'text' => "Không thể khởi tạo tiến trình proc_open để build!"]);
         }
     }
 
-    // 8. Restart aaPanel Node Service / PM2 Process
+    // 7. Restart aaPanel Node Service / PM2 Process
     if (!empty($config['auto_restart_pm2']) && !empty($config['pm2_process_name'])) {
-        $projName = $config['pm2_process_name'];
-        sendSSE('step', ['step' => 7, 'text' => "Đang tự động khởi động lại dịch vụ [{$projName}]..."]);
+        $projName = $config['pm2_process_name'] ?: 'techwiz_frontend';
+        updateState(7, ['type' => 'info', 'text' => "Đang tự động khởi động lại dịch vụ [{$projName}]..."]);
         
         $restarted = false;
 
-        // Method 1: aaPanel Python Node Manager API
+        // Method 1: aaPanel Python Node Manager API (with 4s timeout & non-interactive sudo)
         $pyPath = "/www/server/panel/pyenv/bin/python";
         if (file_exists($pyPath)) {
             $pyScript = "import sys; sys.path.insert(0, '/www/server/panel/class');
 try:
     import public; from projectModel.nodejsModel import main;
-    p = public.dict_obj(); p.project_name = '{$projName}';
+    p = public.dict_obj(); p.project_name = '{$projName}'; p.name = '{$projName}';
     res = main().restart_project(p);
-    print(res)
+    print('AAPANEL_RES:' + str(res))
 except Exception as e:
     try:
         sys.path.insert(0, '/www/server/panel/plugin/nodejs');
         import nodejs_main;
         nm = nodejs_main.nodejs_main();
-        p = public.dict_obj(); p.name = '{$projName}';
-        print(nm.restart_project(p))
+        p = public.dict_obj(); p.name = '{$projName}'; p.project_name = '{$projName}';
+        print('AAPANEL_PLUGIN_RES:' + str(nm.restart_project(p)))
     except Exception as e2:
         print('ERR:' + str(e2))";
 
-            // Try standard and sudo
-            $pyCmd = "{$pyPath} -c " . escapeshellarg($pyScript) . " 2>&1";
+            $pyCmd = "timeout 4s {$pyPath} -c " . escapeshellarg($pyScript) . " 2>&1";
             $pyOut = trim(@shell_exec($pyCmd) ?: '');
-            if (strpos($pyOut, 'ERR') !== false || strpos($pyOut, 'Permission denied') !== false || empty($pyOut)) {
-                $pyCmd = "sudo {$pyPath} -c " . escapeshellarg($pyScript) . " 2>&1";
-                $pyOut = trim(@shell_exec($pyCmd) ?: '');
-            }
 
             if (strpos($pyOut, 'True') !== false || strpos($pyOut, 'successfully') !== false || strpos($pyOut, 'true') !== false) {
                 $restarted = true;
-                sendSSE('log', ['type' => 'success', 'text' => "✅ Đã tự động kích hoạt Restart dịch vụ Node [{$projName}] trên aaPanel!"]);
+                updateState(null, ['type' => 'success', 'text' => "✅ Đã gửi lệnh Restart tới aaPanel Node Project Manager!"]);
+            } else if (strpos($pyOut, 'Permission denied') !== false || empty($pyOut)) {
+                $pySudoCmd = "timeout 4s sudo -n {$pyPath} -c " . escapeshellarg($pyScript) . " 2>&1";
+                $pySudoOut = trim(@shell_exec($pySudoCmd) ?: '');
+                if (strpos($pySudoOut, 'True') !== false || strpos($pySudoOut, 'successfully') !== false || strpos($pySudoOut, 'true') !== false) {
+                    $restarted = true;
+                    updateState(null, ['type' => 'success', 'text' => "✅ Đã gửi lệnh Restart tới aaPanel Node Project Manager (sudo)!"]);
+                }
             }
         }
 
-        // Method 2: PM2 (with sudo, PM2_HOME, or user PATH)
+        // Method 2: PM2 (with timeout 3s)
         if (!$restarted) {
             $pm2Cmd = "export PATH=" . escapeshellarg($fullPathStr) . "; " .
-                      "sudo pm2 reload {$projName} 2>&1 || sudo pm2 restart {$projName} 2>&1 || " .
-                      "PM2_HOME=/root/.pm2 pm2 reload {$projName} 2>&1 || " .
-                      "pm2 reload {$projName} 2>&1 || pm2 restart {$projName} 2>&1";
+                      "timeout 3s pm2 reload {$projName} 2>&1 || timeout 3s pm2 restart {$projName} 2>&1 || " .
+                      "PM2_HOME=/root/.pm2 timeout 3s pm2 reload {$projName} 2>&1 || " .
+                      "timeout 3s sudo -n pm2 reload {$projName} 2>&1";
             $pm2Out = trim(@shell_exec($pm2Cmd) ?: '');
 
             if (strpos($pm2Out, '[PM2] Applying action') !== false || strpos($pm2Out, 'online') !== false) {
                 $restarted = true;
-                sendSSE('log', ['type' => 'success', 'text' => "✅ Đã tự động làm mới tiến trình PM2 [{$projName}] thành công!"]);
+                updateState(null, ['type' => 'success', 'text' => "✅ Đã làm mới tiến trình PM2 [{$projName}] thành công!"]);
             }
         }
 
-        // Method 3: Port 3000 reload (user www owns port 3000)
+        // Method 3: Clean Port 3000 reload (Kill old & start in background)
         if (!$restarted) {
-            $killCmd = "fuser -k 3000/tcp 2>/dev/null || kill -9 $(lsof -t -i:3000 2>/dev/null) 2>/dev/null";
-            @shell_exec($killCmd);
-            sendSSE('log', ['type' => 'info', 'text' => "🔄 Đã gửi tín hiệu làm mới cổng 3000 cho tiến trình Node.js."]);
-            $restarted = true;
+            @shell_exec("timeout 2s fuser -k 3000/tcp 2>/dev/null; timeout 2s pkill -f 'next-server' 2>/dev/null");
+            usleep(300000); // 0.3s
+            
+            $startCmd = "cd " . escapeshellarg($targetDir) . " && export PATH=" . escapeshellarg($fullPathStr) . " && (npm run start || pnpm start || npx next start -p 3000) > " . escapeshellarg($targetDir . '/project.log') . " 2>&1 &";
+            @shell_exec($startCmd);
+            usleep(600000); // 0.6s
+
+            $checkPort = trim(@shell_exec("timeout 2s lsof -i:3000 2>/dev/null || timeout 2s ss -tlpn | grep :3000 2>/dev/null") ?: '');
+            if (!empty($checkPort)) {
+                $restarted = true;
+                updateState(null, ['type' => 'success', 'text' => "✅ Đã làm mới và kích hoạt tiến trình Node.js trên cổng 3000 thành công!"]);
+            }
         }
 
         if ($restarted) {
-            sendSSE('log', ['type' => 'success', 'text' => "🎉 Dịch vụ đã được khởi động lại thành công, mã nguồn mới đã nạp vào RAM!"]);
+            updateState(null, ['type' => 'success', 'text' => "🎉 Dịch vụ đã được cập nhật và khởi động lại thành công!"]);
         } else {
-            sendSSE('log', ['type' => 'warn', 'text' => "ℹ️ Nếu web chưa đổi ngay, hãy bấm nút 'Restart' trên giao diện aaPanel Node project."]);
+            updateState(null, ['type' => 'warn', 'text' => "ℹ️ Đã build code mới thành công. Hãy bấm nút 'Restart' trên mục Node Project của aaPanel để áp dụng."]);
         }
     }
 
-    sendSSE('step', ['step' => 8, 'text' => 'Cập nhật hoàn tất!']);
-    sendSSE('log', ['type' => 'success', 'text' => "CHÚC MỪNG: Dự án đã được nâng cấp thành công lên phiên bản [{$actualTag}]!"]);
-    sendSSE('finish', ['success' => true, 'new_version' => $actualTag]);
-    exit;
+    updateState(7, ['type' => 'success', 'text' => "CHÚC MỪNG: Dự án đã được nâng cấp thành công lên phiên bản [{$actualTag}]!"], true, true, $actualTag);
+}
+
+// Start Update Trigger (Async background execution)
+if ($action === 'start_update' || $action === 'perform_update') {
+    $tag = $_REQUEST['tag'] ?? 'latest';
+    $skipBuild = isset($_REQUEST['skip_build']) && ($_REQUEST['skip_build'] === '1' || $_REQUEST['skip_build'] === 'true');
+    $statusFile = getUpdateStatusFile();
+
+    if (file_exists($statusFile)) {
+        $existing = json_decode(@file_get_contents($statusFile), true);
+        if ($existing && !empty($existing['running']) && (time() - ($existing['updated_at'] ?? 0) < 120)) {
+            if ($action === 'perform_update') {
+                header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+                exit;
+            }
+            sendJson(['success' => false, 'message' => 'Một tiến trình cập nhật đang chạy. Vui lòng đợi!'], 400);
+        }
+    }
+
+    $initialState = [
+        'running' => true,
+        'finished' => false,
+        'success' => false,
+        'step' => 1,
+        'tag' => $tag,
+        'started_at' => time(),
+        'updated_at' => time(),
+        'logs' => [
+            ['type' => 'info', 'text' => "🚀 Khởi tạo tiến trình cập nhật phiên bản: [{$tag}]..."]
+        ]
+    ];
+    @file_put_contents($statusFile, json_encode($initialState, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+
+    if ($action === 'perform_update') {
+        if (function_exists('fastcgi_finish_request')) {
+            header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+            if (ob_get_level() > 0) {
+                @ob_end_flush();
+            }
+            @flush();
+            fastcgi_finish_request();
+            try {
+                execute_full_update($tag, $skipBuild, $config);
+            } catch (\Throwable $e) {
+                updateState(null, ['type' => 'error', 'text' => "❌ Lỗi hệ thống: " . $e->getMessage()], true, false);
+            }
+            exit;
+        } else {
+            $phpBin = trim(@shell_exec('which php 2>/dev/null') ?: '');
+            if (!$phpBin || !file_exists($phpBin)) {
+                $possiblePhps = glob('/www/server/php/*/bin/php') ?: [];
+                $phpBin = !empty($possiblePhps) ? end($possiblePhps) : 'php';
+            }
+            $cmd = escapeshellcmd($phpBin) . ' ' . escapeshellarg(__FILE__) . ' --run-update ' . escapeshellarg($tag) . ' ' . ($skipBuild ? '1' : '0') . ' > /dev/null 2>&1 &';
+            @exec($cmd);
+            header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+            exit;
+        }
+    }
+
+    if (function_exists('fastcgi_finish_request')) {
+        http_response_code(200);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['success' => true, 'message' => 'Đã kích hoạt tiến trình cập nhật.'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        if (ob_get_level() > 0) {
+            @ob_end_flush();
+        }
+        @flush();
+        fastcgi_finish_request();
+
+        try {
+            execute_full_update($tag, $skipBuild, $config);
+        } catch (\Throwable $e) {
+            updateState(null, ['type' => 'error', 'text' => "❌ Lỗi hệ thống: " . $e->getMessage()], true, false);
+        }
+        exit;
+    } else {
+        $phpBin = trim(@shell_exec('which php 2>/dev/null') ?: '');
+        if (!$phpBin || !file_exists($phpBin)) {
+            $possiblePhps = glob('/www/server/php/*/bin/php') ?: [];
+            $phpBin = !empty($possiblePhps) ? end($possiblePhps) : 'php';
+        }
+        $cmd = escapeshellcmd($phpBin) . ' ' . escapeshellarg(__FILE__) . ' --run-update ' . escapeshellarg($tag) . ' ' . ($skipBuild ? '1' : '0') . ' > /dev/null 2>&1 &';
+        @exec($cmd);
+        sendJson(['success' => true, 'message' => 'Đã kích hoạt tiến trình cập nhật qua CLI.']);
+        exit;
+    }
+}
+
+// Real-time Poll endpoint for terminal logs
+if ($action === 'poll_update') {
+    $statusFile = getUpdateStatusFile();
+    if (!file_exists($statusFile)) {
+        sendJson([
+            'running' => false,
+            'finished' => false,
+            'success' => false,
+            'step' => 0,
+            'offset' => 0,
+            'new_logs' => [],
+            'total_logs' => 0
+        ]);
+    }
+
+    $raw = @file_get_contents($statusFile);
+    $data = json_decode($raw, true) ?: [];
+    $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
+    
+    $allLogs = $data['logs'] ?? [];
+    $totalLogs = count($allLogs);
+    $newLogs = ($offset < $totalLogs) ? array_slice($allLogs, $offset) : [];
+
+    sendJson([
+        'running' => $data['running'] ?? false,
+        'finished' => $data['finished'] ?? false,
+        'success' => $data['success'] ?? false,
+        'step' => $data['step'] ?? 1,
+        'tag' => $data['tag'] ?? '',
+        'new_version' => $data['new_version'] ?? '',
+        'offset' => $offset,
+        'new_logs' => $newLogs,
+        'total_logs' => $totalLogs
+    ]);
+}
+
+// Reset Update State endpoint
+if ($action === 'reset_update') {
+    @unlink(getUpdateStatusFile());
+    sendJson(['success' => true, 'message' => 'Đã đặt lại trạng thái tiến trình cập nhật.']);
 }
 
 // ---------------- FRONTEND HTML / DASHBOARD ----------------
@@ -987,7 +1166,12 @@ $isLoggedIn = checkAuth($config);
               <div style="display:flex; align-items:center; gap:8px;">
                 Tiến Trình Cập Nhật
               </div>
-              <span id="statusBadge" class="badge badge-info">CHỜ</span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button class="btn btn-secondary btn-sm" onclick="resetUpdateState()" title="Đặt lại trạng thái" style="font-size:0.75rem; padding:3px 8px;">
+                  Đặt lại
+                </button>
+                <span id="statusBadge" class="badge badge-info">CHỜ</span>
+              </div>
             </div>
 
             <div class="steps-container">
@@ -1220,70 +1404,154 @@ $isLoggedIn = checkAuth($config);
       return div.innerHTML;
     }
 
-    function triggerUpdate(tag) {
+    let updatePollTimer = null;
+    let currentLogOffset = 0;
+    let pollFailureCount = 0;
+
+    function resetUpdateState() {
+      if (updatePollTimer) clearInterval(updatePollTimer);
+      updatePollTimer = null;
+      fetch('?action=reset_update').then(() => {
+        document.getElementById('terminalCard').style.display = 'none';
+        loadStatus();
+        loadReleases();
+      });
+    }
+
+    function updateStepPills(step) {
+      for (let i = 1; i <= 7; i++) {
+        const p = document.getElementById('step-' + i);
+        if (!p) continue;
+        if (i < step) {
+          p.className = 'step-pill completed';
+        } else if (i === step) {
+          p.className = 'step-pill active';
+        } else {
+          p.className = 'step-pill';
+        }
+      }
+    }
+
+    async function triggerUpdate(tag) {
       if (!confirm(`Bạn có chắc chắn muốn cập nhật toàn bộ code lên phiên bản [${tag}]?`)) {
         return;
       }
 
-      document.getElementById('terminalCard').style.display = 'block';
+      const terminalCard = document.getElementById('terminalCard');
+      terminalCard.style.display = 'block';
       const terminalLogs = document.getElementById('terminalLogs');
-      terminalLogs.innerHTML = `<div class="log-line log-info">Đang kết nối tiến trình cập nhật [${tag}]...</div>`;
+      terminalLogs.innerHTML = `<div class="log-line log-info">🚀 Khởi động cập nhật phiên bản [${tag}]...</div>`;
       
       const statusBadge = document.getElementById('statusBadge');
       statusBadge.textContent = 'ĐANG CHẠY';
       statusBadge.className = 'badge badge-warning';
 
-      // Reset step pills
-      for (let i = 1; i <= 7; i++) {
-        const p = document.getElementById('step-' + i);
-        if (p) p.className = 'step-pill';
-      }
+      updateStepPills(1);
+      currentLogOffset = 0;
+      pollFailureCount = 0;
 
       const skipBuild = document.getElementById('skipBuildCheck').checked ? '1' : '0';
-      const evtSource = new EventSource(`?action=perform_update&tag=${encodeURIComponent(tag)}&skip_build=${skipBuild}`);
 
-      evtSource.addEventListener('step', function(e) {
-        const data = JSON.parse(e.data);
-        for (let i = 1; i < data.step; i++) {
-          const prev = document.getElementById('step-' + i);
-          if (prev) prev.className = 'step-pill completed';
+      try {
+        const res = await fetch(`?action=start_update&tag=${encodeURIComponent(tag)}&skip_build=${skipBuild}`);
+        const data = await res.json();
+        if (!data.success && data.message) {
+          const line = document.createElement('div');
+          line.className = 'log-line log-warn';
+          line.textContent = '⚠️ ' + data.message;
+          terminalLogs.appendChild(line);
         }
-        const current = document.getElementById('step-' + data.step);
-        if (current) current.className = 'step-pill active';
-      });
+      } catch(e) {
+        console.error(e);
+      }
 
-      evtSource.addEventListener('log', function(e) {
-        const data = JSON.parse(e.data);
-        const line = document.createElement('div');
-        line.className = 'log-line log-' + data.type;
-        line.textContent = data.text;
-        terminalLogs.appendChild(line);
-        terminalLogs.scrollTop = terminalLogs.scrollHeight;
-      });
+      if (updatePollTimer) clearInterval(updatePollTimer);
+      updatePollTimer = setInterval(pollUpdateProgress, 500);
+    }
 
-      evtSource.addEventListener('finish', function(e) {
-        const data = JSON.parse(e.data);
-        evtSource.close();
-        if (data.success) {
-          statusBadge.textContent = 'HOÀN TẤT';
-          statusBadge.className = 'badge badge-success';
-          loadStatus();
-          loadReleases();
-        } else {
-          statusBadge.textContent = 'THẤT BẠI';
+    async function pollUpdateProgress() {
+      try {
+        const res = await fetch(`?action=poll_update&offset=${currentLogOffset}`);
+        if (!res.ok) {
+          pollFailureCount++;
+          return;
+        }
+        pollFailureCount = 0;
+        const data = await res.json();
+
+        const terminalLogs = document.getElementById('terminalLogs');
+        const statusBadge = document.getElementById('statusBadge');
+
+        if (data.new_logs && data.new_logs.length > 0) {
+          for (const log of data.new_logs) {
+            const line = document.createElement('div');
+            line.className = 'log-line log-' + (log.type || 'info');
+            line.textContent = log.text;
+            terminalLogs.appendChild(line);
+          }
+          terminalLogs.scrollTop = terminalLogs.scrollHeight;
+          currentLogOffset = data.total_logs;
+        }
+
+        if (data.step) {
+          updateStepPills(data.step);
+        }
+
+        if (data.finished) {
+          if (updatePollTimer) clearInterval(updatePollTimer);
+          updatePollTimer = null;
+          if (data.success) {
+            statusBadge.textContent = 'HOÀN TẤT';
+            statusBadge.className = 'badge badge-success';
+            for (let i = 1; i <= 7; i++) {
+              const p = document.getElementById('step-' + i);
+              if (p) p.className = 'step-pill completed';
+            }
+            loadStatus();
+            loadReleases();
+          } else {
+            statusBadge.textContent = 'THẤT BẠI';
+            statusBadge.className = 'badge badge-danger';
+          }
+        }
+      } catch (err) {
+        pollFailureCount++;
+        if (pollFailureCount > 10) {
+          const statusBadge = document.getElementById('statusBadge');
+          statusBadge.textContent = 'MẤT KẾT NỐI';
           statusBadge.className = 'badge badge-danger';
         }
-      });
+      }
+    }
 
-      evtSource.onerror = function(err) {
-        evtSource.close();
-        const line = document.createElement('div');
-        line.className = 'log-line log-error';
-        line.textContent = '❌ Mất kết nối SSE tới máy chủ cập nhật.';
-        terminalLogs.appendChild(line);
-        statusBadge.textContent = 'MẤT KẾT NỐI';
-        statusBadge.className = 'badge badge-danger';
-      };
+    async function checkOngoingUpdate() {
+      try {
+        const res = await fetch('?action=poll_update&offset=0');
+        const data = await res.json();
+        if (data.running && !data.finished) {
+          document.getElementById('terminalCard').style.display = 'block';
+          const statusBadge = document.getElementById('statusBadge');
+          statusBadge.textContent = 'ĐANG CHẠY';
+          statusBadge.className = 'badge badge-warning';
+
+          const terminalLogs = document.getElementById('terminalLogs');
+          terminalLogs.innerHTML = '';
+          if (data.new_logs) {
+            for (const log of data.new_logs) {
+              const line = document.createElement('div');
+              line.className = 'log-line log-' + (log.type || 'info');
+              line.textContent = log.text;
+              terminalLogs.appendChild(line);
+            }
+            terminalLogs.scrollTop = terminalLogs.scrollHeight;
+            currentLogOffset = data.total_logs;
+          }
+          if (data.step) updateStepPills(data.step);
+
+          if (updatePollTimer) clearInterval(updatePollTimer);
+          updatePollTimer = setInterval(pollUpdateProgress, 500);
+        }
+      } catch(e) {}
     }
 
     function openSettingsModal() {
@@ -1328,7 +1596,10 @@ $isLoggedIn = checkAuth($config);
     }
 
     // Auto initialize
-    loadStatus().then(loadReleases);
+    loadStatus().then(() => {
+      loadReleases();
+      checkOngoingUpdate();
+    });
     <?php endif; ?>
   </script>
 </body>
