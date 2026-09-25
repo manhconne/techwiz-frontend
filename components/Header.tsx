@@ -35,6 +35,12 @@ import {
   ArrowRight,
   Phone,
   Loader2,
+  ChevronRight,
+  Ticket,
+  Gift,
+  Tv,
+  Heart,
+  Compass,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -124,15 +130,15 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const allMdItems = [
-    { label: 'EVENT', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/event'; } },
-    { label: 'CD&DVD', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/cd-dvd-book'; } },
-    { label: 'MD', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
-    { label: "ALL MD SEASON'S GREETINGS", action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/cd-dvd-book'; } },
-    { label: 'CUSTOM ZONE', action: () => { setIsAllMdDropdownOpen(false); setIsCustomZoneOpen(true); } },
-    { label: 'DUCKJIL ZONE', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/artist'; } },
-    { label: 'ALLMD BEAUTY', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
-    { label: 'CONTACT FOR BULK ORDER', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/b2b'; } },
-    { label: 'ALLMD TV', action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/'; } },
+    { label: 'EVENT & TICKETS', icon: Ticket, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/event'; } },
+    { label: 'CD, DVD & VINYL', icon: Disc, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/cd-dvd-book'; } },
+    { label: 'OFFICIAL MD GOODS', icon: ShoppingBag, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
+    { label: "SEASON'S GREETINGS", icon: Gift, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/cd-dvd-book'; } },
+    { label: 'CUSTOM GOODS ZONE', icon: Palette, action: () => { setIsAllMdDropdownOpen(false); setIsCustomZoneOpen(true); } },
+    { label: 'DUCKJIL FANDOM HUB', icon: Heart, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/artist'; } },
+    { label: 'ALLMD BEAUTY & CARE', icon: Sparkles, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
+    { label: 'B2B / BULK ORDER', icon: Building2, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/b2b'; } },
+    { label: 'ALLMD TV & MEDIA', icon: Tv, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/'; } },
   ];
 
   return (
@@ -140,12 +146,12 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Main Bar - Responsive Header Bar */}
       <div className="max-w-[1440px] mx-auto px-3 sm:px-6 md:px-9 py-2.5 sm:py-4 flex items-center justify-between gap-3 md:gap-6 bg-white">
-        {/* LEFT: Menu button & Logo */}
+        {/* LEFT: Menu button (Mobile only, hidden on PC) & Logo */}
         <div className="flex items-center gap-2.5 sm:gap-4 md:gap-5 shrink-0">
           <button
             onClick={() => setIsMenuDrawerOpen(true)}
-            className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-black text-white flex items-center justify-center cursor-pointer hover:opacity-90 shrink-0 border-0"
-            title="Menu Sidebar"
+            className="md:hidden w-9 h-9 rounded-full bg-black text-white flex items-center justify-center cursor-pointer hover:opacity-90 shrink-0 border-0 transition-transform active:scale-95"
+            title="Menu"
             type="button"
           >
             <Menu className="w-5 h-5" />
@@ -160,33 +166,77 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
 
-        {/* CENTER: Wide Underline Search Bar (Desktop) */}
+        {/* CENTER: Wide Underline Search Bar (Desktop) - Clean Flex Layout, Icon separated from text */}
         <div className="hidden md:flex flex-1 max-w-[640px] mx-4 lg:mx-8">
-          <div className="relative w-full flex items-center">
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              borderBottom: themeMode === 'dark' ? '2px solid #ffffff' : '2px solid #000000',
+              paddingBottom: '6px',
+              paddingTop: '6px',
+            }}
+          >
+            {/* Search Icon on the left with dedicated right margin */}
+            <Search
+              style={{
+                width: '18px',
+                height: '18px',
+                color: themeMode === 'dark' ? '#ffffff' : '#0f172a',
+                flexShrink: 0,
+                marginRight: '12px',
+                marginLeft: '4px',
+                pointerEvents: 'none',
+              }}
+            />
+
             <input
               type="text"
               placeholder="Search album, OST, anime, game (e.g. Demon Slayer, NewJeans)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full py-2 pr-12 pl-1 text-[15px] font-medium border-0 border-b-2 border-black rounded-none outline-none bg-transparent text-black"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  const albumsEl = document.getElementById('albums');
+                  if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              style={{
+                flex: 1,
+                width: '100%',
+                fontSize: '15px',
+                fontWeight: 500,
+                border: 'none',
+                outline: 'none',
+                backgroundColor: 'transparent',
+                color: themeMode === 'dark' ? '#ffffff' : '#000000',
+                padding: '0px',
+              }}
             />
+
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-9 top-1/2 -translate-y-1/2 text-slate-400 hover:text-black p-1 border-0 bg-transparent cursor-pointer"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#94a3b8',
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+                className="hover:text-black"
                 title="Clear"
               >
-                <X className="w-4 h-4" />
+                <X style={{ width: '16px', height: '16px' }} />
               </button>
             )}
-            <button
-              type="button"
-              className="absolute right-1 top-1/2 -translate-y-1/2 text-black p-1 border-0 bg-transparent cursor-pointer"
-              title="Search"
-            >
-              <Search className="w-5 h-5" />
-            </button>
           </div>
         </div>
 
@@ -317,21 +367,21 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* SECONDARY CATEGORY NAVIGATION BAR (Hidden on mobile, moved to sidebar) */}
-      <div className="hidden md:block w-full bg-white border-t border-b border-slate-200 relative z-30 overflow-x-auto scrollbar-none">
-        <div className="max-w-[1440px] mx-auto px-3 sm:px-9 flex items-center justify-start sm:justify-between h-11 sm:h-[54px] relative min-w-max">
-          {/* [ ≡ ALL MD ] Black Button with Exact Dropdown */}
+      {/* SECONDARY CATEGORY NAVIGATION BAR (Hidden on mobile, on PC matching user's image) */}
+      <div className="hidden md:block w-full bg-white border-t border-b border-slate-200 relative z-30">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-9 flex items-center justify-between h-11 sm:h-[50px] relative">
+          {/* LEFT: [ ≡ ALL MD ] Black Button with Exact Dropdown */}
           <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center', zIndex: 60 }}>
             <button
               onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
               type="button"
-              className="flex items-center gap-2 px-3.5 sm:px-7 text-xs sm:text-[13px] font-black uppercase tracking-wider text-white bg-black h-8 sm:h-11 hover:opacity-90 border-0 cursor-pointer shrink-0"
+              className="flex items-center gap-2 px-5 sm:px-6 text-xs sm:text-[13px] font-black uppercase tracking-wider text-white bg-black h-8 sm:h-9 hover:opacity-90 border-0 cursor-pointer shrink-0 transition-all active:scale-95"
             >
               <Menu style={{ width: '15px', height: '15px' }} />
               <span>ALL MD</span>
             </button>
 
-            {/* Dropdown Menu */}
+            {/* Dropdown Menu under [ ≡ ALL MD ] (border radius 8px, English default, library icons) */}
             {isAllMdDropdownOpen && (
               <>
                 {/* Backdrop to close on click outside */}
@@ -346,67 +396,160 @@ export const Header: React.FC<HeaderProps> = ({
                     left: 0,
                     top: '100%',
                     marginTop: '8px',
-                    width: '260px',
-                    maxWidth: '90vw',
+                    width: '340px',
+                    maxWidth: '92vw',
                     backgroundColor: '#ffffff',
-                    border: '1.5px solid #000000',
-                    borderRadius: '0px',
-                    padding: '22px 22px',
-                    boxShadow: '0 16px 36px rgba(0, 0, 0, 0.15)',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '8px',
+                    padding: '14px',
+                    boxShadow: '0 20px 45px -10px rgba(15, 23, 42, 0.18)',
                     zIndex: 9999,
                     display: 'block',
                   }}
+                  className="animate-in fade-in-0 zoom-in-95 duration-150"
                 >
-                  {/* Top pointer caret triangle */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '-8px',
-                      left: '46px',
-                      width: 0,
-                      height: 0,
-                      borderLeft: '7px solid transparent',
-                      borderRight: '7px solid transparent',
-                      borderBottom: '8px solid #000000',
-                      zIndex: 10000,
-                    }}
-                  />
-
-                  {/* 9 Menu Items */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                    {allMdItems.map((item, idx) => (
-                      <button
-                        key={idx}
-                        onClick={item.action}
-                        style={{
-                          textAlign: 'left',
-                          fontWeight: 800,
-                          fontSize: '13px',
-                          color: '#000000',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.03em',
-                          background: 'none',
-                          border: 'none',
-                          padding: '2px 0',
-                          cursor: 'pointer',
-                          transition: 'color 0.15s ease',
-                          display: 'block',
-                          width: '100%',
-                        }}
-                        className="hover:text-slate-500"
-                        type="button"
+                  {/* Header Title */}
+                  <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <div
+                        style={{ borderRadius: '4px' }}
+                        className="w-5 h-5 bg-black text-white flex items-center justify-center"
                       >
-                        {item.label}
+                        <Sparkles className="w-3 h-3" />
+                      </div>
+                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-900">
+                        CATEGORIES &amp; FUNCTIONS
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsAllMdDropdownOpen(false)}
+                      style={{ borderRadius: '4px' }}
+                      className="w-6 h-6 hover:bg-slate-100 text-slate-400 hover:text-black flex items-center justify-center border-0 bg-transparent cursor-pointer transition-colors"
+                      title="Close"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Category Items with Library Icons */}
+                  <div className="flex flex-col gap-0.5">
+                    {allMdItems.map((item, idx) => {
+                      const ItemIcon = item.icon;
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            setIsAllMdDropdownOpen(false);
+                            item.action();
+                          }}
+                          style={{ borderRadius: '6px' }}
+                          className="group w-full flex items-center justify-between px-2.5 py-1.5 hover:bg-slate-100 text-left border-0 bg-transparent cursor-pointer transition-all"
+                          type="button"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <div
+                              style={{ borderRadius: '6px' }}
+                              className="w-7 h-7 bg-slate-100 text-slate-700 group-hover:bg-black group-hover:text-white flex items-center justify-center transition-colors shrink-0"
+                            >
+                              <ItemIcon className="w-3.5 h-3.5" />
+                            </div>
+                            <span className="text-[12px] font-bold text-slate-800 group-hover:text-black tracking-tight">
+                              {item.label}
+                            </span>
+                          </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-black group-hover:translate-x-0.5 transition-all shrink-0" />
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Quick Sections shortcut */}
+                  <div className="pt-2.5 mt-2 border-t border-slate-100">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-2 px-1">
+                      QUICK SHORTCUTS
+                    </span>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsAllMdDropdownOpen(false);
+                          scrollToSection('albums');
+                        }}
+                        style={{ borderRadius: '6px' }}
+                        className="group flex items-center gap-2 p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-xs font-bold text-slate-800 cursor-pointer transition-all shadow-2xs"
+                      >
+                        <div
+                          style={{ borderRadius: '4px' }}
+                          className="w-6 h-6 bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors"
+                        >
+                          <Disc className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="truncate">Album Drops</span>
                       </button>
-                    ))}
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsAllMdDropdownOpen(false);
+                          scrollToSection('artists');
+                        }}
+                        style={{ borderRadius: '6px' }}
+                        className="group flex items-center gap-2 p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-xs font-bold text-slate-800 cursor-pointer transition-all shadow-2xs"
+                      >
+                        <div
+                          style={{ borderRadius: '4px' }}
+                          className="w-6 h-6 bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors"
+                        >
+                          <Users className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="truncate">Idol Profiles</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsAllMdDropdownOpen(false);
+                          scrollToSection('tours');
+                        }}
+                        style={{ borderRadius: '6px' }}
+                        className="group flex items-center gap-2 p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-xs font-bold text-slate-800 cursor-pointer transition-all shadow-2xs"
+                      >
+                        <div
+                          style={{ borderRadius: '4px' }}
+                          className="w-6 h-6 bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-colors"
+                        >
+                          <Calendar className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="truncate">World Tour</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsAllMdDropdownOpen(false);
+                          scrollToSection('community');
+                        }}
+                        style={{ borderRadius: '6px' }}
+                        className="group flex items-center gap-2 p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-xs font-bold text-slate-800 cursor-pointer transition-all shadow-2xs"
+                      >
+                        <div
+                          style={{ borderRadius: '4px' }}
+                          className="w-6 h-6 bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors"
+                        >
+                          <MessageSquare className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="truncate">Fandom Feed</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </>
             )}
           </div>
 
-          {/* Horizontal Links */}
-          <nav className="flex items-center gap-6 sm:gap-10 lg:gap-14 flex-nowrap h-full shrink-0 pl-3 sm:pl-0">
+          {/* RIGHT: Horizontal Links */}
+          <nav className="flex items-center gap-6 sm:gap-9 lg:gap-11 flex-nowrap h-full shrink-0">
             <Link
               href="/artist"
               style={{
@@ -803,7 +946,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div
             style={{
               backgroundColor: 'var(--bg-card)',
-              borderRadius: 'var(--radius-lg, 16px)',
+              borderRadius: '8px',
               maxWidth: '430px',
               width: '100%',
               padding: '28px 24px',
@@ -1490,10 +1633,10 @@ export const Header: React.FC<HeaderProps> = ({
       )}
 
       {/* ========================================================================= */}
-      {/* MOBILE SIDEBAR DRAWER (Bấm bars mở sidebar, chứa danh mục & ALL MD) */}
+      {/* MOBILE SIDEBAR DRAWER (Chỉ có ở mobile, trên PC không bao giờ hiện) */}
       {/* ========================================================================= */}
       {isMenuDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex">
+        <div className="md:hidden fixed inset-0 z-50 flex">
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300"
@@ -1622,36 +1765,44 @@ export const Header: React.FC<HeaderProps> = ({
               {/* 3. Quick Section Jumps */}
               <div>
                 <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">
-                  Khám phá nhanh / Sections
+                  Quick Sections
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => scrollToSection('albums')}
-                    className="p-2.5 text-left bg-white border border-slate-200 rounded-lg hover:border-black text-xs font-bold text-slate-800 cursor-pointer"
+                    style={{ borderRadius: '8px' }}
+                    className="p-2.5 text-left bg-white border border-slate-200 hover:border-black text-xs font-bold text-slate-800 cursor-pointer flex items-center gap-2 shadow-2xs"
                   >
-                    🎵 Album Drops
+                    <Disc className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                    <span>Album Drops</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => scrollToSection('artists')}
-                    className="p-2.5 text-left bg-white border border-slate-200 rounded-lg hover:border-black text-xs font-bold text-slate-800 cursor-pointer"
+                    style={{ borderRadius: '8px' }}
+                    className="p-2.5 text-left bg-white border border-slate-200 hover:border-black text-xs font-bold text-slate-800 cursor-pointer flex items-center gap-2 shadow-2xs"
                   >
-                    ⭐ Hồ sơ Idol
+                    <Users className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                    <span>Idol Profiles</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => scrollToSection('tours')}
-                    className="p-2.5 text-left bg-white border border-slate-200 rounded-lg hover:border-black text-xs font-bold text-slate-800 cursor-pointer"
+                    style={{ borderRadius: '8px' }}
+                    className="p-2.5 text-left bg-white border border-slate-200 hover:border-black text-xs font-bold text-slate-800 cursor-pointer flex items-center gap-2 shadow-2xs"
                   >
-                    🎫 World Tour
+                    <Calendar className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <span>World Tour</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => scrollToSection('community')}
-                    className="p-2.5 text-left bg-white border border-slate-200 rounded-lg hover:border-black text-xs font-bold text-slate-800 cursor-pointer"
+                    style={{ borderRadius: '8px' }}
+                    className="p-2.5 text-left bg-white border border-slate-200 hover:border-black text-xs font-bold text-slate-800 cursor-pointer flex items-center gap-2 shadow-2xs"
                   >
-                    💬 Fandom Feed
+                    <MessageSquare className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Fandom Feed</span>
                   </button>
                 </div>
               </div>
@@ -1718,36 +1869,42 @@ export const Header: React.FC<HeaderProps> = ({
       )}
 
       {/* ========================================================================= */}
-      {/* DEDICATED SEARCH MODAL (Nút tìm kiếm mở modal tìm kiếm riêng trên mobile) */}
+      {/* DEDICATED SEARCH MODAL (Thiết kế cao cấp, hiện đại, chuẩn Mobile & Desktop) */}
       {/* ========================================================================= */}
       {isSearchModalOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-start">
-          {/* Backdrop */}
+        <div className="fixed inset-0 z-50 flex flex-col justify-start items-center p-0 sm:p-4">
+          {/* Smooth backdrop blur */}
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-black/65 backdrop-blur-md transition-opacity duration-300"
             onClick={() => setIsSearchModalOpen(false)}
           />
 
-          {/* Modal Container */}
-          <div className="relative w-full bg-white shadow-2xl z-10 border-b border-slate-200 animate-in slide-in-from-top-4 duration-200">
-            {/* Modal Header */}
-            <div className="max-w-[800px] mx-auto px-4 pt-4 pb-3 flex items-center justify-between border-b border-slate-100">
-              <div className="flex items-center gap-2 text-sm font-black uppercase tracking-wider text-black">
-                <Search className="w-4 h-4 text-black" />
-                <span>Tìm kiếm / Search</span>
+          {/* Modal Card - rounded bottom on mobile, rounded-2xl on desktop */}
+          <div className="relative w-full max-w-[680px] bg-white rounded-b-3xl sm:rounded-2xl shadow-2xl z-10 overflow-hidden border-b sm:border border-slate-200 animate-in slide-in-from-top-5 duration-200">
+            {/* Top Bar with Brand / Header */}
+            <div className="px-5 pt-4 pb-3 flex items-center justify-between border-b border-slate-100 bg-slate-50/70">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
+                <span className="text-xs font-black uppercase tracking-wider text-slate-900">
+                  Khám phá &amp; Tìm kiếm
+                </span>
+                <span className="hidden xs:inline-block text-[10px] font-bold text-slate-400 bg-white border border-slate-200 px-2 py-0.5 rounded-full">
+                  Fandom Explorer
+                </span>
               </div>
               <button
                 type="button"
                 onClick={() => setIsSearchModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 cursor-pointer border-0 transition-colors"
-                title="Đóng"
+                className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-700 hover:text-black cursor-pointer transition-colors shadow-2xs"
+                title="Đóng tìm kiếm"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Modal Input Form */}
-            <div className="max-w-[800px] mx-auto px-4 py-4">
+            {/* Main Form Area */}
+            <div className="p-4 sm:p-6">
+              {/* Modern Rounded Capsule Search Bar */}
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -1755,30 +1912,55 @@ export const Header: React.FC<HeaderProps> = ({
                   const albumsEl = document.getElementById('albums');
                   if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="relative flex items-center"
+                className="w-full mb-6"
               >
-                <input
-                  type="text"
-                  autoFocus
-                  placeholder="Nhập tên album, nghệ sĩ, bài hát, OST..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full py-3 pl-3 pr-24 text-base font-semibold border-b-2 border-black rounded-none outline-none bg-transparent text-black placeholder:text-slate-400"
-                />
-                <div className="absolute right-0 flex items-center gap-1">
+                <div
+                  style={{
+                    borderRadius: '9999px',
+                    backgroundColor: '#ffffff',
+                    border: '1.5px solid #000000',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+                  }}
+                  className="w-full flex items-center pl-4 pr-1.5 py-1.5 transition-all"
+                >
+                  <Search className="w-5 h-5 text-slate-500 shrink-0" />
+
+                  <input
+                    type="text"
+                    autoFocus
+                    placeholder="Tìm album, idol (NewJeans, BTS...)"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{
+                      border: 'none',
+                      outline: 'none',
+                      backgroundColor: 'transparent',
+                      color: '#000000',
+                    }}
+                    className="flex-1 min-w-0 px-3 py-2 text-sm sm:text-base font-semibold placeholder:text-slate-400 placeholder:font-normal"
+                  />
+
+                  {/* Clear Button */}
                   {searchQuery && (
                     <button
                       type="button"
                       onClick={() => setSearchQuery('')}
-                      className="p-1.5 text-slate-400 hover:text-black bg-transparent border-0 cursor-pointer"
-                      title="Xóa"
+                      className="w-7 h-7 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center cursor-pointer border-0 shrink-0 mr-1.5 transition-colors"
+                      title="Xóa chữ"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   )}
+
+                  {/* Submit Action Pill Button */}
                   <button
                     type="submit"
-                    className="px-3.5 py-1.5 bg-black text-white text-xs font-bold uppercase rounded-md cursor-pointer hover:bg-neutral-800 border-0 flex items-center gap-1"
+                    style={{
+                      borderRadius: '9999px',
+                      backgroundColor: '#000000',
+                      color: '#ffffff',
+                    }}
+                    className="hover:bg-neutral-800 text-xs font-black uppercase tracking-wider px-4 sm:px-5 py-2.5 flex items-center gap-1.5 cursor-pointer border-0 shrink-0 shadow-xs active:scale-95 transition-all"
                   >
                     <span>Tìm</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -1786,27 +1968,129 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
               </form>
 
-              {/* Trending keywords */}
-              <div className="mt-4 pb-2">
-                <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2">
-                  🔥 Gợi ý tìm kiếm phổ biến
+              {/* Real-time search status indicator if user is typing */}
+              {searchQuery.trim() ? (
+                <div className="flex items-center justify-between px-3.5 py-2.5 mb-6 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-semibold">
+                  <span>
+                    Đang lọc kết quả: <strong>"{searchQuery}"</strong>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsSearchModalOpen(false);
+                      const albumsEl = document.getElementById('albums');
+                      if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="underline text-black font-bold cursor-pointer bg-transparent border-0"
+                  >
+                    Xem kết quả →
+                  </button>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {['BTS', 'NewJeans', 'BLACKPINK', 'Stray Kids', 'Demon Slayer', 'Limited Kit', 'Vinyl', 'OST'].map((term) => (
+              ) : null}
+
+              {/* Trending Keywords / Top Searches */}
+              <div className="mb-6">
+                <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-slate-500 mb-3 px-1">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>XU HƯỚNG TÌM KIẾM / TRENDING NOW</span>
+                </div>
+                <div className="flex flex-wrap gap-2 sm:gap-2.5">
+                  {[
+                    { label: 'BTS', hot: true },
+                    { label: 'NewJeans', hot: true },
+                    { label: 'BLACKPINK', hot: true },
+                    { label: 'Stray Kids', hot: false },
+                    { label: 'Demon Slayer', hot: false },
+                    { label: 'Limited Kit', hot: false },
+                    { label: 'Vinyl LP', hot: false },
+                    { label: 'OST Anime', hot: false },
+                  ].map((item, idx) => (
                     <button
-                      key={term}
+                      key={item.label}
                       type="button"
                       onClick={() => {
-                        setSearchQuery(term);
+                        setSearchQuery(item.label);
                         setIsSearchModalOpen(false);
                         const albumsEl = document.getElementById('albums');
                         if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
                       }}
-                      className="px-3 py-1.5 bg-slate-100 hover:bg-black hover:text-white text-slate-700 text-xs font-semibold rounded-full border-0 cursor-pointer transition-colors"
+                      style={{
+                        borderRadius: '9999px',
+                      }}
+                      className="group flex items-center gap-1.5 px-3.5 py-1.5 bg-white hover:bg-black text-slate-700 hover:text-white border border-slate-200 hover:border-black text-xs font-bold cursor-pointer transition-all shadow-2xs active:scale-95"
                     >
-                      {term}
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-black ${item.hot
+                        ? 'bg-rose-100 text-rose-600 group-hover:bg-white group-hover:text-black'
+                        : 'bg-slate-100 text-slate-500 group-hover:bg-white/20 group-hover:text-white'
+                        }`}>
+                        {idx + 1}
+                      </span>
+                      <span>{item.label}</span>
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Quick Categories Navigation */}
+              <div className="pt-4 border-t border-slate-100">
+                <div className="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-3 px-1">
+                  DANH MỤC NỔI BẬT
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('Full Album');
+                      setIsSearchModalOpen(false);
+                      const albumsEl = document.getElementById('albums');
+                      if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    style={{ borderRadius: '10px' }}
+                    className="p-2.5 text-left bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 border border-slate-200/80 cursor-pointer transition-colors flex items-center gap-2"
+                  >
+                    <Disc className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                    <span>CD &amp; LP Albums</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('Limited Kit');
+                      setIsSearchModalOpen(false);
+                      const albumsEl = document.getElementById('albums');
+                      if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    style={{ borderRadius: '10px' }}
+                    className="p-2.5 text-left bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 border border-slate-200/80 cursor-pointer transition-colors flex items-center gap-2"
+                  >
+                    <Gift className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <span>Limited Editions</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsSearchModalOpen(false);
+                      const artistsEl = document.getElementById('artists');
+                      if (artistsEl) artistsEl.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    style={{ borderRadius: '8px' }}
+                    className="p-2.5 text-left bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 border border-slate-200/80 cursor-pointer transition-colors flex items-center gap-2"
+                  >
+                    <Users className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                    <span>Idol Profiles</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsSearchModalOpen(false);
+                      const toursEl = document.getElementById('tours');
+                      if (toursEl) toursEl.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    style={{ borderRadius: '10px' }}
+                    className="p-2.5 text-left bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 border border-slate-200/80 cursor-pointer transition-colors flex items-center gap-2"
+                  >
+                    <Calendar className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                    <span>World Tour</span>
+                  </button>
                 </div>
               </div>
             </div>

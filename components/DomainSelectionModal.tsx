@@ -66,38 +66,33 @@ export const DomainSelectionModal: React.FC = () => {
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        backgroundColor: 'rgba(0, 0, 0, 0.45)',
-        backdropFilter: 'blur(2px)',
-        WebkitBackdropFilter: 'blur(2px)',
+        backgroundColor: 'rgba(0, 0, 0, 0.55)',
+        backdropFilter: 'blur(3px)',
+        WebkitBackdropFilter: 'blur(3px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '16px',
+        padding: '12px',
         animation: 'fadeIn 0.15s ease-out',
       }}
     >
       <div
         style={{
           width: '100%',
-          maxWidth: '580px',
+          maxWidth: '560px',
           backgroundColor: '#ffffff',
           color: '#0f172a',
-          borderRadius: '4px',
+          borderRadius: '8px',
           border: '1.5px solid #000000',
           boxShadow: '0 20px 35px -10px rgba(0, 0, 0, 0.25)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
+          maxHeight: '94vh',
         }}
       >
         {/* Compact Clean Header */}
-        <div
-          style={{
-            padding: '16px 20px',
-            backgroundColor: '#ffffff',
-            borderBottom: '1px solid #e2e8f0',
-          }}
-        >
+        <div className="p-3.5 sm:p-5 bg-white border-b border-slate-200">
           <h3
             style={{
               fontSize: '15px',
@@ -114,23 +109,16 @@ export const DomainSelectionModal: React.FC = () => {
             style={{
               fontSize: '12px',
               color: '#64748b',
-              margin: '3px 0 0 0',
+              margin: '4px 0 0 0',
+              lineHeight: 1.4,
             }}
           >
             Select your favorite domain &amp; genre to customize interface, typography, and content.
           </p>
         </div>
 
-        {/* Category Grid - Vector Icons, 4px Radius */}
-        <div
-          style={{
-            padding: '16px 20px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '10px',
-            backgroundColor: '#fafafa',
-          }}
-        >
+        {/* Category Grid - 1 column on mobile to prevent overflow, 2 columns on tablet/desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 p-3 sm:p-4 bg-slate-50 overflow-y-auto max-h-[50vh] sm:max-h-none">
           {DOMAIN_THEMES.map((theme) => {
             const isSelected = selectedDomainTemp === theme.id;
 
@@ -139,60 +127,44 @@ export const DomainSelectionModal: React.FC = () => {
                 key={theme.id}
                 onClick={() => handleDomainClick(theme.id)}
                 style={{
-                  borderRadius: '4px',
-                  padding: '10px 12px',
+                  borderRadius: '6px',
                   cursor: 'pointer',
                   transition: 'all 0.12s ease',
-                  backgroundColor: isSelected ? '#ffffff' : '#ffffff',
+                  backgroundColor: '#ffffff',
                   border: isSelected ? '2px solid #000000' : '1px solid #e2e8f0',
                   boxShadow: isSelected ? '0 2px 8px rgba(0, 0, 0, 0.08)' : 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '8px',
                 }}
-                className="hover:border-slate-400"
+                className="p-2.5 sm:p-3 flex items-center justify-between gap-2.5 hover:border-slate-400"
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <div
                     style={{
-                      width: '28px',
-                      height: '28px',
                       borderRadius: '4px',
                       backgroundColor: isSelected ? '#000000' : '#f1f5f9',
                       color: isSelected ? '#ffffff' : '#334155',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
                     }}
+                    className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center shrink-0"
                   >
                     {getCategoryIcon(theme.iconType)}
                   </div>
 
-                  <div style={{ minWidth: 0 }}>
+                  <div className="min-w-0 flex-1">
                     <div
                       style={{
-                        fontSize: '13px',
                         fontWeight: 800,
                         color: '#000000',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        lineHeight: 1.2,
+                        lineHeight: 1.25,
                       }}
+                      className="text-xs sm:text-[13px] truncate"
                     >
                       {theme.name}
                     </div>
                     <div
                       style={{
-                        fontSize: '10px',
                         color: '#64748b',
                         fontFamily: theme.fontFamily,
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
                       }}
+                      className="text-[10px] sm:text-[11px] truncate mt-0.5"
                     >
                       Font: {theme.fontDisplayName}
                     </div>
@@ -200,20 +172,8 @@ export const DomainSelectionModal: React.FC = () => {
                 </div>
 
                 {isSelected && (
-                  <div
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      borderRadius: '50%',
-                      backgroundColor: '#000000',
-                      color: '#ffffff',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Check style={{ width: '12px', height: '12px', strokeWidth: 3 }} />
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-black text-white flex items-center justify-center shrink-0">
+                    <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[3]" />
                   </div>
                 )}
               </div>
@@ -223,32 +183,11 @@ export const DomainSelectionModal: React.FC = () => {
 
         {/* Sub-Category Pills for Selected Domain */}
         {activeThemeConfig && activeThemeConfig.subCategories && activeThemeConfig.subCategories.length > 0 && (
-          <div
-            style={{
-              padding: '12px 20px',
-              backgroundColor: '#ffffff',
-              borderTop: '1px solid #f1f5f9',
-            }}
-          >
-            <div
-              style={{
-                fontSize: '11px',
-                fontWeight: 800,
-                color: '#64748b',
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                marginBottom: '8px',
-              }}
-            >
+          <div className="p-3 sm:p-4 bg-white border-t border-slate-100">
+            <div className="text-[10px] sm:text-[11px] font-black text-slate-500 uppercase tracking-wider mb-2">
               GENRES IN {activeThemeConfig.name.toUpperCase()}:
             </div>
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '6px',
-              }}
-            >
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {activeThemeConfig.subCategories.map((sub) => {
                 const isSubSelected = selectedSubTemp === sub.id;
                 return (
@@ -257,18 +196,13 @@ export const DomainSelectionModal: React.FC = () => {
                     type="button"
                     onClick={() => setSelectedSubTemp(sub.id)}
                     style={{
-                      padding: '5px 10px',
-                      fontSize: '11px',
-                      fontWeight: isSubSelected ? 800 : 600,
-                      borderRadius: '4px',
-                      border: isSubSelected ? '1.5px solid #000000' : '1px solid #cbd5e1',
-                      backgroundColor: isSubSelected ? '#000000' : '#f8fafc',
-                      color: isSubSelected ? '#ffffff' : '#334155',
-                      cursor: 'pointer',
-                      transition: 'all 0.12s ease',
                       fontFamily: activeThemeConfig.fontFamily,
                     }}
-                    className="hover:border-slate-800"
+                    className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-bold rounded border transition-all cursor-pointer ${
+                      isSubSelected
+                        ? 'bg-black text-white border-black'
+                        : 'bg-slate-50 text-slate-700 border-slate-300 hover:border-black'
+                    }`}
                   >
                     {sub.name}
                   </button>
@@ -279,36 +213,14 @@ export const DomainSelectionModal: React.FC = () => {
         )}
 
         {/* Footer Action Button */}
-        <div
-          style={{
-            padding: '14px 20px',
-            backgroundColor: '#ffffff',
-            borderTop: '1px solid #e2e8f0',
-          }}
-        >
+        <div className="p-3 sm:p-4 bg-white border-t border-slate-200">
           <button
             onClick={handleConfirm}
-            style={{
-              width: '100%',
-              padding: '10px 16px',
-              borderRadius: '4px',
-              fontSize: '13px',
-              fontWeight: 800,
-              color: '#ffffff',
-              backgroundColor: '#000000',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px',
-              transition: 'background-color 0.15s ease',
-            }}
-            className="hover:bg-slate-800"
+            className="w-full py-2.5 sm:py-3 px-4 rounded bg-black hover:bg-neutral-800 text-white text-xs sm:text-sm font-black uppercase tracking-wider cursor-pointer border-0 flex items-center justify-center gap-2 transition-colors shadow-xs"
             type="button"
           >
             <span>Start Exploring</span>
-            <ArrowRight style={{ width: '15px', height: '15px' }} />
+            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>
