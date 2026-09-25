@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { useDomainTheme, DOMAIN_THEMES, DomainThemeId } from '../context/DomainContext';
 import {
   Music,
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react';
 
 export const DomainSelectionModal: React.FC = () => {
+  const pathname = usePathname();
   const {
     currentDomain,
     activeSubCategory,
@@ -26,7 +28,7 @@ export const DomainSelectionModal: React.FC = () => {
   const [selectedDomainTemp, setSelectedDomainTemp] = useState<DomainThemeId>(currentDomain);
   const [selectedSubTemp, setSelectedSubTemp] = useState<string>(activeSubCategory || 'all');
 
-  if (!isModalOpen) return null;
+  if (!isModalOpen || pathname?.startsWith('/admin')) return null;
 
   const activeThemeConfig = DOMAIN_THEMES.find((t) => t.id === selectedDomainTemp) || DOMAIN_THEMES[0];
 

@@ -426,8 +426,8 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Admin shortcut if admin */}
           {user.role === 'admin' && (
-            <button
-              onClick={onOpenAdmin}
+            <Link
+              href="/admin"
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -442,13 +442,13 @@ export const Header: React.FC<HeaderProps> = ({
                 cursor: 'pointer',
                 height: '40px',
                 marginLeft: '4px',
+                textDecoration: 'none',
               }}
               title="Admin Portal"
-              type="button"
             >
               <ShieldCheck style={{ width: '16px', height: '16px', color: '#d97706' }} />
               <span>Admin</span>
-            </button>
+            </Link>
           )}
         </div>
       </div>

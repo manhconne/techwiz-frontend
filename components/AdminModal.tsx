@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { mockAlbums } from '../data/mockData';
 import { Album } from '../types';
-import { ShieldCheck, X, TrendingUp, Users, ShoppingBag, MessageSquare, Plus, Trash2 } from 'lucide-react';
+import { ShieldCheck, X, TrendingUp, Users, ShoppingBag, MessageSquare, Plus, Trash2, ExternalLink } from 'lucide-react';
 
 interface AdminModalProps {
   isOpen: boolean;
@@ -74,13 +75,25 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               <p className="text-[11px] text-slate-300">Catalog drops, stock levels, and real-time sales telemetry</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer"
-            type="button"
-          >
-            <X className="w-5 h-5" />
-          </button>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin"
+              onClick={onClose}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold rounded-md transition-all shadow-xs"
+            >
+              <span>Full Dashboard /admin</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </Link>
+
+            <button
+              onClick={onClose}
+              className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              type="button"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Content */}
