@@ -245,7 +245,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Search Icon Button -> Opens Dedicated Mobile Search Modal */}
           <button
             onClick={() => setIsSearchModalOpen(true)}
-            className="md:hidden w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
+            className="mobile-search-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
             title="Search"
             type="button"
           >
@@ -367,10 +367,17 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* SECONDARY CATEGORY NAVIGATION BAR (Hidden on mobile, on PC matching user's image) */}
       <div className="hidden md:block w-full bg-white border-t border-b border-slate-200 relative z-30">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-9 flex items-center justify-between h-11 sm:h-[50px] relative">
           {/* LEFT: [ ≡ ALL MD ] Black Button with Exact Dropdown */}
+=======
+      {/* SECONDARY CATEGORY NAVIGATION BAR */}
+      <div className="w-full bg-white border-t border-b border-slate-200 relative z-30">
+        <div className="max-w-[1440px] mx-auto px-3 sm:px-9 flex items-center justify-between h-11 sm:h-[54px] relative gap-4">
+          {/* [ ≡ ALL MD ] Black Button with Exact Dropdown */}
+>>>>>>> 96b7aa9e7ec15113cede8235cb1579fe75fc412a
           <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center', zIndex: 60 }}>
             <button
               onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
@@ -548,8 +555,13 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
+<<<<<<< HEAD
           {/* RIGHT: Horizontal Links */}
           <nav className="flex items-center gap-6 sm:gap-9 lg:gap-11 flex-nowrap h-full shrink-0">
+=======
+          {/* Horizontal Links */}
+          <nav className="flex items-center gap-6 sm:gap-10 lg:gap-14 flex-nowrap h-full shrink-0 overflow-x-auto scrollbar-none pl-3 sm:pl-0">
+>>>>>>> 96b7aa9e7ec15113cede8235cb1579fe75fc412a
             <Link
               href="/artist"
               style={{
