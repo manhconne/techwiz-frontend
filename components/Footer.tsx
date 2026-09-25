@@ -68,30 +68,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
     >
       {/* Top Section */}
       <div
-        style={{
-          maxWidth: '1440px',
-          margin: '0 auto',
-          padding: '64px 36px 48px',
-        }}
+        className="max-w-[1440px] mx-auto px-4 sm:px-9 py-10 sm:py-16"
       >
         <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr 1fr 1.2fr',
-            gap: '48px',
-            alignItems: 'start',
-          }}
-          className="grid-cols-1 md:grid-cols-2 lg:grid-cols-5"
+          className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-12 items-start"
         >
 
           {/* Brand Column */}
           <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '20px',
-              gridColumn: 'span 1',
-            }}
+            className="flex flex-col gap-5 col-span-2 md:col-span-1"
           >
             {/* Logo */}
             <div className="notranslate">
@@ -113,7 +98,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
                 fontSize: '13px',
                 color: '#64748b',
                 lineHeight: 1.7,
-                maxWidth: '220px',
+                maxWidth: '280px',
               }}
             >
               Official destination for global K-pop fans. Certified direct imports from Seoul with guaranteed Hanteo &amp; Circle chart counts.

@@ -953,11 +953,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
       className="py-16 md:py-24 w-full border-t border-slate-100"
     >
       <div 
-        style={{ 
-          maxWidth: '1440px', 
-          margin: '0 auto', 
-          padding: '0 28px' 
-        }}
+        className="max-w-[1440px] mx-auto px-3.5 sm:px-7"
       >
         
         {/* ==================== 1. Editorial Header (Matching AlbumGrid Signature) ==================== */}
@@ -991,7 +987,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
             </div>
 
             {/* Category Filter Tabs - Underline Editorial Style */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '24px', overflowX: 'auto' }}>
+            <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto scrollbar-none max-w-full pb-1">
               {categories.map((cat) => {
                 const isActive = selectedCategory === cat.id;
                 return (
@@ -1079,17 +1075,9 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
             </div>
 
             {/* Compact Right-Aligned Search Box & Counter in ALL MD Style */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div className="flex items-center gap-2.5 flex-wrap w-full sm:w-auto">
               <div 
-                style={{ 
-                  position: 'relative', 
-                  width: '280px', 
-                  height: '38px',
-                  border: '1.5px solid #000',
-                  backgroundColor: '#ffffff',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
+                className="relative w-full sm:w-[280px] h-[38px] border-[1.5px] border-black bg-white flex items-center"
               >
                 <Search 
                   style={{ 

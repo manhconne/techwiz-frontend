@@ -150,11 +150,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
       className="py-12 md:py-20 w-full"
     >
       <div 
-        style={{ 
-          maxWidth: '1440px', 
-          margin: '0 auto', 
-          padding: '0 28px' 
-        }}
+        className="max-w-[1440px] mx-auto px-3.5 sm:px-7"
       >
 
         {/* ==================== 1. Premium Section Header ==================== */}
@@ -187,7 +183,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
             </div>
 
             {/* Universe Sub-Category Tabs — right-aligned, underline style */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', overflowX: 'auto', maxWidth: '100%' }}>
+            <div className="flex items-center gap-4 sm:gap-5 overflow-x-auto scrollbar-none max-w-full pb-1">
               {activeConfig.subCategories.map((sub) => {
                 const isActive = activeSubCategory === sub.id;
                 return (
@@ -267,33 +263,14 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
 
         {/* ==================== 2. Premium Filter Toolbar ==================== */}
         <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '12px',
-            padding: '14px 20px',
-            margin: '16px 0 32px',
-            backgroundColor: '#f8fafc',
-            borderRadius: '14px',
-            border: '1px solid #f1f5f9',
-            flexWrap: 'wrap',
-          }}
+          className="flex items-center justify-between gap-3 p-2.5 sm:p-4 my-4 sm:my-8 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-100 flex-wrap"
         >
           {/* Left: Format Segments + Artist + In Stock */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap max-w-full">
 
             {/* Segmented Format Control */}
             <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: '#ffffff',
-                border: '1px solid #e2e8f0',
-                borderRadius: '10px',
-                padding: '3px',
-                gap: '2px',
-              }}
+              className="flex items-center bg-white border border-slate-200 rounded-lg sm:rounded-xl p-1 gap-0.5 overflow-x-auto scrollbar-none max-w-full"
             >
               {[
                 { value: 'all', label: 'All' },
@@ -634,8 +611,8 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
           </div>
         )}
 
-        {/* ==================== 4. Product Showcase Grid (4 Balanced Columns) ==================== */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
+        {/* ==================== 4. Product Showcase Grid (2 Columns on Mobile, 4 on Desktop) ==================== */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-7">
           {filteredAlbums.map((album) => {
             const isFav = isWishlisted(album.id);
             const isCurrentPlaying = isPlaying && currentAlbum?.id === album.id;
@@ -644,11 +621,11 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
               <div
                 key={album.id}
                 onClick={() => onSelectAlbum(album)}
-                className="group bg-white rounded-2xl border border-slate-200/90 p-4 flex flex-col justify-between hover:shadow-xl hover:border-black hover:-translate-y-1.5 transition-all duration-300 cursor-pointer"
+                className="group bg-white rounded-xl sm:rounded-2xl border border-slate-200/90 p-2.5 sm:p-4 flex flex-col justify-between hover:shadow-xl hover:border-black hover:-translate-y-1.5 transition-all duration-300 cursor-pointer"
               >
                 {/* 1. Cover Artwork Container */}
                 <div>
-                  <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-100 mb-3.5 shadow-xs">
+                  <div className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-slate-100 mb-2 sm:mb-3.5 shadow-xs">
                     {/* Full Color Album Art with Gentle Hover Zoom */}
                     <img
                       src={album.coverImage}
@@ -658,8 +635,8 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     />
 
                     {/* Top-Left Tag Pill Badge */}
-                    <div className="absolute top-2.5 left-2.5 z-10">
-                      <span className="bg-black/85 backdrop-blur-xs text-white text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md shadow-xs">
+                    <div className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 z-10">
+                      <span className="bg-black/85 backdrop-blur-xs text-white text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded sm:rounded-md shadow-xs">
                         {album.tag || 'Official'}
                       </span>
                     </div>
@@ -670,54 +647,54 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                         e.stopPropagation();
                         toggleWishlist(album);
                       }}
-                      className="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-sm flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
+                      className="absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-sm flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
                       title="Add to Wishlist"
                       type="button"
                     >
-                      <Heart size={14} className={isFav ? 'fill-red-500 text-red-500' : ''} />
+                      <Heart size={13} className={isFav ? 'fill-red-500 text-red-500' : ''} />
                     </button>
 
                     {/* Audio Playing Pill */}
                     {isCurrentPlaying && (
-                      <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-10 bg-black text-white px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-lg">
-                        <Volume2 size={11} className="animate-pulse" />
+                      <div className="absolute top-1.5 left-1/2 -translate-x-1/2 z-10 bg-black text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-wider flex items-center gap-1 shadow-lg">
+                        <Volume2 size={10} className="animate-pulse" />
                         <span>Playing</span>
                       </div>
                     )}
 
                     {/* Hover Action Overlay: Quick Play Teaser & Details */}
-                    <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-3">
+                    <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 sm:gap-3">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           playTrack(album);
                         }}
-                        className="w-10 h-10 rounded-full bg-white hover:bg-black text-black hover:text-white flex items-center justify-center shadow-lg transition-colors cursor-pointer"
+                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white hover:bg-black text-black hover:text-white flex items-center justify-center shadow-lg transition-colors cursor-pointer"
                         title="Listen to Preview"
                         type="button"
                       >
-                        <Play size={14} style={{ fill: isCurrentPlaying ? '#ffffff' : 'currentColor' }} />
+                        <Play size={13} style={{ fill: isCurrentPlaying ? '#ffffff' : 'currentColor' }} />
                       </button>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           onSelectAlbum(album);
                         }}
-                        className="w-10 h-10 rounded-full bg-white hover:bg-black text-black hover:text-white flex items-center justify-center shadow-lg transition-colors cursor-pointer"
+                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white hover:bg-black text-black hover:text-white flex items-center justify-center shadow-lg transition-colors cursor-pointer"
                         title="View Details"
                         type="button"
                       >
-                        <Eye size={14} />
+                        <Eye size={13} />
                       </button>
                     </div>
                   </div>
 
                   {/* 2. Metadata Section */}
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-[11px] font-black uppercase tracking-[0.16em] text-slate-400">
+                  <div className="flex items-center justify-between mb-0.5 sm:mb-1">
+                    <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 truncate max-w-[70%]">
                       {album.artist}
                     </span>
-                    <span className="text-[10px] text-slate-400 font-semibold">
+                    <span className="text-[8px] sm:text-[10px] text-slate-400 font-semibold shrink-0">
                       {album.releaseDate.split('-')[0]}
                     </span>
                   </div>
@@ -725,30 +702,30 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                   {/* Album Title */}
                   <h4 
                     style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-                    className="text-base font-bold text-slate-900 group-hover:text-black line-clamp-1 leading-snug"
+                    className="text-xs sm:text-base font-bold text-slate-900 group-hover:text-black line-clamp-1 leading-snug"
                     title={album.title}
                   >
                     {album.title}
                   </h4>
 
                   {/* Format & Highlights Tag */}
-                  <div className="text-xs text-slate-500 mt-1 line-clamp-1">
+                  <div className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 line-clamp-1">
                     {album.type} • {album.inclusions?.[0] || 'Sealed Official Copy'}
                   </div>
                 </div>
 
                 {/* 3. Bottom Row: Price & Pre-Order Button */}
-                <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
-                  <div>
-                    <div className="text-base font-black text-slate-900 tracking-tight">
+                <div className="flex items-center justify-between mt-2.5 sm:mt-4 pt-2 sm:pt-3 border-t border-slate-100 gap-1.5">
+                  <div className="min-w-0">
+                    <div className="text-xs sm:text-base font-black text-slate-900 tracking-tight truncate">
                       {formatPrice(album.priceUSD, album.priceVND)}
                     </div>
                     {album.stock <= 0 ? (
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-red-600">
+                      <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-wider text-red-600 block">
                         Sold Out
                       </span>
                     ) : (
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">
+                      <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-wider text-emerald-600 block">
                         100% Certified
                       </span>
                     )}
@@ -761,11 +738,12 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                       addToCart(album, album.versions[0]?.name);
                     }}
                     disabled={album.stock <= 0}
-                    className="bg-black hover:opacity-85 text-white text-xs font-bold uppercase tracking-wider px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-opacity disabled:opacity-40 cursor-pointer shadow-xs"
+                    className="bg-black hover:opacity-85 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-full flex items-center gap-1 sm:gap-1.5 transition-opacity disabled:opacity-40 cursor-pointer shadow-xs shrink-0"
                     type="button"
                   >
-                    <ShoppingCart size={13} />
-                    <span>Pre-Order</span>
+                    <ShoppingCart size={12} />
+                    <span className="hidden min-[420px]:inline">Pre-Order</span>
+                    <span className="min-[420px]:hidden">+</span>
                   </button>
                 </div>
 

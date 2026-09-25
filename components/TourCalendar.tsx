@@ -137,11 +137,7 @@ export const TourCalendar: React.FC = () => {
       className="py-16 md:py-24 w-full border-t border-slate-100"
     >
       <div 
-        style={{ 
-          maxWidth: '1440px', 
-          margin: '0 auto', 
-          padding: '0 28px' 
-        }}
+        className="max-w-[1440px] mx-auto px-3.5 sm:px-7"
       >
         
         {/* ==================== 1. Editorial Section Header ==================== */}
@@ -249,14 +245,7 @@ export const TourCalendar: React.FC = () => {
 
             {/* City Filter Tabs - High-End Underline Editorial Style */}
             <div 
-              style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '20px', 
-                overflowX: 'auto',
-                maxWidth: '100%',
-                paddingBottom: '4px',
-              }}
+              className="flex items-center gap-4 sm:gap-5 overflow-x-auto scrollbar-none max-w-full pb-1"
             >
               {cities.map((c) => {
                 const isActive = selectedCity === c.id;

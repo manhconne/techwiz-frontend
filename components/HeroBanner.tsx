@@ -58,13 +58,9 @@ export const HeroBanner: React.FC = () => {
 
   return (
     <section
-      className="relative w-full overflow-hidden transition-colors duration-700 ease-in-out"
+      className="relative w-full overflow-hidden transition-colors duration-700 ease-in-out min-h-[480px] md:min-h-[580px] flex items-center justify-center"
       style={{
         background: `linear-gradient(135deg, ${current.bgColor} 0%, #ffffff 82%)`,
-        minHeight: '580px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
       }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -94,42 +90,17 @@ export const HeroBanner: React.FC = () => {
       </div>
 
       <div
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          width: '100%',
-          maxWidth: '1440px',
-          margin: '0 auto',
-          padding: '48px 36px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '48px',
-          minHeight: '520px',
-        }}
-        className="flex-col md:flex-row"
+        className="relative z-10 w-full max-w-[1440px] mx-auto py-8 sm:py-12 px-4 sm:px-9 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 min-h-auto md:min-h-[520px]"
       >
-
         {/* Left Side: Artistic Typography & Clean Layout */}
-        <div
-          style={{
-            flex: '1 1 0%',
-            maxWidth: '620px',
-            minHeight: '440px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-          }}
-        >
-
+        <div className="flex-1 w-full max-w-[620px] flex flex-col items-start justify-center">
           {/* Eyebrow Badge */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 flex-wrap">
             <span
               style={{
                 backgroundColor: '#000000',
                 color: '#ffffff',
-                padding: '6px 14px',
+                padding: '5px 12px',
                 fontSize: '11px',
                 fontWeight: 800,
                 letterSpacing: '0.12em',
@@ -139,7 +110,7 @@ export const HeroBanner: React.FC = () => {
             >
               {current.badgeText}
             </span>
-            <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748b' }}>
+            <span style={{ fontSize: '11px', fontWeight: 600, color: '#64748b' }}>
               100% Certified Hanteo &amp; Circle Chart
             </span>
           </div>
@@ -147,12 +118,12 @@ export const HeroBanner: React.FC = () => {
           {/* Subheadline with Wide Letter Spacing */}
           <h2
             style={{
-              fontSize: '13px',
+              fontSize: '12px',
               fontWeight: 800,
-              letterSpacing: '0.25em',
+              letterSpacing: '0.2em',
               textTransform: 'uppercase',
               color: '#475569',
-              margin: '0 0 10px 0'
+              margin: '0 0 8px 0'
             }}
           >
             {current.subheadline}
@@ -162,17 +133,14 @@ export const HeroBanner: React.FC = () => {
           <h1
             style={{
               fontFamily: activeConfig.fontFamily,
-              fontSize: 'clamp(54px, 6.8vw, 82px)',
+              fontSize: 'clamp(28px, 6vw, 76px)',
               fontWeight: 800,
               fontStyle: 'italic',
               textTransform: 'uppercase',
-              lineHeight: 0.96,
+              lineHeight: 1.05,
               letterSpacing: '-0.02em',
               color: '#0f172a',
-              margin: '0 0 16px 0',
-              minHeight: '80px',
-              display: 'flex',
-              alignItems: 'center',
+              margin: '0 0 14px 0',
             }}
           >
             {current.headline}
@@ -181,14 +149,14 @@ export const HeroBanner: React.FC = () => {
           {/* Description */}
           <p
             style={{
-              fontSize: '15px',
+              fontSize: '14px',
               color: '#475569',
-              lineHeight: 1.7,
+              lineHeight: 1.6,
               maxWidth: '520px',
-              minHeight: '76px',
-              margin: '0 0 18px 0',
+              margin: '0 0 16px 0',
               fontWeight: 500
             }}
+            className="line-clamp-3 md:line-clamp-none"
           >
             {current.description}
           </p>
@@ -223,19 +191,19 @@ export const HeroBanner: React.FC = () => {
           </div>
 
           {/* Price display */}
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', marginBottom: '28px', minHeight: '44px' }}>
+          <div className="flex items-baseline gap-2.5 sm:gap-3 mb-5 sm:mb-7 min-h-[36px] sm:min-h-[44px] flex-wrap">
             <span
               style={{
-                fontSize: '36px',
                 fontWeight: 800,
                 color: '#0f172a',
                 letterSpacing: '-0.02em'
               }}
+              className="text-2xl sm:text-4xl"
             >
               {formatPrice(album.priceUSD, album.priceVND)}
             </span>
             {album.originalPriceUSD && (
-              <span style={{ fontSize: '16px', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 600 }}>
+              <span className="text-sm sm:text-base text-slate-400 line-through font-semibold">
                 {formatPrice(album.originalPriceUSD, (album.priceVND || 600000) * 1.2)}
               </span>
             )}
@@ -255,15 +223,13 @@ export const HeroBanner: React.FC = () => {
           </div>
 
           {/* 2 Clean Action Buttons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '36px' }}>
+          <div className="flex items-center gap-3 sm:gap-3.5 mb-6 sm:mb-9 flex-wrap">
             <button
               onClick={() => addToCart(album, album.versions[0]?.name)}
               style={{
                 backgroundColor: '#000000',
                 color: '#ffffff',
-                padding: '14px 34px',
                 borderRadius: '9999px',
-                fontSize: '12px',
                 fontWeight: 700,
                 textTransform: 'uppercase',
                 letterSpacing: '0.08em',
@@ -275,7 +241,7 @@ export const HeroBanner: React.FC = () => {
                 boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
                 transition: 'opacity 0.15s ease, transform 0.15s ease',
               }}
-              className="hover:opacity-90 hover:scale-105"
+              className="px-5 sm:px-8 py-2.5 sm:py-3.5 text-xs hover:opacity-90 hover:scale-105 active:scale-95"
               type="button"
             >
               <ShoppingCart size={16} />
@@ -287,9 +253,7 @@ export const HeroBanner: React.FC = () => {
               style={{
                 backgroundColor: isThisPlaying ? '#000000' : 'transparent',
                 color: isThisPlaying ? '#ffffff' : '#000000',
-                padding: '14px 30px',
                 borderRadius: '9999px',
-                fontSize: '12px',
                 fontWeight: 700,
                 textTransform: 'uppercase',
                 letterSpacing: '0.08em',
@@ -300,7 +264,7 @@ export const HeroBanner: React.FC = () => {
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
-              className="hover:bg-black hover:text-white"
+              className="px-5 sm:px-7 py-2.5 sm:py-3.5 text-xs hover:bg-black hover:text-white active:scale-95"
               type="button"
             >
               <Play size={16} style={{ fill: isThisPlaying ? '#ffffff' : '#000000' }} />
@@ -309,7 +273,7 @@ export const HeroBanner: React.FC = () => {
           </div>
 
           {/* Minimalist Carousel Pagination (Numbers + Progress Bars + Arrows) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
             <span style={{ fontSize: '13px', fontWeight: 800, color: '#0f172a', letterSpacing: '0.05em' }}>
               0{activeIndex + 1} <span style={{ color: '#cbd5e1' }}>/</span> 0{slides.length}
             </span>
@@ -385,32 +349,13 @@ export const HeroBanner: React.FC = () => {
 
         {/* Right Side: Elegant Album Showcase (ROTATES on hover, NO scale / phóng to) */}
         <div
-          style={{
-            flex: '1 1 0%',
-            maxWidth: '460px',
-            width: '100%',
-            minHeight: '440px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'relative'
-          }}
+          className="flex-1 w-full max-w-[320px] sm:max-w-[400px] md:max-w-[460px] min-h-[260px] sm:min-h-[360px] md:min-h-[440px] flex justify-center items-center relative mt-3 md:mt-0"
           onMouseEnter={() => setIsAlbumHovered(true)}
           onMouseLeave={() => setIsAlbumHovered(false)}
         >
-          {/* Card Container with fixed aspect ratio */}
+          {/* Card Container with responsive square sizing */}
           <div
-            style={{
-              position: 'relative',
-              width: '100%',
-              maxWidth: '380px',
-              height: '380px',
-              aspectRatio: '1 / 1',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-            }}
+            className="relative w-full max-w-[240px] sm:max-w-[320px] md:max-w-[380px] aspect-square flex items-center justify-center cursor-pointer"
           >
             {/* Ambient Lighting Glow Behind Album */}
             <div
@@ -426,7 +371,7 @@ export const HeroBanner: React.FC = () => {
               }}
             />
 
-            {/* Vinyl Record: Completely concealed inside/behind album, slides out to the right and spins on hover */}
+            {/* Vinyl Record: Concealed inside/behind album, slides out to the right and spins on hover */}
             <div
               style={{
                 position: 'absolute',
@@ -444,7 +389,7 @@ export const HeroBanner: React.FC = () => {
                 zIndex: 1,
                 right: '0px',
                 transform: isAlbumHovered
-                  ? 'translateX(70px) rotate(180deg)'
+                  ? 'translateX(45px) rotate(180deg)'
                   : 'translateX(0px) rotate(0deg)',
                 opacity: isAlbumHovered ? 1 : 0,
                 transition: 'transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease',
@@ -472,7 +417,7 @@ export const HeroBanner: React.FC = () => {
               <div style={{ position: 'absolute', inset: '52px', borderRadius: '50%', border: '1px solid rgba(255, 255, 255, 0.06)' }} />
             </div>
 
-            {/* Album Cover Card: ROTATES gracefully on hover instead of zoom/scale */}
+            {/* Album Cover Card: ROTATES gracefully on hover */}
             <div
               style={{
                 position: 'relative',

@@ -78,6 +78,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isLargeFont, setIsLargeFont] = useState(false);
 
   // Form & Tab State for Auth Modal
@@ -137,172 +138,94 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200">
 
-      {/* Main Bar - Large, spacious & prominent matching reference */}
-      <div
-        style={{
-          maxWidth: '1440px',
-          margin: '0 auto',
-          padding: '20px 36px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '24px',
-          backgroundColor: '#ffffff',
-        }}
-      >
-        {/* LEFT: Menu button & Large Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexShrink: 0 }}>
+      {/* Main Bar - Responsive Header Bar */}
+      <div className="max-w-[1440px] mx-auto px-3 sm:px-6 md:px-9 py-2.5 sm:py-4 flex items-center justify-between gap-3 md:gap-6 bg-white">
+        {/* LEFT: Menu button & Logo */}
+        <div className="flex items-center gap-2.5 sm:gap-4 md:gap-5 shrink-0">
           <button
-            onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
-            style={{
-              width: '46px',
-              height: '46px',
-              borderRadius: '50%',
-              backgroundColor: '#000000',
-              color: '#ffffff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              border: 'none',
-              transition: 'opacity 0.15s ease',
-              flexShrink: 0,
-            }}
-            className="hover:opacity-90"
-            title="Menu Categories"
+            onClick={() => setIsMenuDrawerOpen(true)}
+            className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-black text-white flex items-center justify-center cursor-pointer hover:opacity-90 shrink-0 border-0"
+            title="Menu Sidebar"
             type="button"
           >
-            <Menu style={{ width: '22px', height: '22px' }} />
+            <Menu className="w-5 h-5" />
           </button>
 
-          <Link href="/" style={{ display: 'flex', alignItems: 'center' }} className="notranslate">
+          <Link href="/" className="flex items-center notranslate shrink-0">
             <img
               src="/logo-dark.png?v=2"
               alt="Fan Hub Plus"
-              style={{ height: '46px', width: 'auto', objectFit: 'contain', display: 'block' }}
+              className="h-8 sm:h-9 md:h-11 w-auto object-contain block"
             />
           </Link>
         </div>
 
-        {/* CENTER: Wide Underline Search Bar (Matching Reference Image 2) */}
-        <div style={{ flex: 1, maxWidth: '640px', margin: '0 32px' }}>
-          <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+        {/* CENTER: Wide Underline Search Bar (Desktop) */}
+        <div className="hidden md:flex flex-1 max-w-[640px] mx-4 lg:mx-8">
+          <div className="relative w-full flex items-center">
             <input
               type="text"
               placeholder="Search album, OST, anime, game (e.g. Demon Slayer, NewJeans)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '10px 48px 10px 4px',
-                fontSize: '15px',
-                fontWeight: 500,
-                border: 'none',
-                borderBottom: '2px solid #000000',
-                borderRadius: '0px',
-                outline: 'none',
-                backgroundColor: 'transparent',
-                color: '#000000',
-              }}
+              className="w-full py-2 pr-12 pl-1 text-[15px] font-medium border-0 border-b-2 border-black rounded-none outline-none bg-transparent text-black"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                style={{
-                  position: 'absolute',
-                  right: '38px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  color: '#94a3b8',
-                  cursor: 'pointer',
-                  padding: '4px',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
+                className="absolute right-9 top-1/2 -translate-y-1/2 text-slate-400 hover:text-black p-1 border-0 bg-transparent cursor-pointer"
                 title="Clear"
               >
-                <X style={{ width: '16px', height: '16px' }} />
+                <X className="w-4 h-4" />
               </button>
             )}
             <button
               type="button"
-              style={{
-                position: 'absolute',
-                right: '4px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '4px',
-                color: '#000000',
-              }}
+              className="absolute right-1 top-1/2 -translate-y-1/2 text-black p-1 border-0 bg-transparent cursor-pointer"
               title="Search"
             >
-              <Search style={{ width: '22px', height: '22px', strokeWidth: 2 }} />
+              <Search className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* RIGHT: User Profile, Cart, Wishlist Doc, Language Pill */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexShrink: 0 }}>
+        {/* RIGHT: Action Icons */}
+        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+          {/* Mobile Search Icon Button -> Opens Dedicated Mobile Search Modal */}
+          <button
+            onClick={() => setIsSearchModalOpen(true)}
+            className="md:hidden w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
+            title="Search"
+            type="button"
+          >
+            <Search style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
+          </button>
+
           {/* User Profile Icon */}
           <button
             onClick={() => setIsAuthModalOpen(true)}
-            style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#000000',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'background-color 0.15s ease',
-            }}
-            className="hover:bg-slate-100"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
             title={isLoggedIn ? user.name : 'Sign In'}
             type="button"
           >
-            <User style={{ width: '22px', height: '22px', strokeWidth: 1.8 }} />
+            <User style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
           </button>
 
           {/* Shopping Cart Icon */}
           <button
             onClick={() => setIsCartOpen(true)}
-            style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#000000',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              position: 'relative',
-              transition: 'background-color 0.15s ease',
-            }}
-            className="hover:bg-slate-100"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
             title="Cart"
             type="button"
           >
-            <ShoppingBag style={{ width: '22px', height: '22px', strokeWidth: 1.8 }} />
+            <ShoppingBag style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
             {cartCount > 0 && (
               <span
                 style={{
                   position: 'absolute',
-                  top: '2px',
-                  right: '2px',
+                  top: '1px',
+                  right: '1px',
                   backgroundColor: '#000000',
                   color: '#ffffff',
                   width: '18px',
@@ -325,31 +248,17 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Wishlist / Document Icon */}
           <button
             onClick={() => setIsWishlistOpen(true)}
-            style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#000000',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              position: 'relative',
-              transition: 'background-color 0.15s ease',
-            }}
-            className="hover:bg-slate-100"
+            className="hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
             title="Wishlist"
             type="button"
           >
-            <FileText style={{ width: '22px', height: '22px', strokeWidth: 1.8 }} />
+            <FileText style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
             {wishlistCount > 0 && (
               <span
                 style={{
                   position: 'absolute',
-                  top: '2px',
-                  right: '2px',
+                  top: '1px',
+                  right: '1px',
                   backgroundColor: '#000000',
                   color: '#ffffff',
                   width: '18px',
@@ -374,25 +283,9 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleLanguage}
             title={language === 'en' ? 'Translate to Vietnamese (Google Translate)' : 'Chuyển sang Tiếng Anh'}
             type="button"
-            className="notranslate hover:bg-slate-900 hover:text-white"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '6px 18px',
-              fontSize: '14px',
-              fontWeight: 800,
-              border: '2px solid #000000',
-              borderRadius: '9999px',
-              backgroundColor: '#ffffff',
-              color: '#000000',
-              cursor: 'pointer',
-              height: '40px',
-              marginLeft: '6px',
-              transition: 'all 0.15s ease',
-            }}
+            className="hidden sm:flex notranslate hover:bg-slate-900 hover:text-white items-center gap-1.5 px-3 py-1 text-xs font-black border-2 border-black rounded-full bg-white text-black h-8 sm:h-9 cursor-pointer transition-all"
           >
-            <Globe style={{ width: '17px', height: '17px' }} />
+            <Globe style={{ width: '15px', height: '15px' }} />
             <span>{language === 'en' ? 'EN' : 'VI'}</span>
           </button>
 
@@ -401,26 +294,12 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleThemeMode}
             title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             type="button"
-            className="notranslate hover:bg-slate-100 hover:scale-105"
-            style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: themeMode === 'dark' ? '#f59e0b' : '#000000',
-              backgroundColor: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-              marginLeft: '2px',
-            }}
+            className="hidden sm:flex notranslate hover:bg-slate-100 w-9 h-9 rounded-full items-center justify-center text-black border-0 bg-transparent cursor-pointer transition-transform"
           >
             {themeMode === 'dark' ? (
-              <Sun style={{ width: '22px', height: '22px', strokeWidth: 2 }} />
+              <Sun style={{ width: '20px', height: '20px', strokeWidth: 2, color: '#f59e0b' }} />
             ) : (
-              <Moon style={{ width: '22px', height: '22px', strokeWidth: 2 }} />
+              <Moon style={{ width: '20px', height: '20px', strokeWidth: 2 }} />
             )}
           </button>
 
@@ -428,79 +307,27 @@ export const Header: React.FC<HeaderProps> = ({
           {user.role === 'admin' && (
             <Link
               href="/admin"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 12px',
-                fontSize: '12px',
-                fontWeight: 800,
-                backgroundColor: '#fef3c7',
-                color: '#92400e',
-                border: '1px solid #fcd34d',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                height: '40px',
-                marginLeft: '4px',
-                textDecoration: 'none',
-              }}
+              className="flex items-center gap-1 px-2.5 py-1 text-xs font-black bg-amber-100 text-amber-800 border border-amber-300 rounded-md cursor-pointer h-8 text-decoration-none"
               title="Admin Portal"
             >
-              <ShieldCheck style={{ width: '16px', height: '16px', color: '#d97706' }} />
-              <span>Admin</span>
+              <ShieldCheck style={{ width: '15px', height: '15px', color: '#d97706' }} />
+              <span className="hidden md:inline">Admin</span>
             </Link>
           )}
         </div>
       </div>
 
-      {/* SECONDARY CATEGORY NAVIGATION BAR - Wide, tall, prominently spaced */}
-      <div
-        style={{
-          width: '100%',
-          backgroundColor: '#ffffff',
-          borderTop: '1px solid #e2e8f0',
-          borderBottom: '1px solid #e2e8f0',
-          position: 'relative',
-          zIndex: 30,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '1440px',
-            margin: '0 auto',
-            padding: '0 36px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            height: '54px',
-            position: 'relative',
-          }}
-        >
+      {/* SECONDARY CATEGORY NAVIGATION BAR (Hidden on mobile, moved to sidebar) */}
+      <div className="hidden md:block w-full bg-white border-t border-b border-slate-200 relative z-30 overflow-x-auto scrollbar-none">
+        <div className="max-w-[1440px] mx-auto px-3 sm:px-9 flex items-center justify-start sm:justify-between h-11 sm:h-[54px] relative min-w-max">
           {/* [ ≡ ALL MD ] Black Button with Exact Dropdown */}
           <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center', zIndex: 60 }}>
             <button
               onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
               type="button"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '0 28px',
-                fontSize: '13px',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                color: '#ffffff',
-                backgroundColor: '#000000',
-                border: 'none',
-                height: '44px',
-                borderRadius: '0px',
-                cursor: 'pointer',
-                transition: 'opacity 0.15s ease',
-              }}
-              className="hover:opacity-90"
+              className="flex items-center gap-2 px-3.5 sm:px-7 text-xs sm:text-[13px] font-black uppercase tracking-wider text-white bg-black h-8 sm:h-11 hover:opacity-90 border-0 cursor-pointer shrink-0"
             >
-              <Menu style={{ width: '16px', height: '16px' }} />
+              <Menu style={{ width: '15px', height: '15px' }} />
               <span>ALL MD</span>
             </button>
 
@@ -578,16 +405,8 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* Horizontal Links: Prominently spaced across bar matching reference image */}
-          <nav
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '64px',
-              flexWrap: 'nowrap',
-              height: '100%',
-            }}
-          >
+          {/* Horizontal Links */}
+          <nav className="flex items-center gap-6 sm:gap-10 lg:gap-14 flex-nowrap h-full shrink-0 pl-3 sm:pl-0">
             <Link
               href="/artist"
               style={{
@@ -1666,6 +1485,331 @@ export const Header: React.FC<HeaderProps> = ({
 
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MOBILE SIDEBAR DRAWER (Bấm bars mở sidebar, chứa danh mục & ALL MD) */}
+      {/* ========================================================================= */}
+      {isMenuDrawerOpen && (
+        <div className="fixed inset-0 z-50 flex">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300"
+            onClick={() => setIsMenuDrawerOpen(false)}
+          />
+
+          {/* Drawer content sliding from left */}
+          <div className="relative w-[310px] sm:w-[350px] max-w-[85vw] h-full bg-white flex flex-col shadow-2xl z-10 overflow-hidden animate-in slide-in-from-left duration-300">
+            {/* Top Bar with Brand & Close */}
+            <div className="p-4 flex items-center justify-between border-b border-slate-200 bg-slate-50">
+              <Link
+                href="/"
+                onClick={() => setIsMenuDrawerOpen(false)}
+                className="flex items-center notranslate"
+              >
+                <img
+                  src="/logo-dark.png?v=2"
+                  alt="Fan Hub Plus"
+                  className="h-8 w-auto object-contain block"
+                />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setIsMenuDrawerOpen(false)}
+                className="w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-slate-100 hover:text-black cursor-pointer shadow-xs transition-colors"
+                title="Đóng"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Quick Search trigger button in Drawer */}
+            <div className="p-3.5 border-b border-slate-100 bg-white">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMenuDrawerOpen(false);
+                  setIsSearchModalOpen(true);
+                }}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-lg text-xs font-semibold cursor-pointer border-0 transition-colors"
+              >
+                <Search className="w-4 h-4 text-slate-600" />
+                <span>Tìm kiếm album, nghệ sĩ, OST...</span>
+              </button>
+            </div>
+
+            {/* Scrollable Nav Area */}
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
+              {/* 1. Main Navigation Links */}
+              <div>
+                <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">
+                  Điều hướng chính / Main Menu
+                </div>
+                <div className="space-y-1">
+                  <Link
+                    href="/artist"
+                    onClick={() => setIsMenuDrawerOpen(false)}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Users className="w-4 h-4 text-black" />
+                      ARTIST
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </Link>
+                  <Link
+                    href="/event"
+                    onClick={() => setIsMenuDrawerOpen(false)}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Calendar className="w-4 h-4 text-black" />
+                      EVENT
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </Link>
+                  <Link
+                    href="/cd-dvd-book"
+                    onClick={() => setIsMenuDrawerOpen(false)}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Disc className="w-4 h-4 text-black" />
+                      CD / DVD / BOOK
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </Link>
+                  <Link
+                    href="/md"
+                    onClick={() => setIsMenuDrawerOpen(false)}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Sparkles className="w-4 h-4 text-black" />
+                      MD (Official Merchandise)
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* 2. ALL MD Collection Categories */}
+              <div>
+                <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1 flex items-center justify-between">
+                  <span>ALL MD CATEGORIES</span>
+                  <span className="bg-black text-white text-[9px] px-1.5 py-0.5 rounded font-bold">9 MỤC</span>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-2 space-y-1">
+                  {allMdItems.map((item, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setIsMenuDrawerOpen(false);
+                        item.action();
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-lg text-xs font-bold text-slate-700 hover:bg-white hover:text-black hover:shadow-xs transition-all flex items-center justify-between border-0 cursor-pointer bg-transparent"
+                    >
+                      <span>{item.label}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-300" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 3. Quick Section Jumps */}
+              <div>
+                <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">
+                  Khám phá nhanh / Sections
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection('albums')}
+                    className="p-2.5 text-left bg-white border border-slate-200 rounded-lg hover:border-black text-xs font-bold text-slate-800 cursor-pointer"
+                  >
+                    🎵 Album Drops
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection('artists')}
+                    className="p-2.5 text-left bg-white border border-slate-200 rounded-lg hover:border-black text-xs font-bold text-slate-800 cursor-pointer"
+                  >
+                    ⭐ Hồ sơ Idol
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection('tours')}
+                    className="p-2.5 text-left bg-white border border-slate-200 rounded-lg hover:border-black text-xs font-bold text-slate-800 cursor-pointer"
+                  >
+                    🎫 World Tour
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection('community')}
+                    className="p-2.5 text-left bg-white border border-slate-200 rounded-lg hover:border-black text-xs font-bold text-slate-800 cursor-pointer"
+                  >
+                    💬 Fandom Feed
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Footer Actions inside Drawer */}
+            <div className="p-3.5 border-t border-slate-200 bg-slate-50 space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={toggleLanguage}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-800 hover:bg-slate-100 cursor-pointer"
+                >
+                  <Globe className="w-3.5 h-3.5 text-blue-600" />
+                  <span>{language === 'en' ? 'English (EN)' : 'Tiếng Việt (VI)'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleThemeMode}
+                  className="w-10 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-100 cursor-pointer"
+                  title="Đổi giao diện Sáng / Tối"
+                >
+                  {themeMode === 'dark' ? (
+                    <Sun className="w-4 h-4 text-amber-500" />
+                  ) : (
+                    <Moon className="w-4 h-4 text-slate-700" />
+                  )}
+                </button>
+              </div>
+
+              {isLoggedIn ? (
+                <div className="flex items-center justify-between pt-1">
+                  <div className="text-xs">
+                    <span className="font-bold text-slate-900 block truncate max-w-[170px]">{user.name}</span>
+                    <span className="text-[10px] text-slate-500 block truncate max-w-[170px]">{user.email}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      logout();
+                      setIsMenuDrawerOpen(false);
+                    }}
+                    className="text-xs font-bold text-red-600 hover:underline bg-transparent border-0 cursor-pointer p-1"
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMenuDrawerOpen(false);
+                    setIsAuthModalOpen(true);
+                  }}
+                  className="w-full py-2.5 bg-black text-white text-xs font-black uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 cursor-pointer hover:bg-neutral-800 border-0"
+                >
+                  <User className="w-4 h-4" />
+                  <span>Đăng nhập / Sign In</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* DEDICATED SEARCH MODAL (Nút tìm kiếm mở modal tìm kiếm riêng trên mobile) */}
+      {/* ========================================================================= */}
+      {isSearchModalOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-start">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            onClick={() => setIsSearchModalOpen(false)}
+          />
+
+          {/* Modal Container */}
+          <div className="relative w-full bg-white shadow-2xl z-10 border-b border-slate-200 animate-in slide-in-from-top-4 duration-200">
+            {/* Modal Header */}
+            <div className="max-w-[800px] mx-auto px-4 pt-4 pb-3 flex items-center justify-between border-b border-slate-100">
+              <div className="flex items-center gap-2 text-sm font-black uppercase tracking-wider text-black">
+                <Search className="w-4 h-4 text-black" />
+                <span>Tìm kiếm / Search</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSearchModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 cursor-pointer border-0 transition-colors"
+                title="Đóng"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Input Form */}
+            <div className="max-w-[800px] mx-auto px-4 py-4">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setIsSearchModalOpen(false);
+                  const albumsEl = document.getElementById('albums');
+                  if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="relative flex items-center"
+              >
+                <input
+                  type="text"
+                  autoFocus
+                  placeholder="Nhập tên album, nghệ sĩ, bài hát, OST..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full py-3 pl-3 pr-24 text-base font-semibold border-b-2 border-black rounded-none outline-none bg-transparent text-black placeholder:text-slate-400"
+                />
+                <div className="absolute right-0 flex items-center gap-1">
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="p-1.5 text-slate-400 hover:text-black bg-transparent border-0 cursor-pointer"
+                      title="Xóa"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    type="submit"
+                    className="px-3.5 py-1.5 bg-black text-white text-xs font-bold uppercase rounded-md cursor-pointer hover:bg-neutral-800 border-0 flex items-center gap-1"
+                  >
+                    <span>Tìm</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </form>
+
+              {/* Trending keywords */}
+              <div className="mt-4 pb-2">
+                <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2">
+                  🔥 Gợi ý tìm kiếm phổ biến
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {['BTS', 'NewJeans', 'BLACKPINK', 'Stray Kids', 'Demon Slayer', 'Limited Kit', 'Vinyl', 'OST'].map((term) => (
+                    <button
+                      key={term}
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery(term);
+                        setIsSearchModalOpen(false);
+                        const albumsEl = document.getElementById('albums');
+                        if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="px-3 py-1.5 bg-slate-100 hover:bg-black hover:text-white text-slate-700 text-xs font-semibold rounded-full border-0 cursor-pointer transition-colors"
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
