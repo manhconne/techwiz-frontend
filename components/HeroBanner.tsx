@@ -8,7 +8,11 @@ import { filterAlbumsByDomain } from '../utils/domainFilters';
 import { mockAlbums } from '../data/mockData';
 import { Play, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
 
-export const HeroBanner: React.FC = () => {
+interface HeroBannerProps {
+  embedded?: boolean;
+}
+
+export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
   const { playTrack, currentAlbum, isPlaying } = usePlayer();
   const { addToCart, formatPrice } = useCartWishlist();
   const { currentDomain, activeSubCategory, activeConfig } = useDomainTheme();
@@ -31,6 +35,24 @@ export const HeroBanner: React.FC = () => {
       inclusions: alb.inclusions?.slice(0, 2).join('  •  ') || 'Sealed Official Package',
     }));
   }, [domainFilteredAlbums]);
+
+  // Compute visual theme class matching AlbumGrid logic
+  const themeClass = (() => {
+    const isKpop =
+      currentDomain === 'fandom' ||
+      activeSubCategory === 'kpop' ||
+      activeSubCategory === 'kpop_fandom' ||
+      (currentDomain === 'classic' && activeSubCategory === 'kpop');
+    const isAnime =
+      activeSubCategory === 'anime' ||
+      activeSubCategory === 'anime_fandom' ||
+      activeSubCategory === 'ghibli' ||
+      activeSubCategory === 'vocaloid' ||
+      (currentDomain === 'art' && (activeSubCategory === 'ghibli' || activeSubCategory === 'all'));
+    if (isKpop) return 'theme-kpop';
+    if (isAnime) return 'theme-anime';
+    return '';
+  })();
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -57,11 +79,28 @@ export const HeroBanner: React.FC = () => {
   const handlePrev = () => setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <section
-      className="relative w-full overflow-hidden transition-colors duration-700 ease-in-out min-h-[480px] md:min-h-[580px] flex items-center justify-center"
+    <div
+      className={`domain-hero-banner ${themeClass} relative w-full overflow-hidden transition-colors duration-700 ease-in-out flex items-center justify-center ${
+        embedded 
+          ? 'rounded-2xl border border-slate-200/90 shadow-sm min-h-[420px] md:min-h-[500px]' 
+          : 'min-h-[480px] md:min-h-[580px]'
+      }`}
       style={{
-        background: `linear-gradient(135deg, ${current.bgColor} 0%, #ffffff 82%)`,
-      }}
+        background: themeClass === 'theme-kpop'
+          ? `linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 45%, #eff6ff 85%)`
+          : themeClass === 'theme-anime'
+          ? `linear-gradient(135deg, #ede9fe 0%, #fff7ed 52%, #e0f2fe 100%)`
+          : `linear-gradient(135deg, ${current.bgColor} 0%, #ffffff 82%)`,
+        border: themeClass === 'theme-kpop' ? '1px solid rgba(219, 234, 254, 0.9)' : undefined,
+        boxShadow: themeClass === 'theme-kpop' ? '0 10px 30px -4px rgba(37, 99, 235, 0.08)' : undefined,
+        // Inject theme-aware CSS variables for child elements
+        '--hero-text-primary': '#0f172a',
+        '--hero-text-sub': themeClass === 'theme-anime' ? '#475569' : '#475569',
+        '--hero-text-muted': themeClass === 'theme-anime' ? '#5c6bc0' : '#64748b',
+        '--hero-accent': themeClass === 'theme-anime' ? '#ff5722' : themeClass === 'theme-kpop' ? '#2563eb' : '#000000',
+        '--hero-price-badge-bg': themeClass === 'theme-anime' ? '#ff5722' : '#000000',
+        '--hero-price-badge-color': '#ffffff',
+      } as React.CSSProperties}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -74,9 +113,9 @@ export const HeroBanner: React.FC = () => {
           transform: 'translateY(-50%)',
           fontSize: 'clamp(110px, 14vw, 190px)',
           fontWeight: 900,
-          fontFamily: "'Playfair Display', Georgia, serif",
+          fontFamily: themeClass === 'theme-kpop' ? "'Quicksand', sans-serif" : "'Playfair Display', Georgia, serif",
           fontStyle: 'italic',
-          color: 'rgba(0, 0, 0, 0.035)',
+          color: themeClass === 'theme-kpop' ? 'rgba(233,30,140,0.05)' : themeClass === 'theme-anime' ? 'rgba(63,81,181,0.05)' : 'rgba(0, 0, 0, 0.035)',
           userSelect: 'none',
           pointerEvents: 'none',
           lineHeight: 1,
@@ -89,14 +128,20 @@ export const HeroBanner: React.FC = () => {
         {current.headline}
       </div>
 
+      {/* K-Pop sparkle decoration */}
+      {themeClass === 'theme-kpop' && (
+        <span className="domain-hero-sparkle">✦ ✧ ✦</span>
+      )}
+
       <div
-        className="relative z-10 w-full max-w-[1440px] mx-auto py-8 sm:py-12 px-4 sm:px-9 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 min-h-auto md:min-h-[520px]"
+        className={`relative z-10 w-full max-w-[1440px] mx-auto ${embedded ? 'py-5 sm:py-8 px-4 sm:px-8 min-h-auto md:min-h-[440px]' : 'py-8 sm:py-12 px-4 sm:px-9 min-h-auto md:min-h-[520px]'} flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12`}
       >
         {/* Left Side: Artistic Typography & Clean Layout */}
         <div className="flex-1 w-full max-w-[620px] flex flex-col items-start justify-center">
           {/* Eyebrow Badge */}
           <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 flex-wrap">
             <span
+              className="domain-hero-badge"
               style={{
                 backgroundColor: '#000000',
                 color: '#ffffff',
@@ -122,7 +167,7 @@ export const HeroBanner: React.FC = () => {
               fontWeight: 800,
               letterSpacing: '0.2em',
               textTransform: 'uppercase',
-              color: '#475569',
+              color: themeClass === 'theme-anime' ? '#ff5722' : '#475569',
               margin: '0 0 8px 0'
             }}
           >
@@ -131,6 +176,7 @@ export const HeroBanner: React.FC = () => {
 
           {/* Main Title - Artistic Editorial Display Headline */}
           <h1
+            className="domain-hero-title"
             style={{
               fontFamily: activeConfig.fontFamily,
               fontSize: 'clamp(28px, 6vw, 76px)',
@@ -150,7 +196,7 @@ export const HeroBanner: React.FC = () => {
           <p
             style={{
               fontSize: '14px',
-              color: '#475569',
+              color: 'var(--hero-text-sub, #475569)',
               lineHeight: 1.6,
               maxWidth: '520px',
               margin: '0 0 16px 0',
@@ -165,7 +211,7 @@ export const HeroBanner: React.FC = () => {
           <div
             style={{
               fontSize: '13px',
-              color: '#64748b',
+              color: 'var(--hero-text-muted, #64748b)',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
@@ -176,18 +222,18 @@ export const HeroBanner: React.FC = () => {
           >
             <span
               style={{
-                color: '#0f172a',
+                color: 'var(--hero-accent, #0f172a)',
                 fontWeight: 800,
                 letterSpacing: '0.12em',
                 fontSize: '11px',
                 textTransform: 'uppercase',
-                borderBottom: '1.5px solid #000000',
+                borderBottom: '1.5px solid var(--hero-accent, #000000)',
                 paddingBottom: '1px'
               }}
             >
               INCLUDES:
             </span>
-            <span style={{ fontWeight: 600, color: '#334155' }}>{current.inclusions}</span>
+            <span style={{ fontWeight: 600, color: 'var(--hero-text-sub, #334155)' }}>{current.inclusions}</span>
           </div>
 
           {/* Price display */}
@@ -195,7 +241,7 @@ export const HeroBanner: React.FC = () => {
             <span
               style={{
                 fontWeight: 800,
-                color: '#0f172a',
+                color: 'var(--hero-text-primary, #0f172a)',
                 letterSpacing: '-0.02em'
               }}
               className="text-2xl sm:text-4xl"
@@ -209,8 +255,8 @@ export const HeroBanner: React.FC = () => {
             )}
             <span
               style={{
-                backgroundColor: '#000000',
-                color: '#ffffff',
+                backgroundColor: 'var(--hero-price-badge-bg, #000000)',
+                color: 'var(--hero-price-badge-color, #ffffff)',
                 fontSize: '10px',
                 fontWeight: 800,
                 padding: '3px 8px',
@@ -226,6 +272,7 @@ export const HeroBanner: React.FC = () => {
           <div className="flex items-center gap-3 sm:gap-3.5 mb-6 sm:mb-9 flex-wrap">
             <button
               onClick={() => addToCart(album, album.versions[0]?.name)}
+              className="domain-hero-btn-primary hover:opacity-90 hover:scale-105 active:scale-95"
               style={{
                 backgroundColor: '#000000',
                 color: '#ffffff',
@@ -244,7 +291,6 @@ export const HeroBanner: React.FC = () => {
                 boxShadow: '0 4px 14px rgba(0, 0, 0, 0.18)',
                 transition: 'opacity 0.15s ease, transform 0.15s ease',
               }}
-              className="hover:opacity-90 hover:scale-105 active:scale-95"
               type="button"
             >
               <ShoppingCart size={16} />
@@ -253,6 +299,7 @@ export const HeroBanner: React.FC = () => {
 
             <button
               onClick={() => playTrack(album)}
+              className="domain-hero-btn-secondary hover:bg-black hover:text-white active:scale-95"
               style={{
                 backgroundColor: isThisPlaying ? '#000000' : 'transparent',
                 color: isThisPlaying ? '#ffffff' : '#000000',
@@ -270,7 +317,6 @@ export const HeroBanner: React.FC = () => {
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
-              className="hover:bg-black hover:text-white active:scale-95"
               type="button"
             >
               <Play size={16} style={{ fill: isThisPlaying ? '#ffffff' : '#000000' }} />
@@ -289,11 +335,14 @@ export const HeroBanner: React.FC = () => {
                 <button
                   key={idx}
                   onClick={() => setActiveIndex(idx)}
+                  className={activeIndex === idx ? 'domain-dot-active' : ''}
                   style={{
                     width: activeIndex === idx ? '32px' : '12px',
                     height: '3px',
                     borderRadius: '2px',
-                    backgroundColor: activeIndex === idx ? '#000000' : 'rgba(0, 0, 0, 0.15)',
+                    backgroundColor: activeIndex === idx
+                      ? (themeClass === 'theme-kpop' ? '#2563eb' : themeClass === 'theme-anime' ? '#ff5722' : '#000000')
+                      : 'rgba(0, 0, 0, 0.15)',
                     border: 'none',
                     padding: 0,
                     cursor: 'pointer',
@@ -369,9 +418,13 @@ export const HeroBanner: React.FC = () => {
                 position: 'absolute',
                 inset: '-20px',
                 borderRadius: '50%',
-                background: `radial-gradient(circle, ${current.bgColor} 0%, transparent 70%)`,
+                background: `radial-gradient(circle, ${
+                  themeClass === 'theme-kpop' ? 'rgba(255,45,126,0.15)' :
+                  themeClass === 'theme-anime' ? 'rgba(255,87,34,0.18)' :
+                  current.bgColor
+                } 0%, transparent 70%)`,
                 filter: 'blur(30px)',
-                opacity: 0.8,
+                opacity: 0.9,
                 zIndex: 0,
                 pointerEvents: 'none',
               }}
@@ -387,7 +440,7 @@ export const HeroBanner: React.FC = () => {
                 height: '90%',
                 borderRadius: '50%',
                 backgroundColor: '#0f172a',
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+                boxShadow: themeClass === 'theme-anime' ? '0 20px 40px rgba(63,81,181,0.2)' : '0 20px 40px rgba(0, 0, 0, 0.4)',
                 border: '1px solid #1e293b',
                 display: 'flex',
                 alignItems: 'center',
@@ -409,14 +462,14 @@ export const HeroBanner: React.FC = () => {
                   width: '34%',
                   height: '34%',
                   borderRadius: '50%',
-                  backgroundColor: current.bgColor,
+                  backgroundColor: themeClass === 'theme-kpop' ? '#dbeafe' : themeClass === 'theme-anime' ? '#fff3e0' : current.bgColor,
                   border: '1px solid rgba(255, 255, 255, 0.2)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <div style={{ width: '14px', height: '14px', backgroundColor: '#ffffff', borderRadius: '50%' }} />
+                <div style={{ width: '14px', height: '14px', backgroundColor: themeClass === 'theme-kpop' ? '#2563eb' : themeClass === 'theme-anime' ? '#ff5722' : '#ffffff', borderRadius: '50%' }} />
               </div>
               <div style={{ position: 'absolute', inset: '10px', borderRadius: '50%', border: '1px solid rgba(255, 255, 255, 0.06)' }} />
               <div style={{ position: 'absolute', inset: '28px', borderRadius: '50%', border: '1px solid rgba(255, 255, 255, 0.06)' }} />
@@ -434,9 +487,9 @@ export const HeroBanner: React.FC = () => {
                 overflow: 'hidden',
                 backgroundColor: '#ffffff',
                 boxShadow: isAlbumHovered
-                  ? '0 30px 60px -12px rgba(0, 0, 0, 0.38)'
-                  : '0 20px 40px -10px rgba(0, 0, 0, 0.2)',
-                border: '1px solid rgba(0, 0, 0, 0.08)',
+                  ? themeClass === 'theme-kpop' ? '0 30px 60px -12px rgba(37,99,235,0.25)' : themeClass === 'theme-anime' ? '0 30px 60px -12px rgba(255,87,34,0.22)' : '0 30px 60px -12px rgba(0, 0, 0, 0.38)'
+                  : themeClass === 'theme-anime' ? '0 20px 40px -10px rgba(63,81,181,0.15)' : '0 20px 40px -10px rgba(0, 0, 0, 0.2)',
+                border: themeClass === 'theme-kpop' ? '1px solid rgba(37,99,235,0.2)' : themeClass === 'theme-anime' ? '1px solid rgba(255,87,34,0.22)' : '1px solid rgba(0, 0, 0, 0.08)',
                 transform: isAlbumHovered ? 'rotate(-7deg)' : 'rotate(0deg)',
                 transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease',
                 transformOrigin: 'center center',
@@ -459,6 +512,6 @@ export const HeroBanner: React.FC = () => {
         </div>
 
       </div>
-    </section>
+    </div>
   );
 };

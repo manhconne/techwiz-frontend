@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useGoogleLanguage } from './GoogleTranslate';
 import { useCartWishlist } from '../context/CartWishlistContext';
 import { useAuth } from '../context/AuthContext';
 import { useDomainTheme } from '../context/DomainContext';
+import { PersonalDashboardModal } from './PersonalDashboardModal';
 import {
   Menu,
   Search,
@@ -48,6 +49,8 @@ interface HeaderProps {
   onOpenFeedback: () => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  fandomThemeKey?: string;
+  fandomCategory?: string;
 }
 
 const extractApiError = (data: any, fallbackMsg: string): string => {
@@ -75,20 +78,55 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenFeedback,
   searchQuery,
   setSearchQuery,
+  fandomThemeKey = 'all',
+  fandomCategory = 'all',
 }) => {
   const pathname = usePathname();
   const { language, toggleLanguage } = useGoogleLanguage();
   const { cartCount, wishlistCount, setIsCartOpen, setIsWishlistOpen, currency, toggleCurrency } = useCartWishlist();
-  const { user, isLoggedIn, loginAs, logout } = useAuth();
+  const { user, isLoggedIn, loginAs, logout, requestPasswordReset, resetPasswordWithToken } = useAuth();
   const { themeMode, toggleThemeMode } = useDomainTheme();
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isLargeFont, setIsLargeFont] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_font_large');
+      if (saved === 'true') {
+        setIsLargeFont(true);
+        document.documentElement.classList.add('font-accessible-large');
+      }
+    } catch {}
+  }, []);
+
+  const toggleFontSize = () => {
+    const next = !isLargeFont;
+    setIsLargeFont(next);
+    try {
+      localStorage.setItem('fanhub_font_large', String(next));
+    } catch {}
+    if (next) {
+      document.documentElement.classList.add('font-accessible-large');
+    } else {
+      document.documentElement.classList.remove('font-accessible-large');
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Form & Tab State for Auth Modal
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [authMode, setAuthMode] = useState<'signin' | 'signup' | 'forgot'>('signin');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [signupName, setSignupName] = useState('');
@@ -101,6 +139,12 @@ export const Header: React.FC<HeaderProps> = ({
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(false);
 
+  // Forgot password flow states
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotToken, setForgotToken] = useState('');
+  const [forgotNewPassword, setForgotNewPassword] = useState('');
+  const [isResetTokenSent, setIsResetTokenSent] = useState(false);
+
   // Sub-header navigation dropdown (Exact matching user's image)
   const [isAllMdDropdownOpen, setIsAllMdDropdownOpen] = useState(false);
   const [isB2BModalOpen, setIsB2BModalOpen] = useState(false);
@@ -111,21 +155,18 @@ export const Header: React.FC<HeaderProps> = ({
   const [b2bQty, setB2bQty] = useState('50');
   const [b2bArtist, setB2bArtist] = useState('NewJeans');
 
-  const toggleFontSize = () => {
-    setIsLargeFont(!isLargeFont);
-    if (!isLargeFont) {
-      document.documentElement.classList.add('font-accessible-large');
-    } else {
-      document.documentElement.classList.remove('font-accessible-large');
-    }
-  };
-
   const scrollToSection = (id: string) => {
     setIsAllMdDropdownOpen(false);
     setIsMenuDrawerOpen(false);
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      if (id === 'tours') {
+        window.location.href = '/event';
+      } else {
+        window.location.href = `/#${id}`;
+      }
     }
   };
 
@@ -138,19 +179,22 @@ export const Header: React.FC<HeaderProps> = ({
     { label: 'DUCKJIL FANDOM HUB', icon: Heart, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/artist'; } },
     { label: 'ALLMD BEAUTY & CARE', icon: Sparkles, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
     { label: 'B2B / BULK ORDER', icon: Building2, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/b2b'; } },
-    { label: 'ALLMD TV & MEDIA', icon: Tv, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/'; } },
+    { label: 'MULTIMEDIA CENTER', icon: Tv, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/multimedia'; } },
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200">
+    <header 
+      className={`sticky top-0 z-40 w-full header-root fandom-header-${fandomThemeKey} transition-all duration-300${isScrolled ? ' header-scrolled' : ''}`}
+      data-fandom-theme={fandomThemeKey}
+    >
 
       {/* Main Bar - Responsive Header Bar */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-2.5 sm:py-4 flex items-center justify-between gap-4 md:gap-8 bg-white">
+      <div className="header-inner max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-2.5 sm:py-4 flex items-center justify-between gap-4 md:gap-8 transition-colors duration-300">
         {/* LEFT: Menu button (Mobile only, hidden on PC) & Logo */}
         <div className="flex items-center gap-2.5 sm:gap-4 md:gap-5 shrink-0">
           <button
             onClick={() => setIsMenuDrawerOpen(true)}
-            className="mobile-menu-btn w-9 h-9 rounded-full bg-black text-white items-center justify-center cursor-pointer hover:opacity-90 shrink-0 border-0 transition-transform active:scale-95"
+            className="mobile-menu-btn header-action-btn w-9 h-9 rounded-full bg-black text-white items-center justify-center cursor-pointer hover:opacity-90 shrink-0 border-0 transition-transform active:scale-95"
             title="Menu"
             type="button"
           >
@@ -161,7 +205,7 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               src="/logo-dark.png?v=2"
               alt="Fan Hub Plus"
-              className="h-8 sm:h-9 md:h-11 w-auto object-contain block"
+              className="header-logo h-8 sm:h-9 md:h-11 w-auto object-contain block transition-all"
             />
           </Link>
         </div>
@@ -169,6 +213,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* CENTER: Wide Underline Search Bar (Desktop) - Clean Flex Layout, Icon separated from text */}
         <div className="hidden md:flex flex-1 justify-center max-w-[560px] mx-4 lg:mx-8">
           <div
+            className="header-search-bar"
             style={{
               position: 'relative',
               width: '100%',
@@ -181,6 +226,7 @@ export const Header: React.FC<HeaderProps> = ({
           >
             {/* Search Icon on the left with dedicated right margin */}
             <Search
+              className="header-search-icon"
               style={{
                 width: '18px',
                 height: '18px',
@@ -203,6 +249,7 @@ export const Header: React.FC<HeaderProps> = ({
                   if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
+              className="header-search-input"
               style={{
                 flex: 1,
                 width: '100%',
@@ -220,6 +267,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
+                className="header-clear-btn hover:text-black"
                 style={{
                   background: 'none',
                   border: 'none',
@@ -231,7 +279,6 @@ export const Header: React.FC<HeaderProps> = ({
                   justifyContent: 'center',
                   flexShrink: 0,
                 }}
-                className="hover:text-black"
                 title="Clear"
               >
                 <X style={{ width: '16px', height: '16px' }} />
@@ -245,27 +292,41 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Search Icon Button -> Opens Dedicated Mobile Search Modal */}
           <button
             onClick={() => setIsSearchModalOpen(true)}
-            className="mobile-search-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
+            className="mobile-search-btn header-action-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
             title="Search"
             type="button"
           >
             <Search style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
           </button>
 
-          {/* User Profile Icon */}
+          {/* User Profile Icon / Dashboard Trigger */}
           <button
-            onClick={() => setIsAuthModalOpen(true)}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
-            title={isLoggedIn ? user.name : 'Sign In'}
+            onClick={() => {
+              if (isLoggedIn) {
+                setIsDashboardOpen(true);
+              } else {
+                setIsAuthModalOpen(true);
+              }
+            }}
+            className="header-action-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
+            title={isLoggedIn ? `${user.name} - Mở Dashboard Cá Nhân` : 'Đăng Nhập'}
             type="button"
           >
-            <User style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
+            {isLoggedIn ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-amber-400"
+              />
+            ) : (
+              <User style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
+            )}
           </button>
 
           {/* Shopping Cart Icon */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
+            className="header-action-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
             title="Cart"
             type="button"
           >
@@ -288,7 +349,7 @@ export const Header: React.FC<HeaderProps> = ({
                   justifyContent: 'center',
                   border: '2px solid #ffffff',
                 }}
-                className="notranslate"
+                className="header-badge notranslate"
               >
                 {cartCount}
               </span>
@@ -298,7 +359,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Wishlist / Document Icon */}
           <button
             onClick={() => setIsWishlistOpen(true)}
-            className="hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
+            className="header-action-btn hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
             title="Wishlist"
             type="button"
           >
@@ -321,7 +382,7 @@ export const Header: React.FC<HeaderProps> = ({
                   justifyContent: 'center',
                   border: '2px solid #ffffff',
                 }}
-                className="notranslate"
+                className="header-badge notranslate"
               >
                 {wishlistCount}
               </span>
@@ -333,7 +394,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleLanguage}
             title={language === 'en' ? 'Translate to Vietnamese (Google Translate)' : 'Chuyển sang Tiếng Anh'}
             type="button"
-            className="hidden sm:flex notranslate hover:bg-slate-900 hover:text-white items-center gap-1.5 px-3 py-1 text-xs font-black border-2 border-black rounded-full bg-white text-black h-8 sm:h-9 cursor-pointer transition-all"
+            className="header-lang-btn hidden sm:flex notranslate hover:bg-slate-900 hover:text-white items-center gap-1.5 px-3 py-1 text-xs font-black border-2 border-black rounded-full bg-white text-black h-8 sm:h-9 cursor-pointer transition-all"
           >
             <Globe style={{ width: '15px', height: '15px' }} />
             <span>{language === 'en' ? 'EN' : 'VI'}</span>
@@ -344,13 +405,27 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleThemeMode}
             title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             type="button"
-            className="hidden sm:flex notranslate hover:bg-slate-100 w-9 h-9 rounded-full items-center justify-center text-black border-0 bg-transparent cursor-pointer transition-transform"
+            className="header-action-btn hidden sm:flex notranslate hover:bg-slate-100 w-9 h-9 rounded-full items-center justify-center text-black border-0 bg-transparent cursor-pointer transition-transform"
           >
             {themeMode === 'dark' ? (
               <Sun style={{ width: '20px', height: '20px', strokeWidth: 2, color: '#f59e0b' }} />
             ) : (
               <Moon style={{ width: '20px', height: '20px', strokeWidth: 2 }} />
             )}
+          </button>
+
+          {/* Accessible Font Size Adjuster Button (A / A+) */}
+          <button
+            onClick={toggleFontSize}
+            title={isLargeFont ? 'Thu nhỏ cỡ chữ chuẩn (Mặc định 16px)' : 'Phóng to cỡ chữ (+12.5% Text Size)'}
+            type="button"
+            className={`header-action-btn hidden sm:flex notranslate w-9 h-9 rounded-full items-center justify-center border font-bold text-xs cursor-pointer transition-all ${
+              isLargeFont 
+                ? 'bg-slate-900 text-white border-slate-900 shadow-xs' 
+                : 'hover:bg-slate-100 text-slate-800 border-slate-300'
+            }`}
+          >
+            <span className="font-mono text-xs font-black tracking-tight">{isLargeFont ? 'A+' : 'A'}</span>
           </button>
 
           {/* Admin shortcut if admin */}
@@ -368,13 +443,14 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* SECONDARY CATEGORY NAVIGATION BAR (Desktop Only) */}
-      <div className="desktop-subnav w-full bg-white border-t border-b border-slate-200 relative z-30">
+      <div className="desktop-subnav header-subnav w-full border-t border-b relative z-30 transition-colors duration-300">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between h-11 sm:h-[54px] relative gap-4">
           {/* [ ≡ ALL MD ] Black Button with Exact Dropdown */}
           <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center', zIndex: 60 }}>
             <button
               onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
               type="button"
+              className="header-allmd-btn hover:opacity-90 active:scale-95"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -394,7 +470,6 @@ export const Header: React.FC<HeaderProps> = ({
                 flexShrink: 0,
                 transition: 'opacity 0.15s ease',
               }}
-              className="hover:opacity-90 active:scale-95"
             >
               <Menu style={{ width: '16px', height: '16px', flexShrink: 0 }} />
               <span style={{ whiteSpace: 'nowrap' }}>ALL MD</span>
@@ -575,17 +650,16 @@ export const Header: React.FC<HeaderProps> = ({
                 fontSize: '14px',
                 fontWeight: 900,
                 letterSpacing: '0.06em',
-                color: '#000000',
                 textTransform: 'uppercase',
                 padding: '14px 6px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
-                borderBottom: pathname?.startsWith('/artist') ? '2.5px solid #000000' : '2.5px solid transparent',
+                borderBottom: pathname?.startsWith('/artist') ? '2.5px solid currentColor' : '2.5px solid transparent',
                 textDecoration: 'none',
               }}
-              className="hover:opacity-60"
+              className="header-nav-link hover:opacity-60"
             >
               ARTIST
             </Link>
@@ -595,19 +669,37 @@ export const Header: React.FC<HeaderProps> = ({
                 fontSize: '14px',
                 fontWeight: 900,
                 letterSpacing: '0.06em',
-                color: '#000000',
                 textTransform: 'uppercase',
                 padding: '14px 6px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
-                borderBottom: pathname?.startsWith('/event') ? '2.5px solid #000000' : '2.5px solid transparent',
+                borderBottom: pathname?.startsWith('/event') ? '2.5px solid currentColor' : '2.5px solid transparent',
                 textDecoration: 'none',
               }}
-              className="hover:opacity-60"
+              className="header-nav-link hover:opacity-60"
             >
               EVENT
+            </Link>
+            <Link
+              href="/multimedia"
+              style={{
+                fontSize: '14px',
+                fontWeight: 900,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                padding: '14px 6px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                borderBottom: pathname?.startsWith('/multimedia') ? '2.5px solid currentColor' : '2.5px solid transparent',
+                textDecoration: 'none',
+              }}
+              className="header-nav-link hover:opacity-60"
+            >
+              MULTIMEDIA
             </Link>
             <Link
               href="/cd-dvd-book"
@@ -615,17 +707,16 @@ export const Header: React.FC<HeaderProps> = ({
                 fontSize: '14px',
                 fontWeight: 900,
                 letterSpacing: '0.06em',
-                color: '#000000',
                 textTransform: 'uppercase',
                 padding: '14px 6px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
-                borderBottom: pathname === '/cd-dvd-book' ? '2.5px solid #000000' : '2.5px solid transparent',
+                borderBottom: pathname === '/cd-dvd-book' ? '2.5px solid currentColor' : '2.5px solid transparent',
                 textDecoration: 'none',
               }}
-              className="hover:opacity-60"
+              className="header-nav-link hover:opacity-60"
             >
               CD/DVD/BOOK
             </Link>
@@ -635,17 +726,16 @@ export const Header: React.FC<HeaderProps> = ({
                 fontSize: '14px',
                 fontWeight: 900,
                 letterSpacing: '0.06em',
-                color: '#000000',
                 textTransform: 'uppercase',
                 padding: '14px 6px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
-                borderBottom: pathname === '/md' ? '2.5px solid #000000' : '2.5px solid transparent',
+                borderBottom: pathname === '/md' ? '2.5px solid currentColor' : '2.5px solid transparent',
                 textDecoration: 'none',
               }}
-              className="hover:opacity-60"
+              className="header-nav-link hover:opacity-60"
             >
               MD
             </Link>
@@ -655,17 +745,16 @@ export const Header: React.FC<HeaderProps> = ({
                 fontSize: '14px',
                 fontWeight: 900,
                 letterSpacing: '0.06em',
-                color: '#000000',
                 textTransform: 'uppercase',
                 padding: '14px 6px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
-                borderBottom: pathname?.startsWith('/b2b') ? '2.5px solid #000000' : '2.5px solid transparent',
+                borderBottom: pathname?.startsWith('/b2b') ? '2.5px solid currentColor' : '2.5px solid transparent',
                 textDecoration: 'none',
               }}
-              className="hover:opacity-60"
+              className="header-nav-link hover:opacity-60"
             >
               B2B/BULK
             </Link>
@@ -1051,6 +1140,34 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
                 </div>
 
+                {/* Dashboard Cá Nhân Hóa Button */}
+                <button
+                  onClick={() => {
+                    setIsAuthModalOpen(false);
+                    setIsDashboardOpen(true);
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '11px',
+                    backgroundColor: '#0f172a',
+                    color: '#ffffff',
+                    fontSize: '13px',
+                    fontWeight: 800,
+                    borderRadius: 'var(--radius)',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    marginBottom: '10px'
+                  }}
+                  type="button"
+                >
+                  <Sparkles style={{ width: '16px', height: '16px', color: '#f59e0b' }} />
+                  Mở Dashboard Cá Nhân Hóa (Hoạt Động & Fandom)
+                </button>
+
                 {user.role === 'admin' && (
                   <button
                     onClick={() => {
@@ -1192,7 +1309,7 @@ export const Header: React.FC<HeaderProps> = ({
                           const userInfo = data.user_info || {};
                           const userRole = (userInfo.role || loginEmail).toLowerCase().includes('admin') ? 'admin' : 'registered';
 
-                          setAuthNotification(data.message || 'Đăng nhập thành công!');
+                          setAuthNotification(data.message || 'Login successful!');
                           loginAs(userRole, {
                             id: userInfo.id || data.user_id || 'usr_' + Date.now(),
                             name: userInfo.full_name || userInfo.name || data.full_name || loginEmail.split('@')[0],
@@ -1205,10 +1322,10 @@ export const Header: React.FC<HeaderProps> = ({
                             setAuthError(null);
                           }, 1000);
                         } else {
-                          setAuthError(extractApiError(data, `Lỗi ${response.status}: Đăng nhập thất bại.`));
+                          setAuthError(extractApiError(data, `Error ${response.status}: Login failed.`));
                         }
                       } catch (err: any) {
-                        setAuthError(err.message || 'Không thể kết nối tới server /api/v1/auth/login');
+                        setAuthError(err.message || 'Unable to connect to authentication server');
                       } finally {
                         setIsLoadingAuth(false);
                       }
@@ -1300,6 +1417,28 @@ export const Header: React.FC<HeaderProps> = ({
                       </div>
                     </div>
 
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '14px' }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAuthMode('forgot');
+                          setAuthError(null);
+                          setAuthNotification(null);
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          fontSize: '12px',
+                          color: '#2563eb',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          padding: 0
+                        }}
+                      >
+                        Quên mật khẩu? (Đặt lại qua Token/Email)
+                      </button>
+                    </div>
+
                     <button
                       type="submit"
                       disabled={isLoadingAuth}
@@ -1387,7 +1526,7 @@ export const Header: React.FC<HeaderProps> = ({
                             localStorage.setItem('refresh_token', data.refresh_token);
                           }
 
-                          setAuthNotification(data.message || 'Đăng ký thành công!');
+                          setAuthNotification(data.message || 'Account created successfully!');
                           loginAs('registered', {
                             id: data.user_id || 'usr_' + Date.now(),
                             name: signupName,
@@ -1616,6 +1755,157 @@ export const Header: React.FC<HeaderProps> = ({
                   </form>
                 )}
 
+                {/* FORGOT PASSWORD FORM */}
+                {authMode === 'forgot' && (
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      setAuthError(null);
+                      setAuthNotification(null);
+
+                      if (!isResetTokenSent) {
+                        if (!forgotEmail.trim()) {
+                          setAuthError('Vui lòng nhập địa chỉ email.');
+                          return;
+                        }
+                        const res = requestPasswordReset(forgotEmail);
+                        setIsResetTokenSent(true);
+                        setForgotToken(res.token);
+                        setAuthNotification(res.message);
+                      } else {
+                        if (!forgotToken.trim() || !forgotNewPassword.trim()) {
+                          setAuthError('Vui lòng nhập đầy đủ mã token và mật khẩu mới.');
+                          return;
+                        }
+                        const res = resetPasswordWithToken(forgotEmail, forgotToken, forgotNewPassword);
+                        if (res.success) {
+                          setAuthNotification(res.message);
+                          setTimeout(() => {
+                            setAuthMode('signin');
+                            setIsResetTokenSent(false);
+                            setLoginEmail(forgotEmail);
+                            setForgotToken('');
+                            setForgotNewPassword('');
+                          }, 1800);
+                        } else {
+                          setAuthError(res.message);
+                        }
+                      }
+                    }}
+                  >
+                    {!isResetTokenSent ? (
+                      <div style={{ marginBottom: '16px' }}>
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                          Email Đăng Ký Tài Khoản
+                        </label>
+                        <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+                          <Mail style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                          <input
+                            type="email"
+                            required
+                            placeholder="fan@example.com"
+                            value={forgotEmail}
+                            onChange={(e) => setForgotEmail(e.target.value)}
+                            style={{
+                              width: '100%',
+                              paddingLeft: '38px',
+                              paddingRight: '14px',
+                              paddingTop: '10px',
+                              paddingBottom: '10px',
+                              fontSize: '13px',
+                              backgroundColor: 'var(--bg-body)',
+                              border: '1px solid var(--border-color)',
+                              borderRadius: 'var(--radius)',
+                              outline: 'none',
+                              color: 'var(--text-primary)',
+                              transition: 'all var(--transition-fast)'
+                            }}
+                          />
+                        </div>
+                        <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px' }}>
+                          Hệ thống sẽ gửi mã Token 6 ký tự xác minh để bạn đặt lại mật khẩu an toàn.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div style={{ marginBottom: '12px' }}>
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                            Mã Token Xác Thực (Đã gửi qua email)
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="Nhập 6 ký tự token"
+                            value={forgotToken}
+                            onChange={(e) => setForgotToken(e.target.value.toUpperCase())}
+                            style={{
+                              width: '100%',
+                              padding: '10px 14px',
+                              fontSize: '14px',
+                              fontFamily: 'monospace',
+                              fontWeight: 800,
+                              letterSpacing: '0.15em',
+                              textAlign: 'center',
+                              backgroundColor: '#fef3c7',
+                              border: '1.5px solid #f59e0b',
+                              borderRadius: 'var(--radius)',
+                              outline: 'none',
+                              color: '#92400e'
+                            }}
+                          />
+                        </div>
+
+                        <div style={{ marginBottom: '16px' }}>
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                            Mật Khẩu Mới
+                          </label>
+                          <input
+                            type="password"
+                            required
+                            placeholder="Tối thiểu 6 ký tự"
+                            value={forgotNewPassword}
+                            onChange={(e) => setForgotNewPassword(e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '10px 14px',
+                              fontSize: '13px',
+                              backgroundColor: 'var(--bg-body)',
+                              border: '1px solid var(--border-color)',
+                              borderRadius: 'var(--radius)',
+                              outline: 'none',
+                              color: 'var(--text-primary)'
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      style={{
+                        width: '100%',
+                        padding: '11px',
+                        backgroundColor: '#000000',
+                        color: '#ffffff',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        borderRadius: 'var(--radius)',
+                        border: '1px solid #000000',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        boxShadow: 'var(--shadow-sm)',
+                        transition: 'all var(--transition-fast)'
+                      }}
+                    >
+                      <span>{isResetTokenSent ? 'Xác Nhận Đặt Lại Mật Khẩu' : 'Gửi Mã Token Xác Thực Qua Email'}</span>
+                      <ArrowRight style={{ width: '16px', height: '16px' }} />
+                    </button>
+                  </form>
+                )}
+
                 {/* Bottom Switch Link */}
                 <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--border-color)', textAlign: 'center' }}>
                   {authMode === 'signin' ? (
@@ -1630,7 +1920,7 @@ export const Header: React.FC<HeaderProps> = ({
                         Sign up now
                       </button>
                     </p>
-                  ) : (
+                  ) : authMode === 'signup' ? (
                     <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
                       Already have an account?{' '}
                       <button
@@ -1642,6 +1932,18 @@ export const Header: React.FC<HeaderProps> = ({
                         Sign in now
                       </button>
                     </p>
+                  ) : (
+                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
+                      Đã nhớ lại mật khẩu?{' '}
+                      <button
+                        type="button"
+                        onClick={() => { setAuthMode('signin'); setAuthNotification(null); setIsResetTokenSent(false); }}
+                        style={{ fontWeight: 800, color: '#000000', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                        className="dark:text-white hover:underline"
+                      >
+                        Quay lại Đăng nhập
+                      </button>
+                    </p>
                   )}
                 </div>
 
@@ -1650,6 +1952,12 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       )}
+
+      {/* PERSONAL USER DASHBOARD MODAL */}
+      <PersonalDashboardModal
+        isOpen={isDashboardOpen}
+        onClose={() => setIsDashboardOpen(false)}
+      />
 
       {/* ========================================================================= */}
       {/* MOBILE SIDEBAR DRAWER (Chỉ có ở mobile, trên PC không bao giờ hiện) */}
@@ -1729,6 +2037,17 @@ export const Header: React.FC<HeaderProps> = ({
                     <span className="flex items-center gap-2.5">
                       <Calendar className="w-4 h-4 text-black" />
                       EVENT
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </Link>
+                  <Link
+                    href="/multimedia"
+                    onClick={() => setIsMenuDrawerOpen(false)}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Tv className="w-4 h-4 text-black" />
+                      MULTIMEDIA
                     </span>
                     <ArrowRight className="w-4 h-4 text-slate-400" />
                   </Link>
@@ -1850,6 +2169,18 @@ export const Header: React.FC<HeaderProps> = ({
                     <Moon className="w-4 h-4 text-slate-700" />
                   )}
                 </button>
+                <button
+                  type="button"
+                  onClick={toggleFontSize}
+                  className={`w-10 h-9 flex items-center justify-center border rounded-lg text-xs font-black cursor-pointer transition-colors ${
+                    isLargeFont
+                      ? 'bg-slate-900 text-white border-slate-900'
+                      : 'bg-white border-slate-200 text-slate-800 hover:bg-slate-100'
+                  }`}
+                  title={isLargeFont ? 'Thu nhỏ cỡ chữ' : 'Phóng to cỡ chữ'}
+                >
+                  <span className="font-mono text-xs font-bold">{isLargeFont ? 'A+' : 'A'}</span>
+                </button>
               </div>
 
               {isLoggedIn ? (
@@ -1879,7 +2210,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className="w-full py-2.5 bg-black text-white text-xs font-black uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 cursor-pointer hover:bg-neutral-800 border-0"
                 >
                   <User className="w-4 h-4" />
-                  <span>Đăng nhập / Sign In</span>
+                  <span>Sign In / Account</span>
                 </button>
               )}
             </div>
@@ -1905,7 +2236,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
                 <span className="text-xs font-black uppercase tracking-wider text-slate-900">
-                  Khám phá &amp; Tìm kiếm
+                  Search &amp; Explore
                 </span>
                 <span className="hidden xs:inline-block text-[10px] font-bold text-slate-400 bg-white border border-slate-200 px-2 py-0.5 rounded-full">
                   Fandom Explorer
@@ -1915,7 +2246,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={() => setIsSearchModalOpen(false)}
                 className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-700 hover:text-black cursor-pointer transition-colors shadow-2xs"
-                title="Đóng tìm kiếm"
+                title="Close search"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1947,7 +2278,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <input
                     type="text"
                     autoFocus
-                    placeholder="Tìm album, idol (NewJeans, BTS...)"
+                    placeholder="Search albums, artists, manga, gear (NewJeans, BTS...)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{
@@ -1965,7 +2296,7 @@ export const Header: React.FC<HeaderProps> = ({
                       type="button"
                       onClick={() => setSearchQuery('')}
                       className="w-7 h-7 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center cursor-pointer border-0 shrink-0 mr-1.5 transition-colors"
-                      title="Xóa chữ"
+                      title="Clear text"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -1981,7 +2312,7 @@ export const Header: React.FC<HeaderProps> = ({
                     }}
                     className="hover:bg-neutral-800 text-xs font-black uppercase tracking-wider px-4 sm:px-5 py-2.5 flex items-center gap-1.5 cursor-pointer border-0 shrink-0 shadow-xs active:scale-95 transition-all"
                   >
-                    <span>Tìm</span>
+                    <span>Search</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -1991,7 +2322,7 @@ export const Header: React.FC<HeaderProps> = ({
               {searchQuery.trim() ? (
                 <div className="flex items-center justify-between px-3.5 py-2.5 mb-6 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-semibold">
                   <span>
-                    Đang lọc kết quả: <strong>"{searchQuery}"</strong>
+                    Filtering results: <strong>"{searchQuery}"</strong>
                   </span>
                   <button
                     type="button"
@@ -2002,7 +2333,7 @@ export const Header: React.FC<HeaderProps> = ({
                     }}
                     className="underline text-black font-bold cursor-pointer bg-transparent border-0"
                   >
-                    Xem kết quả →
+                    View results →
                   </button>
                 </div>
               ) : null}
@@ -2011,7 +2342,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="mb-6">
                 <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-slate-500 mb-3 px-1">
                   <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>XU HƯỚNG TÌM KIẾM / TRENDING NOW</span>
+                  <span>TRENDING KEYWORDS &amp; POPULAR SEARCHES</span>
                 </div>
                 <div className="flex flex-wrap gap-2 sm:gap-2.5">
                   {[

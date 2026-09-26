@@ -100,22 +100,29 @@ export const CartDrawer: React.FC = () => {
             ) : isCheckingOut ? (
               <form onSubmit={handleCheckoutSubmit} className="space-y-4">
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                  <h3 className="text-xs font-bold text-slate-800 uppercase">Express Checkout</h3>
+                  <h3 className="text-xs font-bold text-slate-800 uppercase">Đăng Ký Giữ Chỗ Showcase (Pre-Order)</h3>
                   <button
                     type="button"
                     onClick={() => setIsCheckingOut(false)}
                     className="text-xs font-semibold hover:underline"
                     style={{ color: '#000000' }}
                   >
-                    ← Back to Cart
+                    ← Quay lại danh sách
                   </button>
                 </div>
 
+                {/* Important Showcase Disclaimer Badge */}
+                <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl text-[11px] text-amber-900 font-medium leading-relaxed">
+                  <strong className="font-bold block text-amber-950 mb-0.5">Lưu Ý Hệ Thống Showcase &amp; Lịch Phát Hành:</strong>
+                  Trang web hoạt động dưới mô hình <em>Trưng bày vật phẩm Fandom &amp; Lịch phát hành</em>. <strong>Không áp dụng thanh toán giao dịch ngân hàng / thu tiền trực tuyến</strong>. Việc gửi thông tin giúp bạn giữ chỗ và nhận thông báo ưu tiên khi sản phẩm mở bán chính thức.
+                </div>
+
                 <div>
-                  <label className="text-xs font-bold text-slate-600 block mb-1">Fan Name</label>
+                  <label className="text-xs font-bold text-slate-600 block mb-1">Tên Người Hâm Mộ (Fan Name) *</label>
                   <input
                     type="text"
                     required
+                    placeholder="e.g. Mai Anh (Bunnies VIP)"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 focus:outline-none"
@@ -124,10 +131,11 @@ export const CartDrawer: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-600 block mb-1">Delivery Address</label>
+                  <label className="text-xs font-bold text-slate-600 block mb-1">Email Nhận Thông Báo Mở Bán *</label>
                   <input
-                    type="text"
+                    type="email"
                     required
+                    placeholder="fan@example.com"
                     value={customerAddress}
                     onChange={(e) => setCustomerAddress(e.target.value)}
                     className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 focus:outline-none"
@@ -135,62 +143,17 @@ export const CartDrawer: React.FC = () => {
                   />
                 </div>
 
-                <div>
-                  <label className="text-xs font-bold text-slate-600 block mb-1">Payment Method</label>
-                  <div className="grid grid-cols-3 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod('card')}
-                      className="p-2 text-xs font-semibold border text-center transition-all"
-                      style={{
-                        borderColor: paymentMethod === 'card' ? '#000000' : '#e2e8f0',
-                        backgroundColor: paymentMethod === 'card' ? '#fafafa' : '#ffffff',
-                        color: paymentMethod === 'card' ? '#000000' : '#475569',
-                        borderRadius: '8px',
-                      }}
-                    >
-                      Credit Card
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod('momo')}
-                      className="p-2 text-xs font-semibold border text-center transition-all"
-                      style={{
-                        borderColor: paymentMethod === 'momo' ? '#000000' : '#e2e8f0',
-                        backgroundColor: paymentMethod === 'momo' ? '#fafafa' : '#ffffff',
-                        color: paymentMethod === 'momo' ? '#000000' : '#475569',
-                        borderRadius: '8px',
-                      }}
-                    >
-                      MoMo Pay
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod('vnpay')}
-                      className="p-2 text-xs font-semibold border text-center transition-all"
-                      style={{
-                        borderColor: paymentMethod === 'vnpay' ? '#000000' : '#e2e8f0',
-                        backgroundColor: paymentMethod === 'vnpay' ? '#fafafa' : '#ffffff',
-                        color: paymentMethod === 'vnpay' ? '#000000' : '#475569',
-                        borderRadius: '8px',
-                      }}
-                    >
-                      VNPay QR
-                    </button>
-                  </div>
-                </div>
-
                 <div className="pt-2 text-xs text-slate-500 flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                  <span>256-bit SSL encrypted & Hanteo Chart counted</span>
+                  <span>Xác nhận thông tin chính ngạch • Không thu phí</span>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 text-white text-xs font-bold shadow-xs cursor-pointer mt-4"
+                  className="w-full py-3 text-white text-xs font-black uppercase tracking-wider shadow-md cursor-pointer mt-4 hover:bg-slate-800 transition-colors"
                   style={{ backgroundColor: '#000000', borderRadius: '8px' }}
                 >
-                  Pay {formatPrice(cartTotalUSD, cartTotalVND)} & Confirm
+                  Xác Nhận Giữ Chỗ &amp; Nhận Thông Báo (Miễn Phí)
                 </button>
               </form>
             ) : cart.length === 0 ? (
@@ -288,11 +251,11 @@ export const CartDrawer: React.FC = () => {
 
               <button
                 onClick={() => setIsCheckingOut(true)}
-                className="w-full text-white text-xs py-3 mt-2 flex items-center justify-center gap-1.5 cursor-pointer font-bold"
+                className="w-full text-white text-xs py-3 mt-2 flex items-center justify-center gap-1.5 cursor-pointer font-bold uppercase tracking-wider"
                 style={{ backgroundColor: '#000000', borderRadius: '8px' }}
                 type="button"
               >
-                <span>Proceed to Checkout</span>
+                <span>Đăng Ký Giữ Chỗ / Pre-Order Showcase</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

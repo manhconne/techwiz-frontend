@@ -14,8 +14,9 @@ export function filterAlbumsByDomain(
     const artistId = album.artistId ? album.artistId.toLowerCase() : '';
 
     if (domain === 'music') {
-      if (subCategory === 'all') return cat === 'k-pop' || cat === 'anime' || cat === 'movie' || type.includes('ost') || type.includes('vinyl');
+      if (subCategory === 'all') return cat === 'k-pop' || cat === 'v-pop' || cat === 'anime' || cat === 'movie' || type.includes('ost') || type.includes('vinyl');
       if (subCategory === 'kpop') return cat === 'k-pop';
+      if (subCategory === 'vpop') return cat === 'v-pop';
       if (subCategory === 'usuk') return cat === 'movie' || artistId === 'spider-verse' || artistId === 'dune';
       if (subCategory === 'ost') return cat === 'anime' || cat === 'movie' || cat === 'gaming' || type.includes('ost');
       if (subCategory === 'edm') return type.includes('vinyl') || album.id === 'ghibli-vinyl' || album.id === 'dune2-ost' || album.id === 'aespa-armageddon';
@@ -46,8 +47,9 @@ export function filterAlbumsByDomain(
     }
 
     if (domain === 'fandom') {
-      if (subCategory === 'all') return cat === 'k-pop' || cat === 'anime';
+      if (subCategory === 'all') return cat === 'k-pop' || cat === 'v-pop' || cat === 'anime';
       if (subCategory === 'kpop_fandom') return cat === 'k-pop';
+      if (subCategory === 'vpop_fandom') return cat === 'v-pop';
       if (subCategory === 'anime_fandom') return cat === 'anime';
       if (subCategory === 'vocaloid') return artistId === 'one-piece' || artistId === 'aespa';
       if (subCategory === 'fanart') return type.includes('box') || type.includes('kit') || type.includes('lightstick');
@@ -55,6 +57,7 @@ export function filterAlbumsByDomain(
 
     if (domain === 'classic') {
       if (subCategory === 'kpop') return cat === 'k-pop';
+      if (subCategory === 'vpop') return cat === 'v-pop';
       if (subCategory === 'anime') return cat === 'anime' || cat === 'movie';
       if (subCategory === 'gaming') return cat === 'gaming';
       if (subCategory === 'art') return artistId === 'ghibli' || cat === 'movie';
@@ -76,8 +79,9 @@ export function filterArtistsByDomain(
     const id = artist.id.toLowerCase();
 
     if (domain === 'music') {
-      if (subCategory === 'all') return cat === 'k-pop' || cat === 'anime' || cat === 'movie';
+      if (subCategory === 'all') return cat === 'k-pop' || cat === 'v-pop' || cat === 'anime' || cat === 'movie';
       if (subCategory === 'kpop') return cat === 'k-pop';
+      if (subCategory === 'vpop') return cat === 'v-pop';
       if (subCategory === 'usuk') return cat === 'movie' || id === 'spider-verse' || id === 'dune';
       if (subCategory === 'ost') return cat === 'anime' || cat === 'movie' || cat === 'gaming';
       if (subCategory === 'edm') return id === 'ghibli' || id === 'aespa' || cat === 'gaming';
@@ -108,15 +112,17 @@ export function filterArtistsByDomain(
     }
 
     if (domain === 'fandom') {
-      if (subCategory === 'all') return cat === 'k-pop' || cat === 'anime';
+      if (subCategory === 'all') return cat === 'k-pop' || cat === 'v-pop' || cat === 'anime';
       if (subCategory === 'kpop_fandom') return cat === 'k-pop';
+      if (subCategory === 'vpop_fandom') return cat === 'v-pop';
       if (subCategory === 'anime_fandom') return cat === 'anime';
       if (subCategory === 'vocaloid') return id === 'one-piece' || id === 'aespa';
-      if (subCategory === 'fanart') return cat === 'k-pop' || cat === 'anime';
+      if (subCategory === 'fanart') return cat === 'k-pop' || cat === 'v-pop' || cat === 'anime';
     }
 
     if (domain === 'classic') {
       if (subCategory === 'kpop') return cat === 'k-pop';
+      if (subCategory === 'vpop') return cat === 'v-pop';
       if (subCategory === 'anime') return cat === 'anime';
       if (subCategory === 'gaming') return cat === 'gaming';
       if (subCategory === 'art') return cat === 'movie' || id === 'ghibli';

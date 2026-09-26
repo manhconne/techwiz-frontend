@@ -51,7 +51,7 @@ export const SitemapSection: React.FC<SitemapSectionProps> = ({ onOpenAdmin, onO
         { label: 'Global Concert Schedules', href: '#tours' },
         { label: 'Vietnam Stadium Stops (Hanoi/HCMC)', href: '#tours' },
         { label: 'Ticket Availability & Presale', href: '#tours' },
-        { label: 'Venue GPS & Stadium Info', href: '#tours' },
+        { label: 'Venue GPS & Stadium Info', href: '/event#location-events' },
       ],
     },
     {

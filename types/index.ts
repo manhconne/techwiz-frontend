@@ -1,6 +1,18 @@
-export type CategoryType = 'K-Pop' | 'Anime' | 'Movie' | 'Gaming';
+export type CategoryType = 'K-Pop' | 'V-Pop' | 'Anime' | 'Movie' | 'Gaming' | string;
 
-export type AlbumType = 'Full Album' | 'Mini Album' | 'Single' | 'Limited Kit' | 'Lightstick' | 'OST & Vinyl' | 'Collector Box' | 'Figure & Merch';
+export type AlbumType = 
+  | 'Full Album' 
+  | 'Mini Album' 
+  | 'Single' 
+  | 'Limited Kit' 
+  | 'Lightstick' 
+  | 'OST & Vinyl' 
+  | 'Collector Box' 
+  | 'Figure & Merch'
+  | 'Full Album & Merch Box'
+  | 'Concert Merchandise & Album'
+  | 'Movie Soundtrack & Merchandise'
+  | string;
 
 export interface Track {
   id: number;
@@ -39,7 +51,7 @@ export interface Album {
   galleryImages: string[];
   type: AlbumType;
   releaseDate: string;
-  tag: 'Limited Edition' | 'Pre-Order' | 'Hot Seller' | 'Restocked' | 'Collector Special';
+  tag: 'Limited Edition' | 'Pre-Order' | 'Hot Seller' | 'Restocked' | 'Collector Special' | 'Hot Seller VN' | 'Special Edition' | 'VN Special Edition' | 'Vietnamese Cinema Hit' | string;
   rating: number;
   reviewCount: number;
   popularityScore: number;
@@ -71,18 +83,71 @@ export interface Artist {
   bannerImage: string;
 }
 
+export type EventPlatform = 'Weverse' | 'Withmuu' | 'Mubeat' | 'Official';
+export type EventType = 'concert' | 'fansign' | 'luckydraw' | 'voting' | 'popup' | 'convention';
+
+export interface VotingContender {
+  rank: number;
+  name: string;
+  percentage: number;
+  votes: number;
+  avatar?: string;
+}
+
+export interface VotingProgress {
+  target: number;
+  current: number;
+  unit: string;
+  percentage: number;
+  topContenders?: VotingContender[];
+}
+
 export interface TourEvent {
   id: string;
   artistName: string;
   tourName: string;
+  tourTitle?: string;
+  artistId?: string;
   city: string;
   country: string;
   venue: string;
   date: string;
-  status: 'Available' | 'Selling Fast' | 'Sold Out' | 'Presale Soon';
+  time?: string;
+  status: 'Available' | 'Selling Fast' | 'Sold Out' | 'Presale Soon' | 'Live Now' | 'Apply Open' | 'Voting Active';
   ticketPriceFromUSD: number;
   ticketPriceFromVND: number;
+  ticketPriceUSD?: number;
+  ticketPriceVND?: number;
   mapQuery: string;
+
+  // Extensions for Weverse, Withmuu, and Mubeat fandom event styles
+  eventType?: EventType;
+  sourcePlatform?: EventPlatform;
+  badgeText?: string;
+  coverImage?: string;
+  bannerImage?: string;
+  seatMapImage?: string;
+  artistAvatar?: string;
+  fandomName?: string;
+  description?: string;
+  perks?: string[];
+  organizer?: string;
+  applyPeriod?: string;
+  winnerAnnouncementDate?: string;
+  winnerCount?: number;
+  votingProgress?: VotingProgress;
+  actionLabel?: string;
+  category?: CategoryType;
+  externalUrl?: string;
+  isOnlineLive?: boolean;
+  lat?: number;
+  lng?: number;
+  address?: string;
+  isMeetup?: boolean;
+  meetupType?: 'stadium_concert' | 'cup_sleeve_cafe' | 'photocard_trade' | 'anime_expo' | 'gaming_arena';
+  distanceKm?: number;
+  freeEntry?: boolean;
+  ticketLink?: string;
 }
 
 export interface CartItem {
@@ -116,4 +181,54 @@ export interface UserProfile {
   avatar: string;
   favoriteFandoms: string[];
   memberSince: string;
+}
+
+export type FandomCategoryKey = 
+  | 'K-Pop' 
+  | 'Anime' 
+  | 'Gaming' 
+  | 'Movies' 
+  | 'TV Shows' 
+  | 'Comics' 
+  | 'Manga' 
+  | 'Cosplay';
+
+export interface FeaturedArticle {
+  id: string;
+  title: string;
+  excerpt: string;
+  category: FandomCategoryKey;
+  author: {
+    name: string;
+    avatar: string;
+    role?: string;
+  };
+  date: string;
+  readTime: string;
+  coverImage: string;
+  tags: string[];
+  isHot?: boolean;
+  isTrending?: boolean;
+  likes: number;
+  commentsCount: number;
+  badgeText?: string;
+  accentQuote?: string;
+}
+
+export interface UpcomingRelease {
+  id: string;
+  title: string;
+  creatorOrArtist: string;
+  category: FandomCategoryKey;
+  type: string;
+  releaseDate: string;
+  daysRemaining: number;
+  priceVND: number;
+  priceUSD: number;
+  status: 'Pre-Order' | 'Coming Soon' | 'Special Edition' | 'Limited Drop';
+  coverImage: string;
+  perks: string[];
+  badgeText?: string;
+  preOrderUrl?: string;
+  platformOrVenue?: string;
 }

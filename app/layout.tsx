@@ -36,7 +36,7 @@ export default function RootLayout({
               <PlayerProvider>
                 {children}
                 <DomainSelectionModal />
-              </PlayerProvider>
+                              </PlayerProvider>
             </CartWishlistProvider>
           </DomainProvider>
         </AuthProvider>
