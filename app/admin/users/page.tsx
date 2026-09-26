@@ -50,70 +50,6 @@ export interface ApiResponseMeta {
   limit: number;
 }
 
-// Fallback demo data to showcase the UI if backend is offline or deploying
-const DEMO_FALLBACK_USERS: AdminUserItem[] = [
-  {
-    id: 'USR-8001',
-    title: 'Minji Park (VIP Member)',
-    name: 'Minji Park',
-    email: 'minji.park@fanhubplus.com',
-    role: 'admin',
-    status: 'active',
-    createdAt: '2026-03-24T10:30:00Z',
-    phone: '+82 10-1234-5678',
-  },
-  {
-    id: 'USR-8002',
-    title: 'Sarah Jenkins',
-    name: 'Sarah Jenkins',
-    email: 'sarah.j@fandom.org',
-    role: 'registered',
-    status: 'active',
-    createdAt: '2026-03-23T14:15:00Z',
-    phone: '+1 415-987-6543',
-  },
-  {
-    id: 'USR-8003',
-    title: 'Kim Min-seok (Direct Distributor)',
-    name: 'Kim Min-seok',
-    email: 'minseok.k@seoulhub.kr',
-    role: 'registered',
-    status: 'active',
-    createdAt: '2026-03-22T08:45:00Z',
-    phone: '+82 10-5544-3322',
-  },
-  {
-    id: 'USR-8004',
-    title: 'Lucas Vance (B2B Bulk Manager)',
-    name: 'Lucas Vance',
-    email: 'lucas.v@kpopmerch.com',
-    role: 'admin',
-    status: 'active',
-    createdAt: '2026-03-21T18:20:00Z',
-    phone: '+44 20-7946-0958',
-  },
-  {
-    id: 'USR-8005',
-    title: 'Pham Minh Hang',
-    name: 'Pham Minh Hang',
-    email: 'hang.pham@bunnies.net',
-    role: 'registered',
-    status: 'inactive',
-    createdAt: '2026-03-20T09:10:00Z',
-    phone: '+84 934-889-900',
-  },
-  {
-    id: 'USR-8006',
-    title: 'Alexandre Roy (Policy Violation)',
-    name: 'Alexandre Roy',
-    email: 'alex.roy@outlook.com',
-    role: 'registered',
-    status: 'banned',
-    createdAt: '2026-03-18T16:05:00Z',
-    phone: '+33 6-12-34-56-78',
-  },
-];
-
 export default function AdminUsersPage() {
   const { language, setLanguage } = useAdminLanguage();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -127,7 +63,6 @@ export default function AdminUsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isConnectionError, setIsConnectionError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [showDemoPreview, setShowDemoPreview] = useState(false);
 
   // Filters & Pagination query parameters per API doc (?page=1&limit=20&sort=newest)
   const [page, setPage] = useState<number>(1);
@@ -298,24 +233,10 @@ export default function AdminUsersPage() {
       setTimeout(() => setActionToast(null), 4000);
     } catch (err: any) {
       console.warn('Connection error on PUT /api/v1/admin/users/{id}/ban:', err);
-      // Strictly handle "lỗi api thì để là lỗi kết nối nha"
-      if (showDemoPreview || users.length === 0) {
-        setUsers((prev) =>
-          prev.map((u) => (u.id === targetUser.id ? { ...u, status: nextStatus } : u))
-        );
-        if (selectedUser && selectedUser.id === targetUser.id) {
-          setSelectedUser((prev) => (prev ? { ...prev, status: nextStatus } : null));
-        }
-        setActionToast({
-          type: 'warning',
-          message: `Connection Error: Server offline. (Simulated ${actionLabel.toLowerCase()} action in demo preview)`,
-        });
-      } else {
-        setActionToast({
-          type: 'error',
-          message: 'Connection Error: Failed to update user status to backend server.',
-        });
-      }
+      setActionToast({
+        type: 'error',
+        message: isVi ? 'Lỗi kết nối: Không thể cập nhật trạng thái người dùng.' : 'Connection Error: Failed to update user status to backend server.',
+      });
       setTimeout(() => setActionToast(null), 5000);
     } finally {
       setBanningUserId(null);
@@ -323,8 +244,8 @@ export default function AdminUsersPage() {
     }
   };
 
-  // Filtered users for local search / roles if demo data or local filter active
-  const displayedUsers = showDemoPreview && users.length === 0 ? DEMO_FALLBACK_USERS : users;
+  // Filtered users for local search / roles
+  const displayedUsers = users;
 
   const filteredUsers = displayedUsers.filter((u) => {
     const term = (searchQuery || headerSearch).toLowerCase().trim();
@@ -445,29 +366,6 @@ export default function AdminUsersPage() {
                 <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-indigo-600' : ''}`} />
                 <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
               </button>
-
-              {isConnectionError && (
-                <button
-                  type="button"
-                  onClick={() => setShowDemoPreview(!showDemoPreview)}
-                  style={{
-                    borderRadius: '8px',
-                    backgroundColor: '#e0e7ff',
-                    color: '#3730a3',
-                    border: '1px solid #c7d2fe',
-                    padding: '8px 14px',
-                    fontWeight: 700,
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                  }}
-                >
-                  <Database className="w-3.5 h-3.5" />
-                  <span>{showDemoPreview ? (isVi ? 'Ẩn bản mẫu' : 'Hide Demo Preview') : (isVi ? 'Xem giao diện mẫu (Demo)' : 'View Demo Data')}</span>
-                </button>
-              )}
             </div>
           </div>
 
@@ -513,22 +411,6 @@ export default function AdminUsersPage() {
                 >
                   {isVi ? 'Thử lại kết nối' : 'Retry Connection'}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setShowDemoPreview(true)}
-                  style={{
-                    borderRadius: '6px',
-                    backgroundColor: '#ffffff',
-                    color: '#92400e',
-                    border: '1px solid #fcd34d',
-                    padding: '6px 14px',
-                    fontWeight: 700,
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {isVi ? 'Xem bản mẫu' : 'View Demo'}
-                </button>
               </div>
             </div>
           )}
@@ -541,7 +423,7 @@ export default function AdminUsersPage() {
                 <Users className="w-4 h-4 text-indigo-500" />
               </div>
               <div className="text-2xl font-black text-slate-900 dark:text-white">
-                {meta.total || (showDemoPreview ? DEMO_FALLBACK_USERS.length : 0)}
+                {meta.total || users.length}
               </div>
               <div className="text-[11px] text-slate-400 mt-1">{isVi ? 'Từ phản hồi API meta.total' : 'From API response meta.total'}</div>
             </div>
@@ -552,7 +434,7 @@ export default function AdminUsersPage() {
                 <Shield className="w-4 h-4 text-amber-500" />
               </div>
               <div className="text-2xl font-black text-slate-900 dark:text-white">
-                {filteredUsers.filter((u) => (u.role || '').toLowerCase() === 'admin').length || (showDemoPreview ? 2 : 0)}
+                {filteredUsers.filter((u) => (u.role || '').toLowerCase() === 'admin').length}
               </div>
               <div className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1">{isVi ? 'Quyền hạn cao nhất' : 'Full privileged access'}</div>
             </div>
@@ -563,7 +445,7 @@ export default function AdminUsersPage() {
                 <Ban className="w-4 h-4 text-rose-500" />
               </div>
               <div className="text-2xl font-black text-rose-600 dark:text-rose-400">
-                {filteredUsers.filter((u) => (u.status || '').toLowerCase() === 'banned' || (u.status || '').toLowerCase() === 'locked').length || (showDemoPreview ? 1 : 0)}
+                {filteredUsers.filter((u) => (u.status || '').toLowerCase() === 'banned' || (u.status || '').toLowerCase() === 'locked').length}
               </div>
               <div className="text-[11px] text-slate-400 mt-1">{isVi ? 'Bị chặn đăng nhập' : 'Login blocked'}</div>
             </div>
@@ -707,22 +589,6 @@ export default function AdminUsersPage() {
                         }}
                       >
                         {isVi ? 'Thử lại kết nối' : 'Retry Connection'}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowDemoPreview(true)}
-                        style={{
-                          borderRadius: '8px',
-                          backgroundColor: '#f1f5f9',
-                          color: '#334155',
-                          border: '1px solid #cbd5e1',
-                          padding: '8px 16px',
-                          fontSize: '12px',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {isVi ? 'Xem bản mẫu (Demo)' : 'Enable Demo Preview'}
                       </button>
                     </div>
                   </div>

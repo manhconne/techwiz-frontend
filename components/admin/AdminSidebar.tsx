@@ -7,6 +7,7 @@ import { useAdminLanguage } from '../../context/AdminLanguageContext';
 import {
   LayoutDashboard,
   Users,
+  Calendar,
   ShieldCheck,
   Store,
   ChevronLeft,
@@ -33,6 +34,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const navItems = [
     { id: 'dashboard', label: isEn ? 'Dashboard Overview' : (t('dashboard') || 'Trang Chủ Admin'), icon: LayoutDashboard, href: '/admin', badge: null },
     { id: 'users', label: isEn ? 'User Management' : (t('users') || 'Quản lý người dùng'), icon: Users, href: '/admin/users', badge: null },
+    { id: 'events', label: isEn ? 'Event Management' : (t('events') || 'Quản lý sự kiện'), icon: Calendar, href: '/admin/events', badge: null },
   ];
 
   return (

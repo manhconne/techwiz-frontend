@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
         source: '/api/v1/auth/:path*',
         destination: `${IDENTITY_SERVICE_URL}/api/v1/auth/:path*`, // Proxy to IdentityService (.NET)
       },
+      {
+        source: '/api/v1/admin/:path*',
+        destination: `${IDENTITY_SERVICE_URL}/api/v1/admin/:path*`, // Proxy to Admin Backend Service
+      },
     ];
   },
 };
