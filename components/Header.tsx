@@ -7,6 +7,7 @@ import { useGoogleLanguage } from './GoogleTranslate';
 import { useCartWishlist } from '../context/CartWishlistContext';
 import { useAuth } from '../context/AuthContext';
 import { useDomainTheme } from '../context/DomainContext';
+import { PersonalDashboardModal } from './PersonalDashboardModal';
 import {
   Menu,
   Search,
@@ -83,14 +84,38 @@ export const Header: React.FC<HeaderProps> = ({
   const pathname = usePathname();
   const { language, toggleLanguage } = useGoogleLanguage();
   const { cartCount, wishlistCount, setIsCartOpen, setIsWishlistOpen, currency, toggleCurrency } = useCartWishlist();
-  const { user, isLoggedIn, loginAs, logout } = useAuth();
+  const { user, isLoggedIn, loginAs, logout, requestPasswordReset, resetPasswordWithToken } = useAuth();
   const { themeMode, toggleThemeMode } = useDomainTheme();
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isLargeFont, setIsLargeFont] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_font_large');
+      if (saved === 'true') {
+        setIsLargeFont(true);
+        document.documentElement.classList.add('font-accessible-large');
+      }
+    } catch {}
+  }, []);
+
+  const toggleFontSize = () => {
+    const next = !isLargeFont;
+    setIsLargeFont(next);
+    try {
+      localStorage.setItem('fanhub_font_large', String(next));
+    } catch {}
+    if (next) {
+      document.documentElement.classList.add('font-accessible-large');
+    } else {
+      document.documentElement.classList.remove('font-accessible-large');
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,7 +126,7 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   // Form & Tab State for Auth Modal
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [authMode, setAuthMode] = useState<'signin' | 'signup' | 'forgot'>('signin');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [signupName, setSignupName] = useState('');
@@ -114,6 +139,12 @@ export const Header: React.FC<HeaderProps> = ({
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(false);
 
+  // Forgot password flow states
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotToken, setForgotToken] = useState('');
+  const [forgotNewPassword, setForgotNewPassword] = useState('');
+  const [isResetTokenSent, setIsResetTokenSent] = useState(false);
+
   // Sub-header navigation dropdown (Exact matching user's image)
   const [isAllMdDropdownOpen, setIsAllMdDropdownOpen] = useState(false);
   const [isB2BModalOpen, setIsB2BModalOpen] = useState(false);
@@ -123,15 +154,6 @@ export const Header: React.FC<HeaderProps> = ({
   const [b2bContact, setB2bContact] = useState('');
   const [b2bQty, setB2bQty] = useState('50');
   const [b2bArtist, setB2bArtist] = useState('NewJeans');
-
-  const toggleFontSize = () => {
-    setIsLargeFont(!isLargeFont);
-    if (!isLargeFont) {
-      document.documentElement.classList.add('font-accessible-large');
-    } else {
-      document.documentElement.classList.remove('font-accessible-large');
-    }
-  };
 
   const scrollToSection = (id: string) => {
     setIsAllMdDropdownOpen(false);
@@ -157,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({
     { label: 'DUCKJIL FANDOM HUB', icon: Heart, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/artist'; } },
     { label: 'ALLMD BEAUTY & CARE', icon: Sparkles, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
     { label: 'B2B / BULK ORDER', icon: Building2, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/b2b'; } },
-    { label: 'ALLMD TV & MEDIA', icon: Tv, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/'; } },
+    { label: 'MULTIMEDIA CENTER', icon: Tv, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/multimedia'; } },
   ];
 
   return (
@@ -277,14 +299,28 @@ export const Header: React.FC<HeaderProps> = ({
             <Search style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
           </button>
 
-          {/* User Profile Icon */}
+          {/* User Profile Icon / Dashboard Trigger */}
           <button
-            onClick={() => setIsAuthModalOpen(true)}
+            onClick={() => {
+              if (isLoggedIn) {
+                setIsDashboardOpen(true);
+              } else {
+                setIsAuthModalOpen(true);
+              }
+            }}
             className="header-action-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
-            title={isLoggedIn ? user.name : 'Sign In'}
+            title={isLoggedIn ? `${user.name} - Mở Dashboard Cá Nhân` : 'Đăng Nhập'}
             type="button"
           >
-            <User style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
+            {isLoggedIn ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-amber-400"
+              />
+            ) : (
+              <User style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
+            )}
           </button>
 
           {/* Shopping Cart Icon */}
@@ -376,6 +412,20 @@ export const Header: React.FC<HeaderProps> = ({
             ) : (
               <Moon style={{ width: '20px', height: '20px', strokeWidth: 2 }} />
             )}
+          </button>
+
+          {/* Accessible Font Size Adjuster Button (A / A+) */}
+          <button
+            onClick={toggleFontSize}
+            title={isLargeFont ? 'Thu nhỏ cỡ chữ chuẩn (Mặc định 16px)' : 'Phóng to cỡ chữ (+12.5% Text Size)'}
+            type="button"
+            className={`header-action-btn hidden sm:flex notranslate w-9 h-9 rounded-full items-center justify-center border font-bold text-xs cursor-pointer transition-all ${
+              isLargeFont 
+                ? 'bg-slate-900 text-white border-slate-900 shadow-xs' 
+                : 'hover:bg-slate-100 text-slate-800 border-slate-300'
+            }`}
+          >
+            <span className="font-mono text-xs font-black tracking-tight">{isLargeFont ? 'A+' : 'A'}</span>
           </button>
 
           {/* Admin shortcut if admin */}
@@ -631,6 +681,25 @@ export const Header: React.FC<HeaderProps> = ({
               className="header-nav-link hover:opacity-60"
             >
               EVENT
+            </Link>
+            <Link
+              href="/multimedia"
+              style={{
+                fontSize: '14px',
+                fontWeight: 900,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                padding: '14px 6px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                borderBottom: pathname?.startsWith('/multimedia') ? '2.5px solid currentColor' : '2.5px solid transparent',
+                textDecoration: 'none',
+              }}
+              className="header-nav-link hover:opacity-60"
+            >
+              MULTIMEDIA
             </Link>
             <Link
               href="/cd-dvd-book"
@@ -1071,6 +1140,34 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
                 </div>
 
+                {/* Dashboard Cá Nhân Hóa Button */}
+                <button
+                  onClick={() => {
+                    setIsAuthModalOpen(false);
+                    setIsDashboardOpen(true);
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '11px',
+                    backgroundColor: '#0f172a',
+                    color: '#ffffff',
+                    fontSize: '13px',
+                    fontWeight: 800,
+                    borderRadius: 'var(--radius)',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    marginBottom: '10px'
+                  }}
+                  type="button"
+                >
+                  <Sparkles style={{ width: '16px', height: '16px', color: '#f59e0b' }} />
+                  Mở Dashboard Cá Nhân Hóa (Hoạt Động & Fandom)
+                </button>
+
                 {user.role === 'admin' && (
                   <button
                     onClick={() => {
@@ -1318,6 +1415,28 @@ export const Header: React.FC<HeaderProps> = ({
                           {showPassword ? <EyeOff style={{ width: '16px', height: '16px' }} /> : <Eye style={{ width: '16px', height: '16px' }} />}
                         </button>
                       </div>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '14px' }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAuthMode('forgot');
+                          setAuthError(null);
+                          setAuthNotification(null);
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          fontSize: '12px',
+                          color: '#2563eb',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          padding: 0
+                        }}
+                      >
+                        Quên mật khẩu? (Đặt lại qua Token/Email)
+                      </button>
                     </div>
 
                     <button
@@ -1636,6 +1755,157 @@ export const Header: React.FC<HeaderProps> = ({
                   </form>
                 )}
 
+                {/* FORGOT PASSWORD FORM */}
+                {authMode === 'forgot' && (
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      setAuthError(null);
+                      setAuthNotification(null);
+
+                      if (!isResetTokenSent) {
+                        if (!forgotEmail.trim()) {
+                          setAuthError('Vui lòng nhập địa chỉ email.');
+                          return;
+                        }
+                        const res = requestPasswordReset(forgotEmail);
+                        setIsResetTokenSent(true);
+                        setForgotToken(res.token);
+                        setAuthNotification(res.message);
+                      } else {
+                        if (!forgotToken.trim() || !forgotNewPassword.trim()) {
+                          setAuthError('Vui lòng nhập đầy đủ mã token và mật khẩu mới.');
+                          return;
+                        }
+                        const res = resetPasswordWithToken(forgotEmail, forgotToken, forgotNewPassword);
+                        if (res.success) {
+                          setAuthNotification(res.message);
+                          setTimeout(() => {
+                            setAuthMode('signin');
+                            setIsResetTokenSent(false);
+                            setLoginEmail(forgotEmail);
+                            setForgotToken('');
+                            setForgotNewPassword('');
+                          }, 1800);
+                        } else {
+                          setAuthError(res.message);
+                        }
+                      }
+                    }}
+                  >
+                    {!isResetTokenSent ? (
+                      <div style={{ marginBottom: '16px' }}>
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                          Email Đăng Ký Tài Khoản
+                        </label>
+                        <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+                          <Mail style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                          <input
+                            type="email"
+                            required
+                            placeholder="fan@example.com"
+                            value={forgotEmail}
+                            onChange={(e) => setForgotEmail(e.target.value)}
+                            style={{
+                              width: '100%',
+                              paddingLeft: '38px',
+                              paddingRight: '14px',
+                              paddingTop: '10px',
+                              paddingBottom: '10px',
+                              fontSize: '13px',
+                              backgroundColor: 'var(--bg-body)',
+                              border: '1px solid var(--border-color)',
+                              borderRadius: 'var(--radius)',
+                              outline: 'none',
+                              color: 'var(--text-primary)',
+                              transition: 'all var(--transition-fast)'
+                            }}
+                          />
+                        </div>
+                        <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px' }}>
+                          Hệ thống sẽ gửi mã Token 6 ký tự xác minh để bạn đặt lại mật khẩu an toàn.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div style={{ marginBottom: '12px' }}>
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                            Mã Token Xác Thực (Đã gửi qua email)
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="Nhập 6 ký tự token"
+                            value={forgotToken}
+                            onChange={(e) => setForgotToken(e.target.value.toUpperCase())}
+                            style={{
+                              width: '100%',
+                              padding: '10px 14px',
+                              fontSize: '14px',
+                              fontFamily: 'monospace',
+                              fontWeight: 800,
+                              letterSpacing: '0.15em',
+                              textAlign: 'center',
+                              backgroundColor: '#fef3c7',
+                              border: '1.5px solid #f59e0b',
+                              borderRadius: 'var(--radius)',
+                              outline: 'none',
+                              color: '#92400e'
+                            }}
+                          />
+                        </div>
+
+                        <div style={{ marginBottom: '16px' }}>
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                            Mật Khẩu Mới
+                          </label>
+                          <input
+                            type="password"
+                            required
+                            placeholder="Tối thiểu 6 ký tự"
+                            value={forgotNewPassword}
+                            onChange={(e) => setForgotNewPassword(e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '10px 14px',
+                              fontSize: '13px',
+                              backgroundColor: 'var(--bg-body)',
+                              border: '1px solid var(--border-color)',
+                              borderRadius: 'var(--radius)',
+                              outline: 'none',
+                              color: 'var(--text-primary)'
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      style={{
+                        width: '100%',
+                        padding: '11px',
+                        backgroundColor: '#000000',
+                        color: '#ffffff',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        borderRadius: 'var(--radius)',
+                        border: '1px solid #000000',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        boxShadow: 'var(--shadow-sm)',
+                        transition: 'all var(--transition-fast)'
+                      }}
+                    >
+                      <span>{isResetTokenSent ? 'Xác Nhận Đặt Lại Mật Khẩu' : 'Gửi Mã Token Xác Thực Qua Email'}</span>
+                      <ArrowRight style={{ width: '16px', height: '16px' }} />
+                    </button>
+                  </form>
+                )}
+
                 {/* Bottom Switch Link */}
                 <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--border-color)', textAlign: 'center' }}>
                   {authMode === 'signin' ? (
@@ -1650,7 +1920,7 @@ export const Header: React.FC<HeaderProps> = ({
                         Sign up now
                       </button>
                     </p>
-                  ) : (
+                  ) : authMode === 'signup' ? (
                     <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
                       Already have an account?{' '}
                       <button
@@ -1662,6 +1932,18 @@ export const Header: React.FC<HeaderProps> = ({
                         Sign in now
                       </button>
                     </p>
+                  ) : (
+                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
+                      Đã nhớ lại mật khẩu?{' '}
+                      <button
+                        type="button"
+                        onClick={() => { setAuthMode('signin'); setAuthNotification(null); setIsResetTokenSent(false); }}
+                        style={{ fontWeight: 800, color: '#000000', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                        className="dark:text-white hover:underline"
+                      >
+                        Quay lại Đăng nhập
+                      </button>
+                    </p>
                   )}
                 </div>
 
@@ -1670,6 +1952,12 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       )}
+
+      {/* PERSONAL USER DASHBOARD MODAL */}
+      <PersonalDashboardModal
+        isOpen={isDashboardOpen}
+        onClose={() => setIsDashboardOpen(false)}
+      />
 
       {/* ========================================================================= */}
       {/* MOBILE SIDEBAR DRAWER (Chỉ có ở mobile, trên PC không bao giờ hiện) */}
@@ -1749,6 +2037,17 @@ export const Header: React.FC<HeaderProps> = ({
                     <span className="flex items-center gap-2.5">
                       <Calendar className="w-4 h-4 text-black" />
                       EVENT
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </Link>
+                  <Link
+                    href="/multimedia"
+                    onClick={() => setIsMenuDrawerOpen(false)}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Tv className="w-4 h-4 text-black" />
+                      MULTIMEDIA
                     </span>
                     <ArrowRight className="w-4 h-4 text-slate-400" />
                   </Link>
@@ -1869,6 +2168,18 @@ export const Header: React.FC<HeaderProps> = ({
                   ) : (
                     <Moon className="w-4 h-4 text-slate-700" />
                   )}
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleFontSize}
+                  className={`w-10 h-9 flex items-center justify-center border rounded-lg text-xs font-black cursor-pointer transition-colors ${
+                    isLargeFont
+                      ? 'bg-slate-900 text-white border-slate-900'
+                      : 'bg-white border-slate-200 text-slate-800 hover:bg-slate-100'
+                  }`}
+                  title={isLargeFont ? 'Thu nhỏ cỡ chữ' : 'Phóng to cỡ chữ'}
+                >
+                  <span className="font-mono text-xs font-bold">{isLargeFont ? 'A+' : 'A'}</span>
                 </button>
               </div>
 

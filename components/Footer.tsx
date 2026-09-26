@@ -39,6 +39,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
       heading: 'Discover',
       icon: <Headphones size={13} />,
       links: [
+        { label: 'Multimedia Center (4K & OST)', href: '/multimedia' },
         { label: 'World Tour Calendar', href: '/event' },
         { label: 'Sự kiện gần bạn (GPS Map)', href: '/event#location-events' },
         { label: 'Artist Profiles', href: '#artists' },

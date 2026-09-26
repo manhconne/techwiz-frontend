@@ -9,6 +9,7 @@ import { ChatbotModal } from '../../components/ChatbotModal';
 import { AudioPlayer } from '../../components/AudioPlayer';
 import { AdminModal } from '../../components/AdminModal';
 import { FeedbackModal } from '../../components/FeedbackModal';
+import { Breadcrumbs } from '../../components/Breadcrumbs';
 import { Footer } from '../../components/Footer';
 import { useCartWishlist } from '../../context/CartWishlistContext';
 import { 
@@ -69,6 +70,15 @@ export default function B2bPage() {
       />
 
       <main className="flex-1">
+        {/* Unified Breadcrumbs Navigation */}
+        <div className="bg-slate-50 border-b border-slate-200">
+          <Breadcrumbs
+            items={[
+              { label: 'B2B Phân Phối & Đặt Số Lượng Lớn (Wholesale & Fan Club)', isActive: true }
+            ]}
+          />
+        </div>
+
         {/* Dedicated B2B Hero Banner */}
         <section 
           style={{

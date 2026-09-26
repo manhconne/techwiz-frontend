@@ -6,6 +6,7 @@ import { EventHeroBanner } from '../components/EventHeroBanner';
 
 import { UpcomingReleasesAndArticles } from '../components/UpcomingReleasesAndArticles';
 import { AlbumGrid } from '../components/AlbumGrid';
+import { MultimediaCenter } from '../components/MultimediaCenter';
 import { FanCommunityFeed } from '../components/FanCommunityFeed';
 import { WorldTourShowcase } from '../components/WorldTourShowcase';
 import { AlbumDetailModal } from '../components/AlbumDetailModal';
@@ -119,7 +120,10 @@ export default function Home() {
           fandomCategory={selectedFandomCategory}
         />
 
-        {/* 5. World Tour & Stadium Arenas Showcase */}
+        {/* 5. Multimedia Center (Trailers, Videos, Podcasts, Livestreams, Soundtracks & Dual Ratings) */}
+        <MultimediaCenter />
+
+        {/* 6. World Tour & Stadium Arenas Showcase */}
         <WorldTourShowcase />
 
         {/* 6. Fan Community Social Feed */}

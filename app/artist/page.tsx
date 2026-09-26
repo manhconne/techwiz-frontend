@@ -11,6 +11,7 @@ import { ChatbotModal } from '../../components/ChatbotModal';
 import { AudioPlayer } from '../../components/AudioPlayer';
 import { AdminModal } from '../../components/AdminModal';
 import { FeedbackModal } from '../../components/FeedbackModal';
+import { Breadcrumbs } from '../../components/Breadcrumbs';
 import { Footer } from '../../components/Footer';
 import { Album } from '../../types';
 import { useCartWishlist } from '../../context/CartWishlistContext';
@@ -39,6 +40,15 @@ export default function ArtistPage() {
       />
 
       <main className="flex-1">
+        {/* Unified Breadcrumbs Navigation */}
+        <div className="bg-slate-50 border-b border-slate-200">
+          <Breadcrumbs
+            items={[
+              { label: 'Hồ Sơ Nhân Vật & Nghệ Sĩ (Lore & Dossiers)', isActive: true }
+            ]}
+          />
+        </div>
+
         {/* Dedicated Artist Page Hero Banner */}
         <section 
           style={{

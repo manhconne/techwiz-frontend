@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Header } from '../../components/Header';
+import { Breadcrumbs } from '../../components/Breadcrumbs';
 import { TourCalendar } from '../../components/TourCalendar';
 import { AlbumDetailModal } from '../../components/AlbumDetailModal';
 import { CartDrawer } from '../../components/CartDrawer';
@@ -52,6 +53,13 @@ export default function EventPage() {
       />
 
       <main className="flex-1">
+        {/* Breadcrumbs Navigation */}
+        <Breadcrumbs 
+          items={[
+            { label: 'Sự Kiện & Lịch Lưu Diễn (Event & GPS Calendar)', isActive: true }
+          ]} 
+        />
+
         {/* Editorial Event Showcase Carousel Banner (Exact user requested layout) */}
         <EventHeroBanner />
 

@@ -43,7 +43,10 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [activeArtist, setActiveArtist] = useState<string>(selectedArtistFilter || 'all');
   const [activeType, setActiveType] = useState<string>('all');
-  const [activeSort, setActiveSort] = useState<'popular' | 'newest' | 'price-asc' | 'price-desc'>('popular');
+  const [activeGenre, setActiveGenre] = useState<string>('all');
+  const [activeReleaseYear, setActiveReleaseYear] = useState<string>('all');
+  const [activePopularity, setActivePopularity] = useState<string>('all');
+  const [activeSort, setActiveSort] = useState<'popular' | 'newest' | 'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc'>('popular');
   const [inStockOnly, setInStockOnly] = useState(false);
 
   React.useEffect(() => {
@@ -77,6 +80,9 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
     setActiveCategory('all');
     setActiveArtist('all');
     setActiveType('all');
+    setActiveGenre('all');
+    setActiveReleaseYear('all');
+    setActivePopularity('all');
     setInStockOnly(false);
     selectSubCategory('all');
     if (setSelectedArtistFilter) setSelectedArtistFilter('all');
@@ -103,6 +109,27 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
       if (activeType !== 'all' && album.type !== activeType) return false;
       if (inStockOnly && album.stock <= 0) return false;
 
+      // Genre Filter
+      if (activeGenre !== 'all') {
+        const text = `${album.title} ${album.description} ${album.category} ${album.type}`.toLowerCase();
+        if (!text.includes(activeGenre.toLowerCase())) return false;
+      }
+
+      // Release Year Filter
+      if (activeReleaseYear !== 'all') {
+        const year = new Date(album.releaseDate).getFullYear();
+        if (activeReleaseYear === '2024' && year !== 2024) return false;
+        if (activeReleaseYear === '2023' && year !== 2023) return false;
+        if (activeReleaseYear === '2022' && year !== 2022) return false;
+        if (activeReleaseYear === 'vintage' && year >= 2022) return false;
+      }
+
+      // Popularity Filter
+      if (activePopularity !== 'all') {
+        if (activePopularity === 'top90' && album.popularityScore < 90) return false;
+        if (activePopularity === 'highRated' && album.rating < 4.9) return false;
+      }
+
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
         const matchesTitle = album.title.toLowerCase().includes(query);
@@ -116,11 +143,13 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
     }).sort((a, b) => {
       if (activeSort === 'popular') return b.popularityScore - a.popularityScore;
       if (activeSort === 'newest') return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+      if (activeSort === 'alpha-asc') return a.title.localeCompare(b.title);
+      if (activeSort === 'alpha-desc') return b.title.localeCompare(a.title);
       if (activeSort === 'price-asc') return a.priceUSD - b.priceUSD;
       if (activeSort === 'price-desc') return b.priceUSD - a.priceUSD;
       return 0;
     });
-  }, [domainFilteredAlbums, activeCategory, activeArtist, activeType, activeSort, inStockOnly, searchQuery]);
+  }, [domainFilteredAlbums, activeCategory, activeArtist, activeType, activeGenre, activeReleaseYear, activePopularity, activeSort, inStockOnly, searchQuery]);
 
   const hasActiveFilters = activeArtist !== 'all' || activeType !== 'all' || inStockOnly || activeCategory !== 'all' || activeSubCategory !== 'all';
   const selectedArtistObj = mockArtists.find((a) => a.id === activeArtist);
@@ -174,10 +203,12 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
   }, []);
 
   const sortLabels: Record<string, string> = {
-    popular: 'Popular',
-    newest: 'Newest',
-    'price-asc': 'Price ↑',
-    'price-desc': 'Price ↓',
+    popular: 'Phổ biến nhất (Hot)',
+    newest: 'Mới nhất (Newest)',
+    'alpha-asc': 'Bảng chữ cái (A → Z)',
+    'alpha-desc': 'Bảng chữ cái (Z → A)',
+    'price-asc': 'Giá: Thấp → Cao',
+    'price-desc': 'Giá: Cao → Thấp',
   };
 
   return (
@@ -491,6 +522,48 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
               )}
             </div>
 
+            {/* Genre Multi-level Filter */}
+            <select
+              value={activeGenre}
+              onChange={(e) => setActiveGenre(e.target.value)}
+              className="text-[11px] font-bold py-1.5 px-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer"
+              title="Lọc theo Thể loại âm nhạc (Genre)"
+            >
+              <option value="all">Tất cả Thể Loại (Genre)</option>
+              <option value="pop">Pop & Dance</option>
+              <option value="hip-hop">Hip-Hop & Rap</option>
+              <option value="ballad">Ballad & R&B</option>
+              <option value="ost">OST & Soundtrack</option>
+              <option value="rock">Rock & Band</option>
+              <option value="cyberpunk">Cyberpunk / EDM</option>
+            </select>
+
+            {/* Release Year Filter */}
+            <select
+              value={activeReleaseYear}
+              onChange={(e) => setActiveReleaseYear(e.target.value)}
+              className="text-[11px] font-bold py-1.5 px-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer"
+              title="Lọc theo Năm phát hành"
+            >
+              <option value="all">Năm Phát Hành (Tất cả)</option>
+              <option value="2024">2024 (Mới nhất)</option>
+              <option value="2023">2023</option>
+              <option value="2022">2022</option>
+              <option value="vintage">2021 trở về trước</option>
+            </select>
+
+            {/* Popularity Filter */}
+            <select
+              value={activePopularity}
+              onChange={(e) => setActivePopularity(e.target.value)}
+              className="text-[11px] font-bold py-1.5 px-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer"
+              title="Lọc theo Độ phổ biến"
+            >
+              <option value="all">Độ Phổ Biến (Tất cả)</option>
+              <option value="top90">🔥 Siêu Hot (Score 90+)</option>
+              <option value="highRated">⭐ Đánh giá cao nhất (4.9★+)</option>
+            </select>
+
             {/* In Stock Toggle */}
             <button
               type="button"
@@ -606,7 +679,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     <div style={{ position: 'absolute', top: '-8px', right: '24px', width: 0, height: 0, borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderBottom: '8px solid #000000', zIndex: 51 }} />
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      {(['popular', 'newest', 'price-asc', 'price-desc'] as const).map((val) => (
+                      {(['popular', 'newest', 'alpha-asc', 'alpha-desc', 'price-asc', 'price-desc'] as const).map((val) => (
                         <button
                           key={val}
                           type="button"

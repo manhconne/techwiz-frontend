@@ -13,9 +13,17 @@ import {
   MapPin,
   Ticket,
   Sparkles,
+  Plus,
+  Send,
+  X,
+  Layers,
+  Share2,
+  Tag,
+  PenTool,
+  Award
 } from 'lucide-react';
 import { mockFeaturedArticles, mockUpcomingReleases } from '../data/mockData';
-import { FandomCategoryKey, UpcomingRelease } from '../types';
+import { FandomCategoryKey, UpcomingRelease, FeaturedArticle } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
 
 interface UpcomingReleasesAndArticlesProps {
@@ -31,6 +39,32 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
   const [activeCategory, setActiveCategory] = useState<FandomCategoryKey | 'all'>(initialCategory);
   const [remindedItems, setRemindedItems] = useState<Record<string, boolean>>({});
   const [likedArticles, setLikedArticles] = useState<Record<string, number>>({});
+
+  // View Mode: 'grid' vs 'timeline'
+  const [viewMode, setViewMode] = useState<'grid' | 'timeline'>('grid');
+
+  // Fan Submission Modal State
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+  const [submitToast, setSubmitToast] = useState<string | null>(null);
+  const [submitTitle, setSubmitTitle] = useState('');
+  const [submitExcerpt, setSubmitExcerpt] = useState('');
+  const [submitContent, setSubmitContent] = useState('');
+  const [submitCategory, setSubmitCategory] = useState<FandomCategoryKey>('K-Pop');
+  const [submitAuthor, setSubmitAuthor] = useState('Tokki Fan VIP');
+  const [submitImage, setSubmitImage] = useState('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80');
+  const [submitTags, setSubmitTags] = useState('Comeback, Concert, Fandom');
+
+  // Fan articles loaded from localStorage
+  const [fanArticles, setFanArticles] = useState<FeaturedArticle[]>([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('fanhub_fan_articles');
+    if (saved) {
+      try {
+        setFanArticles(JSON.parse(saved));
+      } catch {}
+    }
+  }, []);
 
   // Sync with initialCategory if parent changes
   useEffect(() => {
@@ -86,11 +120,53 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
     setIsCartOpen(true);
   };
 
+  // Combined Articles (Fan-Submitted + Editorial)
+  const allArticles = useMemo(() => {
+    return [...fanArticles, ...mockFeaturedArticles];
+  }, [fanArticles]);
+
   // Filtered Articles
   const filteredArticles = useMemo(() => {
-    if (activeCategory === 'all') return mockFeaturedArticles;
-    return mockFeaturedArticles.filter(art => art.category === activeCategory);
-  }, [activeCategory]);
+    if (activeCategory === 'all') return allArticles;
+    return allArticles.filter(art => art.category === activeCategory);
+  }, [activeCategory, allArticles]);
+
+  // Fan Article Submission Handler
+  const handleFanSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!submitTitle.trim() || !submitExcerpt.trim()) return;
+
+    const newArticle: FeaturedArticle = {
+      id: `fan-art-${Date.now()}`,
+      title: submitTitle.trim(),
+      excerpt: submitExcerpt.trim(),
+      category: submitCategory,
+      author: {
+        name: submitAuthor.trim() || 'Fandom Contributor',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+        role: 'Verified Fan Writer ⭐',
+      },
+      date: 'Hôm nay',
+      readTime: '3 phút đọc',
+      coverImage: submitImage.trim() || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80',
+      tags: submitTags.split(',').map(t => t.trim()).filter(Boolean),
+      badgeText: 'FAN SUBMITTED ⭐',
+      isHot: true,
+      likes: 1,
+      commentsCount: 0,
+    };
+
+    const updated = [newArticle, ...fanArticles];
+    setFanArticles(updated);
+    localStorage.setItem('fanhub_fan_articles', JSON.stringify(updated));
+
+    setSubmitToast(`Bài viết "${submitTitle.slice(0, 32)}..." đã được gửi thành công và xuất bản lên feed!`);
+    setIsSubmitModalOpen(false);
+    setSubmitTitle('');
+    setSubmitExcerpt('');
+    setSubmitContent('');
+    setTimeout(() => setSubmitToast(null), 4000);
+  };
 
   // Filtered Upcoming Releases
   const filteredReleases = useMemo(() => {
@@ -257,28 +333,131 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 mt-12 md:mt-16">
           
           {/* -------------------- COLUMN A: FEATURED ARTICLES (7 COLS) -------------------- */}
-          <div className="lg:col-span-7 flex flex-col gap-8">
-            <div className="flex items-center justify-between mb-1">
+          <div className="lg:col-span-7 flex flex-col gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-1">
               <div className="flex items-center gap-3">
                 <div className={`w-3.5 h-3.5 rounded-full ${isKpopTheme ? 'bg-blue-600 shadow-[0_0_10px_#2563eb]' : 'bg-red-500'} animate-pulse`} />
                 <h3 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight">
                   Featured Articles &amp; Fandom Dispatches
                 </h3>
               </div>
-              <span 
-                className={`text-xs font-bold px-3 py-1 rounded-full ${
-                  isKpopTheme 
-                    ? 'bg-blue-50 text-blue-700 border border-blue-200/80 shadow-2xs' 
-                    : 'bg-white/95 text-slate-700 border border-slate-200/90 shadow-2xs'
-                }`}
-              >
-                {filteredArticles.length} Articles
-              </span>
+
+              {/* View Switcher & Fan Submit Trigger */}
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* View Mode Toggle */}
+                <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode('grid')}
+                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                      viewMode === 'grid'
+                        ? 'bg-white text-slate-900 shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Dạng Thẻ
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode('timeline')}
+                    className={`px-3 py-1 rounded-lg font-bold transition-all flex items-center gap-1 ${
+                      viewMode === 'timeline'
+                        ? 'bg-white text-slate-900 shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <Layers className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Mốc Thời Gian (Timeline)</span>
+                  </button>
+                </div>
+
+                {/* Fan Submission Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsSubmitModalOpen(true)}
+                  className="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center gap-1.5 hover:bg-slate-800 transition-colors shadow-xs"
+                  title="Cho phép người dùng gửi bài viết bài đánh giá fandom"
+                >
+                  <PenTool className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Gửi Bài Viết</span>
+                </button>
+              </div>
             </div>
+
+            {/* Submission Toast Notification */}
+            {submitToast && (
+              <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold flex items-center gap-2 shadow-sm animate-fade-in">
+                <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>{submitToast}</span>
+              </div>
+            )}
 
             {filteredArticles.length === 0 ? (
               <div className="p-8 text-center bg-white/90 rounded-2xl border border-dashed border-slate-300 text-slate-500 text-sm">
                 No articles found in this category.
+              </div>
+            ) : viewMode === 'timeline' ? (
+              /* TIMELINE EVENT VIEW (MỐC THỜI GIAN SỰ KIỆN) */
+              <div className="relative pl-6 sm:pl-8 space-y-8 before:absolute before:left-3 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-300">
+                {filteredArticles.map((art) => {
+                  const likesCount = likedArticles[art.id] !== undefined ? likedArticles[art.id] : art.likes;
+
+                  return (
+                    <div key={art.id} className="relative group">
+                      {/* Timeline Milestone Dot */}
+                      <span className="absolute -left-6 sm:-left-8 top-1.5 w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center border-2 border-white ring-2 ring-slate-900/20 shadow-sm">
+                        <Clock className="w-3 h-3 text-amber-400" />
+                      </span>
+
+                      {/* Timeline Card */}
+                      <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 hover:border-slate-400 transition-all shadow-sm hover:shadow-md flex flex-col md:flex-row gap-5">
+                        <img
+                          src={art.coverImage}
+                          alt={art.title}
+                          className="w-full md:w-44 h-36 rounded-xl object-cover flex-shrink-0"
+                        />
+                        <div className="flex-1 flex flex-col justify-between space-y-2">
+                          <div>
+                            <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
+                              <span className="font-mono font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                                MỐC SỰ KIỆN: {art.date}
+                              </span>
+                              <span className="font-bold text-slate-700">{art.readTime}</span>
+                            </div>
+
+                            <h4 className="text-base font-black text-slate-900 leading-snug hover:text-amber-600 transition-colors">
+                              {art.title}
+                            </h4>
+
+                            <p className="text-xs text-slate-600 line-clamp-2 mt-1 font-normal">
+                              {art.excerpt}
+                            </p>
+                          </div>
+
+                          <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <div className="flex items-center gap-2">
+                              <img
+                                src={art.author.avatar}
+                                alt={art.author.name}
+                                className="w-5 h-5 rounded-full object-cover"
+                              />
+                              <span className="text-[11px] font-bold text-slate-700">{art.author.name}</span>
+                            </div>
+
+                            <button
+                              onClick={() => toggleLike(art.id, art.likes)}
+                              type="button"
+                              className="inline-flex items-center gap-1 text-slate-500 hover:text-rose-600 text-xs font-bold"
+                            >
+                              <Heart className={`w-3.5 h-3.5 ${likedArticles[art.id] ? 'fill-rose-500 text-rose-500' : ''}`} />
+                              <span>{likesCount}</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <div className="flex flex-col gap-8">
@@ -682,6 +861,127 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
         </div>
 
       </div>
+
+      {/* FAN-SUBMITTED CONTENT MODAL */}
+      {isSubmitModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 relative animate-in fade-in zoom-in-95">
+            <button
+              onClick={() => setIsSubmitModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900 rounded-lg hover:bg-slate-100"
+              title="Đóng"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="mb-5">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black uppercase tracking-wider mb-2">
+                <PenTool className="w-3 h-3 text-amber-600" />
+                <span>FAN-SUBMITTED ARTICLE DESK</span>
+              </div>
+              <h3 className="text-xl font-black text-slate-900">
+                Gửi Bài Viết / Cảm Nhận Fandom Của Bạn
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                Chia sẻ cảm nhận concert, phân tích MV, nhật ký unboxing album hoặc kỷ niệm đu idol cùng cộng đồng.
+              </p>
+            </div>
+
+            <form onSubmit={handleFanSubmit} className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Tiêu Đề Bài Viết *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Trải nghiệm săn vé và quẩy hết mình tại concert SEVENTEEN..."
+                  value={submitTitle}
+                  onChange={(e) => setSubmitTitle(e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">Danh Mục Fandom *</label>
+                  <select
+                    value={submitCategory}
+                    onChange={(e) => setSubmitCategory(e.target.value as any)}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white"
+                  >
+                    <option value="K-Pop">K-Pop</option>
+                    <option value="Anime">Anime & Manga</option>
+                    <option value="Gaming">Gaming & Esports</option>
+                    <option value="Movies">Movies & Cinema</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">Tên Tác Giả / Bút Danh *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Tokki Fan VIP"
+                    value={submitAuthor}
+                    onChange={(e) => setSubmitAuthor(e.target.value)}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Tóm Tắt Ngắn (Excerpt) *</label>
+                <textarea
+                  required
+                  rows={2}
+                  placeholder="Tóm tắt nội dung chính trong 1-2 câu hấp dẫn..."
+                  value={submitExcerpt}
+                  onChange={(e) => setSubmitExcerpt(e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">URL Hình Ảnh Bìa Minh Họa</label>
+                <input
+                  type="url"
+                  placeholder="https://images.unsplash.com/..."
+                  value={submitImage}
+                  onChange={(e) => setSubmitImage(e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Thẻ Chủ Đề (Tags cách nhau bởi dấu phẩy)</label>
+                <input
+                  type="text"
+                  placeholder="Concert, Review, NewJeans, Fandom"
+                  value={submitTags}
+                  onChange={(e) => setSubmitTags(e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                />
+              </div>
+
+              <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setIsSubmitModalOpen(false)}
+                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl"
+                >
+                  Hủy Bỏ
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 bg-slate-900 text-white text-xs font-black uppercase tracking-wider rounded-xl hover:bg-slate-800 transition-colors shadow-md flex items-center gap-1.5"
+                >
+                  <Send className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Gửi Bài Viết Fandom</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
