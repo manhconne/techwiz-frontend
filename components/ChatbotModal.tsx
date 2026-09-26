@@ -127,7 +127,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
     };
   };
 
-  const handleSend = (textToSend?: string) => {
+  const handleSend = async (textToSend?: string) => {
     const text = textToSend || input;
     if (!text.trim()) return;
 
@@ -141,17 +141,30 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
 
-    setTimeout(() => {
-      const { reply, action } = generateBotReply(text);
+    try {
+      const res = await fetch("http://localhost:3005/api/v1/chatbot/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+      
+      const data = await res.json();
       const botMsg: ChatMessage = {
         id: `msg-${Date.now() + 1}`,
         sender: 'bot',
-        text: reply,
+        text: data.reply || "Xin lỗi, đã có lỗi xảy ra từ máy chủ FanHub AI.",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        suggestedAction: action,
       };
       setMessages((prev) => [...prev, botMsg]);
-    }, 400);
+    } catch (error) {
+      const errorMsg: ChatMessage = {
+        id: `msg-${Date.now() + 1}`,
+        sender: 'bot',
+        text: "Hệ thống AI đang bảo trì hoặc mất kết nối mạng. Bạn vui lòng thử lại sau nhé!",
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages((prev) => [...prev, errorMsg]);
+    }
   };
 
   const promptSuggestions = [

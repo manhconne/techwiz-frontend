@@ -49,24 +49,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [activities, setActivities] = useState<UserActivity[]>(initialActivities);
 
   useEffect(() => {
-    const saved = localStorage.getItem('kpop_user');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setUser(parsed);
-        setIsLoggedIn(parsed.role !== 'visitor');
-      } catch {
-        // ignore
+    const fetchMe = async () => {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const res = await fetch('/api/v1/auth/me', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const data = await res.json();
+          if (res.ok && data.data) {
+            const userData = data.data;
+            const role = (userData.roles && userData.roles.includes('Admin')) ? 'admin' : 'registered';
+            const loggedInUser: UserProfile = {
+              id: userData.id,
+              name: userData.firstName + ' ' + userData.lastName,
+              email: userData.email,
+              role: role,
+              avatar: userData.avatarUrl || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
+              favoriteFandoms: [],
+              memberSince: '2024'
+            };
+            setUser(loggedInUser);
+            setIsLoggedIn(true);
+            return;
+          }
+        } catch (err) {
+          console.error("Failed to fetch user profile", err);
+        }
       }
-    }
+
+      // Fallback to localStorage if no token or API failed
+      const saved = localStorage.getItem('kpop_user');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setUser(parsed);
+          setIsLoggedIn(parsed.role !== 'visitor');
+        } catch { }
+      }
+    };
+    
+    fetchMe();
 
     const savedActs = localStorage.getItem('kpop_user_activities');
     if (savedActs) {
       try {
         setActivities(JSON.parse(savedActs));
-      } catch {
-        // ignore
-      }
+      } catch { }
     }
   }, []);
 

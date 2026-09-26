@@ -1,6 +1,9 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+const Map = dynamic(() => import('./Map'), { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-slate-100 rounded-xl">Loading Map...</div> });
 import { 
   MapPin, 
   Navigation, 
