@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useGoogleLanguage } from './GoogleTranslate';
@@ -48,6 +48,8 @@ interface HeaderProps {
   onOpenFeedback: () => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  fandomThemeKey?: string;
+  fandomCategory?: string;
 }
 
 const extractApiError = (data: any, fallbackMsg: string): string => {
@@ -75,6 +77,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenFeedback,
   searchQuery,
   setSearchQuery,
+  fandomThemeKey = 'all',
+  fandomCategory = 'all',
 }) => {
   const pathname = usePathname();
   const { language, toggleLanguage } = useGoogleLanguage();
@@ -86,6 +90,15 @@ export const Header: React.FC<HeaderProps> = ({
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isLargeFont, setIsLargeFont] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Form & Tab State for Auth Modal
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
@@ -126,6 +139,12 @@ export const Header: React.FC<HeaderProps> = ({
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      if (id === 'tours') {
+        window.location.href = '/event';
+      } else {
+        window.location.href = `/#${id}`;
+      }
     }
   };
 
@@ -142,15 +161,18 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200">
+    <header 
+      className={`sticky top-0 z-40 w-full header-root fandom-header-${fandomThemeKey} transition-all duration-300${isScrolled ? ' header-scrolled' : ''}`}
+      data-fandom-theme={fandomThemeKey}
+    >
 
       {/* Main Bar - Responsive Header Bar */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-2.5 sm:py-4 flex items-center justify-between gap-4 md:gap-8 bg-white">
+      <div className="header-inner max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-2.5 sm:py-4 flex items-center justify-between gap-4 md:gap-8 transition-colors duration-300">
         {/* LEFT: Menu button (Mobile only, hidden on PC) & Logo */}
         <div className="flex items-center gap-2.5 sm:gap-4 md:gap-5 shrink-0">
           <button
             onClick={() => setIsMenuDrawerOpen(true)}
-            className="mobile-menu-btn w-9 h-9 rounded-full bg-black text-white items-center justify-center cursor-pointer hover:opacity-90 shrink-0 border-0 transition-transform active:scale-95"
+            className="mobile-menu-btn header-action-btn w-9 h-9 rounded-full bg-black text-white items-center justify-center cursor-pointer hover:opacity-90 shrink-0 border-0 transition-transform active:scale-95"
             title="Menu"
             type="button"
           >
@@ -161,7 +183,7 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               src="/logo-dark.png?v=2"
               alt="Fan Hub Plus"
-              className="h-8 sm:h-9 md:h-11 w-auto object-contain block"
+              className="header-logo h-8 sm:h-9 md:h-11 w-auto object-contain block transition-all"
             />
           </Link>
         </div>
@@ -169,6 +191,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* CENTER: Wide Underline Search Bar (Desktop) - Clean Flex Layout, Icon separated from text */}
         <div className="hidden md:flex flex-1 justify-center max-w-[560px] mx-4 lg:mx-8">
           <div
+            className="header-search-bar"
             style={{
               position: 'relative',
               width: '100%',
@@ -181,6 +204,7 @@ export const Header: React.FC<HeaderProps> = ({
           >
             {/* Search Icon on the left with dedicated right margin */}
             <Search
+              className="header-search-icon"
               style={{
                 width: '18px',
                 height: '18px',
@@ -203,6 +227,7 @@ export const Header: React.FC<HeaderProps> = ({
                   if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
+              className="header-search-input"
               style={{
                 flex: 1,
                 width: '100%',
@@ -220,6 +245,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
+                className="header-clear-btn hover:text-black"
                 style={{
                   background: 'none',
                   border: 'none',
@@ -231,7 +257,6 @@ export const Header: React.FC<HeaderProps> = ({
                   justifyContent: 'center',
                   flexShrink: 0,
                 }}
-                className="hover:text-black"
                 title="Clear"
               >
                 <X style={{ width: '16px', height: '16px' }} />
@@ -245,7 +270,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Search Icon Button -> Opens Dedicated Mobile Search Modal */}
           <button
             onClick={() => setIsSearchModalOpen(true)}
-            className="mobile-search-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
+            className="mobile-search-btn header-action-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
             title="Search"
             type="button"
           >
@@ -255,7 +280,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* User Profile Icon */}
           <button
             onClick={() => setIsAuthModalOpen(true)}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
+            className="header-action-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
             title={isLoggedIn ? user.name : 'Sign In'}
             type="button"
           >
@@ -265,7 +290,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Shopping Cart Icon */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
+            className="header-action-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
             title="Cart"
             type="button"
           >
@@ -288,7 +313,7 @@ export const Header: React.FC<HeaderProps> = ({
                   justifyContent: 'center',
                   border: '2px solid #ffffff',
                 }}
-                className="notranslate"
+                className="header-badge notranslate"
               >
                 {cartCount}
               </span>
@@ -298,7 +323,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Wishlist / Document Icon */}
           <button
             onClick={() => setIsWishlistOpen(true)}
-            className="hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
+            className="header-action-btn hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
             title="Wishlist"
             type="button"
           >
@@ -321,7 +346,7 @@ export const Header: React.FC<HeaderProps> = ({
                   justifyContent: 'center',
                   border: '2px solid #ffffff',
                 }}
-                className="notranslate"
+                className="header-badge notranslate"
               >
                 {wishlistCount}
               </span>
@@ -333,7 +358,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleLanguage}
             title={language === 'en' ? 'Translate to Vietnamese (Google Translate)' : 'Chuyển sang Tiếng Anh'}
             type="button"
-            className="hidden sm:flex notranslate hover:bg-slate-900 hover:text-white items-center gap-1.5 px-3 py-1 text-xs font-black border-2 border-black rounded-full bg-white text-black h-8 sm:h-9 cursor-pointer transition-all"
+            className="header-lang-btn hidden sm:flex notranslate hover:bg-slate-900 hover:text-white items-center gap-1.5 px-3 py-1 text-xs font-black border-2 border-black rounded-full bg-white text-black h-8 sm:h-9 cursor-pointer transition-all"
           >
             <Globe style={{ width: '15px', height: '15px' }} />
             <span>{language === 'en' ? 'EN' : 'VI'}</span>
@@ -344,7 +369,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleThemeMode}
             title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             type="button"
-            className="hidden sm:flex notranslate hover:bg-slate-100 w-9 h-9 rounded-full items-center justify-center text-black border-0 bg-transparent cursor-pointer transition-transform"
+            className="header-action-btn hidden sm:flex notranslate hover:bg-slate-100 w-9 h-9 rounded-full items-center justify-center text-black border-0 bg-transparent cursor-pointer transition-transform"
           >
             {themeMode === 'dark' ? (
               <Sun style={{ width: '20px', height: '20px', strokeWidth: 2, color: '#f59e0b' }} />
@@ -368,13 +393,14 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* SECONDARY CATEGORY NAVIGATION BAR (Desktop Only) */}
-      <div className="desktop-subnav w-full bg-white border-t border-b border-slate-200 relative z-30">
+      <div className="desktop-subnav header-subnav w-full border-t border-b relative z-30 transition-colors duration-300">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between h-11 sm:h-[54px] relative gap-4">
           {/* [ ≡ ALL MD ] Black Button with Exact Dropdown */}
           <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center', zIndex: 60 }}>
             <button
               onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
               type="button"
+              className="header-allmd-btn hover:opacity-90 active:scale-95"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -394,7 +420,6 @@ export const Header: React.FC<HeaderProps> = ({
                 flexShrink: 0,
                 transition: 'opacity 0.15s ease',
               }}
-              className="hover:opacity-90 active:scale-95"
             >
               <Menu style={{ width: '16px', height: '16px', flexShrink: 0 }} />
               <span style={{ whiteSpace: 'nowrap' }}>ALL MD</span>
@@ -575,17 +600,16 @@ export const Header: React.FC<HeaderProps> = ({
                 fontSize: '14px',
                 fontWeight: 900,
                 letterSpacing: '0.06em',
-                color: '#000000',
                 textTransform: 'uppercase',
                 padding: '14px 6px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
-                borderBottom: pathname?.startsWith('/artist') ? '2.5px solid #000000' : '2.5px solid transparent',
+                borderBottom: pathname?.startsWith('/artist') ? '2.5px solid currentColor' : '2.5px solid transparent',
                 textDecoration: 'none',
               }}
-              className="hover:opacity-60"
+              className="header-nav-link hover:opacity-60"
             >
               ARTIST
             </Link>
@@ -595,17 +619,16 @@ export const Header: React.FC<HeaderProps> = ({
                 fontSize: '14px',
                 fontWeight: 900,
                 letterSpacing: '0.06em',
-                color: '#000000',
                 textTransform: 'uppercase',
                 padding: '14px 6px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
-                borderBottom: pathname?.startsWith('/event') ? '2.5px solid #000000' : '2.5px solid transparent',
+                borderBottom: pathname?.startsWith('/event') ? '2.5px solid currentColor' : '2.5px solid transparent',
                 textDecoration: 'none',
               }}
-              className="hover:opacity-60"
+              className="header-nav-link hover:opacity-60"
             >
               EVENT
             </Link>
@@ -615,17 +638,16 @@ export const Header: React.FC<HeaderProps> = ({
                 fontSize: '14px',
                 fontWeight: 900,
                 letterSpacing: '0.06em',
-                color: '#000000',
                 textTransform: 'uppercase',
                 padding: '14px 6px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
-                borderBottom: pathname === '/cd-dvd-book' ? '2.5px solid #000000' : '2.5px solid transparent',
+                borderBottom: pathname === '/cd-dvd-book' ? '2.5px solid currentColor' : '2.5px solid transparent',
                 textDecoration: 'none',
               }}
-              className="hover:opacity-60"
+              className="header-nav-link hover:opacity-60"
             >
               CD/DVD/BOOK
             </Link>
@@ -635,17 +657,16 @@ export const Header: React.FC<HeaderProps> = ({
                 fontSize: '14px',
                 fontWeight: 900,
                 letterSpacing: '0.06em',
-                color: '#000000',
                 textTransform: 'uppercase',
                 padding: '14px 6px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
-                borderBottom: pathname === '/md' ? '2.5px solid #000000' : '2.5px solid transparent',
+                borderBottom: pathname === '/md' ? '2.5px solid currentColor' : '2.5px solid transparent',
                 textDecoration: 'none',
               }}
-              className="hover:opacity-60"
+              className="header-nav-link hover:opacity-60"
             >
               MD
             </Link>
@@ -655,17 +676,16 @@ export const Header: React.FC<HeaderProps> = ({
                 fontSize: '14px',
                 fontWeight: 900,
                 letterSpacing: '0.06em',
-                color: '#000000',
                 textTransform: 'uppercase',
                 padding: '14px 6px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
-                borderBottom: pathname?.startsWith('/b2b') ? '2.5px solid #000000' : '2.5px solid transparent',
+                borderBottom: pathname?.startsWith('/b2b') ? '2.5px solid currentColor' : '2.5px solid transparent',
                 textDecoration: 'none',
               }}
-              className="hover:opacity-60"
+              className="header-nav-link hover:opacity-60"
             >
               B2B/BULK
             </Link>
@@ -1192,7 +1212,7 @@ export const Header: React.FC<HeaderProps> = ({
                           const userInfo = data.user_info || {};
                           const userRole = (userInfo.role || loginEmail).toLowerCase().includes('admin') ? 'admin' : 'registered';
 
-                          setAuthNotification(data.message || 'Đăng nhập thành công!');
+                          setAuthNotification(data.message || 'Login successful!');
                           loginAs(userRole, {
                             id: userInfo.id || data.user_id || 'usr_' + Date.now(),
                             name: userInfo.full_name || userInfo.name || data.full_name || loginEmail.split('@')[0],
@@ -1205,10 +1225,10 @@ export const Header: React.FC<HeaderProps> = ({
                             setAuthError(null);
                           }, 1000);
                         } else {
-                          setAuthError(extractApiError(data, `Lỗi ${response.status}: Đăng nhập thất bại.`));
+                          setAuthError(extractApiError(data, `Error ${response.status}: Login failed.`));
                         }
                       } catch (err: any) {
-                        setAuthError(err.message || 'Không thể kết nối tới server /api/v1/auth/login');
+                        setAuthError(err.message || 'Unable to connect to authentication server');
                       } finally {
                         setIsLoadingAuth(false);
                       }
@@ -1387,7 +1407,7 @@ export const Header: React.FC<HeaderProps> = ({
                             localStorage.setItem('refresh_token', data.refresh_token);
                           }
 
-                          setAuthNotification(data.message || 'Đăng ký thành công!');
+                          setAuthNotification(data.message || 'Account created successfully!');
                           loginAs('registered', {
                             id: data.user_id || 'usr_' + Date.now(),
                             name: signupName,
@@ -1879,7 +1899,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className="w-full py-2.5 bg-black text-white text-xs font-black uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 cursor-pointer hover:bg-neutral-800 border-0"
                 >
                   <User className="w-4 h-4" />
-                  <span>Đăng nhập / Sign In</span>
+                  <span>Sign In / Account</span>
                 </button>
               )}
             </div>
@@ -1905,7 +1925,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
                 <span className="text-xs font-black uppercase tracking-wider text-slate-900">
-                  Khám phá &amp; Tìm kiếm
+                  Search &amp; Explore
                 </span>
                 <span className="hidden xs:inline-block text-[10px] font-bold text-slate-400 bg-white border border-slate-200 px-2 py-0.5 rounded-full">
                   Fandom Explorer
@@ -1915,7 +1935,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={() => setIsSearchModalOpen(false)}
                 className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-700 hover:text-black cursor-pointer transition-colors shadow-2xs"
-                title="Đóng tìm kiếm"
+                title="Close search"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1947,7 +1967,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <input
                     type="text"
                     autoFocus
-                    placeholder="Tìm album, idol (NewJeans, BTS...)"
+                    placeholder="Search albums, artists, manga, gear (NewJeans, BTS...)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{
@@ -1965,7 +1985,7 @@ export const Header: React.FC<HeaderProps> = ({
                       type="button"
                       onClick={() => setSearchQuery('')}
                       className="w-7 h-7 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center cursor-pointer border-0 shrink-0 mr-1.5 transition-colors"
-                      title="Xóa chữ"
+                      title="Clear text"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -1981,7 +2001,7 @@ export const Header: React.FC<HeaderProps> = ({
                     }}
                     className="hover:bg-neutral-800 text-xs font-black uppercase tracking-wider px-4 sm:px-5 py-2.5 flex items-center gap-1.5 cursor-pointer border-0 shrink-0 shadow-xs active:scale-95 transition-all"
                   >
-                    <span>Tìm</span>
+                    <span>Search</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -1991,7 +2011,7 @@ export const Header: React.FC<HeaderProps> = ({
               {searchQuery.trim() ? (
                 <div className="flex items-center justify-between px-3.5 py-2.5 mb-6 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-semibold">
                   <span>
-                    Đang lọc kết quả: <strong>"{searchQuery}"</strong>
+                    Filtering results: <strong>"{searchQuery}"</strong>
                   </span>
                   <button
                     type="button"
@@ -2002,7 +2022,7 @@ export const Header: React.FC<HeaderProps> = ({
                     }}
                     className="underline text-black font-bold cursor-pointer bg-transparent border-0"
                   >
-                    Xem kết quả →
+                    View results →
                   </button>
                 </div>
               ) : null}
@@ -2011,7 +2031,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="mb-6">
                 <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-slate-500 mb-3 px-1">
                   <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>XU HƯỚNG TÌM KIẾM / TRENDING NOW</span>
+                  <span>TRENDING KEYWORDS &amp; POPULAR SEARCHES</span>
                 </div>
                 <div className="flex flex-wrap gap-2 sm:gap-2.5">
                   {[

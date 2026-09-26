@@ -26,6 +26,7 @@ interface AlbumGridProps {
   searchQuery: string;
   selectedArtistFilter?: string;
   setSelectedArtistFilter?: (artistId: string) => void;
+  fandomCategory?: string;
 }
 
 export const AlbumGrid: React.FC<AlbumGridProps> = ({
@@ -33,6 +34,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
   searchQuery,
   selectedArtistFilter,
   setSelectedArtistFilter,
+  fandomCategory,
 }) => {
   const { addToCart, toggleWishlist, isWishlisted, formatPrice } = useCartWishlist();
   const { playTrack, currentAlbum, isPlaying } = usePlayer();
@@ -43,6 +45,16 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
   const [activeType, setActiveType] = useState<string>('all');
   const [activeSort, setActiveSort] = useState<'popular' | 'newest' | 'price-asc' | 'price-desc'>('popular');
   const [inStockOnly, setInStockOnly] = useState(false);
+
+  React.useEffect(() => {
+    if (fandomCategory) {
+      if (fandomCategory === 'all') {
+        setActiveCategory('all');
+      } else {
+        setActiveCategory(fandomCategory);
+      }
+    }
+  }, [fandomCategory]);
 
   React.useEffect(() => {
     if (selectedArtistFilter) {
@@ -118,6 +130,28 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
     ? (activeConfig.id === 'classic' ? 'All Products' : activeConfig.name)
     : (currentSubCatObj?.name || activeConfig.name);
 
+  // Compute domain-specific visual theme class
+  const themeClass = (() => {
+    const isKpop =
+      fandomCategory === 'K-Pop' ||
+      activeCategory === 'K-Pop' ||
+      currentDomain === 'fandom' ||
+      activeSubCategory === 'kpop' ||
+      activeSubCategory === 'kpop_fandom' ||
+      (currentDomain === 'classic' && activeSubCategory === 'kpop');
+    const isAnime =
+      fandomCategory === 'Anime' ||
+      activeCategory === 'Anime' ||
+      activeSubCategory === 'anime' ||
+      activeSubCategory === 'anime_fandom' ||
+      activeSubCategory === 'ghibli' ||
+      activeSubCategory === 'vocaloid' ||
+      (currentDomain === 'art' && (activeSubCategory === 'ghibli' || activeSubCategory === 'all'));
+    if (isKpop) return 'theme-kpop';
+    if (isAnime) return 'theme-anime';
+    return '';
+  })();
+
   // Custom artist dropdown state
   const [artistDropdownOpen, setArtistDropdownOpen] = useState(false);
   const artistDropdownRef = useRef<HTMLDivElement>(null);
@@ -150,32 +184,41 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
     <section 
       id="albums" 
       style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: (themeClass === 'theme-anime' || themeClass === 'theme-kpop' || fandomCategory === 'K-Pop') ? 'transparent' : '#ffffff',
         color: '#0f172a',
-      }}
-      className="py-12 md:py-20 w-full"
+        // Inject CSS variables for card elements
+        '--grid-card-bg': '#ffffff',
+        '--grid-card-border': (themeClass === 'theme-kpop' || fandomCategory === 'K-Pop') ? 'rgba(226, 232, 240, 0.9)' : (themeClass === 'theme-anime' ? 'rgba(63,81,181,0.14)' : '#e2e8f0'),
+        '--grid-text-primary': '#0f172a',
+        '--grid-text-sub': '#475569',
+        '--grid-text-muted': (themeClass === 'theme-kpop' || fandomCategory === 'K-Pop') ? '#64748b' : (themeClass === 'theme-anime' ? '#5c6bc0' : '#94a3b8'),
+        '--grid-accent': themeClass === 'theme-anime' ? '#ff5722' : (themeClass === 'theme-kpop' || fandomCategory === 'K-Pop') ? '#2563eb' : '#000000',
+        '--grid-section-bg': (themeClass === 'theme-anime' || themeClass === 'theme-kpop' || fandomCategory === 'K-Pop') ? 'transparent' : '#ffffff',
+      } as React.CSSProperties}
+      className={`py-16 md:py-24 lg:py-28 w-full domain-section ${themeClass}`}
     >
       <div 
-        className="max-w-[1440px] mx-auto px-3.5 sm:px-7"
+        className="max-w-[1440px] mx-auto px-4 sm:px-8"
       >
 
         {/* ==================== 1. Premium Section Header ==================== */}
-        <div style={{ marginBottom: '0' }}>
+        <div>
           {/* Top Row: Eyebrow + Categories */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '20px',
+              marginBottom: '28px',
               gap: '24px',
               flexWrap: 'wrap',
             }}
           >
             {/* Eyebrow label */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '20px', height: '2px', backgroundColor: '#000', display: 'inline-block', borderRadius: '2px' }} />
+              <span className="domain-eyebrow-bar" style={{ width: '20px', height: '2px', backgroundColor: '#000', display: 'inline-block', borderRadius: '2px' }} />
               <span
+                className="domain-eyebrow-text"
                 style={{
                   fontSize: '10px',
                   fontWeight: 800,
@@ -197,6 +240,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     key={sub.id}
                     onClick={() => selectSubCategory(sub.id)}
                     type="button"
+                    className={`domain-subcategory-tab${isActive ? ' active' : ''}`}
                     style={{
                       padding: '0 0 10px 0',
                       fontSize: '11px',
@@ -226,13 +270,14 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
               display: 'flex',
               alignItems: 'flex-end',
               justifyContent: 'space-between',
-              paddingBottom: '24px',
+              paddingBottom: '28px',
               borderBottom: '1px solid #f1f5f9',
               gap: '16px',
               flexWrap: 'wrap',
             }}
           >
             <h2
+              className="domain-section-title"
               style={{
                 fontFamily: activeConfig.fontFamily,
                 fontSize: 'clamp(28px, 3.2vw, 48px)',
@@ -251,6 +296,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
 
             {/* Result count */}
             <span
+              className="domain-result-count"
               style={{
                 fontSize: '13px',
                 color: '#94a3b8',
@@ -268,11 +314,19 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
         </div>
 
         {/* ==================== 1.5. Dynamic Category Spotlight Banner (NewJeans, BTS, Anime, Gaming, Art) ==================== */}
-        <HeroBanner embedded />
+        <div className="mt-8 mb-14 md:mb-16">
+          <HeroBanner embedded />
+        </div>
 
-        {/* ==================== 2. Premium Filter Toolbar ==================== */}
+        {/* ==================== 2. Premium Filter Toolbar (Completely Unboxed / No Outer Button Wrapper) ==================== */}
         <div
-          className="flex items-center justify-between gap-3 p-2.5 sm:p-4 my-4 sm:my-8 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-100 flex-wrap"
+          className="domain-filter-bar flex items-center justify-between gap-4 flex-wrap w-full mb-10 md:mb-12"
+          style={{
+            background: 'transparent',
+            border: 'none',
+            boxShadow: 'none',
+            padding: 0,
+          }}
         >
           {/* Left: Format Segments + Artist + In Stock */}
           <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap max-w-full">
@@ -621,7 +675,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
         )}
 
         {/* ==================== 4. Product Showcase Grid (2 Columns on Mobile, 4 on Desktop) ==================== */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-7">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mt-8">
           {filteredAlbums.map((album) => {
             const isFav = isWishlisted(album.id);
             const isCurrentPlaying = isPlaying && currentAlbum?.id === album.id;
@@ -630,11 +684,11 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
               <div
                 key={album.id}
                 onClick={() => onSelectAlbum(album)}
-                className="group bg-white rounded-xl sm:rounded-2xl border border-slate-200/90 p-2.5 sm:p-4 flex flex-col justify-between hover:shadow-xl hover:border-black hover:-translate-y-1.5 transition-all duration-300 cursor-pointer"
+                className="domain-card group bg-white rounded-xl sm:rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 md:p-6 flex flex-col justify-between hover:shadow-xl hover:border-black hover:-translate-y-1.5 transition-all duration-300 cursor-pointer"
               >
                 {/* 1. Cover Artwork Container */}
                 <div>
-                  <div className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-slate-100 mb-2 sm:mb-3.5 shadow-xs">
+                  <div className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-slate-100 mb-3 sm:mb-4 shadow-xs">
                     {/* Full Color Album Art with Gentle Hover Zoom */}
                     <img
                       src={album.coverImage}
@@ -644,8 +698,8 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     />
 
                     {/* Top-Left Tag Pill Badge */}
-                    <div className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 z-10">
-                      <span className="bg-black/85 backdrop-blur-xs text-white text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded sm:rounded-md shadow-xs">
+                    <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10">
+                      <span className="bg-black/85 backdrop-blur-xs text-white text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-2 sm:px-2.5 py-0.5 sm:py-1 rounded sm:rounded-md shadow-xs">
                         {album.tag || 'Official'}
                       </span>
                     </div>
@@ -656,7 +710,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                         e.stopPropagation();
                         toggleWishlist(album);
                       }}
-                      className="absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-sm flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
+                      className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-sm flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
                       title="Add to Wishlist"
                       type="button"
                     >
@@ -665,7 +719,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
 
                     {/* Audio Playing Pill */}
                     {isCurrentPlaying && (
-                      <div className="absolute top-1.5 left-1/2 -translate-x-1/2 z-10 bg-black text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-wider flex items-center gap-1 shadow-lg">
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 bg-black text-white px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-wider flex items-center gap-1 shadow-lg">
                         <Volume2 size={10} className="animate-pulse" />
                         <span>Playing</span>
                       </div>
@@ -699,7 +753,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                   </div>
 
                   {/* 2. Metadata Section */}
-                  <div className="flex items-center justify-between mb-0.5 sm:mb-1">
+                  <div className="flex items-center justify-between mb-1 sm:mb-1.5">
                     <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 truncate max-w-[70%]">
                       {album.artist}
                     </span>
@@ -711,20 +765,20 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                   {/* Album Title */}
                   <h4 
                     style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-                    className="text-xs sm:text-base font-bold text-slate-900 group-hover:text-black line-clamp-1 leading-snug"
+                    className="text-xs sm:text-base font-bold text-slate-900 group-hover:text-black line-clamp-1 leading-snug mb-1"
                     title={album.title}
                   >
                     {album.title}
                   </h4>
 
                   {/* Format & Highlights Tag */}
-                  <div className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 line-clamp-1">
+                  <div className="text-[10px] sm:text-xs text-slate-500 mb-1.5 line-clamp-1">
                     {album.type} • {album.inclusions?.[0] || 'Sealed Official Copy'}
                   </div>
                 </div>
 
                 {/* 3. Bottom Row: Price & Pre-Order Button */}
-                <div className="flex items-center justify-between mt-2.5 sm:mt-4 pt-2 sm:pt-3 border-t border-slate-100 gap-1.5">
+                <div className="flex items-center justify-between mt-3.5 sm:mt-5 pt-3 sm:pt-4 border-t border-slate-100 gap-2">
                   <div className="min-w-0">
                     <div className="text-xs sm:text-base font-black text-slate-900 tracking-tight truncate">
                       {formatPrice(album.priceUSD, album.priceVND)}
@@ -747,12 +801,13 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                       addToCart(album, album.versions[0]?.name);
                     }}
                     disabled={album.stock <= 0}
-                    className="bg-black hover:opacity-85 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-full flex items-center gap-1 sm:gap-1.5 transition-opacity disabled:opacity-40 cursor-pointer shadow-xs shrink-0"
+                    style={{ color: '#ffffff' }}
+                    className="domain-card-btn-primary bg-black hover:bg-slate-800 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full flex items-center gap-1.5 transition-all disabled:opacity-40 cursor-pointer shadow-xs shrink-0"
                     type="button"
                   >
-                    <ShoppingCart size={12} />
-                    <span className="hidden min-[420px]:inline">Pre-Order</span>
-                    <span className="min-[420px]:hidden">+</span>
+                    <ShoppingCart size={12} style={{ color: '#ffffff' }} />
+                    <span style={{ color: '#ffffff' }} className="hidden min-[420px]:inline">Pre-Order</span>
+                    <span style={{ color: '#ffffff' }} className="min-[420px]:hidden">+</span>
                   </button>
                 </div>
 

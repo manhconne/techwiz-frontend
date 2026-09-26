@@ -15,6 +15,7 @@ import { Footer } from '../../components/Footer';
 import { Album } from '../../types';
 import { useCartWishlist } from '../../context/CartWishlistContext';
 import { EventHeroBanner } from '../../components/EventHeroBanner';
+import { LocationAwareEventExplorer } from '../../components/LocationAwareEventExplorer';
 import { 
   Ticket, 
   MapPin, 
@@ -53,6 +54,9 @@ export default function EventPage() {
       <main className="flex-1">
         {/* Editorial Event Showcase Carousel Banner (Exact user requested layout) */}
         <EventHeroBanner />
+
+        {/* Location-Aware Event Radar & Calendar Explorer (GPS, Map, Radius & Directions) */}
+        <LocationAwareEventExplorer />
 
         {/* Tour Calendar Component with VIP Passes, Fansigns & Voting */}
         <TourCalendar />

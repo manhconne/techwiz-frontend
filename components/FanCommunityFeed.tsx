@@ -161,18 +161,18 @@ export const FanCommunityFeed: React.FC = () => {
     <section 
       id="community" 
       style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'transparent',
         color: '#0f172a',
         scrollMarginTop: '110px',
       }}
-      className="py-16 md:py-24 w-full border-t border-slate-100"
+      className="py-16 md:py-24 lg:py-28 w-full border-t border-slate-200/60"
     >
       <div 
-        className="max-w-[1440px] mx-auto px-3.5 sm:px-7"
+        className="max-w-[1440px] mx-auto px-4 sm:px-8"
       >
         
         {/* ==================== 1. Editorial Header ==================== */}
-        <div style={{ marginBottom: '32px' }}>
+        <div style={{ marginBottom: '40px' }}>
           
           {/* Top Eyebrow Row */}
           <div
@@ -180,7 +180,7 @@ export const FanCommunityFeed: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '16px',
+              marginBottom: '22px',
               gap: '16px',
               flexWrap: 'wrap',
             }}
@@ -237,7 +237,7 @@ export const FanCommunityFeed: React.FC = () => {
               display: 'flex',
               alignItems: 'flex-end',
               justifyContent: 'space-between',
-              paddingBottom: '20px',
+              paddingBottom: '26px',
               borderBottom: '1px solid #f1f5f9',
               gap: '24px',
               flexWrap: 'wrap',
@@ -326,7 +326,7 @@ export const FanCommunityFeed: React.FC = () => {
         <div 
           style={{
             maxWidth: '880px',
-            margin: '0 auto 36px auto',
+            margin: '0 auto 48px auto',
             backgroundColor: '#ffffff',
             border: '1.5px solid #000000',
             boxShadow: '0 4px 14px rgba(0,0,0,0.04)',
@@ -336,7 +336,7 @@ export const FanCommunityFeed: React.FC = () => {
           {/* Composer Header Bar */}
           <div 
             style={{
-              padding: '10px 16px',
+              padding: '12px 20px',
               backgroundColor: '#f8fafc',
               borderBottom: '1px solid #e2e8f0',
               display: 'flex',
@@ -352,7 +352,7 @@ export const FanCommunityFeed: React.FC = () => {
             </div>
             
             {/* Tag Selection Chips */}
-            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none max-w-[200px] sm:max-w-none">
+            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none max-w-[200px] sm:max-w-none">
               {['#NewJeans', '#BLACKPINK', '#StrayKids', '#BTS', '#aespa'].map(tag => (
                 <button
                   key={tag}
@@ -362,7 +362,7 @@ export const FanCommunityFeed: React.FC = () => {
                     fontSize: '9px',
                     fontFamily: 'monospace',
                     fontWeight: 700,
-                    padding: '2px 8px',
+                    padding: '3px 9px',
                     border: '1px solid',
                     borderColor: selectedTag === tag ? '#000000' : '#e2e8f0',
                     backgroundColor: selectedTag === tag ? '#000000' : '#ffffff',
@@ -378,7 +378,7 @@ export const FanCommunityFeed: React.FC = () => {
           </div>
 
           {/* Composer Body */}
-          <form onSubmit={handleCreatePost} style={{ padding: '16px 20px' }}>
+          <form onSubmit={handleCreatePost} style={{ padding: '20px 24px' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
               <div 
                 style={{
@@ -513,7 +513,7 @@ export const FanCommunityFeed: React.FC = () => {
         </div>
 
         {/* ==================== 3. Feed Grid ==================== */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto">
           {filteredPosts.map((post) => {
             const hasImage = Boolean(post.image);
 
@@ -533,7 +533,7 @@ export const FanCommunityFeed: React.FC = () => {
                 className="hover:border-black hover:shadow-lg group"
               >
                 {/* Card Top Header */}
-                <div style={{ padding: '18px 20px' }}>
+                <div style={{ padding: '22px 24px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <div 
@@ -680,7 +680,7 @@ export const FanCommunityFeed: React.FC = () => {
                 {/* Card Bottom Meta & Interactive Stats */}
                 <div 
                   style={{
-                    padding: '12px 20px',
+                    padding: '14px 24px',
                     backgroundColor: '#fafafa',
                     borderTop: '1px solid #f1f5f9',
                     display: 'flex',

@@ -881,18 +881,32 @@ const UNIVERSE_DOSSIERS: Record<string, UniverseDossier> = {
 
 interface IdolProfilesProps {
   onSelectArtist: (artistId: string) => void;
+  fandomCategory?: string;
 }
 
 import { useDomainTheme } from '../context/DomainContext';
 import { filterArtistsByDomain } from '../utils/domainFilters';
 
-export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) => {
+export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fandomCategory }) => {
   const { currentDomain, activeSubCategory, activeConfig } = useDomainTheme();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeDossierArtist, setActiveDossierArtist] = useState<Artist | null>(null);
   const [activeCardTab, setActiveCardTab] = useState<Record<string, 'lore' | 'catalog' | 'fan'>>({});
   const [modalActiveTab, setModalActiveTab] = useState<'lore' | 'characters' | 'catalog' | 'fan'>('lore');
+
+  // Sync with page fandom category
+  React.useEffect(() => {
+    if (fandomCategory) {
+      if (fandomCategory === 'K-Pop') {
+        setSelectedCategory('k-pop');
+      } else if (fandomCategory === 'Anime') {
+        setSelectedCategory('anime');
+      } else if (fandomCategory === 'all') {
+        setSelectedCategory('all');
+      }
+    }
+  }, [fandomCategory]);
 
   const domainFilteredArtists = useMemo(() => {
     return filterArtistsByDomain(mockArtists, currentDomain, activeSubCategory);
@@ -904,15 +918,17 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
       const matchCat = 
         selectedCategory === 'all' 
           ? true 
-          : selectedCategory === 'k-pop' 
-            ? artist.category === 'K-Pop' 
-            : selectedCategory === 'anime' 
-              ? artist.category === 'Anime' 
-              : selectedCategory === 'movie' 
-                ? artist.category === 'Movie' 
-                : selectedCategory === 'gaming' 
-                  ? artist.category === 'Gaming' 
-                  : true;
+          : selectedCategory === 'v-pop'
+            ? artist.category === 'V-Pop'
+            : selectedCategory === 'k-pop' 
+              ? artist.category === 'K-Pop' 
+              : selectedCategory === 'anime' 
+                ? artist.category === 'Anime' 
+                : selectedCategory === 'movie' 
+                  ? artist.category === 'Movie' 
+                  : selectedCategory === 'gaming' 
+                    ? artist.category === 'Gaming' 
+                    : true;
 
       const q = searchQuery.toLowerCase().trim();
       const matchQuery = 
@@ -930,6 +946,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
 
   const categories = [
     { id: 'all', label: 'All Universes', count: mockArtists.length },
+    { id: 'v-pop', label: 'V-Pop (Việt Nam)', count: mockArtists.filter(a => a.category === 'V-Pop').length },
     { id: 'k-pop', label: 'K-Pop', count: mockArtists.filter(a => a.category === 'K-Pop').length },
     { id: 'anime', label: 'Anime', count: mockArtists.filter(a => a.category === 'Anime').length },
     { id: 'movie', label: 'Cinema', count: mockArtists.filter(a => a.category === 'Movie').length },
@@ -941,23 +958,77 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
     setActiveCardTab(prev => ({ ...prev, [artistId]: tab }));
   };
 
-  const activeDossierData = activeDossierArtist ? UNIVERSE_DOSSIERS[activeDossierArtist.id] : null;
+  const activeDossierData = activeDossierArtist ? (UNIVERSE_DOSSIERS[activeDossierArtist.id] || {
+    universeLore: {
+      title: activeDossierArtist.name,
+      concept: activeDossierArtist.bio,
+      synopsis: activeDossierArtist.bio,
+      erasOrThemes: ['Debut Phase', 'Live Stadium Tour Era', 'Global Fandom Worldwide Movement']
+    },
+    characters: activeDossierArtist.members.map(m => ({
+      name: m,
+      role: 'Core Member / Lead Artist',
+      personality: 'Artistic charisma, high passion, captivating stage presence',
+      appearance: 'Trendsetting styling, signature performance outfit',
+      backstory: `Key performer defining the musical direction and global identity of ${activeDossierArtist.name}.`
+    })),
+    catalog: {
+      featuredMusic: ['Official Albums & Singles', 'Live Concert Master Recording', 'Chart-Topping Global Hit Tracks'],
+      officialMerch: ['Deluxe Stage Photobook', 'Random Metallic Hologram Photocard', 'Official Bluetooth Concert Lightstick'],
+      themedBundle: {
+        title: `${activeDossierArtist.name} - Special Commemorative Boxset`,
+        tag: 'Official Collector Box',
+        items: ['Limited 120-Page Photobook', 'Foil-Stamped Hologram Photocard Set', 'Signed Commemorative Poster', 'LED Concert Wristband'],
+        description: `Official authentic merchandise collection curated exclusively for the global ${activeDossierArtist.fandomName} community.`
+      }
+    },
+    fanExperience: {
+      fandomName: activeDossierArtist.fandomName,
+      officialColors: [
+        { name: 'Flame Red', hex: '#EF4444' },
+        { name: 'Royal Gold', hex: '#F59E0B' },
+        { name: 'Pure White', hex: '#FFFFFF' }
+      ],
+      fanchantSnippet: `${activeDossierArtist.fandomName} forever united and shining bright with ${activeDossierArtist.name}!`,
+      highlights: [
+        'Record-breaking sell-out time across stadium venues',
+        'Top trending artist across major international streaming platforms',
+        'Passionate, global-scale fandom network spanning multiple continents'
+      ],
+      mediaTeaser: {
+        title: `${activeDossierArtist.name} Live Stage Performance`,
+        type: 'Concert Highlights',
+        duration: '04:30',
+        description: 'Spectacular live stagecraft with state-of-the-art visuals and world-class sound design.'
+      },
+      preOrderBenefits: [
+        'Exclusive limited edition unreleased photocard',
+        'Commemorative metallic tour pin badge'
+      ],
+      communityChannels: [
+        { name: `${activeDossierArtist.fandomName} Official`, platform: 'Fandom Community', url: '#' },
+        { name: 'Official Channel', platform: 'YouTube / Media', url: '#' }
+      ]
+    },
+    quote: activeDossierArtist.bio,
+    accentColor: '#000000'
+  }) : null;
 
   return (
     <section 
       id="artists" 
       style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'transparent',
         color: '#0f172a',
       }}
-      className="py-16 md:py-24 w-full border-t border-slate-100"
+      className="py-16 md:py-24 lg:py-28 w-full border-t border-slate-200/60"
     >
       <div 
-        className="max-w-[1440px] mx-auto px-3.5 sm:px-7"
+        className="max-w-[1440px] mx-auto px-4 sm:px-8"
       >
         
         {/* ==================== 1. Editorial Header (Matching AlbumGrid Signature) ==================== */}
-        <div style={{ marginBottom: '32px' }}>
+        <div style={{ marginBottom: '40px' }}>
           
           {/* Top Row: Eyebrow on Left, Category Tabs on Right */}
           <div
@@ -965,7 +1036,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '20px',
+              marginBottom: '26px',
               gap: '24px',
               flexWrap: 'wrap',
             }}
@@ -1030,19 +1101,11 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
             </div>
           </div>
 
-          {/* Title Row: Playfair Serif Heading + Compact High-End Search Bar */}
+          {/* Title Row: Heading on Left + Compact Search Box on Right */}
           <div
-            style={{
-              display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'space-between',
-              paddingBottom: '24px',
-              borderBottom: '1px solid #f1f5f9',
-              gap: '20px',
-              flexWrap: 'wrap',
-            }}
+            className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-7 border-b border-slate-200"
           >
-            <div>
+            <div className="flex-1 max-w-2xl">
               <h2
                 style={{
                   fontFamily: activeConfig.fontFamily,
@@ -1056,7 +1119,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
               >
                 Fandom Universes{' '}
                 <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic', fontFamily: 'serif' }}>
-                  & Character Dossiers
+                  &amp; Character Dossiers
                 </em>
               </h2>
               <p
@@ -1066,7 +1129,6 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                   margin: '8px 0 0 0',
                   fontWeight: 300,
                   lineHeight: 1.6,
-                  maxWidth: '720px',
                 }}
               >
                 Curated archive of legendary K-Pop groups, Anime icons, and Gaming franchises. 
@@ -1074,18 +1136,18 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
               </p>
             </div>
 
-            {/* Compact Right-Aligned Search Box & Counter in ALL MD Style */}
-            <div className="flex items-center gap-2.5 flex-wrap w-full sm:w-auto">
+            {/* Compact Right-Aligned Search Box & Counter */}
+            <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
               <div 
-                className="relative w-full sm:w-[280px] h-[38px] border-[1.5px] border-black bg-white flex items-center"
+                className="relative w-full sm:w-72 h-[42px] border border-slate-200/90 bg-white rounded-full flex items-center shadow-xs focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition-all"
               >
                 <Search 
                   style={{ 
                     position: 'absolute', 
-                    left: '10px', 
-                    width: '14px', 
-                    height: '14px', 
-                    color: '#000000',
+                    left: '14px', 
+                    width: '15px', 
+                    height: '15px', 
+                    color: '#64748b',
                     pointerEvents: 'none' 
                   }} 
                 />
@@ -1099,12 +1161,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                     height: '100%',
                     border: 'none',
                     outline: 'none',
-                    padding: '0 30px 0 32px',
-                    fontSize: '11px',
+                    padding: '0 32px 0 38px',
+                    fontSize: '12px',
                     fontFamily: 'inherit',
                     backgroundColor: 'transparent',
                     color: '#0f172a',
-                    fontWeight: 500,
+                    fontWeight: 600,
                   }}
                 />
                 {searchQuery && (
@@ -1113,7 +1175,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                     type="button"
                     style={{
                       position: 'absolute',
-                      right: '8px',
+                      right: '12px',
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
@@ -1124,7 +1186,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                     }}
                     aria-label="Clear search"
                   >
-                    <X style={{ width: '13px', height: '13px' }} />
+                    <X style={{ width: '14px', height: '14px' }} />
                   </button>
                 )}
               </div>
@@ -1132,9 +1194,9 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
               {/* Counter Badge */}
               <div 
                 style={{
-                  height: '38px',
-                  padding: '0 12px',
-                  backgroundColor: '#000000',
+                  height: '42px',
+                  padding: '0 16px',
+                  backgroundColor: '#0f172a',
                   color: '#ffffff',
                   display: 'flex',
                   alignItems: 'center',
@@ -1142,6 +1204,8 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                   fontFamily: 'monospace',
                   fontWeight: 800,
                   letterSpacing: '0.08em',
+                  borderRadius: '9999px',
+                  boxShadow: '0 2px 8px rgba(15,23,42,0.15)',
                   whiteSpace: 'nowrap',
                 }}
               >
@@ -1189,7 +1253,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 mt-10">
             {filteredArtists.map((artist) => {
               const dossier = UNIVERSE_DOSSIERS[artist.id];
               const currentTab = getCardTab(artist.id);
@@ -1199,13 +1263,16 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                   key={artist.id}
                   style={{
                     backgroundColor: '#ffffff',
-                    border: '1.5px solid #e2e8f0',
-                    transition: 'all 0.25s ease',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
+                    boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)',
                   }}
-                  className="hover:border-black hover:shadow-lg group"
+                  className="hover:border-blue-400 hover:shadow-xl hover:-translate-y-1.5 group"
                 >
                   
                   {/* Card Banner Image & Integrated Avatar */}
@@ -1213,7 +1280,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                     style={{
                       position: 'relative',
                       width: '100%',
-                      height: '180px',
+                      height: '205px',
                       backgroundColor: '#0f172a',
                       overflow: 'hidden',
                     }}
@@ -1240,7 +1307,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                       }} 
                     />
 
-                    {/* Top Badges (ALL MD Style) */}
+                    {/* Top Badges (Polished & Modern) */}
                     <div 
                       style={{
                         position: 'absolute',
@@ -1256,14 +1323,15 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                       <span 
                         style={{
                           fontSize: '10px',
-                          fontFamily: 'monospace',
                           fontWeight: 700,
                           textTransform: 'uppercase',
-                          letterSpacing: '0.14em',
-                          padding: '3px 8px',
-                          backgroundColor: 'rgba(0,0,0,0.8)',
+                          letterSpacing: '0.12em',
+                          padding: '4px 10px',
+                          backgroundColor: 'rgba(0,0,0,0.7)',
+                          backdropFilter: 'blur(8px)',
                           color: '#ffffff',
-                          border: '1px solid rgba(255,255,255,0.25)',
+                          borderRadius: '9999px',
+                          border: '1px solid rgba(255,255,255,0.2)',
                         }}
                       >
                         {artist.category}
@@ -1271,12 +1339,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                       <span 
                         style={{
                           fontSize: '10px',
-                          fontFamily: 'monospace',
-                          fontWeight: 800,
-                          padding: '3px 8px',
-                          backgroundColor: '#ffffff',
-                          color: '#000000',
-                          border: '1.5px solid #000000',
+                          fontWeight: 700,
+                          padding: '4px 10px',
+                          backgroundColor: 'rgba(255,255,255,0.95)',
+                          color: '#0f172a',
+                          borderRadius: '9999px',
+                          boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
                         }}
                       >
                         {artist.totalAlbums} Releases
@@ -1300,11 +1368,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                         style={{
                           width: '56px',
                           height: '56px',
-                          border: '2px solid #ffffff',
+                          border: '2.5px solid #ffffff',
+                          borderRadius: '14px',
                           backgroundColor: '#000',
                           overflow: 'hidden',
                           flexShrink: 0,
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+                          boxShadow: '0 4px 14px rgba(0,0,0,0.35)',
                         }}
                       >
                         <img
@@ -1353,7 +1422,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                   </div>
 
                   {/* Card Body */}
-                  <div style={{ padding: '18px 20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div style={{ padding: '24px 26px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <div>
                       {/* Fandom & Palette Info Row */}
                       <div 
@@ -1361,7 +1430,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          paddingBottom: '12px',
+                          paddingBottom: '14px',
                           borderBottom: '1px solid #f1f5f9',
                           fontSize: '12px',
                         }}
@@ -1397,34 +1466,31 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                       {/* Editorial Concept Quote */}
                       <div 
                         style={{
-                          borderLeft: '2px solid #000000',
+                          borderLeft: `3px solid ${dossier?.accentColor || '#2563eb'}`,
                           backgroundColor: '#f8fafc',
-                          padding: '8px 12px',
-                          margin: '12px 0',
-                          fontSize: '11px',
+                          padding: '12px 16px',
+                          margin: '16px 0',
+                          borderRadius: '0 10px 10px 0',
+                          fontSize: '11.5px',
                           fontStyle: 'italic',
                           fontFamily: "'Playfair Display', Georgia, serif",
                           color: '#334155',
-                          lineHeight: 1.5,
+                          lineHeight: 1.55,
                         }}
                       >
                         "{dossier?.universeLore.concept || artist.bio}"
                       </div>
 
-                      {/* 3-Tab Segment Switcher (ALL MD Style - Bold Monochrome) */}
+                      {/* 3-Tab Segment Switcher (Polished Pill Segment Control) */}
                       <div 
                         style={{
                           display: 'grid',
                           gridTemplateColumns: 'repeat(3, 1fr)',
-                          border: '1.5px solid #000000',
-                          backgroundColor: '#ffffff',
-                          margin: '12px 0',
-                          textAlign: 'center',
-                          fontSize: '10px',
-                          fontFamily: 'monospace',
-                          fontWeight: 800,
-                          letterSpacing: '0.06em',
-                          textTransform: 'uppercase',
+                          backgroundColor: '#f1f5f9',
+                          padding: '3px',
+                          borderRadius: '12px',
+                          margin: '16px 0',
+                          gap: '3px',
                         }}
                       >
                         <button
@@ -1434,9 +1500,14 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                             padding: '7px 4px',
                             cursor: 'pointer',
                             border: 'none',
-                            borderRight: '1px solid #000',
-                            backgroundColor: currentTab === 'lore' ? '#000000' : '#ffffff',
-                            color: currentTab === 'lore' ? '#ffffff' : '#64748b',
+                            borderRadius: '9px',
+                            backgroundColor: currentTab === 'lore' ? '#ffffff' : 'transparent',
+                            color: currentTab === 'lore' ? '#0f172a' : '#64748b',
+                            fontWeight: currentTab === 'lore' ? 800 : 600,
+                            fontSize: '10.5px',
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                            boxShadow: currentTab === 'lore' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
                             transition: 'all 0.15s ease',
                           }}
                         >
@@ -1449,9 +1520,14 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                             padding: '7px 4px',
                             cursor: 'pointer',
                             border: 'none',
-                            borderRight: '1px solid #000',
-                            backgroundColor: currentTab === 'catalog' ? '#000000' : '#ffffff',
-                            color: currentTab === 'catalog' ? '#ffffff' : '#64748b',
+                            borderRadius: '9px',
+                            backgroundColor: currentTab === 'catalog' ? '#ffffff' : 'transparent',
+                            color: currentTab === 'catalog' ? '#0f172a' : '#64748b',
+                            fontWeight: currentTab === 'catalog' ? 800 : 600,
+                            fontSize: '10.5px',
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                            boxShadow: currentTab === 'catalog' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
                             transition: 'all 0.15s ease',
                           }}
                         >
@@ -1464,8 +1540,14 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                             padding: '7px 4px',
                             cursor: 'pointer',
                             border: 'none',
-                            backgroundColor: currentTab === 'fan' ? '#000000' : '#ffffff',
-                            color: currentTab === 'fan' ? '#ffffff' : '#64748b',
+                            borderRadius: '9px',
+                            backgroundColor: currentTab === 'fan' ? '#ffffff' : 'transparent',
+                            color: currentTab === 'fan' ? '#0f172a' : '#64748b',
+                            fontWeight: currentTab === 'fan' ? 800 : 600,
+                            fontSize: '10.5px',
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                            boxShadow: currentTab === 'fan' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
                             transition: 'all 0.15s ease',
                           }}
                         >
@@ -1489,20 +1571,21 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                           </div>
 
                           <div style={{ marginTop: '10px' }}>
-                            <span style={{ fontSize: '9px', fontFamily: 'monospace', textTransform: 'uppercase', color: '#94a3b8', fontWeight: 800, display: 'block', marginBottom: '4px' }}>
+                            <span style={{ fontSize: '9px', fontFamily: 'monospace', textTransform: 'uppercase', color: '#94a3b8', fontWeight: 800, display: 'block', marginBottom: '6px' }}>
                               KEY FIGURES & ROLES:
                             </span>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
                               {artist.members.slice(0, 4).map((m, idx) => (
                                 <span
                                   key={idx}
                                   style={{
-                                    fontSize: '10px',
-                                    fontFamily: 'monospace',
-                                    padding: '2px 6px',
+                                    fontSize: '10.5px',
+                                    fontFamily: 'inherit',
+                                    padding: '3px 8px',
                                     fontWeight: 600,
+                                    borderRadius: '6px',
                                   }}
-                                  className="bg-slate-100 text-slate-800 border border-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700"
+                                  className="bg-slate-100 text-slate-800 border border-slate-200"
                                 >
                                   {m}
                                 </span>
@@ -1510,12 +1593,13 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                               {artist.members.length > 4 && (
                                 <span 
                                   style={{
-                                    fontSize: '10px',
-                                    fontFamily: 'monospace',
-                                    padding: '2px 5px',
+                                    fontSize: '10.5px',
+                                    fontFamily: 'inherit',
+                                    padding: '3px 7px',
                                     fontWeight: 700,
+                                    borderRadius: '6px',
                                   }}
-                                  className="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200"
+                                  className="bg-slate-200 text-slate-700"
                                 >
                                   +{artist.members.length - 4} more
                                 </span>
@@ -1533,14 +1617,14 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                               <span style={{ fontFamily: "'Playfair Display', Georgia, serif", display: 'flex', alignItems: 'center', gap: '5px' }}>
                                 <Boxes style={{ width: '13px', height: '13px', color: '#000' }} /> Official Catalog
                               </span>
-                              <span style={{ fontSize: '9px', fontFamily: 'monospace', backgroundColor: '#f1f5f9', color: '#0f172a', padding: '1px 5px', border: '1px solid #cbd5e1', fontWeight: 700 }}>
+                              <span style={{ fontSize: '9px', fontFamily: 'monospace', backgroundColor: '#f1f5f9', color: '#0f172a', padding: '1px 7px', borderRadius: '4px', border: '1px solid #cbd5e1', fontWeight: 700 }}>
                                 GENUINE
                               </span>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                               {dossier?.catalog.officialMerch.slice(0, 2).map((item, idx) => (
                                 <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#334155' }}>
-                                  <span style={{ width: '4px', height: '4px', backgroundColor: '#000', display: 'inline-block' }} />
+                                  <span style={{ width: '4px', height: '4px', backgroundColor: '#2563eb', borderRadius: '50%', display: 'inline-block' }} />
                                   <span className="truncate">{item}</span>
                                 </div>
                               ))}
@@ -1550,9 +1634,10 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                           {dossier?.catalog.themedBundle && (
                             <div 
                               style={{
-                                padding: '6px 10px',
+                                padding: '8px 12px',
                                 backgroundColor: '#f8fafc',
                                 border: '1px dashed #cbd5e1',
+                                borderRadius: '8px',
                                 marginTop: '8px',
                               }}
                             >
@@ -1575,7 +1660,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                               <span style={{ fontFamily: "'Playfair Display', Georgia, serif", display: 'flex', alignItems: 'center', gap: '5px' }}>
                                 <Award style={{ width: '13px', height: '13px', color: '#000' }} /> Milestone Record
                               </span>
-                              <span style={{ fontSize: '9px', fontFamily: 'monospace', backgroundColor: '#ecfdf5', color: '#065f46', padding: '1px 5px', border: '1px solid #a7f3d0', fontWeight: 700 }}>
+                              <span style={{ fontSize: '9px', fontFamily: 'monospace', backgroundColor: '#ecfdf5', color: '#065f46', padding: '1px 7px', borderRadius: '4px', border: '1px solid #a7f3d0', fontWeight: 700 }}>
                                 VERIFIED
                               </span>
                             </div>
@@ -1588,7 +1673,8 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                             style={{
                               backgroundColor: '#fffbeb',
                               border: '1px solid #fde68a',
-                              padding: '6px 10px',
+                              borderRadius: '8px',
+                              padding: '8px 12px',
                               marginTop: '8px',
                             }}
                           >
@@ -1604,11 +1690,11 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
 
                     </div>
 
-                    {/* Dual Action Buttons (ALL MD Style) */}
+                    {/* Dual Action Buttons (Sleek & Polished) */}
                     <div 
                       style={{
-                        marginTop: '16px',
-                        paddingTop: '14px',
+                        marginTop: '20px',
+                        paddingTop: '16px',
                         borderTop: '1px solid #f1f5f9',
                         display: 'flex',
                         flexDirection: 'column',
@@ -1623,22 +1709,23 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                         type="button"
                         style={{
                           width: '100%',
-                          height: '38px',
+                          height: '40px',
                           backgroundColor: '#ffffff',
-                          color: '#000000',
-                          border: '1.5px solid #000000',
+                          color: '#0f172a',
+                          border: '1.5px solid #e2e8f0',
+                          borderRadius: '12px',
                           fontSize: '11px',
-                          fontWeight: 800,
-                          letterSpacing: '0.12em',
+                          fontWeight: 700,
+                          letterSpacing: '0.06em',
                           textTransform: 'uppercase',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          gap: '6px',
+                          gap: '8px',
                           cursor: 'pointer',
                           transition: 'all 0.2s ease',
                         }}
-                        className="hover:bg-neutral-100"
+                        className="hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50/40"
                       >
                         <BookOpen style={{ width: '13px', height: '13px' }} />
                         <span>Open Complete Dossier</span>
@@ -1649,22 +1736,24 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist }) =>
                         type="button"
                         style={{
                           width: '100%',
-                          height: '38px',
-                          backgroundColor: '#000000',
+                          height: '40px',
+                          background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                           color: '#ffffff',
-                          border: '1.5px solid #000000',
+                          border: 'none',
+                          borderRadius: '12px',
                           fontSize: '11px',
-                          fontWeight: 800,
-                          letterSpacing: '0.12em',
+                          fontWeight: 700,
+                          letterSpacing: '0.06em',
                           textTransform: 'uppercase',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          gap: '6px',
+                          gap: '8px',
                           cursor: 'pointer',
+                          boxShadow: '0 4px 14px rgba(37,99,235,0.3)',
                           transition: 'all 0.2s ease',
                         }}
-                        className="hover:bg-slate-800"
+                        className="hover:shadow-[0_6px_20px_rgba(37,99,235,0.45)] hover:-translate-y-0.5"
                       >
                         <Disc style={{ width: '13px', height: '13px' }} />
                         <span>Explore Discography ({artist.totalAlbums})</span>

@@ -42,11 +42,11 @@ export const DOMAIN_THEMES: DomainThemeConfig[] = [
   {
     id: 'tech',
     name: 'Tech & Gaming',
-    fontFamily: "'Fira Code', monospace",
-    fontDisplayName: 'Fira Code Monospace',
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontDisplayName: 'Plus Jakarta Sans',
     tagline: 'Technology, Hardware & Gaming Hub.',
     iconType: 'tech',
-    vibeText: 'Monospace Developer Code',
+    vibeText: 'Modern Tech & Gaming Audio',
     subCategories: [
       { id: 'all', name: 'All Tech & Gaming' },
       { id: 'gaming', name: 'Game OST (Elden Ring, Genshin)' },
