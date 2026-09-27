@@ -184,7 +184,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
       <button
         onClick={() => setIsOpen(!isOpen)}
         style={{ borderRadius: '0px' }}
-        className="fixed bottom-6 right-6 z-40 px-4 py-3 bg-[#ff2e93] text-white hover:bg-[#e11d48] border-3 border-black font-mono text-xs font-black uppercase tracking-widest cursor-pointer transition-all duration-100 flex items-center gap-2.5 shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ffd60a] hover:-translate-y-0.5 active:translate-y-0.5"
+        className="fixed bottom-6 right-6 z-40 px-4 py-3 bg-[#ff2e93] text-white hover:bg-[#e11d48] border-3 border-black font-mono text-xs font-black uppercase tracking-widest cursor-pointer transition-colors duration-100 flex items-center gap-2.5 shadow-[4px_4px_0px_#000000]"
         title="Launch AI Fandom Assistant"
         type="button"
       >

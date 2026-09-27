@@ -70,7 +70,7 @@ export const MultimediaTeaserSection: React.FC = () => {
             <Link
               href="/multimedia"
               style={{ borderRadius: '0px' }}
-              className="px-5 py-3 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black font-mono text-xs font-black uppercase tracking-widest border-2 border-black shadow-[3px_3px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0 transition-all shrink-0 inline-flex items-center gap-2"
+              className="px-5 py-3 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black font-mono text-xs font-black uppercase tracking-widest border-2 border-black shadow-[3px_3px_0px_#000000] transition-colors shrink-0 inline-flex items-center gap-2"
             >
               <span>[OPEN MULTIMEDIA CENTER]</span>
               <span>→</span>
@@ -197,7 +197,7 @@ export const MultimediaTeaserSection: React.FC = () => {
                 key={item.id}
                 href={`/multimedia?id=${item.id}`}
                 style={{ borderRadius: '0px' }}
-                className="group p-3.5 bg-white border-2 border-black flex gap-4 items-center shadow-[3px_3px_0px_#000000] hover:shadow-[5px_5px_0px_#00f0ff] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all"
+                className="group p-3.5 bg-white border-2 border-black flex gap-4 items-center shadow-[3px_3px_0px_#000000] hover:shadow-[5px_5px_0px_#00f0ff] transition-all"
               >
                 {/* Thumbnail */}
                 <div 
@@ -294,7 +294,7 @@ export const MultimediaTeaserSection: React.FC = () => {
             <Link
               href="/multimedia"
               style={{ borderRadius: '0px' }}
-              className="px-8 py-4 bg-[#ff2e93] hover:bg-[#e11d48] text-white text-xs sm:text-sm font-mono font-black uppercase tracking-widest border-2 border-black shadow-[4px_4px_0px_#000000] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 transition-all inline-flex items-center gap-3"
+              className="px-8 py-4 bg-[#ff2e93] hover:bg-[#e11d48] text-white text-xs sm:text-sm font-mono font-black uppercase tracking-widest border-2 border-black shadow-[4px_4px_0px_#000000] transition-colors inline-flex items-center gap-3"
             >
               <span>[▶ EXPLORE MULTIMEDIA CENTER]</span>
               <span>→</span>

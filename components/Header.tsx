@@ -88,6 +88,8 @@ export const Header: React.FC<HeaderProps> = ({
   const { user, isLoggedIn, loginAs, logout, requestPasswordReset, resetPasswordWithToken } = useAuth();
   const { themeMode, toggleThemeMode } = useDomainTheme();
 
+  const isManga = fandomCategory === 'Manga' || fandomThemeKey === 'manga' || pathname?.startsWith('/manga');
+
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
@@ -185,7 +187,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full header-root fandom-header-${fandomThemeKey} transition-all duration-300${isScrolled ? ' header-scrolled' : ''}`}
+      className={`sticky top-0 z-[100] w-full header-root fandom-header-${fandomThemeKey} transition-all duration-300${isScrolled ? ' header-scrolled' : ''}`}
       data-fandom-theme={fandomThemeKey}
     >
       {/* Y2K System Status Ribbon */}
@@ -257,13 +259,13 @@ export const Header: React.FC<HeaderProps> = ({
 
             <input
               type="text"
-              placeholder="ARTIST, ALBUM, ARCHIVE..."
+              placeholder={isManga ? "MANGA, TANKŌBON, AUTHOR, ARC..." : "ARTIST, ALBUM, ARCHIVE..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                  const albumsEl = document.getElementById('albums');
-                  if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
+                  const targetEl = document.getElementById(isManga ? 'manga-catalog' : 'albums');
+                  if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
               className="header-search-input"
@@ -325,7 +327,7 @@ export const Header: React.FC<HeaderProps> = ({
                 setIsAuthModalOpen(true);
               }
             }}
-            className="header-action-btn px-3 py-1.5 flex items-center justify-center text-black border-2 border-black bg-[#c084fc] hover:bg-[#d8b4fe] cursor-pointer font-black uppercase transition-all duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+            className="header-action-btn px-3 py-1.5 flex items-center justify-center text-black border-2 border-black bg-[#c084fc] hover:bg-[#d8b4fe] cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000]"
             style={{ borderRadius: '0px' }}
             title={isLoggedIn ? `${user.name} - Dashboard` : 'Sign In'}
             type="button"
@@ -340,7 +342,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Shopping Cart Button (Lemon Yellow) */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="header-action-btn px-3 py-1.5 flex items-center justify-center text-black border-2 border-black bg-[#ffd60a] hover:bg-[#fde047] cursor-pointer font-black uppercase transition-all duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+            className="header-action-btn px-3 py-1.5 flex items-center justify-center text-black border-2 border-black bg-[#ffd60a] hover:bg-[#fde047] cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000]"
             style={{ borderRadius: '0px' }}
             title="Cart"
             type="button"
@@ -351,7 +353,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Wishlist Button (Cyber Cyan) */}
           <button
             onClick={() => setIsWishlistOpen(true)}
-            className="header-action-btn hidden sm:flex px-3 py-1.5 items-center justify-center text-black border-2 border-black bg-[#00f0ff] hover:bg-[#38bdf8] cursor-pointer font-black uppercase transition-all duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+            className="header-action-btn hidden sm:flex px-3 py-1.5 items-center justify-center text-black border-2 border-black bg-[#00f0ff] hover:bg-[#38bdf8] cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000]"
             style={{ borderRadius: '0px' }}
             title="Wishlist"
             type="button"
@@ -440,7 +442,7 @@ export const Header: React.FC<HeaderProps> = ({
               }}
             >
               <Menu style={{ width: '15px', height: '15px', flexShrink: 0, strokeWidth: 2.5 }} />
-              <span style={{ whiteSpace: 'nowrap' }}>★ ALL MD</span>
+              <span style={{ whiteSpace: 'nowrap' }}>{isManga ? '★ MANGA MD' : '★ ALL MD'}</span>
             </button>
 
             {/* Dropdown Menu under [ ≡ ALL MD ] (Strictly 0px, pure monochrome, no shadow) */}
@@ -612,132 +614,265 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Horizontal Links with Clean Minimalist Monochrome Editorial Typography */}
           <nav className="flex items-center gap-6 sm:gap-8 lg:gap-10 xl:gap-12 flex-nowrap h-full shrink-0 overflow-x-auto scrollbar-none">
-            <Link
-              href="/artist"
-              style={{
-                fontFamily: "var(--font-mono), monospace",
-                fontSize: '12px',
-                fontWeight: pathname?.startsWith('/artist') ? 700 : 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                padding: '12px 4px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                cursor: 'pointer',
-                color: '#000000',
-                transition: 'all 0.1s ease',
-                borderBottom: pathname?.startsWith('/artist') ? '3px solid #000000' : '3px solid transparent',
-                textDecoration: 'none',
-              }}
-              className="hover:opacity-60"
-            >
-              ARTIST
-            </Link>
-            <Link
-              href="/event"
-              style={{
-                fontFamily: "var(--font-mono), monospace",
-                fontSize: '12px',
-                fontWeight: pathname?.startsWith('/event') ? 700 : 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                padding: '12px 4px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                cursor: 'pointer',
-                color: '#000000',
-                transition: 'all 0.1s ease',
-                borderBottom: pathname?.startsWith('/event') ? '3px solid #000000' : '3px solid transparent',
-                textDecoration: 'none',
-              }}
-              className="hover:opacity-60"
-            >
-              EVENT
-            </Link>
-            <Link
-              href="/multimedia"
-              style={{
-                fontFamily: "var(--font-mono), monospace",
-                fontSize: '12px',
-                fontWeight: pathname?.startsWith('/multimedia') ? 700 : 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                padding: '12px 4px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                cursor: 'pointer',
-                color: '#000000',
-                transition: 'all 0.1s ease',
-                borderBottom: pathname?.startsWith('/multimedia') ? '3px solid #000000' : '3px solid transparent',
-                textDecoration: 'none',
-              }}
-              className="hover:opacity-60"
-            >
-              MULTIMEDIA
-            </Link>
-            <Link
-              href="/cd-dvd-book"
-              style={{
-                fontFamily: "var(--font-mono), monospace",
-                fontSize: '12px',
-                fontWeight: pathname === '/cd-dvd-book' ? 700 : 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                padding: '12px 4px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                cursor: 'pointer',
-                color: '#000000',
-                transition: 'all 0.1s ease',
-                borderBottom: pathname === '/cd-dvd-book' ? '3px solid #000000' : '3px solid transparent',
-                textDecoration: 'none',
-              }}
-              className="hover:opacity-60"
-            >
-              CD/DVD/BOOK
-            </Link>
-            <Link
-              href="/md"
-              style={{
-                fontFamily: "var(--font-mono), monospace",
-                fontSize: '12px',
-                fontWeight: pathname === '/md' ? 700 : 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                padding: '12px 4px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                cursor: 'pointer',
-                color: '#000000',
-                transition: 'all 0.1s ease',
-                borderBottom: pathname === '/md' ? '3px solid #000000' : '3px solid transparent',
-                textDecoration: 'none',
-              }}
-              className="hover:opacity-60"
-            >
-              MD
-            </Link>
-            <Link
-              href="/b2b"
-              style={{
-                fontFamily: "var(--font-mono), monospace",
-                fontSize: '12px',
-                fontWeight: pathname?.startsWith('/b2b') ? 700 : 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                padding: '12px 4px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                cursor: 'pointer',
-                color: '#000000',
-                transition: 'all 0.1s ease',
-                borderBottom: pathname?.startsWith('/b2b') ? '3px solid #000000' : '3px solid transparent',
-                textDecoration: 'none',
-              }}
-              className="hover:opacity-60"
-            >
-              B2B/BULK
-            </Link>
+            {isManga ? (
+              <>
+                <Link
+                  href="/manga#manga-catalog"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: '3px solid #ff4d4d',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  TANKŌBON
+                </Link>
+                <Link
+                  href="/manga#manga-catalog"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  SHONEN & SEINEN
+                </Link>
+                <Link
+                  href="/manga#mangaka-studio"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  STUDIO
+                </Link>
+                <Link
+                  href="/manga#manga-notes"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  READER NOTES
+                </Link>
+                <Link
+                  href="/md"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: pathname === '/md' ? 700 : 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: pathname === '/md' ? '3px solid #000000' : '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  MANGA MD
+                </Link>
+                <Link
+                  href="/event"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: pathname?.startsWith('/event') ? 700 : 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: pathname?.startsWith('/event') ? '3px solid #000000' : '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  EVENT
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/artist"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: pathname?.startsWith('/artist') ? 700 : 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: pathname?.startsWith('/artist') ? '3px solid #000000' : '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  ARTIST
+                </Link>
+                <Link
+                  href="/event"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: pathname?.startsWith('/event') ? 700 : 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: pathname?.startsWith('/event') ? '3px solid #000000' : '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  EVENT
+                </Link>
+                <Link
+                  href="/multimedia"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: pathname?.startsWith('/multimedia') ? 700 : 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: pathname?.startsWith('/multimedia') ? '3px solid #000000' : '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  MULTIMEDIA
+                </Link>
+                <Link
+                  href="/cd-dvd-book"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: pathname === '/cd-dvd-book' ? 700 : 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: pathname === '/cd-dvd-book' ? '3px solid #000000' : '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  CD/DVD/BOOK
+                </Link>
+                <Link
+                  href="/md"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: pathname === '/md' ? 700 : 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: pathname === '/md' ? '3px solid #000000' : '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  MD
+                </Link>
+                <Link
+                  href="/b2b"
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: '12px',
+                    fontWeight: pathname?.startsWith('/b2b') ? 700 : 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '12px 4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#000000',
+                    transition: 'all 0.1s ease',
+                    borderBottom: pathname?.startsWith('/b2b') ? '3px solid #000000' : '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                  className="hover:opacity-60"
+                >
+                  B2B/BULK
+                </Link>
+              </>
+            )}
             {checkIsAdmin(user) && (
               <Link
                 href="/admin"

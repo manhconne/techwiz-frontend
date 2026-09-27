@@ -101,21 +101,21 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       eventRefId: 'tour-bp-hanoi',
     },
     {
-      id: 'slide-doodle-blue',
+      id: 'slide-manga-tankobon',
       category: 'Manga',
-      categoryLabel: 'Manga & Fandom',
-      heroWord: 'ARCHIVE',
-      title: 'GO PLAY DREAM • Fandom Community Collection',
-      subtitle: 'Denim aesthetic, cute bunny sketches & handwritten Hangul calligraphy. Limited edition photocard binder & deluxe pack.',
-      tag: 'FANDOM ARCHIVE // DENIM VIBE',
-      image: '/banners/banner_doodle_blue.jpg',
-      badge: 'COMMUNITY EXCLUSIVE',
-      dateText: 'OFFICIAL 2026 ARCHIVE',
-      locationText: 'Seoul Fandom Plaza, South Korea',
-      priceText: 'Fan Edition $29.00',
-      ctaText: 'Join Fandom Universe',
-      secondaryCtaText: 'View Character Lore',
-      targetAnchor: 'artists',
+      categoryLabel: 'Manga & Tankōbon Vault',
+      heroWord: 'MANGA',
+      title: 'TOKYO TANKŌBON ARCHIVE • Weekly Shonen Jump & Kodansha',
+      subtitle: 'Authentic Japanese tankōbon releases, mangaka G-Pen manuscripts, screen-tone artwork & limited collector prints.',
+      tag: 'MANGA ARCHIVE // TANKŌBON EDITION',
+      image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1600&auto=format&fit=crop&q=85',
+      badge: 'OFFICIAL MANGA VAULT',
+      dateText: 'TANKŌBON 2026',
+      locationText: 'Jimbocho & Akihabara, Tokyo, Japan',
+      priceText: 'Tankōbon from $11.99',
+      ctaText: 'Browse Manga Catalog',
+      secondaryCtaText: 'Explore Mangaka Studio',
+      targetAnchor: 'manga-catalog',
       eventRefId: 'tour-atvncg-hanoi',
     },
     {
@@ -154,6 +154,14 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
   // Filter slides by active category if selected, otherwise show all
   const filteredSlides = useMemo(() => {
     if (currentCategory === 'all') return BANNER_SLIDES;
+    if (currentCategory === 'K-Pop') {
+      const kpopSlides = BANNER_SLIDES.filter(s => 
+        s.category === 'K-Pop' || 
+        s.id === 'slide-stadium-live' || 
+        s.id === 'slide-monochrome-king'
+      );
+      return kpopSlides.length > 0 ? kpopSlides : BANNER_SLIDES;
+    }
     const matched = BANNER_SLIDES.filter(s => s.category === currentCategory);
     return matched.length > 0 ? matched : BANNER_SLIDES;
   }, [currentCategory]);
@@ -297,7 +305,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               <button
                 type="button"
                 onClick={handleMainCta}
-                className="px-8 sm:px-12 py-3.5 sm:py-4 min-w-[200px] sm:min-w-[240px] justify-center bg-[#ff2e93] text-white hover:bg-[#ff007f] border-2 border-black text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000]"
+                className="px-8 sm:px-12 py-3.5 sm:py-4 min-w-[200px] sm:min-w-[240px] justify-center bg-[#ff2e93] text-white hover:bg-[#ff007f] border-2 border-black text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap shadow-[4px_4px_0px_#000000]"
                 style={{ borderRadius: '0px' }}
               >
                 <span>{currentSlide.ctaText}</span>
@@ -307,7 +315,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               <button
                 type="button"
                 onClick={() => handleScrollToTarget(currentSlide.targetAnchor || 'albums')}
-                className="px-10 sm:px-14 py-3.5 sm:py-4 min-w-[240px] sm:min-w-[280px] justify-center bg-[#00f0ff] text-black hover:bg-[#38bdf8] border-2 border-black text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap shadow-[4px_4px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000000]"
+                className="px-10 sm:px-14 py-3.5 sm:py-4 min-w-[240px] sm:min-w-[280px] justify-center bg-[#00f0ff] text-black hover:bg-[#38bdf8] border-2 border-black text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap shadow-[4px_4px_0px_#000000]"
                 style={{ borderRadius: '0px' }}
               >
                 <span>{currentSlide.secondaryCtaText}</span>
@@ -323,7 +331,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             e.stopPropagation();
             handlePrev();
           }}
-          className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center transition-all duration-100 cursor-pointer hover:translate-x-[1px] hover:translate-y-[1px]"
+          className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center transition-all duration-100 cursor-pointer"
           style={{ borderRadius: '0px' }}
           title="Previous Slide"
         >
@@ -336,7 +344,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             e.stopPropagation();
             handleNext();
           }}
-          className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center transition-all duration-100 cursor-pointer hover:translate-x-[1px] hover:translate-y-[1px]"
+          className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center transition-all duration-100 cursor-pointer"
           style={{ borderRadius: '0px' }}
           title="Next Slide"
         >
@@ -398,7 +406,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               let activeBgClass = 'bg-[#ffd60a] text-black';
               if (tab.id === 'K-Pop') activeBgClass = 'bg-[#ff2e93] text-white';
               else if (tab.id === 'Gaming') activeBgClass = 'bg-[#00f0ff] text-black';
-              else if (tab.id === 'Manga') activeBgClass = 'bg-[#c084fc] text-black';
+              else if (tab.id === 'Manga') activeBgClass = 'bg-[#fff9c4] text-[#2d2d2d]';
               else if (tab.id === 'Cosplay') activeBgClass = 'bg-[#fb923c] text-black';
               else if (tab.id === 'Anime') activeBgClass = 'bg-[#f43f5e] text-white';
               else if (tab.id === 'Comics') activeBgClass = 'bg-[#38bdf8] text-black';
@@ -411,9 +419,9 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
                   onClick={() => handleSelectTab(tab.id)}
                   type="button"
                   style={{ borderRadius: '0px' }}
-                  className={`px-4 sm:px-5 py-2.5 text-xs font-mono font-black tracking-widest uppercase transition-all duration-100 cursor-pointer flex items-center gap-2 whitespace-nowrap border-2 border-black ${isActive
-                    ? `${activeBgClass} shadow-[3px_3px_0px_#000000] translate-x-[-1px] translate-y-[-1px]`
-                    : 'bg-white text-black hover:bg-[#fefce8] hover:shadow-[2px_2px_0px_#000000]'
+                  className={`px-4 sm:px-5 py-2.5 text-xs font-mono font-black tracking-widest uppercase transition-colors duration-100 cursor-pointer flex items-center gap-2 whitespace-nowrap border-2 border-black ${isActive
+                    ? `${activeBgClass} shadow-[3px_3px_0px_#000000]`
+                    : 'bg-white text-black hover:bg-[#fefce8] shadow-[2px_2px_0px_#000000]'
                     }`}
                 >
                   {isActive && <span>★</span>}

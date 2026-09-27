@@ -29,20 +29,20 @@
    ============================================================ */
 
 .theme-kpop {
-  --kpop-accent:        #2563eb;
-  --kpop-accent-hover:  #1d4ed8;
-  --kpop-accent-soft:   rgba(37, 99, 235, 0.12);
-  --kpop-accent-mid:    rgba(37, 99, 235, 0.22);
+  --kpop-accent:        #ff2e93;
+  --kpop-accent-hover:  #ff007f;
+  --kpop-accent-soft:   rgba(255, 46, 147, 0.12);
+  --kpop-accent-mid:    rgba(255, 46, 147, 0.22);
   --kpop-bg:            transparent;
   --kpop-surface:       #ffffff;
-  --kpop-text:          #0f172a;
-  --kpop-text-sub:      #334155;
-  --kpop-text-muted:    #64748b;
-  --kpop-border:        rgba(226, 232, 240, 0.9);
-  --kpop-border-accent: #2563eb;
-  --kpop-font:          'Plus Jakarta Sans', sans-serif;
-  --kpop-shadow-card:   0 4px 20px -2px rgba(37, 99, 235, 0.06);
-  --kpop-shadow-hover:  0 16px 36px -4px rgba(37, 99, 235, 0.14);
+  --kpop-text:          #000000;
+  --kpop-text-sub:      #1f2937;
+  --kpop-text-muted:    #6b7280;
+  --kpop-border:        #000000;
+  --kpop-border-accent: #ff2e93;
+  --kpop-font:          var(--font-sans), 'Plus Jakarta Sans', sans-serif;
+  --kpop-shadow-card:   4px 4px 0px #000000;
+  --kpop-shadow-hover:  6px 6px 0px #ff2e93;
 }
 
 /* Section wrapper — transparent to let global theme through */
@@ -53,62 +53,53 @@
   overflow: visible;
 }
 
-/* Subtle decorative blue bar at top */
-.theme-kpop.domain-section::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #60a5fa 0%, #2563eb 50%, #60a5fa 100%);
-  z-index: 1;
-}
-
-/* Section title — bold navy, blue accent */
+/* Section title — bold serif with pink italic accent */
 .theme-kpop .domain-section-title {
-  font-family: var(--kpop-font) !important;
+  font-family: var(--font-serif), 'Playfair Display', Georgia, serif !important;
   color: var(--kpop-text) !important;
   -webkit-text-fill-color: var(--kpop-text) !important;
   background: none !important;
   -webkit-background-clip: unset !important;
   background-clip: unset !important;
-  letter-spacing: -0.03em;
-  font-weight: 900 !important;
+  letter-spacing: -0.02em;
+  font-weight: 700 !important;
 }
 
 .theme-kpop .domain-section-title em {
-  color: var(--kpop-accent) !important;
-  -webkit-text-fill-color: var(--kpop-accent) !important;
+  color: #ff2e93 !important;
+  -webkit-text-fill-color: #ff2e93 !important;
   background: none !important;
   -webkit-background-clip: unset !important;
   background-clip: unset !important;
   font-style: italic;
-  font-weight: 900;
+  font-weight: 400;
 }
 
 /* Eyebrow */
 .theme-kpop .domain-eyebrow-bar {
-  background-color: var(--kpop-accent) !important;
+  background-color: #000000 !important;
 }
 .theme-kpop .domain-eyebrow-text {
-  color: var(--kpop-accent) !important;
-  font-family: var(--kpop-font) !important;
+  color: #000000 !important;
+  font-family: var(--font-mono), monospace !important;
   letter-spacing: 0.18em;
   font-weight: 800;
 }
 
 /* Subcategory tabs */
 .theme-kpop .domain-subcategory-tab {
-  color: var(--kpop-text-muted) !important;
-  font-family: var(--kpop-font) !important;
-  letter-spacing: 0.06em;
+  color: #64748b !important;
+  font-family: var(--font-mono), monospace !important;
+  letter-spacing: 0.08em;
+  font-weight: 700;
 }
 .theme-kpop .domain-subcategory-tab.active {
-  color: #1d4ed8 !important;
-  border-bottom: 2px solid #2563eb !important;
-  font-weight: 800 !important;
+  color: #000000 !important;
+  border-bottom: 2px solid #000000 !important;
+  font-weight: 900 !important;
 }
 
-/* Filter bar — completely unboxed / no outer button wrapper */
+/* Filter bar */
 .theme-kpop .domain-filter-bar {
   background: transparent !important;
   border: none !important;
@@ -119,50 +110,52 @@
 
 /* Active filter button */
 .theme-kpop .domain-filter-btn-active {
-  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
+  background: #ff2e93 !important;
   color: #ffffff !important;
-  border: none !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+  border: 2px solid #000000 !important;
+  border-radius: 0px !important;
+  box-shadow: 2px 2px 0px #000000 !important;
 }
 
 /* Result count */
 .theme-kpop .domain-result-count strong {
-  color: #0f172a !important;
+  color: #000000 !important;
 }
 
-/* ---- PRODUCT CARDS (HIGH-END K-POP GALLERY STYLE) ---- */
+/* ---- PRODUCT CARDS (NEO-BRUTALIST / Y2K POP STYLE) ---- */
 .theme-kpop .domain-card {
   background: #ffffff !important;
-  border: 1px solid rgba(226, 232, 240, 0.9) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 4px 20px -2px rgba(37, 99, 235, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.02) !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border: 2px solid #000000 !important;
+  border-radius: 0px !important;
+  box-shadow: 4px 4px 0px #000000 !important;
+  transition: all 0.15s ease !important;
 }
 
 .theme-kpop .domain-card:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 16px 36px -4px rgba(37, 99, 235, 0.14), 0 4px 12px rgba(15, 23, 42, 0.04) !important;
-  border-color: rgba(37, 99, 235, 0.45) !important;
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 6px 6px 0px #ff2e93 !important;
+  border-color: #000000 !important;
 }
 
 /* Card CTA button */
 .theme-kpop .domain-card-btn-primary {
-  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: #ffffff !important;
-  border-radius: 9999px !important;
-  font-family: var(--kpop-font) !important;
-  font-weight: 800 !important;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
-  letter-spacing: 0.04em !important;
-  transition: all 0.2s ease !important;
+  background: #ffd60a !important;
+  border: 2px solid #000000 !important;
+  color: #000000 !important;
+  border-radius: 0px !important;
+  font-family: var(--font-mono), monospace !important;
+  font-weight: 900 !important;
+  box-shadow: 3px 3px 0px #000000 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  transition: all 0.15s ease !important;
 }
 
 .theme-kpop .domain-card-btn-primary:hover {
-  background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5) !important;
+  background: #ff2e93 !important;
+  color: #ffffff !important;
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 4px 4px 0px #000000 !important;
 }
 
 /* ---- HERO BANNER ---- */

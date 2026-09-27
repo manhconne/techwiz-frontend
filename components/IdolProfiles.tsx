@@ -1645,7 +1645,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           cursor: 'pointer',
                           boxShadow: '3px 3px 0px #000000',
                         }}
-                        className="hover:bg-[#ff007f] transition-all duration-100 hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                        className="hover:bg-[#ff007f] transition-colors duration-100"
                       >
                         <span>[VIEW DOSSIER ARCHIVE →]</span>
                       </button>
@@ -1671,7 +1671,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           cursor: 'pointer',
                           boxShadow: '3px 3px 0px #000000',
                         }}
-                        className="hover:bg-[#fde047] transition-all duration-100 hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                        className="hover:bg-[#fde047] transition-colors duration-100"
                       >
                         <span>[EXPLORE RELEASES ({artist.totalAlbums}) ↓]</span>
                       </button>

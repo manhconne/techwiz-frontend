@@ -3,7 +3,17 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
-const Map = dynamic(() => import('./Map'), { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-slate-100 rounded-xl">Loading Map...</div> });
+const EventLeafletMap = dynamic(() => import('./EventLeafletMap'), { 
+  ssr: false, 
+  loading: () => (
+    <div className="w-full h-[520px] flex flex-col items-center justify-center bg-slate-950 text-white font-mono gap-3 border-2 border-black">
+      <div className="w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+      <div className="text-xs uppercase tracking-wider text-emerald-400 font-bold">
+        Loading OpenStreetMap &amp; Leaflet Engine...
+      </div>
+    </div>
+  ) 
+});
 import { 
   MapPin, 
   Navigation, 
@@ -238,8 +248,8 @@ export const LocationAwareEventExplorer: React.FC = () => {
   return (
     <section 
       id="location-events"
-      style={{ scrollMarginTop: '100px' }}
-      className="py-14 sm:py-20 w-full bg-slate-50/70 border-t border-b border-slate-200/90"
+      style={{ scrollMarginTop: '100px', position: 'relative', zIndex: 1, isolation: 'isolate' }}
+      className="py-14 sm:py-20 w-full bg-slate-50/70 border-t border-b border-slate-200/90 relative z-1"
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
         
@@ -441,132 +451,38 @@ export const LocationAwareEventExplorer: React.FC = () => {
         {viewMode === 'map' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
-            {/* Left 7 Columns: High-Tech GPS Interactive Map Canvas / Radar */}
-            <div className="lg:col-span-7 rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 shadow-xl relative min-h-[460px] sm:min-h-[540px] flex flex-col justify-between">
+            {/* Left 7 Columns: OpenStreetMap + Leaflet Interactive GPS Engine */}
+            <div 
+              className="lg:col-span-7 rounded-none overflow-hidden bg-slate-950 border-2 border-black shadow-[4px_4px_0px_#000000] relative flex flex-col justify-between"
+              style={{ isolation: 'isolate', zIndex: 1 }}
+            >
               
-              {/* Map Top Overlay HUD: GPS Status & Stats */}
-              <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between gap-3 pointer-events-none">
-                <div className="pointer-events-auto px-3 py-1.5 rounded-xl bg-slate-950/85 backdrop-blur-md border border-slate-700/80 text-white flex items-center gap-2 shadow-lg">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-                  <span className="text-[11px] font-mono font-bold tracking-wider uppercase">
-                    GPS Satellite Radar: {filteredEvents.length} Event Locations
-                  </span>
-                </div>
-
-                <div className="pointer-events-auto flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md border border-white/10 text-slate-300 text-[10px] font-mono">
-                    Coordinates: {userLocation.lat.toFixed(2)}°N, {userLocation.lng.toFixed(2)}°E
-                  </span>
-                </div>
-              </div>
-
-              {/* Interactive Vector Radar Grid (Simulated Topographic GPS Map with Pins) */}
-              <div className="relative w-full h-[460px] sm:h-[540px] overflow-hidden bg-radial from-slate-900 via-slate-950 to-black flex items-center justify-center">
-                
-                {/* Concentric Radar Rings & Crosshairs */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-25">
-                  <div className="w-[180px] h-[180px] rounded-full border border-blue-500/40" />
-                  <div className="w-[320px] h-[320px] rounded-full border border-blue-500/30 border-dashed" />
-                  <div className="w-[460px] h-[460px] rounded-full border border-blue-500/20" />
-                  <div className="w-[600px] h-[600px] rounded-full border border-blue-500/10" />
-                  <div className="absolute w-full h-[1px] bg-blue-500/20" />
-                  <div className="absolute h-full w-[1px] bg-blue-500/20" />
-                </div>
-
-                {/* Radar Sweep Effect */}
-                <div className="absolute w-[460px] h-[460px] rounded-full bg-conic from-blue-500/10 via-transparent to-transparent animate-spin pointer-events-none" style={{ animationDuration: '8s' }} />
-
-                {/* USER LOCATION CENTER PIN */}
-                <div className="absolute z-30 flex flex-col items-center pointer-events-none">
-                  <div className="relative flex items-center justify-center">
-                    <span className="absolute w-8 h-8 rounded-full bg-blue-500/30 animate-ping" />
-                    <div className="w-5 h-5 rounded-full bg-blue-600 border-2 border-white shadow-[0_0_15px_rgba(37,99,235,0.8)] flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-white" />
-                    </div>
-                  </div>
-                  <span className="mt-1 px-2 py-0.5 rounded bg-blue-900/90 text-white text-[9px] font-mono font-bold tracking-wider border border-blue-400/50 shadow-md">
-                    YOU ARE HERE
-                  </span>
-                </div>
-
-                {/* EVENT LOCATION PINS PLACED ON MAP */}
-                {filteredEvents.map((ev, index) => {
-                  const isSelected = activeEvent?.id === ev.id;
-                  
-                  // Generate relative normalized cartesian coordinates from lat/lng offset
-                  const latDiff = (ev.lat - userLocation.lat);
-                  const lngDiff = (ev.lng - userLocation.lng);
-                  
-                  // Scale dynamically for canvas placement
-                  const scale = maxRadiusKm > 100 ? 12 : 280;
-                  const xOffset = Math.max(-180, Math.min(180, lngDiff * scale));
-                  const yOffset = Math.max(-180, Math.min(180, -latDiff * scale));
-
-                  return (
-                    <button
-                      key={ev.id}
-                      type="button"
-                      onClick={() => setSelectedEventId(ev.id)}
-                      style={{
-                        transform: `translate(${xOffset}px, ${yOffset}px)`,
-                      }}
-                      className={`absolute z-20 group cursor-pointer transition-transform duration-300 ${
-                        isSelected ? 'scale-125 z-40' : 'hover:scale-115'
-                      }`}
-                    >
-                      <div className="relative flex flex-col items-center">
-                        
-                        {/* Pin Head with Category Icon */}
-                        <div className={`px-2 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg border transition-all ${
-                          isSelected
-                            ? 'bg-rose-600 text-white border-white ring-4 ring-rose-500/40'
-                            : ev.freeEntry
-                            ? 'bg-pink-600 text-white border-pink-300'
-                            : 'bg-slate-900 text-white border-slate-600 group-hover:border-blue-400'
-                        }`}>
-                          {ev.type === 'stadium_concert' && <Ticket size={11} className="text-amber-300" />}
-                          {ev.type === 'cup_sleeve_cafe' && <Coffee size={11} className="text-pink-300" />}
-                          {ev.type === 'photocard_trade' && <Sparkles size={11} className="text-purple-300" />}
-                          {ev.type === 'anime_expo' && <Layers size={11} className="text-rose-300" />}
-                          {ev.type === 'gaming_arena' && <Radio size={11} className="text-emerald-300" />}
-                          <span className="text-[10px] font-bold font-mono">
-                            {ev.distanceKm < 1000 ? `${ev.distanceKm} km` : `${(ev.distanceKm / 1000).toFixed(1)}k km`}
-                          </span>
-                        </div>
-
-                        {/* Pin Pointer Tail */}
-                        <div className={`w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[6px] -mt-0.5 ${
-                          isSelected ? 'border-t-rose-600' : 'border-t-slate-900'
-                        }`} />
-
-                        {/* Title Tooltip on hover/selected */}
-                        <div className={`mt-1 px-2 py-0.5 rounded bg-black/90 text-white text-[9px] font-sans font-bold max-w-[130px] truncate border border-white/20 transition-opacity ${
-                          isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                        }`}>
-                          {ev.title}
-                        </div>
-
-                      </div>
-                    </button>
-                  );
-                })}
-
-              </div>
+              {/* Real Interactive OpenStreetMap + Leaflet Engine */}
+              <EventLeafletMap
+                userLocation={userLocation}
+                events={filteredEvents}
+                selectedEventId={selectedEventId}
+                onSelectEvent={(id) => setSelectedEventId(id)}
+                height="500px"
+              />
 
               {/* Map Bottom Legend / Compass Bar */}
-              <div className="p-3.5 bg-slate-950/90 border-t border-slate-800 text-slate-300 text-xs flex items-center justify-between flex-wrap gap-2 z-10">
-                <div className="flex items-center gap-3 text-[11px] font-medium flex-wrap">
-                  <span className="flex items-center gap-1.5 text-slate-400">
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> You
+              <div className="p-3 bg-black border-t-2 border-black text-slate-300 text-xs flex items-center justify-between flex-wrap gap-2 z-10">
+                <div className="flex items-center gap-3 text-[11px] font-mono font-medium flex-wrap">
+                  <span className="flex items-center gap-1.5 text-slate-200">
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500 border border-white" /> You
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-400">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400" /> Concert
+                  <span className="flex items-center gap-1.5 text-slate-200">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 border border-black" /> Concert
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-400">
-                    <span className="w-2.5 h-2.5 rounded-full bg-pink-400" /> Cafe Meetup
+                  <span className="flex items-center gap-1.5 text-slate-200">
+                    <span className="w-2.5 h-2.5 rounded-full bg-pink-500 border border-black" /> Cafe Meetup
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-400">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-400" /> Manga/Cosplay
+                  <span className="flex items-center gap-1.5 text-slate-200">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500 border border-black" /> Manga/Cosplay
+                  </span>
+                  <span className="flex items-center gap-1.5 text-slate-200">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 border border-black" /> Gaming
                   </span>
                 </div>
 
@@ -579,10 +495,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         window.open(url, '_blank');
                       }
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563eb] hover:bg-blue-600 text-white text-[11px] font-mono font-bold uppercase transition-all cursor-pointer border-2 border-black shadow-[2px_2px_0px_#000000]"
                   >
                     <Compass size={12} />
-                    <span>Google Maps Directions</span>
+                    <span>GOOGLE MAPS DIRECTIONS</span>
                     <ArrowUpRight size={11} />
                   </button>
                 </div>
