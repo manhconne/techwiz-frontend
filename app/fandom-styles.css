@@ -1718,19 +1718,19 @@
 .fandom-theme-comics .bg-body {
   background-color: #fef9c3 !important;
 }
-.fandom-theme-comics .bg-white {
+.fandom-theme-comics .bg-white:not(.comics-pop-art-root *) {
   background-color: #ffffff !important;
   border: 3.5px solid #000000 !important;
   box-shadow: 6px 6px 0px #000000 !important;
   border-radius: 6px !important;
 }
-.fandom-theme-comics h1,
-.fandom-theme-comics h2,
-.fandom-theme-comics h3 {
+.fandom-theme-comics h1:not(.comics-pop-art-root *),
+.fandom-theme-comics h2:not(.comics-pop-art-root *),
+.fandom-theme-comics h3:not(.comics-pop-art-root *) {
   font-family: 'Bangers', cursive, sans-serif !important;
   letter-spacing: 0.05em !important;
 }
-.fandom-theme-comics button.bg-black {
+.fandom-theme-comics button.bg-black:not(.comics-pop-art-root *) {
   background-color: #ef4444 !important;
   color: #ffffff !important;
   border: 3px solid #000000 !important;
@@ -1741,6 +1741,37 @@
 }
 .fandom-theme-comics .underline.decoration-amber-400 {
   text-decoration-color: #ef4444 !important;
+}
+
+/* =========================================================================
+   DEDICATED COMICS POP-ART VIEW (Manga/Anime-style layout with Pop-Art palette)
+   Preserves soft rounded border-radii (10px-18px) and Bangers/Patrick Hand typography
+   ========================================================================= */
+.comics-pop-art-root {
+  font-family: 'Patrick Hand', cursive, sans-serif !important;
+}
+
+.comics-pop-art-root h1,
+.comics-pop-art-root h2,
+.comics-pop-art-root h3,
+.comics-pop-art-root h4 {
+  font-family: 'Bangers', 'Kalam', cursive, sans-serif !important;
+  letter-spacing: 0.03em !important;
+}
+
+.comics-pop-art-root section {
+  background-color: transparent !important;
+  border-bottom: none !important;
+}
+
+.comics-pop-art-root button {
+  letter-spacing: normal !important;
+}
+
+.comics-pop-art-root input,
+.comics-pop-art-root textarea,
+.comics-pop-art-root select {
+  border-radius: 10px !important;
 }
 
 /* 6. MANGA: AUTHENTIC HAND-DRAWN SKETCHBOOK & INK DESIGN SYSTEM */

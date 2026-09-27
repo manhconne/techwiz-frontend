@@ -45,6 +45,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
   const currentCategory = propActiveCategory !== undefined ? propActiveCategory : internalCategory;
   const isGaming = currentCategory === 'Gaming';
   const isAnime = currentCategory === 'Anime';
+  const isComics = currentCategory === 'Comics';
 
   // 5 Masterpiece Graphic Banners - Minimalist Monochrome with Oversized Typography
   const BANNER_SLIDES: GraphicBannerSlide[] = [
@@ -156,6 +157,24 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       targetAnchor: 'albums',
       eventRefId: 'tour-atvncg-hanoi',
     },
+    {
+      id: 'slide-comics-pop-art',
+      category: 'Comics',
+      categoryLabel: 'Pop-Art Comics & Graphic Novels',
+      heroWord: 'COMICS',
+      title: 'GOLDEN & MODERN AGE: Pop-Art Ben-Day Dots & Omnibus Vault',
+      subtitle: 'First printings, virgin foil variants, Eisner-award masterpieces & CGC 9.8 graded slabs from Marvel, DC, Image & Vertigo.',
+      tag: '★ POP-ART COMIC VAULT',
+      image: 'https://images.unsplash.com/photo-1604200213928-ba3cf4fc8436?w=1600&auto=format&fit=crop&q=85',
+      badge: 'CGC 9.8 CERTIFIED',
+      dateText: 'NEW COMIC BOOK DAY 2026',
+      locationText: 'San Diego Comic-Con & Midtown Comics',
+      priceText: 'From $22.99',
+      ctaText: 'Browse Comics Catalog',
+      secondaryCtaText: 'Explore Creator Imprints',
+      targetAnchor: 'comic-catalog',
+      eventRefId: 'comic-vault-drop',
+    },
   ];
 
   // All 9 Fandom Categories mapped to sharp rectangular dock
@@ -188,6 +207,11 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       const animeSlide = BANNER_SLIDES.find(s => s.category === 'Anime');
       const otherSlides = BANNER_SLIDES.filter(s => s.category !== 'Anime');
       return animeSlide ? [animeSlide, ...otherSlides] : BANNER_SLIDES;
+    }
+    if (currentCategory === 'Comics') {
+      const comicSlide = BANNER_SLIDES.find(s => s.category === 'Comics');
+      const otherSlides = BANNER_SLIDES.filter(s => s.category !== 'Comics');
+      return comicSlide ? [comicSlide, ...otherSlides] : BANNER_SLIDES;
     }
     const matched = BANNER_SLIDES.filter(s => s.category === currentCategory);
     return matched.length > 0 ? matched : BANNER_SLIDES;
@@ -288,42 +312,66 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
 
             {/* Tag & Metadata Bar */}
             <div className="flex items-center gap-3 flex-wrap font-mono">
-              <span className={`inline-flex items-center gap-2 px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : 'bg-[#ff2e93] text-white border-2 border-black shadow-[3px_3px_0px_#000000]'} text-[11px] font-black uppercase tracking-widest`}>
+              <span
+                style={{ borderRadius: isAnime || isComics ? '8px' : '0px' }}
+                className={`inline-flex items-center gap-2 px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : isAnime ? 'bg-[#a3e635] text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : isComics ? 'bg-[#ef4444] text-white border-2 border-black shadow-[3px_3px_0px_#000000]' : 'bg-[#ff2e93] text-white border-2 border-black shadow-[3px_3px_0px_#000000]'} text-[11px] font-black uppercase tracking-widest`}
+              >
                 <span>★</span>
                 <span>{currentSlide.tag}</span>
               </span>
 
-              <span className={`text-[11px] font-bold tracking-wider ${isGaming ? 'bg-white text-black border-2 border-black shadow-none' : 'bg-[#00f0ff] text-black border-2 border-black shadow-[3px_3px_0px_#000000]'} flex items-center gap-1.5 px-3 py-1.5`}>
+              <span
+                style={{ borderRadius: isAnime || isComics ? '8px' : '0px' }}
+                className={`text-[11px] font-bold tracking-wider ${isGaming ? 'bg-white text-black border-2 border-black shadow-none' : isAnime ? 'bg-[#ecfccb] text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : isComics ? 'bg-[#fef08a] text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : 'bg-[#00f0ff] text-black border-2 border-black shadow-[3px_3px_0px_#000000]'} flex items-center gap-1.5 px-3 py-1.5`}
+              >
                 <span className="text-black font-black font-mono">LOC //</span>
                 <span>{currentSlide.locationText}</span>
               </span>
 
               {currentSlide.priceText && (
-                <span className={`text-[11px] font-black px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : 'bg-[#ffd60a] text-black border-2 border-black shadow-[3px_3px_0px_#000000]'} tracking-widest uppercase`}>
+                <span
+                  style={{ borderRadius: isAnime || isComics ? '8px' : '0px' }}
+                  className={`text-[11px] font-black px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : isAnime || isComics ? 'bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : 'bg-[#ffd60a] text-black border-2 border-black shadow-[3px_3px_0px_#000000]'} tracking-widest uppercase`}
+                >
                   {currentSlide.priceText}
                 </span>
               )}
             </div>
 
-            {/* Oversized Headline - Playfair Display Hero */}
+            {/* Oversized Headline */}
             <div className="space-y-1">
-              <div className={`font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter uppercase leading-none select-none ${isGaming ? 'text-white/60 opacity-60' : 'text-[#ffd60a] opacity-40 drop-shadow-[2px_2px_0px_#000]'}`}>
+              <div
+                style={{ fontFamily: isComics ? "'Bangers', cursive, sans-serif" : isAnime ? "'Kalam', cursive, sans-serif" : undefined }}
+                className={`text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter uppercase leading-none select-none ${isComics ? 'text-[#ef4444] opacity-40 drop-shadow-[3px_3px_0px_#000]' : isAnime ? 'text-[#a3e635] opacity-40 drop-shadow-[3px_3px_0px_#000]' : isGaming ? 'font-serif text-white/60 opacity-60' : 'font-serif text-[#ffd60a] opacity-40 drop-shadow-[2px_2px_0px_#000]'}`}
+              >
                 {currentSlide.heroWord}
               </div>
-              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal italic tracking-tight text-white leading-tight -mt-4 sm:-mt-6 drop-shadow-[2px_2px_0px_#000]">
+              <h1
+                style={{ fontFamily: isComics ? "'Bangers', cursive, sans-serif" : isAnime ? "'Kalam', cursive, sans-serif" : undefined }}
+                className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight -mt-4 sm:-mt-6 drop-shadow-[2px_2px_0px_#000] ${isAnime || isComics ? 'font-black tracking-tight text-white' : 'font-serif font-normal italic tracking-tight text-white'}`}
+              >
                 {currentSlide.title}
               </h1>
             </div>
 
             {/* Editorial Rule with Visual Punctuation Box */}
             <div className="flex items-center gap-2 max-w-md my-1">
-              <div className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : 'bg-[#ff2e93]'}`} />
-              <div className={`flex-1 h-[2px] ${isGaming ? 'bg-white' : 'bg-[#00f0ff]'}`} />
-              <div className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : 'bg-[#ffd60a]'}`} />
+              <div
+                style={{ borderRadius: isAnime || isComics ? '3px' : '0px' }}
+                className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : isAnime ? 'bg-[#a3e635]' : isComics ? 'bg-[#ef4444]' : 'bg-[#ff2e93]'}`}
+              />
+              <div className={`flex-1 h-[2px] ${isGaming ? 'bg-white' : isAnime ? 'bg-[#84cc16]' : isComics ? 'bg-[#facc15]' : 'bg-[#00f0ff]'}`} />
+              <div
+                style={{ borderRadius: isAnime || isComics ? '3px' : '0px' }}
+                className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : isAnime ? 'bg-white' : isComics ? 'bg-[#38bdf8]' : 'bg-[#ffd60a]'}`}
+              />
             </div>
 
-            {/* Subtitle (Source Serif) */}
-            <p className="font-serif text-sm sm:text-base text-neutral-200 leading-relaxed font-normal max-w-xl line-clamp-2 drop-shadow-[1px_1px_0px_#000]">
+            {/* Subtitle */}
+            <p
+              style={{ fontFamily: isAnime || isComics ? "'Patrick Hand', cursive, sans-serif" : undefined }}
+              className={`text-sm sm:text-base leading-relaxed max-w-xl line-clamp-2 drop-shadow-[1px_1px_0px_#000] ${isAnime || isComics ? 'text-neutral-100 font-bold text-base sm:text-lg' : 'font-serif text-neutral-200 font-normal'}`}
+            >
               {currentSlide.subtitle}
             </p>
 
@@ -332,8 +380,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               <button
                 type="button"
                 onClick={handleMainCta}
-                className={`px-8 sm:px-12 py-3.5 sm:py-4 min-w-[200px] sm:min-w-[240px] justify-center ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black border-2 border-white shadow-none' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-colors duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px]`}
-                style={{ borderRadius: '0px' }}
+                className={`px-8 sm:px-12 py-3.5 sm:py-4 min-w-[200px] sm:min-w-[240px] justify-center ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black border-2 border-white shadow-none' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] border-2 border-black shadow-[4px_4px_0px_#000000]' : isComics ? 'bg-[#ef4444] text-white hover:bg-[#dc2626] border-2 border-black shadow-[4px_4px_0px_#000000]' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] hover:translate-y-[-2px]`}
+                style={{ borderRadius: isAnime || isComics ? '12px' : '0px', fontFamily: isAnime || isComics ? "'Patrick Hand', cursive, sans-serif" : undefined, fontSize: isAnime || isComics ? '16px' : undefined }}
               >
                 <span>{currentSlide.ctaText}</span>
                 <span className="font-mono text-sm">→</span>
@@ -342,8 +390,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               <button
                 type="button"
                 onClick={() => handleScrollToTarget(currentSlide.targetAnchor || 'albums')}
-                className={`px-10 sm:px-14 py-3.5 sm:py-4 min-w-[240px] sm:min-w-[280px] justify-center ${isGaming ? 'bg-white text-black hover:bg-black hover:text-white border-2 border-black shadow-none' : 'bg-[#00f0ff] text-black hover:bg-[#38bdf8] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-colors duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px]`}
-                style={{ borderRadius: '0px' }}
+                className={`px-10 sm:px-14 py-3.5 sm:py-4 min-w-[240px] sm:min-w-[280px] justify-center ${isGaming ? 'bg-white text-black hover:bg-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-white text-black hover:bg-[#ecfccb] border-2 border-black shadow-[4px_4px_0px_#000000]' : isComics ? 'bg-[#fef08a] text-black hover:bg-white border-2 border-black shadow-[4px_4px_0px_#000000]' : 'bg-[#00f0ff] text-black hover:bg-[#38bdf8] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] hover:translate-y-[-2px]`}
+                style={{ borderRadius: isAnime || isComics ? '12px' : '0px', fontFamily: isAnime || isComics ? "'Patrick Hand', cursive, sans-serif" : undefined, fontSize: isAnime || isComics ? '16px' : undefined }}
               >
                 <span>{currentSlide.secondaryCtaText}</span>
               </button>
@@ -358,8 +406,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             e.stopPropagation();
             handlePrev();
           }}
-          className={`absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-colors duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
-          style={{ borderRadius: '0px' }}
+          className={`absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] hover:bg-[#84cc16] text-black border-2 border-black shadow-[3px_3px_0px_#000]' : isComics ? 'bg-[#ef4444] hover:bg-[#fef08a] text-white hover:text-black border-2 border-black shadow-[3px_3px_0px_#000]' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-all duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
+          style={{ borderRadius: isAnime || isComics ? '12px' : '0px' }}
           title="Previous Slide"
         >
           <span className="font-mono text-base font-black">←</span>
@@ -371,8 +419,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             e.stopPropagation();
             handleNext();
           }}
-          className={`absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-colors duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
-          style={{ borderRadius: '0px' }}
+          className={`absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] hover:bg-[#84cc16] text-black border-2 border-black shadow-[3px_3px_0px_#000]' : isComics ? 'bg-[#ef4444] hover:bg-[#fef08a] text-white hover:text-black border-2 border-black shadow-[3px_3px_0px_#000]' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-all duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
+          style={{ borderRadius: isAnime || isComics ? '12px' : '0px' }}
           title="Next Slide"
         >
           <span className="font-mono text-base font-black">→</span>
@@ -380,10 +428,10 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
 
         {/* Bottom Right Slide Counter & Square Indicator Box */}
         <div
-          style={{ borderRadius: '0px' }}
-          className={`absolute right-6 sm:right-12 bottom-8 sm:bottom-12 z-30 flex items-center gap-3 bg-white px-4 py-2 border-2 border-black ${isGaming ? 'shadow-none' : isAnime ? 'shadow-[3px_3px_0px_#84cc16]' : 'shadow-[3px_3px_0px_#000]'} text-xs font-mono text-black font-bold`}
+          style={{ borderRadius: isAnime || isComics ? '10px' : '0px' }}
+          className={`absolute right-6 sm:right-12 bottom-8 sm:bottom-12 z-30 flex items-center gap-3 bg-white px-4 py-2 border-2 border-black ${isGaming ? 'shadow-none' : isAnime ? 'shadow-[3px_3px_0px_#84cc16]' : isComics ? 'shadow-[3px_3px_0px_#ef4444]' : 'shadow-[3px_3px_0px_#000]'} text-xs font-mono text-black font-bold`}
         >
-          <span className={`font-black text-sm ${isGaming ? 'text-black' : isAnime ? 'text-[#65a30d]' : 'text-[#ff2e93]'}`}>0{activeIndex + 1}</span>
+          <span className={`font-black text-sm ${isGaming ? 'text-black' : isAnime ? 'text-[#65a30d]' : isComics ? 'text-[#ef4444]' : 'text-[#ff2e93]'}`}>0{activeIndex + 1}</span>
           <span className="text-neutral-400">/</span>
           <span className="text-neutral-700">0{filteredSlides.length}</span>
 
@@ -396,10 +444,10 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
                   setActiveIndex(idx);
                 }}
                 className={`w-3 h-3 transition-colors duration-100 cursor-pointer border border-black ${idx === activeIndex
-                  ? (isGaming ? 'bg-black' : isAnime ? 'bg-[#a3e635]' : 'bg-[#ff2e93]')
-                  : (isGaming ? 'bg-neutral-200 hover:bg-black' : isAnime ? 'bg-neutral-200 hover:bg-[#a3e635]' : 'bg-neutral-200 hover:bg-[#ffd60a]')
+                  ? (isGaming ? 'bg-black' : isAnime ? 'bg-[#a3e635]' : isComics ? 'bg-[#ef4444]' : 'bg-[#ff2e93]')
+                  : (isGaming ? 'bg-neutral-200 hover:bg-black' : isAnime ? 'bg-neutral-200 hover:bg-[#a3e635]' : isComics ? 'bg-neutral-200 hover:bg-[#ef4444]' : 'bg-neutral-200 hover:bg-[#ffd60a]')
                   }`}
-                style={{ borderRadius: '0px' }}
+                style={{ borderRadius: isAnime || isComics ? '3px' : '0px' }}
                 title={`Slide ${idx + 1}`}
               />
             ))}
@@ -411,7 +459,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               e.stopPropagation();
               setIsPaused(!isPaused);
             }}
-            className={`transition-colors ml-2 p-1 cursor-pointer font-mono text-xs font-black ${isGaming ? 'text-black hover:opacity-60' : isAnime ? 'text-black hover:text-[#65a30d]' : 'text-black hover:text-[#ff2e93]'}`}
+            className={`transition-colors ml-2 p-1 cursor-pointer font-mono text-xs font-black ${isGaming ? 'text-black hover:opacity-60' : isAnime ? 'text-black hover:text-[#65a30d]' : isComics ? 'text-black hover:text-[#ef4444]' : 'text-black hover:text-[#ff2e93]'}`}
             title={isPaused ? 'Resume' : 'Pause'}
           >
             {isPaused ? '▶' : '❚❚'}
@@ -445,8 +493,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
                   key={tab.id}
                   onClick={() => handleSelectTab(tab.id)}
                   type="button"
-                  style={{ borderRadius: '0px' }}
-                  className={`px-4 sm:px-5 py-2.5 text-xs font-mono font-black tracking-widest uppercase transition-colors duration-100 cursor-pointer flex items-center gap-2 whitespace-nowrap border-2 border-black ${isActive
+                  style={{ borderRadius: isAnime || isComics ? '8px' : '0px' }}
+                  className={`px-4 sm:px-5 py-2.5 text-xs font-mono font-black tracking-widest uppercase transition-all duration-100 cursor-pointer flex items-center gap-2 whitespace-nowrap border-2 border-black ${isActive
                     ? `${activeBgClass} ${isGaming ? 'shadow-none' : 'shadow-[3px_3px_0px_#000000]'}`
                     : `bg-white text-black hover:bg-neutral-100 ${isGaming ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`
                     }`}

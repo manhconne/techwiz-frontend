@@ -22,6 +22,7 @@ import { Footer } from '../components/Footer';
 import { Y2KTickerTape } from '../components/Y2KTickerTape';
 import { MangaHandDrawnView } from '../components/MangaHandDrawnView';
 import { AnimeNeoBrutalView } from '../components/AnimeNeoBrutalView';
+import { ComicsPopArtView } from '../components/ComicsPopArtView';
 // import { TestConnection } from '../components/TestConnection';
 import { Album, FandomCategoryKey } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
@@ -51,6 +52,8 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
           setSelectedFandomCategory('Anime');
         } else if (lower === 'gaming') {
           setSelectedFandomCategory('Gaming');
+        } else if (lower === 'comics') {
+          setSelectedFandomCategory('Comics');
         }
       }
     }
@@ -129,6 +132,11 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
              DEDICATED ANIME NEO-BRUTALIST SAKUGA & ARCHIVE LAYOUT
           ========================================================================= */
           <AnimeNeoBrutalView />
+        ) : selectedFandomCategory === 'Comics' ? (
+          /* =========================================================================
+             DEDICATED COMICS POP-ART HEROIC & BEN-DAY DOT LAYOUT
+          ========================================================================= */
+          <ComicsPopArtView />
         ) : (
           <>
             {/* Y2K Marquee Ticker 01 */}

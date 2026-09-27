@@ -435,8 +435,8 @@ export const AnimeNeoBrutalView: React.FC = () => {
         </div>
       )}
 
-      {/* Main Container */}
-      <div className="max-w-5xl mx-auto space-y-16">
+      {/* Main Container with reliable Flex Gap */}
+      <div className="max-w-5xl mx-auto flex flex-col gap-20 sm:gap-28">
 
         {/* =========================================================================
             1. HERO SECTION: ANIME ARCHIVE & SAKUGA VAULT
@@ -609,7 +609,7 @@ export const AnimeNeoBrutalView: React.FC = () => {
         {/* =========================================================================
             2. INTERACTIVE FILTER DOCK & SEARCH
         ========================================================================= */}
-        <section id="anime-catalog" className="space-y-6">
+        <section id="anime-catalog" className="flex flex-col gap-8 pb-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
               <div
@@ -932,7 +932,7 @@ export const AnimeNeoBrutalView: React.FC = () => {
         {/* =========================================================================
             4. ANIMATION STUDIO SPOTLIGHT
         ========================================================================= */}
-        <section className="relative">
+        <section className="relative mt-6 sm:mt-10">
           <div
             className="p-6 sm:p-8 md:p-10 relative"
             style={{
@@ -1025,7 +1025,7 @@ export const AnimeNeoBrutalView: React.FC = () => {
         {/* =========================================================================
             5. COMMUNITY WALL (OTAKU BOARD)
         ========================================================================= */}
-        <section id="anime-community" className="space-y-6">
+        <section id="anime-community" className="flex flex-col gap-8 mt-6 sm:mt-10">
           <div className="text-center max-w-xl mx-auto space-y-2">
             <div
               className="inline-block px-3 py-1 text-xs font-bold mb-1"
@@ -1089,10 +1089,10 @@ export const AnimeNeoBrutalView: React.FC = () => {
             ))}
           </div>
 
-          {/* Add Note Form */}
+          {/* Add Note Form - spaced cleanly from sticky notes above */}
           <form
             onSubmit={handleAddNote}
-            className="flex flex-col sm:flex-row items-center gap-3"
+            className="flex flex-col sm:flex-row items-center gap-3 mt-8 sm:mt-10"
             style={{
               borderRadius: ROUND_MD,
               backgroundColor: COLORS.white,
@@ -1145,7 +1145,7 @@ export const AnimeNeoBrutalView: React.FC = () => {
         {/* =========================================================================
             6. NEWSLETTER & PRE-ORDER ALERT
         ========================================================================= */}
-        <section className="relative">
+        <section className="relative mt-6 sm:mt-10">
           {/* Accent strip */}
           <div
             className="absolute -top-2 left-1/2 -translate-x-1/2 w-32 h-3 z-10"
