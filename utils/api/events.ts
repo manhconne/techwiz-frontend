@@ -1,4 +1,4 @@
-export const EVENT_URL = process.env.NEXT_PUBLIC_EVENT_SERVICE_URL || 'http://localhost:5004';
+export const EVENT_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL || 'http://localhost:8080';
 
 export const eventApi = {
   listEvents: async (token: string, page = 1, size = 100) => {
