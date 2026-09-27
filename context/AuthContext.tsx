@@ -119,6 +119,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('kpop_user', JSON.stringify(newUser));
 
     addActivity('Đăng nhập thành công vào hệ thống Fan Hub Universe', 'fandom');
+    
+    // Simulate New Device Login Notification
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('fanhub_local_push', {
+        detail: {
+          type: 'system',
+          title: 'Cảnh Báo Bảo Mật',
+          message: 'Tài khoản của bạn vừa đăng nhập từ thiết bị mới (Chrome - Windows).',
+        }
+      }));
+    }, 2000);
+    
+    // Simulate Registration Welcome Notification
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('fanhub_local_push', {
+        detail: {
+          type: 'social',
+          title: 'Chào mừng gia nhập FanHub!',
+          message: 'Đăng ký tài khoản thành công. Hãy khám phá các sự kiện đang diễn ra nhé.',
+        }
+      }));
+    }, 4000);
   };
 
   const logout = () => {

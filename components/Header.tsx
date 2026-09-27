@@ -7,6 +7,7 @@ import { useGoogleLanguage } from './GoogleTranslate';
 import { useCartWishlist } from '../context/CartWishlistContext';
 import { useAuth } from '../context/AuthContext';
 import { useDomainTheme } from '../context/DomainContext';
+import { NotificationDropdown } from './NotificationDropdown';
 import { PersonalDashboardModal } from './PersonalDashboardModal';
 import {
   Menu,

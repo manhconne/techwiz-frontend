@@ -1,7 +1,9 @@
 'use client';
 
+import QRCode from 'react-qr-code';
 import React, { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+const RealGpsMap = dynamic(() => import('./RealGpsMap'), { ssr: false, loading: () => <div className="w-full h-[460px] flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl">Loading Map...</div> });
 
 const Map = dynamic(() => import('./Map'), { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-slate-100 rounded-xl">Loading Map...</div> });
 import { 
@@ -460,97 +462,13 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 </div>
               </div>
 
-              {/* Interactive Vector Radar Grid (Simulated Topographic GPS Map with Pins) */}
-              <div className="relative w-full h-[460px] sm:h-[540px] overflow-hidden bg-radial from-slate-900 via-slate-950 to-black flex items-center justify-center">
-                
-                {/* Concentric Radar Rings & Crosshairs */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-25">
-                  <div className="w-[180px] h-[180px] rounded-full border border-blue-500/40" />
-                  <div className="w-[320px] h-[320px] rounded-full border border-blue-500/30 border-dashed" />
-                  <div className="w-[460px] h-[460px] rounded-full border border-blue-500/20" />
-                  <div className="w-[600px] h-[600px] rounded-full border border-blue-500/10" />
-                  <div className="absolute w-full h-[1px] bg-blue-500/20" />
-                  <div className="absolute h-full w-[1px] bg-blue-500/20" />
-                </div>
-
-                {/* Radar Sweep Effect */}
-                <div className="absolute w-[460px] h-[460px] rounded-full bg-conic from-blue-500/10 via-transparent to-transparent animate-spin pointer-events-none" style={{ animationDuration: '8s' }} />
-
-                {/* USER LOCATION CENTER PIN */}
-                <div className="absolute z-30 flex flex-col items-center pointer-events-none">
-                  <div className="relative flex items-center justify-center">
-                    <span className="absolute w-8 h-8 rounded-full bg-blue-500/30 animate-ping" />
-                    <div className="w-5 h-5 rounded-full bg-blue-600 border-2 border-white shadow-[0_0_15px_rgba(37,99,235,0.8)] flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-white" />
-                    </div>
-                  </div>
-                  <span className="mt-1 px-2 py-0.5 rounded bg-blue-900/90 text-white text-[9px] font-mono font-bold tracking-wider border border-blue-400/50 shadow-md">
-                    BẠN Ở ĐÂY
-                  </span>
-                </div>
-
-                {/* EVENT LOCATION PINS PLACED ON MAP */}
-                {filteredEvents.map((ev, index) => {
-                  const isSelected = activeEvent?.id === ev.id;
-                  
-                  // Generate relative normalized cartesian coordinates from lat/lng offset
-                  const latDiff = (ev.lat - userLocation.lat);
-                  const lngDiff = (ev.lng - userLocation.lng);
-                  
-                  // Scale dynamically for canvas placement
-                  const scale = maxRadiusKm > 100 ? 12 : 280;
-                  const xOffset = Math.max(-180, Math.min(180, lngDiff * scale));
-                  const yOffset = Math.max(-180, Math.min(180, -latDiff * scale));
-
-                  return (
-                    <button
-                      key={ev.id}
-                      type="button"
-                      onClick={() => setSelectedEventId(ev.id)}
-                      style={{
-                        transform: `translate(${xOffset}px, ${yOffset}px)`,
-                      }}
-                      className={`absolute z-20 group cursor-pointer transition-transform duration-300 ${
-                        isSelected ? 'scale-125 z-40' : 'hover:scale-115'
-                      }`}
-                    >
-                      <div className="relative flex flex-col items-center">
-                        
-                        {/* Pin Head with Category Icon */}
-                        <div className={`px-2 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg border transition-all ${
-                          isSelected
-                            ? 'bg-rose-600 text-white border-white ring-4 ring-rose-500/40'
-                            : ev.freeEntry
-                            ? 'bg-pink-600 text-white border-pink-300'
-                            : 'bg-slate-900 text-white border-slate-600 group-hover:border-blue-400'
-                        }`}>
-                          {ev.type === 'stadium_concert' && <Ticket size={11} className="text-amber-300" />}
-                          {ev.type === 'cup_sleeve_cafe' && <Coffee size={11} className="text-pink-300" />}
-                          {ev.type === 'photocard_trade' && <Sparkles size={11} className="text-purple-300" />}
-                          {ev.type === 'anime_expo' && <Layers size={11} className="text-rose-300" />}
-                          {ev.type === 'gaming_arena' && <Radio size={11} className="text-emerald-300" />}
-                          <span className="text-[10px] font-bold font-mono">
-                            {ev.distanceKm < 1000 ? `${ev.distanceKm} km` : `${(ev.distanceKm / 1000).toFixed(1)}k km`}
-                          </span>
-                        </div>
-
-                        {/* Pin Pointer Tail */}
-                        <div className={`w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[6px] -mt-0.5 ${
-                          isSelected ? 'border-t-rose-600' : 'border-t-slate-900'
-                        }`} />
-
-                        {/* Title Tooltip on hover/selected */}
-                        <div className={`mt-1 px-2 py-0.5 rounded bg-black/90 text-white text-[9px] font-sans font-bold max-w-[130px] truncate border border-white/20 transition-opacity ${
-                          isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                        }`}>
-                          {ev.title}
-                        </div>
-
-                      </div>
-                    </button>
-                  );
-                })}
-
+              {/* REAL LEAFLET GPS MAP OVERLAY */}
+              <div className="relative w-full h-[460px] sm:h-[540px] z-10 rounded-xl overflow-hidden shadow-inner border border-slate-200">
+                <RealGpsMap 
+                  events={filteredEvents}
+                  activeEvent={activeEvent}
+                  onEventClick={(ev) => setSelectedEventId(ev.id)}
+                />
               </div>
 
               {/* Map Bottom Legend / Compass Bar */}
@@ -1148,16 +1066,31 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     {bookingEvent.venue} • {bookingEvent.date}
                   </p>
 
-                  {/* Barcode Simulation */}
-                  <div className="mt-4 pt-3 border-t border-dashed border-slate-300 text-center">
-                    <div className="font-mono text-2xl tracking-[0.25em] text-slate-800 font-bold select-all">
-                      ||| | |||| | ||| || |||
+                  {/* Blockchain QR Code Simulation */}
+                    <div className="mt-4 pt-4 border-t border-slate-200 border-dashed flex flex-col items-center">
+                      <div className="p-2 bg-white rounded-xl shadow-sm border border-slate-200">
+                        <QRCode 
+                          value={`https://sepolia.etherscan.io/tx/0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa`} 
+                          size={100} 
+                          style={{ height: "auto", maxWidth: "100px", width: "100%" }}
+                          viewBox={`0 0 100 100`}
+                        />
+                      </div>
                     </div>
-                    <span className="text-[9px] font-mono text-slate-400 block mt-1">
-                      MÃ VÉ: FHP-2025-{Math.floor(100000 + Math.random() * 900000)}
-                    </span>
+                    
+                    <div className="mt-4 text-left bg-slate-900 rounded-lg p-3">
+                        <div className="text-[10px] text-slate-400 font-mono uppercase mb-1 flex items-center justify-between">
+                            <span>Blockchain Ticket</span>
+                            <span className="text-emerald-400 font-bold">MINTED</span>
+                        </div>
+                        <div className="text-[11px] text-white font-mono break-all leading-tight">
+                            TxHash: <span className="text-blue-300">0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa</span>
+                        </div>
+                        <div className="text-[11px] text-white font-mono mt-1">
+                            TokenID: <span className="text-pink-400">#7077</span>
+                        </div>
+                    </div>
                   </div>
-                </div>
 
                 {/* Actions */}
                 <div className="flex items-center justify-center gap-3">
