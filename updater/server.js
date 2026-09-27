@@ -311,10 +311,11 @@ const server = http.createServer(async (req, res) => {
           }
 
           function restartPm2() {
-            if (config.auto_restart_pm2 && config.pm2_process_name) {
-              sendSSE('step', { step: 7, text: `Khởi động lại PM2 (${config.pm2_process_name})...` });
-              exec(`pm2 reload "${config.pm2_process_name}" || pm2 restart "${config.pm2_process_name}"`, (pErr, pOut) => {
-                sendSSE('log', { type: 'info', text: (pOut || '').trim() });
+            if (config.auto_restart_pm2) {
+              sendSSE('step', { step: 7, text: 'Khởi động lại PM2 (pm2 restart all)...' });
+              const pm2Proc = config.pm2_process_name || 'techwiz-frontend';
+              exec(`pm2 restart all || pm2 reload all || pm2 restart "${pm2Proc}"`, (pErr, pOut) => {
+                sendSSE('log', { type: 'info', text: (pOut || '').trim() || 'pm2 restart all executed' });
                 sendSSE('step', { step: 8, text: 'Hoàn tất cập nhật!' });
                 sendSSE('log', { type: 'success', text: `🎉 Nâng cấp hoàn tất lên [${actualTag}]!` });
                 sendSSE('finish', { success: true, new_version: actualTag });

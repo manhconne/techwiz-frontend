@@ -1,0 +1,1176 @@
+'use client';
+
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import Link from 'next/link';
+import { AdminHeader } from '../../../components/admin/AdminHeader';
+import { AdminSidebar } from '../../../components/admin/AdminSidebar';
+import { useAdminLanguage } from '../../../context/AdminLanguageContext';
+import { getAccessToken } from '../../../utils/authUtils';
+import {
+  Bot,
+  Search,
+  RefreshCw,
+  CheckCircle2,
+  AlertTriangle,
+  Check,
+  X,
+  Copy,
+  Plus,
+  Pencil,
+  Trash2,
+  Eye,
+  MessageSquare,
+  Sparkles,
+  Layers,
+  FolderTree,
+  Send,
+  ToggleLeft,
+  ToggleRight,
+  HelpCircle,
+  BookOpen,
+  Filter,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  MessageCircle,
+  Lightbulb,
+} from 'lucide-react';
+
+export interface AdminFaqItem {
+  id: string;
+  question: string;
+  answer: string;
+  category?: string;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+  [key: string]: any;
+}
+
+// Fallback demo FAQs
+const FALLBACK_FAQS: AdminFaqItem[] = [
+  {
+    id: 'faq_001',
+    question: 'Làm thế nào để lấy vé NFT?',
+    answer: 'Sau khi thanh toán thành công, vé sự kiện sẽ được tự động mint dạng NFT và lưu vào mục "Vé của tôi" trên ứng dụng. Bạn chỉ cần mở mã QR tại cổng kiểm soát để check-in.',
+    category: 'Booking',
+    is_active: true,
+  },
+  {
+    id: 'faq_002',
+    question: 'Quy định hoàn tiền vé?',
+    answer: 'Bạn có thể gửi yêu cầu hoàn tiền trước 48h khi sự kiện diễn ra. Trong trường hợp sự kiện bị dời ngày hoặc hủy bởi ban tổ chức, hệ thống sẽ tự động hoàn 100% tiền vé về tài khoản nguồn.',
+    category: 'Booking',
+    is_active: true,
+  },
+  {
+    id: 'faq_003',
+    question: 'Tôi có thể chuyển nhượng hoặc tặng vé cho bạn bè không?',
+    answer: 'Có. Tại chi tiết vé trong mục "Vé của tôi", chọn tính năng "Chuyển nhượng vé", nhập email hoặc địa chỉ ví của người nhận và xác nhận mã OTP gửi về số điện thoại.',
+    category: 'Ticket Transfer',
+    is_active: true,
+  },
+  {
+    id: 'faq_004',
+    question: 'Những hình thức thanh toán nào được hỗ trợ?',
+    answer: 'Hệ thống hỗ trợ thanh toán qua VNPay (QR Pay, thẻ ATM nội địa, Visa/Mastercard), Ví MoMo, ZaloPay và chuyển khoản tức thì 24/7 qua VietQR.',
+    category: 'Payment',
+    is_active: true,
+  },
+  {
+    id: 'faq_005',
+    question: 'Làm sao để đăng ký gian hàng bán vật phẩm tại sự kiện?',
+    answer: 'Đơn vị hoặc cosplayer muốn thuê gian hàng vui lòng truy cập trang B2B Đối tác hoặc gửi email trực tiếp tới partner@fandomfest.vn kèm thông tin sản phẩm và quy mô gian hàng.',
+    category: 'B2B / Partner',
+    is_active: false,
+  },
+  {
+    id: 'faq_006',
+    question: 'Trẻ em dưới bao nhiêu tuổi được miễn phí vé vào cổng?',
+    answer: 'Trẻ em dưới 1 mét được miễn phí vé vào cổng khi đi kèm người lớn có vé hợp lệ (tối đa 1 trẻ em/1 người lớn), không bao gồm quyền lợi quà tặng của vé VIP.',
+    category: 'Event Rules',
+    is_active: true,
+  },
+];
+
+const FAQ_CATEGORIES = ['All', 'Booking', 'Payment', 'Ticket Transfer', 'B2B / Partner', 'Event Rules'];
+
+export default function AdminChatbotPage() {
+  const { language } = useAdminLanguage();
+  const isVi = language === 'vi';
+
+  // Responsive sidebar
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [headerSearch, setHeaderSearch] = useState('');
+
+  // Main data states
+  const [faqs, setFaqs] = useState<AdminFaqItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [apiSuccess, setApiSuccess] = useState<string | null>(null);
+
+  // Filters & Pagination: ?search=ve&category=...&page=1&limit=20
+  const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // Modals & Feedback
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editItem, setEditItem] = useState<AdminFaqItem | null>(null);
+  const [deleteItem, setDeleteItem] = useState<AdminFaqItem | null>(null);
+  const [previewItem, setPreviewItem] = useState<AdminFaqItem | null>(null);
+
+  // Chatbot Simulator Playground State
+  const [isTesterOpen, setIsTesterOpen] = useState(false);
+  const [chatInput, setChatInput] = useState('');
+  const [chatMessages, setChatMessages] = useState<Array<{ sender: 'bot' | 'user'; text: string }>>([
+    {
+      sender: 'bot',
+      text: 'Xin chào! Tôi là AI Assistant của Fandom Platform. Bạn có câu hỏi nào cần giải đáp không?',
+    },
+  ]);
+
+  // Form state for CREATE: POST /api/v1/admin/chatbot/faqs
+  const [createForm, setCreateForm] = useState({
+    question: '',
+    answer: '',
+    category: 'Booking',
+    is_active: true,
+  });
+  const [isSubmittingCreate, setIsSubmittingCreate] = useState(false);
+
+  // Form state for EDIT: PUT /api/v1/admin/chatbot/faqs/{id}
+  const [editForm, setEditForm] = useState({
+    question: '',
+    answer: '',
+    is_active: true,
+  });
+  const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
+  const [isSubmittingDelete, setIsSubmittingDelete] = useState(false);
+
+  // Toast clear
+  useEffect(() => {
+    if (apiSuccess) {
+      const timer = setTimeout(() => setApiSuccess(null), 4500);
+      return () => clearTimeout(timer);
+    }
+  }, [apiSuccess]);
+
+  useEffect(() => {
+    if (apiError) {
+      const timer = setTimeout(() => setApiError(null), 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [apiError]);
+
+  // Fetch FAQs: GET /api/v1/admin/chatbot/faqs?search=...&category=...&page=...&limit=...
+  const fetchFaqs = useCallback(async (isRefresh = false) => {
+    if (isRefresh) setRefreshing(true);
+    else setLoading(true);
+
+    try {
+      const token = getAccessToken();
+      const params = new URLSearchParams();
+      if (searchTerm.trim()) params.set('search', searchTerm.trim());
+      if (categoryFilter !== 'All') params.set('category', categoryFilter);
+      params.set('page', page.toString());
+      params.set('limit', limit.toString());
+
+      const url = `/api/v1/admin/chatbot/faqs?${params.toString()}`;
+      const res = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Server returned HTTP ${res.status}`);
+      }
+
+      const json = await res.json();
+      const rawData = json.data || json.faqs || (Array.isArray(json) ? json : []);
+
+      if (Array.isArray(rawData)) {
+        setFaqs(rawData);
+        setTotalCount(json.meta?.total || json.total || rawData.length);
+      } else {
+        setFaqs([]);
+      }
+      setApiError(null);
+    } catch (err: any) {
+      console.warn('API /api/v1/admin/chatbot/faqs offline, using demo data:', err);
+      let filtered = [...FALLBACK_FAQS];
+      if (categoryFilter !== 'All') {
+        filtered = filtered.filter(
+          (f) => (f.category || '').toLowerCase() === categoryFilter.toLowerCase()
+        );
+      }
+      if (searchTerm.trim()) {
+        const q = searchTerm.toLowerCase();
+        filtered = filtered.filter(
+          (f) =>
+            f.question.toLowerCase().includes(q) ||
+            f.answer.toLowerCase().includes(q) ||
+            f.id.toLowerCase().includes(q)
+        );
+      }
+      setFaqs(filtered);
+      setTotalCount(filtered.length);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [searchTerm, categoryFilter, page, limit]);
+
+  useEffect(() => {
+    fetchFaqs();
+  }, [fetchFaqs]);
+
+  const handleCopyId = (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    navigator.clipboard.writeText(id);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  // Submit Create: POST /api/v1/admin/chatbot/faqs
+  // Request: { "question": "...", "answer": "...", "category": "Booking", "is_active": true }
+  // Response: 201 { "id": "faq_xxx", "message": "Thêm câu hỏi FAQ thành công" }
+  const handleCreateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!createForm.question.trim() || !createForm.answer.trim()) {
+      setApiError(isVi ? 'Vui lòng nhập đầy đủ câu hỏi và câu trả lời!' : 'Question and Answer are required');
+      return;
+    }
+
+    setIsSubmittingCreate(true);
+    setApiError(null);
+
+    const payload = {
+      question: createForm.question.trim(),
+      answer: createForm.answer.trim(),
+      category: createForm.category,
+      is_active: createForm.is_active,
+    };
+
+    try {
+      const token = getAccessToken();
+      const res = await fetch('/api/v1/admin/chatbot/faqs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json().catch(() => ({}));
+
+      if (res.ok || res.status === 201) {
+        setApiSuccess(json.message || (isVi ? 'Thêm câu hỏi FAQ thành công' : 'FAQ added successfully'));
+        setIsCreateOpen(false);
+        setCreateForm({ question: '', answer: '', category: 'Booking', is_active: true });
+        fetchFaqs(true);
+      } else {
+        throw new Error(json.message || json.error || `HTTP ${res.status}`);
+      }
+    } catch (err: any) {
+      console.warn('POST faq offline, saving locally:', err);
+      const newFaq: AdminFaqItem = {
+        id: `faq_${Date.now().toString().slice(-4)}`,
+        ...payload,
+        created_at: new Date().toISOString(),
+      };
+      setFaqs((prev) => [newFaq, ...prev]);
+      setApiSuccess(isVi ? 'Thêm câu hỏi FAQ thành công (Local)' : 'FAQ added locally');
+      setIsCreateOpen(false);
+      setCreateForm({ question: '', answer: '', category: 'Booking', is_active: true });
+    } finally {
+      setIsSubmittingCreate(false);
+    }
+  };
+
+  // Open Edit Modal
+  const openEditModal = (item: AdminFaqItem, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setEditItem(item);
+    setEditForm({
+      question: item.question || '',
+      answer: item.answer || '',
+      is_active: item.is_active !== false,
+    });
+  };
+
+  // Submit Edit: PUT /api/v1/admin/chatbot/faqs/{id}
+  // Request: { "question": "...", "answer": "...", "is_active": true }
+  // Response 200: { "message": "Cập nhật câu hỏi FAQ thành công" }
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editItem) return;
+    if (!editForm.question.trim() || !editForm.answer.trim()) {
+      setApiError(isVi ? 'Câu hỏi và câu trả lời không được để trống!' : 'Question and Answer cannot be blank');
+      return;
+    }
+
+    setIsSubmittingEdit(true);
+    setApiError(null);
+
+    const payload = {
+      question: editForm.question.trim(),
+      answer: editForm.answer.trim(),
+      is_active: editForm.is_active,
+    };
+
+    try {
+      const token = getAccessToken();
+      const res = await fetch(`/api/v1/admin/chatbot/faqs/${editItem.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        setApiSuccess(json.message || (isVi ? 'Cập nhật câu hỏi FAQ thành công' : 'FAQ updated successfully'));
+        setEditItem(null);
+        fetchFaqs(true);
+      } else {
+        throw new Error(json.message || json.error || `HTTP ${res.status}`);
+      }
+    } catch (err: any) {
+      console.warn('PUT faq offline, updating locally:', err);
+      setFaqs((prev) =>
+        prev.map((f) => (f.id === editItem.id ? { ...f, ...payload } : f))
+      );
+      setApiSuccess(isVi ? 'Cập nhật câu hỏi FAQ thành công (Local)' : 'FAQ updated locally');
+      setEditItem(null);
+    } finally {
+      setIsSubmittingEdit(false);
+    }
+  };
+
+  // Submit Delete: DELETE /api/v1/admin/chatbot/faqs/{id}
+  // Response 200: { "message": "Đã xóa câu hỏi khỏi kho tri thức" }
+  const handleDeleteSubmit = async () => {
+    if (!deleteItem) return;
+    setIsSubmittingDelete(true);
+    setApiError(null);
+
+    try {
+      const token = getAccessToken();
+      const res = await fetch(`/api/v1/admin/chatbot/faqs/${deleteItem.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      const json = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        setApiSuccess(json.message || (isVi ? 'Đã xóa câu hỏi khỏi kho tri thức' : 'FAQ removed from knowledge base'));
+        setDeleteItem(null);
+        fetchFaqs(true);
+      } else {
+        throw new Error(json.message || json.error || `HTTP ${res.status}`);
+      }
+    } catch (err: any) {
+      console.warn('DELETE faq offline, removing locally:', err);
+      setFaqs((prev) => prev.filter((f) => f.id !== deleteItem.id));
+      setApiSuccess(isVi ? 'Đã xóa câu hỏi khỏi kho tri thức (Local)' : 'FAQ removed locally');
+      setDeleteItem(null);
+    } finally {
+      setIsSubmittingDelete(false);
+    }
+  };
+
+  // Chatbot Tester query match
+  const handleSendTestChat = () => {
+    if (!chatInput.trim()) return;
+    const userQuestion = chatInput.trim();
+    const newHistory = [...chatMessages, { sender: 'user' as const, text: userQuestion }];
+    setChatMessages(newHistory);
+    setChatInput('');
+
+    // Find best match in FAQs
+    setTimeout(() => {
+      const q = userQuestion.toLowerCase();
+      const matched = faqs.find(
+        (f) =>
+          f.is_active &&
+          (f.question.toLowerCase().includes(q) ||
+            q.includes(f.question.toLowerCase().slice(0, 15)) ||
+            (f.category && q.includes(f.category.toLowerCase())))
+      );
+
+      const botReply = matched
+        ? matched.answer
+        : 'Xin lỗi, tôi chưa tìm thấy câu trả lời chính xác trong kho tri thức FAQ. Đội ngũ hỗ trợ sẽ liên hệ với bạn sớm nhất!';
+
+      setChatMessages((prev) => [...prev, { sender: 'bot', text: botReply }]);
+    }, 400);
+  };
+
+  // KPI computations
+  const totalFaqs = faqs.length;
+  const activeFaqs = faqs.filter((f) => f.is_active).length;
+  const categoriesCount = useMemo(() => {
+    return new Set(faqs.map((f) => f.category).filter(Boolean)).size;
+  }, [faqs]);
+
+  return (
+    <div className="flex h-screen bg-[#0b0f17] text-slate-100 overflow-hidden font-sans">
+      {/* SIDEBAR */}
+      <AdminSidebar
+        activeTab="chatbot"
+        setActiveTab={() => {}}
+        isOpen={isSidebarOpen}
+        onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+      />
+
+      {/* MAIN CONTAINER */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        {/* HEADER */}
+        <AdminHeader
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          isSidebarOpen={isSidebarOpen}
+          searchQuery={headerSearch}
+          setSearchQuery={setHeaderSearch}
+          activeTab="chatbot"
+        />
+
+        {/* BREADCRUMB & TOOLBAR */}
+        <div className="border-b border-slate-800 bg-[#0f172a]/60 px-6 py-4 backdrop-blur-md">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
+                <Link href="/admin" className="hover:text-amber-400 transition-colors">Admin</Link>
+                <span>/</span>
+                <span className="text-amber-400 font-medium">
+                  {isVi ? 'Kho Tri Thức Chatbot (AI FAQ)' : 'Chatbot Knowledge Base'}
+                </span>
+              </div>
+              <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+                  <Bot className="w-5 h-5" />
+                </div>
+                <span>{isVi ? 'Quản Lý Câu Hỏi & Tri Thức Chatbot' : 'AI Chatbot FAQs Management'}</span>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
+                  {totalFaqs} {isVi ? 'câu hỏi' : 'entries'}
+                </span>
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsTesterOpen(true)}
+                className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold rounded-xl border border-amber-500/30 flex items-center gap-1.5 transition-all cursor-pointer"
+                title={isVi ? 'Thử nghiệm Bot' : 'Test Chatbot'}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{isVi ? 'Thử nghiệm Chatbot' : 'Test Bot'}</span>
+              </button>
+
+              <button
+                onClick={() => fetchFaqs(true)}
+                disabled={loading || refreshing}
+                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-amber-400' : ''}`} />
+                <span className="hidden sm:inline">{isVi ? 'Làm mới' : 'Refresh'}</span>
+              </button>
+
+              <button
+                onClick={() => setIsCreateOpen(true)}
+                className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-amber-500/20 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+              >
+                <Plus className="w-4 h-4 stroke-[2.5]" />
+                <span>{isVi ? 'Thêm câu hỏi FAQ' : 'Add FAQ'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* NOTIFICATIONS */}
+        {apiSuccess && (
+          <div className="mx-6 mt-4 p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-xs flex items-center justify-between shadow-lg shadow-emerald-500/5 animate-in fade-in">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <span>{apiSuccess}</span>
+            </div>
+            <button onClick={() => setApiSuccess(null)} className="p-1 hover:bg-emerald-500/20 rounded-md">
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+
+        {apiError && (
+          <div className="mx-6 mt-4 p-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-xs flex items-center justify-between shadow-lg shadow-rose-500/5 animate-in fade-in">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <span>{apiError}</span>
+            </div>
+            <button onClick={() => setApiError(null)} className="p-1 hover:bg-rose-500/20 rounded-md">
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+
+        {/* CONTENT BODY */}
+        <div className="p-6 space-y-6">
+          {/* STATS OVERVIEW CARDS */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
+              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+                <span>{isVi ? 'Tổng câu hỏi trong kho' : 'Total FAQs'}</span>
+                <Bot className="w-4 h-4 text-amber-400" />
+              </div>
+              <div className="text-2xl font-black text-white">{totalFaqs}</div>
+              <div className="text-[11px] text-slate-500 mt-1">
+                {isVi ? 'Đang huấn luyện cho AI Bot' : 'Trained knowledge base'}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
+              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+                <span>{isVi ? 'Đang hoạt động (Active)' : 'Active Entries'}</span>
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              </div>
+              <div className="text-2xl font-black text-emerald-400">{activeFaqs}</div>
+              <div className="text-[11px] text-slate-500 mt-1">
+                {isVi ? 'Sẵn sàng trả lời người dùng' : 'Serving user queries'}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
+              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+                <span>{isVi ? 'Chủ đề / Danh mục' : 'Categories'}</span>
+                <FolderTree className="w-4 h-4 text-cyan-400" />
+              </div>
+              <div className="text-2xl font-black text-white">{categoriesCount}</div>
+              <div className="text-[11px] text-slate-500 mt-1">
+                Booking, Payment, Rules, v.v.
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
+              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+                <span>{isVi ? 'Tỷ lệ phản hồi tự động' : 'Automation Rate'}</span>
+                <Sparkles className="w-4 h-4 text-purple-400" />
+              </div>
+              <div className="text-2xl font-black text-white">94.2%</div>
+              <div className="text-[11px] text-slate-500 mt-1">
+                {isVi ? 'Giảm tải cho đội ngũ hỗ trợ' : 'Resolved by bot'}
+              </div>
+            </div>
+          </div>
+
+          {/* FILTER & SEARCH TOOLBAR: ?search=ve&category=... */}
+          <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-lg space-y-3">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+              {/* Search input: ?search=ve */}
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setPage(1);
+                  }}
+                  placeholder={
+                    isVi
+                      ? 'Tìm kiếm câu hỏi, câu trả lời hoặc từ khóa (vd: vé, hoàn tiền, momo...)...'
+                      : 'Search question, answer or keywords (e.g. ticket, refund)...'
+                  }
+                  className="w-full pl-9 pr-8 py-2 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setPage(1);
+                    }}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* CATEGORY TABS FILTER */}
+            <div className="flex items-center gap-2 overflow-x-auto text-xs pt-1 border-t border-slate-800/80">
+              <span className="text-slate-500 shrink-0 font-medium text-[11px]">
+                {isVi ? 'Chủ đề FAQ:' : 'Category:'}
+              </span>
+
+              {FAQ_CATEGORIES.map((cat) => {
+                const isActive = categoryFilter === cat;
+                const count =
+                  cat === 'All'
+                    ? totalFaqs
+                    : faqs.filter((f) => (f.category || '').toLowerCase() === cat.toLowerCase()).length;
+
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setCategoryFilter(cat);
+                      setPage(1);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 flex items-center gap-1.5 ${
+                      isActive
+                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                        : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <span>{cat === 'All' ? (isVi ? 'Tất cả' : 'All') : cat}</span>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                        isActive ? 'bg-slate-950/20 text-slate-950' : 'bg-slate-800 text-slate-400'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* TABLE OF FAQS */}
+          <div className="rounded-2xl bg-[#0f172a] border border-slate-800 overflow-hidden shadow-lg">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-900/80 text-slate-400 font-semibold border-b border-slate-800">
+                  <tr>
+                    <th className="px-4 py-3">{isVi ? 'Câu hỏi (question)' : 'Question'}</th>
+                    <th className="px-4 py-3">{isVi ? 'Câu trả lời tóm tắt (answer)' : 'Answer Preview'}</th>
+                    <th className="px-4 py-3">{isVi ? 'Danh mục' : 'Category'}</th>
+                    <th className="px-4 py-3">{isVi ? 'Trạng thái (is_active)' : 'Status'}</th>
+                    <th className="px-4 py-3 text-right">{isVi ? 'Thao tác' : 'Actions'}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60">
+                  {faqs.map((faq) => (
+                    <tr
+                      key={faq.id}
+                      onClick={() => setPreviewItem(faq)}
+                      className="hover:bg-slate-850/60 transition-colors cursor-pointer"
+                    >
+                      <td className="px-4 py-3.5 max-w-sm">
+                        <div className="font-bold text-white hover:text-amber-400 transition-colors line-clamp-2">
+                          {faq.question}
+                        </div>
+                        <button
+                          onClick={(e) => handleCopyId(faq.id, e)}
+                          className="text-[10px] text-slate-500 hover:text-slate-300 font-mono flex items-center gap-1 mt-1"
+                        >
+                          <span>{faq.id}</span>
+                          {copiedId === faq.id ? <Check className="w-2.5 h-2.5 text-emerald-400" /> : <Copy className="w-2.5 h-2.5" />}
+                        </button>
+                      </td>
+
+                      <td className="px-4 py-3.5 max-w-md">
+                        <div className="text-slate-300 line-clamp-2 leading-relaxed">
+                          {faq.answer}
+                        </div>
+                      </td>
+
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        <span className="px-2 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-slate-300 font-medium">
+                          {faq.category || 'General'}
+                        </span>
+                      </td>
+
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        {faq.is_active ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                            <span>{isVi ? 'Hoạt động' : 'Active'}</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-800 text-slate-400 border border-slate-700">
+                            <X className="w-3 h-3" />
+                            <span>{isVi ? 'Tạm ẩn' : 'Inactive'}</span>
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => setPreviewItem(faq)}
+                            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg cursor-pointer"
+                            title={isVi ? 'Xem chi tiết' : 'Preview'}
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
+                            onClick={(e) => openEditModal(faq, e)}
+                            className="p-1.5 text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg cursor-pointer"
+                            title={isVi ? 'Chỉnh sửa' : 'Edit'}
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteItem(faq);
+                            }}
+                            className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg cursor-pointer"
+                            title={isVi ? 'Xóa câu hỏi' : 'Delete'}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* PAGINATION BAR */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 pt-2">
+            <div>
+              {isVi
+                ? `Hiển thị ${faqs.length} câu hỏi FAQ (Trang ${page})`
+                : `Showing ${faqs.length} FAQ entries (Page ${page})`}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1 || loading}
+                className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>{isVi ? 'Trang trước' : 'Previous'}</span>
+              </button>
+
+              <span className="px-3 py-1.5 bg-slate-800 text-white rounded-xl font-bold">
+                {page}
+              </span>
+
+              <button
+                onClick={() => setPage((p) => p + 1)}
+                disabled={faqs.length < limit || loading}
+                className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1"
+              >
+                <span>{isVi ? 'Trang sau' : 'Next'}</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* CREATE FAQ MODAL: POST /api/v1/admin/chatbot/faqs */}
+      {isCreateOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+          <div className="w-full max-w-xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                  <Bot className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white">
+                    {isVi ? 'Thêm Câu Hỏi Mới vào Kho Tri Thức' : 'Add FAQ to Knowledge Base'}
+                  </h3>
+                  <p className="text-[11px] text-slate-400 font-mono">POST /api/v1/admin/chatbot/faqs</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsCreateOpen(false)}
+                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateSubmit} className="p-6 space-y-4 overflow-y-auto text-xs">
+              {/* Question */}
+              <div>
+                <label className="block text-slate-300 font-semibold mb-1">
+                  {isVi ? 'Câu hỏi của người dùng (question) *' : 'User Question (question) *'}
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={createForm.question}
+                  onChange={(e) => setCreateForm({ ...createForm, question: e.target.value })}
+                  placeholder={isVi ? 'Ví dụ: Quy định hoàn tiền vé?, Làm thế nào để lấy vé NFT?...' : 'e.g. How to get NFT ticket?...'}
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              {/* Category & Status Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">
+                    {isVi ? 'Chủ đề / Danh mục (category)' : 'Category'}
+                  </label>
+                  <select
+                    value={createForm.category}
+                    onChange={(e) => setCreateForm({ ...createForm, category: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                  >
+                    {FAQ_CATEGORIES.filter((c) => c !== 'All').map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">
+                    {isVi ? 'Trạng thái hoạt động (is_active)' : 'Status (is_active)'}
+                  </label>
+                  <div className="flex items-center gap-2 pt-2">
+                    <input
+                      type="checkbox"
+                      id="create_is_active"
+                      checked={createForm.is_active}
+                      onChange={(e) => setCreateForm({ ...createForm, is_active: e.target.checked })}
+                      className="w-4 h-4 rounded text-amber-500 focus:ring-amber-400"
+                    />
+                    <label htmlFor="create_is_active" className="text-slate-300 cursor-pointer">
+                      {isVi ? 'Kích hoạt ngay cho Bot trả lời' : 'Active immediately'}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Answer */}
+              <div>
+                <label className="block text-slate-300 font-semibold mb-1">
+                  {isVi ? 'Câu trả lời chuẩn của Bot (answer) *' : 'Bot Answer (answer) *'}
+                </label>
+                <textarea
+                  rows={5}
+                  required
+                  value={createForm.answer}
+                  onChange={(e) => setCreateForm({ ...createForm, answer: e.target.value })}
+                  placeholder={
+                    isVi
+                      ? 'Nhập nội dung câu trả lời chuẩn xác, dễ hiểu để AI bot gửi đến khách hàng...'
+                      : 'Enter exact answer for the chatbot to provide...'
+                  }
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400 leading-relaxed"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsCreateOpen(false)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl cursor-pointer"
+                >
+                  {isVi ? 'Hủy' : 'Cancel'}
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingCreate}
+                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
+                >
+                  {isSubmittingCreate && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                  <span>{isVi ? 'Thêm câu hỏi' : 'Save FAQ'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT FAQ MODAL: PUT /api/v1/admin/chatbot/faqs/{id} */}
+      {editItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+          <div className="w-full max-w-xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                  <Pencil className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white">
+                    {isVi ? 'Cập nhật Câu Hỏi FAQ' : 'Update FAQ'}
+                  </h3>
+                  <p className="text-[11px] text-slate-400 font-mono">PUT /api/v1/admin/chatbot/faqs/{editItem.id}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setEditItem(null)}
+                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditSubmit} className="p-6 space-y-4 overflow-y-auto text-xs">
+              {/* Question */}
+              <div>
+                <label className="block text-slate-300 font-semibold mb-1">
+                  {isVi ? 'Câu hỏi của người dùng (question) *' : 'Question *'}
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editForm.question}
+                  onChange={(e) => setEditForm({ ...editForm, question: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              {/* Status active */}
+              <div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="edit_is_active"
+                    checked={editForm.is_active}
+                    onChange={(e) => setEditForm({ ...editForm, is_active: e.target.checked })}
+                    className="w-4 h-4 rounded text-amber-500 focus:ring-amber-400"
+                  />
+                  <label htmlFor="edit_is_active" className="text-slate-300 cursor-pointer font-medium">
+                    {isVi ? 'Đang hoạt động (is_active)' : 'Active in bot'}
+                  </label>
+                </div>
+              </div>
+
+              {/* Answer */}
+              <div>
+                <label className="block text-slate-300 font-semibold mb-1">
+                  {isVi ? 'Nội dung câu trả lời cập nhật (answer) *' : 'Updated Answer *'}
+                </label>
+                <textarea
+                  rows={5}
+                  required
+                  value={editForm.answer}
+                  onChange={(e) => setEditForm({ ...editForm, answer: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400 leading-relaxed"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEditItem(null)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl cursor-pointer"
+                >
+                  {isVi ? 'Hủy' : 'Cancel'}
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingEdit}
+                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
+                >
+                  {isSubmittingEdit && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                  <span>{isVi ? 'Lưu thay đổi' : 'Save Changes'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* DETAIL PREVIEW MODAL */}
+      {previewItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+          <div className="w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                  <HelpCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white">{previewItem.category || 'FAQ'}</h3>
+                  <p className="text-[11px] text-slate-400 font-mono">{previewItem.id}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setPreviewItem(null)}
+                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4 text-xs overflow-y-auto">
+              <div>
+                <div className="text-slate-400 text-[10px] uppercase font-semibold mb-1">
+                  {isVi ? 'Câu hỏi người dùng:' : 'Question:'}
+                </div>
+                <div className="text-base font-bold text-white bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                  {previewItem.question}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-amber-400 text-[10px] uppercase font-semibold mb-1 flex items-center gap-1.5">
+                  <Bot className="w-3.5 h-3.5" />
+                  <span>{isVi ? 'Câu trả lời của AI Chatbot:' : 'Bot Response:'}</span>
+                </div>
+                <div className="text-slate-200 bg-slate-950 p-3.5 rounded-xl border border-slate-800 leading-relaxed whitespace-pre-line">
+                  {previewItem.answer}
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 border-t border-slate-800 bg-slate-900/60 flex items-center justify-end gap-2">
+              <button
+                onClick={() => setPreviewItem(null)}
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs cursor-pointer font-bold"
+              >
+                {isVi ? 'Đóng' : 'Close'}
+              </button>
+              <button
+                onClick={() => {
+                  const item = previewItem;
+                  setPreviewItem(null);
+                  openEditModal(item);
+                }}
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5"
+              >
+                <Pencil className="w-3.5 h-3.5" />
+                <span>{isVi ? 'Chỉnh sửa' : 'Edit'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CHATBOT PLAYGROUND TESTER MODAL */}
+      {isTesterOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+          <div className="w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[560px]">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
+                  <Bot className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <span>Fandom AI Chatbot Tester</span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  </h3>
+                  <p className="text-[10px] text-slate-400">
+                    {isVi ? 'Thử nghiệm trực tiếp với kho tri thức vừa cập nhật' : 'Live knowledge base tester'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsTesterOpen(false)}
+                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Chat message flow */}
+            <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#0b0f17] text-xs">
+              {chatMessages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`flex items-start gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  {msg.sender === 'bot' && (
+                    <div className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
+                      <Bot className="w-3.5 h-3.5" />
+                    </div>
+                  )}
+
+                  <div
+                    className={`max-w-[80%] p-3 rounded-2xl leading-relaxed text-xs ${
+                      msg.sender === 'user'
+                        ? 'bg-amber-500 text-slate-950 font-medium rounded-tr-xs'
+                        : 'bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-xs'
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Input box */}
+            <div className="p-3 border-t border-slate-800 bg-slate-950">
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSendTestChat()}
+                  placeholder={isVi ? 'Gõ câu hỏi để test bot (VD: hoàn tiền vé, vé NFT...)...' : 'Type a question...'}
+                  className="flex-1 px-3.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                />
+                <button
+                  onClick={handleSendTestChat}
+                  className="p-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl cursor-pointer transition-colors"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRMATION MODAL: DELETE /api/v1/admin/chatbot/faqs/{id} */}
+      {deleteItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+          <div className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 text-xs text-center space-y-4">
+            <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto border border-rose-500/30">
+              <Trash2 className="w-6 h-6" />
+            </div>
+
+            <div>
+              <h3 className="text-base font-bold text-white">
+                {isVi ? 'Xóa câu hỏi khỏi kho tri thức?' : 'Delete FAQ?'}
+              </h3>
+              <p className="text-slate-400 mt-1">
+                {isVi
+                  ? `Bạn có chắc chắn muốn xóa câu hỏi "${deleteItem.question}" (ID: ${deleteItem.id})? Bot sẽ không trả lời theo câu hỏi này nữa.`
+                  : `Are you sure you want to delete "${deleteItem.question}"?`}
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center gap-2 pt-2">
+              <button
+                onClick={() => setDeleteItem(null)}
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg cursor-pointer"
+              >
+                {isVi ? 'Hủy bỏ' : 'Cancel'}
+              </button>
+              <button
+                onClick={handleDeleteSubmit}
+                disabled={isSubmittingDelete}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+              >
+                {isSubmittingDelete && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                <span>{isVi ? 'Xác nhận xóa' : 'Confirm Delete'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

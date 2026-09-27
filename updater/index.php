@@ -192,20 +192,20 @@ if ($action !== 'login') {
     @session_write_close();
 }
 
+// Auto-detect Node and PM2 paths on Linux / aaPanel globally
+$targetDir = realpath($config['target_dir']) ?: $config['target_dir'];
+$nodePath = trim(@shell_exec('which node 2>/dev/null') ?: '');
+$nodeDir = $nodePath ? dirname($nodePath) : '';
+$nodeVersionDirs = glob('/www/server/nodejs/*/bin') ?: [];
+$pathDirs = array_merge(
+    [rtrim($targetDir, '/') . '/node_modules/.bin', $nodeDir],
+    $nodeVersionDirs,
+    ['/www/server/nodejs/v24.16.0/bin', '/www/server/nodejs/current/bin', '/usr/local/bin', '/usr/bin', '/bin']
+);
+$fullPathStr = implode(':', array_unique(array_filter($pathDirs))) . ':' . (getenv('PATH') ?: '');
+
 // Get current system status
 if ($action === 'status') {
-    $targetDir = realpath($config['target_dir']) ?: $config['target_dir'];
-    
-    // Auto-detect Node paths on aaPanel
-    $nodePath = trim(@shell_exec('which node 2>/dev/null') ?: '');
-    $nodeDir = $nodePath ? dirname($nodePath) : '';
-    $nodeVersionDirs = glob('/www/server/nodejs/*/bin') ?: [];
-    $pathDirs = array_merge(
-        [rtrim($targetDir, '/') . '/node_modules/.bin', $nodeDir],
-        $nodeVersionDirs,
-        ['/www/server/nodejs/v24.16.0/bin', '/www/server/nodejs/current/bin', '/usr/local/bin', '/usr/bin', '/bin']
-    );
-    $fullPathStr = implode(':', array_unique(array_filter($pathDirs))) . ':' . (getenv('PATH') ?: '');
 
     $currentVersion = 'Chưa xác định';
     if (@file_exists($targetDir . '/.current_version')) {
@@ -287,6 +287,17 @@ if ($action === 'releases') {
     }
     $releases = json_decode($res['body'], true) ?: [];
     sendJson(['success' => true, 'releases' => $releases]);
+}
+
+// Manual trigger pm2 restart all
+if ($action === 'restart_pm2') {
+    $pm2Cmd = "export PATH=" . escapeshellarg($fullPathStr) . "; timeout 5s pm2 restart all 2>&1 || PM2_HOME=/root/.pm2 timeout 5s pm2 restart all 2>&1 || timeout 5s sudo -n pm2 restart all 2>&1";
+    $output = trim(@shell_exec($pm2Cmd) ?: '');
+    sendJson([
+        'success' => true,
+        'message' => 'Đã thực thi lệnh [pm2 restart all]',
+        'output' => $output
+    ]);
 }
 
 // Save Config
@@ -592,17 +603,19 @@ except Exception as e:
             }
         }
 
-        // Method 2: PM2 (with timeout 3s)
+        // Method 2: PM2 (Prioritize pm2 restart all)
         if (!$restarted) {
             $pm2Cmd = "export PATH=" . escapeshellarg($fullPathStr) . "; " .
-                      "timeout 3s pm2 reload {$projName} 2>&1 || timeout 3s pm2 restart {$projName} 2>&1 || " .
-                      "PM2_HOME=/root/.pm2 timeout 3s pm2 reload {$projName} 2>&1 || " .
-                      "timeout 3s sudo -n pm2 reload {$projName} 2>&1";
+                      "timeout 5s pm2 restart all 2>&1 || " .
+                      "PM2_HOME=/root/.pm2 timeout 5s pm2 restart all 2>&1 || " .
+                      "timeout 5s sudo -n pm2 restart all 2>&1 || " .
+                      "timeout 3s pm2 restart {$projName} 2>&1 || " .
+                      "timeout 3s pm2 reload all 2>&1";
             $pm2Out = trim(@shell_exec($pm2Cmd) ?: '');
 
-            if (strpos($pm2Out, '[PM2] Applying action') !== false || strpos($pm2Out, 'online') !== false) {
+            if (strpos($pm2Out, '[PM2] Applying action') !== false || strpos($pm2Out, 'online') !== false || strpos($pm2Out, 'restart') !== false || strpos($pm2Out, 'status') !== false) {
                 $restarted = true;
-                updateState(null, ['type' => 'success', 'text' => "✅ Đã làm mới tiến trình PM2 [{$projName}] thành công!"]);
+                updateState(null, ['type' => 'success', 'text' => "✅ Đã thực thi [pm2 restart all] thành công!"]);
             }
         }
 

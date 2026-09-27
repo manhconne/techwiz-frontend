@@ -11,7 +11,7 @@
     "updater"
   ],
   "build_command": "npm install && npm run build",
-  "pm2_process_name": "techwiz_frontend",
+  "pm2_process_name": "techwiz-frontend",
   "auto_restart_pm2": true,
   "max_backups": 3
 }
