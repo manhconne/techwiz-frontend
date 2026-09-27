@@ -228,14 +228,14 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = () => {
             </p>
           </div>
 
-          <div className="space-y-1.5 border-t md:border-t-0 md:border-l-2 border-black pt-4 md:pt-0 md:pl-8">
+          <div className="space-y-1.5">
             <span className="font-black text-sm block text-[#ff2e93]">02 // SOUNDCHECK ALLOCATION</span>
             <p className="text-neutral-700 text-[11px] leading-relaxed font-semibold">
               First-entry priority into arena staging areas with official soundcheck rehearsing laminate pass.
             </p>
           </div>
 
-          <div className="space-y-1.5 border-t md:border-t-0 md:border-l-2 border-black pt-4 md:pt-0 md:pl-8">
+          <div className="space-y-1.5">
             <span className="font-black text-sm block text-[#ff2e93]">03 // OFFICIAL HAN/CIRCLE COUNT</span>
             <p className="text-neutral-700 text-[11px] leading-relaxed font-semibold">
               Live concert box packages counted 100% directly towards verified Hanteo and Circle Music Charts.

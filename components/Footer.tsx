@@ -24,6 +24,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
   const pathname = usePathname();
   const { toggleLanguage } = useGoogleLanguage();
   const [isMangaTheme, setIsMangaTheme] = useState(false);
+  const [isGamingTheme, setIsGamingTheme] = useState(false);
 
   useEffect(() => {
     const checkTheme = () => {
@@ -31,6 +32,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
                         document.body.getAttribute('data-fandom-theme') ||
                         document.querySelector('[data-fandom-theme]')?.getAttribute('data-fandom-theme');
       setIsMangaTheme(pathname?.startsWith('/manga') || themeAttr === 'manga');
+      setIsGamingTheme(pathname?.startsWith('/gaming') || themeAttr === 'gaming');
     };
     checkTheme();
     const observer = new MutationObserver(checkTheme);
@@ -38,7 +40,59 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
     return () => observer.disconnect();
   }, [pathname]);
 
-  const footerLinks = isMangaTheme ? [
+  const footerLinks = isGamingTheme ? [
+    {
+      heading: 'Arena Soundtracks',
+      badgeColor: '#000000',
+      badgeTextColor: '#ffffff',
+      icon: <Radio size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'T1 Worlds 2024 Suite', href: '/#gaming-catalog' },
+        { label: 'Black Myth Wukong 4LP', href: '/#gaming-catalog' },
+        { label: 'Shadow of the Erdtree Box', href: '/#gaming-catalog' },
+        { label: 'Natlan Symphony Acoustic', href: '/#gaming-catalog' },
+        { label: 'Abbey Road Half-Speed Vinyl', href: '/#gaming-catalog' },
+      ],
+    },
+    {
+      heading: 'Franchises & Arenas',
+      badgeColor: '#000000',
+      badgeTextColor: '#ffffff',
+      icon: <Users size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'T1 / League of Legends', href: '/#gaming-catalog' },
+        { label: 'Game Science Studio', href: '/#gaming-catalog' },
+        { label: 'FromSoftware Archives', href: '/#gaming-catalog' },
+        { label: 'HOYO-MiX Ensembles', href: '/#gaming-catalog' },
+        { label: 'Kingdom Cyber Arena', href: '/#tournament-passes' },
+      ],
+    },
+    {
+      heading: 'Passes & Gear',
+      badgeColor: '#000000',
+      badgeTextColor: '#ffffff',
+      icon: <Headphones size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'Grand Final VIP Soundcheck', href: '/#tournament-passes' },
+        { label: 'Standard Digital Access', href: '/#tournament-passes' },
+        { label: 'Collector Monolith Kit', href: '/#tournament-passes' },
+        { label: 'Kingdom Pro Controller', href: '/#gaming-catalog' },
+        { label: 'Lossless 24-Bit FLAC Vault', href: '/#gaming-stats' },
+      ],
+    },
+    {
+      heading: 'Editorial & Admin',
+      badgeColor: '#000000',
+      badgeTextColor: '#ffffff',
+      icon: <Settings size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'London O2 Acoustic Analysis', href: '/#editorial-drops' },
+        { label: 'Authentic Audiophile Pressings', href: '/#gaming-catalog' },
+        { label: '★ Send User Feedback', href: '#', onClick: onOpenFeedback },
+        { label: '⚡ Admin Control Panel', href: '#', onClick: onOpenAdmin, highlight: true },
+      ],
+    },
+  ] : isMangaTheme ? [
     {
       heading: 'Shop Manga',
       badgeColor: '#ff4d4d',
@@ -149,7 +203,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
   return (
     <footer
       style={{
-        backgroundColor: '#fdfbf7',
+        backgroundColor: isGamingTheme ? '#FFFFFF' : '#fdfbf7',
         borderTop: '4px solid #000000',
         color: '#000000',
       }}
@@ -199,9 +253,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
                   fontWeight: 900,
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
-                  backgroundColor: '#ffd60a',
-                  color: '#000000',
-                  boxShadow: '2px 2px 0px #000000',
+                  backgroundColor: isGamingTheme ? '#000000' : '#ffd60a',
+                  color: isGamingTheme ? '#ffffff' : '#000000',
+                  boxShadow: isGamingTheme ? 'none' : '2px 2px 0px #000000',
                 }}
               >
                 <Star size={10} />
@@ -220,9 +274,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
                   fontWeight: 900,
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
-                  backgroundColor: '#00f0ff',
+                  backgroundColor: isGamingTheme ? '#ffffff' : '#00f0ff',
                   color: '#000000',
-                  boxShadow: '2px 2px 0px #000000',
+                  boxShadow: isGamingTheme ? 'none' : '2px 2px 0px #000000',
                 }}
               >
                 <Radio size={10} />
@@ -283,29 +337,39 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
                           fontSize: '11px',
                           fontFamily: 'var(--font-mono), monospace',
                           fontWeight: link.highlight ? 900 : 700,
-                          color: '#000000',
-                          backgroundColor: link.highlight ? '#ffd60a' : '#ffffff',
+                          color: link.highlight && isGamingTheme ? '#ffffff' : '#000000',
+                          backgroundColor: link.highlight ? (isGamingTheme ? '#000000' : '#ffd60a') : '#ffffff',
                           border: '1.5px solid #000000',
-                          boxShadow: '2px 2px 0px #000000',
+                          boxShadow: isGamingTheme ? 'none' : '2px 2px 0px #000000',
                           borderRadius: '0px',
                           cursor: 'pointer',
-                          transition: 'background-color 0.1s ease',
+                          transition: 'all 0.1s ease',
                           textAlign: 'left',
                           textTransform: 'uppercase',
                           letterSpacing: '0.04em',
                         }}
                         onMouseEnter={(e) => {
                           const el = e.currentTarget;
-                          el.style.backgroundColor = link.highlight ? '#ff2e93' : '#ffd60a';
-                          el.style.color = '#000000';
+                          if (isGamingTheme) {
+                            el.style.backgroundColor = link.highlight ? '#ffffff' : '#000000';
+                            el.style.color = link.highlight ? '#000000' : '#ffffff';
+                          } else {
+                            el.style.backgroundColor = link.highlight ? '#ff2e93' : '#ffd60a';
+                            el.style.color = '#000000';
+                          }
                         }}
                         onMouseLeave={(e) => {
                           const el = e.currentTarget;
-                          el.style.backgroundColor = link.highlight ? '#ffd60a' : '#ffffff';
-                          el.style.color = '#000000';
+                          if (isGamingTheme) {
+                            el.style.backgroundColor = link.highlight ? '#000000' : '#ffffff';
+                            el.style.color = link.highlight ? '#ffffff' : '#000000';
+                          } else {
+                            el.style.backgroundColor = link.highlight ? '#ffd60a' : '#ffffff';
+                            el.style.color = '#000000';
+                          }
                         }}
                       >
-                        {link.highlight && <ChevronRight size={11} style={{ color: '#ff2e93', flexShrink: 0 }} />}
+                        {link.highlight && <ChevronRight size={11} style={{ color: isGamingTheme ? '#ffffff' : '#ff2e93', flexShrink: 0 }} />}
                         <span>{link.label}</span>
                       </button>
                     ) : (
@@ -324,10 +388,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
                           lineHeight: 1.4,
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.color = '#ff2e93';
+                          e.currentTarget.style.color = isGamingTheme ? '#000000' : '#ff2e93';
+                          if (isGamingTheme) e.currentTarget.style.textDecoration = 'underline';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.color = '#374151';
+                          if (isGamingTheme) e.currentTarget.style.textDecoration = 'none';
                         }}
                       >
                         {link.label}
@@ -371,7 +437,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
               style={{
                 width: '10px',
                 height: '10px',
-                backgroundColor: '#ff2e93',
+                backgroundColor: isGamingTheme ? '#000000' : '#ff2e93',
                 border: '1px solid #000000',
                 display: 'inline-block',
                 flexShrink: 0,
@@ -386,18 +452,18 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              backgroundColor: '#ccff00',
-              color: '#000000',
+              backgroundColor: isGamingTheme ? '#000000' : '#ccff00',
+              color: isGamingTheme ? '#ffffff' : '#000000',
               border: '2px solid #000000',
               padding: '4px 12px',
               fontWeight: 900,
               textTransform: 'uppercase',
               letterSpacing: '0.12em',
               fontSize: '10px',
-              boxShadow: '2px 2px 0px #000000',
+              boxShadow: isGamingTheme ? 'none' : '2px 2px 0px #000000',
             }}
           >
-            ★ VIBRANT POP Y2K CYBER EDITION ★
+            {isGamingTheme ? '★ MINIMALIST MONOCHROME EDITION ★' : '★ VIBRANT POP Y2K CYBER EDITION ★'}
           </span>
 
           {/* Language Toggle */}
@@ -413,22 +479,32 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
               fontWeight: 900,
               textTransform: 'uppercase',
               letterSpacing: '0.08em',
-              color: '#000000',
-              backgroundColor: '#00f0ff',
+              color: isGamingTheme ? '#ffffff' : '#000000',
+              backgroundColor: isGamingTheme ? '#000000' : '#00f0ff',
               border: '2px solid #000000',
               padding: '8px 16px',
               cursor: 'pointer',
-              boxShadow: '3px 3px 0px #000000',
+              boxShadow: isGamingTheme ? 'none' : '3px 3px 0px #000000',
               borderRadius: '0px',
               transition: 'all 0.1s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#ffd60a';
-              e.currentTarget.style.boxShadow = '4px 4px 0px #000000';
+              if (isGamingTheme) {
+                e.currentTarget.style.backgroundColor = '#ffffff';
+                e.currentTarget.style.color = '#000000';
+              } else {
+                e.currentTarget.style.backgroundColor = '#ffd60a';
+                e.currentTarget.style.boxShadow = '4px 4px 0px #000000';
+              }
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#00f0ff';
-              e.currentTarget.style.boxShadow = '3px 3px 0px #000000';
+              if (isGamingTheme) {
+                e.currentTarget.style.backgroundColor = '#000000';
+                e.currentTarget.style.color = '#ffffff';
+              } else {
+                e.currentTarget.style.backgroundColor = '#00f0ff';
+                e.currentTarget.style.boxShadow = '3px 3px 0px #000000';
+              }
             }}
             className="notranslate"
           >
@@ -436,7 +512,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
             <span>ENGLISH (GLOBAL)</span>
           </button>
         </div>
-
       </div>
     </footer>
   );

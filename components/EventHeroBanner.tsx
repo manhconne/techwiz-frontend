@@ -43,6 +43,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
   const [isPaused, setIsPaused] = useState(false);
 
   const currentCategory = propActiveCategory !== undefined ? propActiveCategory : internalCategory;
+  const isGaming = currentCategory === 'Gaming';
 
   // 5 Masterpiece Graphic Banners - Minimalist Monochrome with Oversized Typography
   const BANNER_SLIDES: GraphicBannerSlide[] = [
@@ -86,17 +87,17 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       id: 'slide-graffiti-hud',
       category: 'Gaming',
       categoryLabel: 'Gaming Arena',
-      heroWord: 'CYBER',
-      title: 'NAVI // Cyber Streetwear & Audio Arena',
-      subtitle: 'Electric high-voltage arena soundtrack drop, cyber aesthetics, terminal OS interface & holographic passes.',
-      tag: 'CYBER STREETWEAR // HI-VOLTAGE',
+      heroWord: 'ARCHIVE',
+      title: 'Monochrome Arena // High-Contrast Audio & Editorial Vinyl',
+      subtitle: 'Austere high-fidelity sound laboratory, architectural precision, editorial monograph releases & limited black vinyl boxsets.',
+      tag: 'EDITORIAL MONOGRAPH // SOUND LAB',
       image: '/banners/banner_graffiti_hud.jpg',
-      badge: 'HIGH VOLTAGE ARENA',
+      badge: 'MONOCHROME VAULT',
       dateText: 'SEASON 2026 GLOBAL',
-      locationText: 'Makuhari Messe, Chiba',
+      locationText: 'Makuhari Messe & Tokyo Arena',
       priceText: 'Vinyl Boxset $48.00',
-      ctaText: 'Explore Cyber Drop',
-      secondaryCtaText: 'Multimedia Tracks',
+      ctaText: 'Explore Archive',
+      secondaryCtaText: 'Browse Catalog',
       targetAnchor: 'albums',
       eventRefId: 'tour-bp-hanoi',
     },
@@ -154,13 +155,15 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
   // Filter slides by active category if selected, otherwise show all
   const filteredSlides = useMemo(() => {
     if (currentCategory === 'all') return BANNER_SLIDES;
+    if (currentCategory === 'Gaming') {
+      const gamingSlide = BANNER_SLIDES.find(s => s.category === 'Gaming');
+      const otherSlides = BANNER_SLIDES.filter(s => s.category !== 'Gaming');
+      return gamingSlide ? [gamingSlide, ...otherSlides] : BANNER_SLIDES;
+    }
     if (currentCategory === 'K-Pop') {
-      const kpopSlides = BANNER_SLIDES.filter(s => 
-        s.category === 'K-Pop' || 
-        s.id === 'slide-stadium-live' || 
-        s.id === 'slide-monochrome-king'
-      );
-      return kpopSlides.length > 0 ? kpopSlides : BANNER_SLIDES;
+      const kpopSlide = BANNER_SLIDES.find(s => s.category === 'K-Pop');
+      const otherSlides = BANNER_SLIDES.filter(s => s.category !== 'K-Pop');
+      return kpopSlide ? [kpopSlide, ...otherSlides] : BANNER_SLIDES;
     }
     const matched = BANNER_SLIDES.filter(s => s.category === currentCategory);
     return matched.length > 0 ? matched : BANNER_SLIDES;
@@ -221,7 +224,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
           1. EDITORIAL FULL-BLEED HERO BANNER - TO MAX (82vh+ cinema scale)
       ========================================================================= */}
       <div className="relative w-full h-[620px] sm:h-[720px] md:h-[820px] lg:h-[890px] xl:h-[940px] min-h-[82vh] overflow-hidden bg-neutral-900 group border-b-4 border-black">
-        {BANNER_SLIDES.map((slide, idx) => {
+        {filteredSlides.map((slide, idx) => {
           const isVisible = slide.id === currentSlide.id;
           return (
             <div
@@ -259,28 +262,28 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
         <div className="absolute left-6 sm:left-12 lg:left-20 bottom-10 sm:bottom-14 z-20 max-w-3xl text-white pointer-events-none">
           <div className="pointer-events-auto flex flex-col gap-4">
 
-            {/* Tag & Metadata Bar (Y2K Pop Badges) */}
+            {/* Tag & Metadata Bar */}
             <div className="flex items-center gap-3 flex-wrap font-mono">
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#ff2e93] text-white text-[11px] font-black uppercase tracking-widest border-2 border-black shadow-[3px_3px_0px_#000000]">
+              <span className={`inline-flex items-center gap-2 px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : 'bg-[#ff2e93] text-white border-2 border-black shadow-[3px_3px_0px_#000000]'} text-[11px] font-black uppercase tracking-widest`}>
                 <span>★</span>
                 <span>{currentSlide.tag}</span>
               </span>
 
-              <span className="text-[11px] font-bold tracking-wider text-black flex items-center gap-1.5 px-3 py-1.5 bg-[#00f0ff] border-2 border-black shadow-[3px_3px_0px_#000000]">
+              <span className={`text-[11px] font-bold tracking-wider ${isGaming ? 'bg-white text-black border-2 border-black shadow-none' : 'bg-[#00f0ff] text-black border-2 border-black shadow-[3px_3px_0px_#000000]'} flex items-center gap-1.5 px-3 py-1.5`}>
                 <span className="text-black font-black font-mono">LOC //</span>
                 <span>{currentSlide.locationText}</span>
               </span>
 
               {currentSlide.priceText && (
-                <span className="text-[11px] font-black px-3.5 py-1.5 bg-[#ffd60a] text-black border-2 border-black tracking-widest uppercase shadow-[3px_3px_0px_#000000]">
+                <span className={`text-[11px] font-black px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : 'bg-[#ffd60a] text-black border-2 border-black shadow-[3px_3px_0px_#000000]'} tracking-widest uppercase`}>
                   {currentSlide.priceText}
                 </span>
               )}
             </div>
 
-            {/* Oversized Serif Headline - Playfair Display Hero */}
+            {/* Oversized Headline - Playfair Display Hero */}
             <div className="space-y-1">
-              <div className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter uppercase text-[#ffd60a] leading-none select-none opacity-40 drop-shadow-[2px_2px_0px_#000]">
+              <div className={`font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter uppercase leading-none select-none ${isGaming ? 'text-white/60 opacity-60' : 'text-[#ffd60a] opacity-40 drop-shadow-[2px_2px_0px_#000]'}`}>
                 {currentSlide.heroWord}
               </div>
               <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal italic tracking-tight text-white leading-tight -mt-4 sm:-mt-6 drop-shadow-[2px_2px_0px_#000]">
@@ -290,9 +293,9 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
 
             {/* Editorial Rule with Visual Punctuation Box */}
             <div className="flex items-center gap-2 max-w-md my-1">
-              <div className="w-2.5 h-2.5 border-2 border-black bg-[#ff2e93] shrink-0" />
-              <div className="flex-1 h-[2px] bg-[#00f0ff]" />
-              <div className="w-2.5 h-2.5 border-2 border-black bg-[#ffd60a] shrink-0" />
+              <div className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : 'bg-[#ff2e93]'}`} />
+              <div className={`flex-1 h-[2px] ${isGaming ? 'bg-white' : 'bg-[#00f0ff]'}`} />
+              <div className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : 'bg-[#ffd60a]'}`} />
             </div>
 
             {/* Subtitle (Source Serif) */}
@@ -300,12 +303,12 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               {currentSlide.subtitle}
             </p>
 
-            {/* Action Buttons - Lengthened width significantly so text breathes comfortably */}
+            {/* Action Buttons */}
             <div className="flex items-center gap-4 pt-2 flex-wrap font-mono">
               <button
                 type="button"
                 onClick={handleMainCta}
-                className="px-8 sm:px-12 py-3.5 sm:py-4 min-w-[200px] sm:min-w-[240px] justify-center bg-[#ff2e93] text-white hover:bg-[#ff007f] border-2 border-black text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap shadow-[4px_4px_0px_#000000]"
+                className={`px-8 sm:px-12 py-3.5 sm:py-4 min-w-[200px] sm:min-w-[240px] justify-center ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black border-2 border-white shadow-none' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-colors duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px]`}
                 style={{ borderRadius: '0px' }}
               >
                 <span>{currentSlide.ctaText}</span>
@@ -315,7 +318,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               <button
                 type="button"
                 onClick={() => handleScrollToTarget(currentSlide.targetAnchor || 'albums')}
-                className="px-10 sm:px-14 py-3.5 sm:py-4 min-w-[240px] sm:min-w-[280px] justify-center bg-[#00f0ff] text-black hover:bg-[#38bdf8] border-2 border-black text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap shadow-[4px_4px_0px_#000000]"
+                className={`px-10 sm:px-14 py-3.5 sm:py-4 min-w-[240px] sm:min-w-[280px] justify-center ${isGaming ? 'bg-white text-black hover:bg-black hover:text-white border-2 border-black shadow-none' : 'bg-[#00f0ff] text-black hover:bg-[#38bdf8] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-colors duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px]`}
                 style={{ borderRadius: '0px' }}
               >
                 <span>{currentSlide.secondaryCtaText}</span>
@@ -324,14 +327,14 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
           </div>
         </div>
 
-        {/* Side Prev / Next Navigation Arrows (Y2K Pop Yellow Squares) */}
+        {/* Side Prev / Next Navigation Arrows */}
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             handlePrev();
           }}
-          className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center transition-all duration-100 cursor-pointer"
+          className={`absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-colors duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
           style={{ borderRadius: '0px' }}
           title="Previous Slide"
         >
@@ -344,7 +347,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             e.stopPropagation();
             handleNext();
           }}
-          className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center transition-all duration-100 cursor-pointer"
+          className={`absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-colors duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
           style={{ borderRadius: '0px' }}
           title="Next Slide"
         >
@@ -354,9 +357,9 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
         {/* Bottom Right Slide Counter & Square Indicator Box */}
         <div
           style={{ borderRadius: '0px' }}
-          className="absolute right-6 sm:right-12 bottom-8 sm:bottom-12 z-30 flex items-center gap-3 bg-white px-4 py-2 border-2 border-black shadow-[3px_3px_0px_#000] text-xs font-mono text-black font-bold"
+          className={`absolute right-6 sm:right-12 bottom-8 sm:bottom-12 z-30 flex items-center gap-3 bg-white px-4 py-2 border-2 border-black ${isGaming ? 'shadow-none' : 'shadow-[3px_3px_0px_#000]'} text-xs font-mono text-black font-bold`}
         >
-          <span className="font-black text-sm text-[#ff2e93]">0{activeIndex + 1}</span>
+          <span className={`font-black text-sm ${isGaming ? 'text-black' : 'text-[#ff2e93]'}`}>0{activeIndex + 1}</span>
           <span className="text-neutral-400">/</span>
           <span className="text-neutral-700">0{filteredSlides.length}</span>
 
@@ -369,8 +372,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
                   setActiveIndex(idx);
                 }}
                 className={`w-3 h-3 transition-colors duration-100 cursor-pointer border border-black ${idx === activeIndex
-                  ? 'bg-[#ff2e93]'
-                  : 'bg-neutral-200 hover:bg-[#ffd60a]'
+                  ? (isGaming ? 'bg-black' : 'bg-[#ff2e93]')
+                  : (isGaming ? 'bg-neutral-200 hover:bg-black' : 'bg-neutral-200 hover:bg-[#ffd60a]')
                   }`}
                 style={{ borderRadius: '0px' }}
                 title={`Slide ${idx + 1}`}
@@ -384,7 +387,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               e.stopPropagation();
               setIsPaused(!isPaused);
             }}
-            className="text-black hover:text-[#ff2e93] transition-colors ml-2 p-1 cursor-pointer font-mono text-xs font-black"
+            className={`transition-colors ml-2 p-1 cursor-pointer font-mono text-xs font-black ${isGaming ? 'text-black hover:opacity-60' : 'text-black hover:text-[#ff2e93]'}`}
             title={isPaused ? 'Resume' : 'Pause'}
           >
             {isPaused ? '▶' : '❚❚'}
@@ -394,18 +397,18 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       </div>
 
       {/* =========================================================================
-          2. DEDICATED FANDOM CATEGORY DOCK (Vibrant Y2K Pop Palette)
+          2. DEDICATED FANDOM CATEGORY DOCK
       ========================================================================= */}
-      <div className="w-full bg-[#fdfbf7] border-b-4 border-black py-4 px-4 sm:px-8">
+      <div className={`w-full ${isGaming ? 'bg-white' : 'bg-[#fdfbf7]'} border-b-4 border-black py-4 px-4 sm:px-8`}>
         <div className="max-w-[1440px] mx-auto flex items-center justify-center overflow-x-auto scrollbar-none">
           <div className="flex items-center gap-2 flex-wrap justify-center">
             {FANDOM_TABS.map((tab) => {
               const isActive = currentCategory === tab.id;
 
-              // Vibrant color per tab when active
+              // Color per tab when active
               let activeBgClass = 'bg-[#ffd60a] text-black';
-              if (tab.id === 'K-Pop') activeBgClass = 'bg-[#ff2e93] text-white';
-              else if (tab.id === 'Gaming') activeBgClass = 'bg-[#00f0ff] text-black';
+              if (tab.id === 'Gaming') activeBgClass = 'bg-black text-white';
+              else if (tab.id === 'K-Pop') activeBgClass = 'bg-[#ff2e93] text-white';
               else if (tab.id === 'Manga') activeBgClass = 'bg-[#fff9c4] text-[#2d2d2d]';
               else if (tab.id === 'Cosplay') activeBgClass = 'bg-[#fb923c] text-black';
               else if (tab.id === 'Anime') activeBgClass = 'bg-[#f43f5e] text-white';
@@ -420,8 +423,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
                   type="button"
                   style={{ borderRadius: '0px' }}
                   className={`px-4 sm:px-5 py-2.5 text-xs font-mono font-black tracking-widest uppercase transition-colors duration-100 cursor-pointer flex items-center gap-2 whitespace-nowrap border-2 border-black ${isActive
-                    ? `${activeBgClass} shadow-[3px_3px_0px_#000000]`
-                    : 'bg-white text-black hover:bg-[#fefce8] shadow-[2px_2px_0px_#000000]'
+                    ? `${activeBgClass} ${isGaming ? 'shadow-none' : 'shadow-[3px_3px_0px_#000000]'}`
+                    : `bg-white text-black hover:bg-neutral-100 ${isGaming ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`
                     }`}
                 >
                   {isActive && <span>★</span>}

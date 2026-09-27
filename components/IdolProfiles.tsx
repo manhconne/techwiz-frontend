@@ -884,6 +884,8 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
         setSelectedCategory('k-pop');
       } else if (fandomCategory === 'Anime') {
         setSelectedCategory('anime');
+      } else if (fandomCategory === 'Gaming') {
+        setSelectedCategory('gaming');
       } else if (fandomCategory === 'all') {
         setSelectedCategory('all');
       }

@@ -90,6 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
   const { themeMode, toggleThemeMode } = useDomainTheme();
 
   const isManga = fandomCategory === 'Manga' || fandomThemeKey === 'manga' || pathname?.startsWith('/manga');
+  const isGaming = fandomCategory === 'Gaming' || fandomThemeKey === 'gaming' || pathname?.startsWith('/gaming');
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
@@ -212,7 +213,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2.5 sm:gap-4 md:gap-5 shrink-0">
           <button
             onClick={() => setIsMenuDrawerOpen(true)}
-            className="mobile-menu-btn header-action-btn px-3 py-1.5 bg-[#ff2e93] text-white items-center justify-center cursor-pointer hover:bg-[#ff007f] shrink-0 border-2 border-black font-mono text-xs font-black uppercase tracking-widest transition-transform active:scale-95 shadow-[2px_2px_0px_#000000]"
+            className={`mobile-menu-btn header-action-btn px-3 py-1.5 ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] shadow-[2px_2px_0px_#000000]'} items-center justify-center cursor-pointer shrink-0 border-2 border-black font-mono text-xs font-black uppercase tracking-widest transition-transform active:scale-95`}
             style={{ borderRadius: '0px' }}
             title="Menu"
             type="button"
@@ -224,7 +225,7 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               src="/logo-dark.png?v=2"
               alt="Fan Hub Plus"
-              className="header-logo h-8 sm:h-9 md:h-11 w-auto object-contain block transition-all hover:scale-105"
+              className={`header-logo h-8 sm:h-9 md:h-11 w-auto object-contain block transition-all hover:scale-105 ${isGaming ? 'brightness-0' : ''}`}
             />
           </Link>
         </div>
@@ -240,17 +241,18 @@ export const Header: React.FC<HeaderProps> = ({
               alignItems: 'center',
               border: '2px solid #000000',
               backgroundColor: '#ffffff',
-              boxShadow: '3px 3px 0px #000000',
+              boxShadow: isGaming ? 'none' : '3px 3px 0px #000000',
               padding: '6px 12px',
+              borderRadius: '0px',
             }}
           >
             {/* Search prefix */}
             <span
               style={{
-                fontFamily: "var(--font-mono), 'JetBrains Mono', monospace",
+                fontFamily: "var(--font-jetbrains), var(--font-mono), 'JetBrains Mono', monospace",
                 fontSize: '11px',
                 fontWeight: 900,
-                color: '#ff2e93',
+                color: isGaming ? '#000000' : '#ff2e93',
                 marginRight: '8px',
                 userSelect: 'none',
               }}
@@ -273,7 +275,7 @@ export const Header: React.FC<HeaderProps> = ({
               style={{
                 flex: 1,
                 width: '100%',
-                fontFamily: "var(--font-mono), 'JetBrains Mono', monospace",
+                fontFamily: "var(--font-jetbrains), var(--font-mono), 'JetBrains Mono', monospace",
                 fontSize: '12px',
                 fontWeight: 700,
                 letterSpacing: '0.04em',
@@ -306,12 +308,12 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* RIGHT: Action Buttons (Vibrant Y2K Pop Neo-Brutalist Colors) */}
+        {/* RIGHT: Action Buttons (Minimalist Monochrome / Neo-Brutalist Colors) */}
         <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0 font-mono text-xs">
           {/* Mobile Search Button */}
           <button
             onClick={() => setIsSearchModalOpen(true)}
-            className="mobile-search-btn header-action-btn px-2.5 py-1.5 items-center justify-center text-black border-2 border-black hover:bg-[#ffd60a] cursor-pointer bg-white transition-colors duration-100 font-bold shadow-[2px_2px_0px_#000000]"
+            className={`mobile-search-btn header-action-btn px-2.5 py-1.5 items-center justify-center text-black border-2 border-black hover:bg-black hover:text-white cursor-pointer bg-white transition-colors duration-100 font-bold ${isGaming ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
             title="Search"
             type="button"
@@ -319,7 +321,7 @@ export const Header: React.FC<HeaderProps> = ({
             [?]
           </button>
 
-          {/* User Profile Button (Lilac Purple) */}
+          {/* User Profile Button */}
           <button
             onClick={() => {
               if (isLoggedIn) {
@@ -328,7 +330,7 @@ export const Header: React.FC<HeaderProps> = ({
                 setIsAuthModalOpen(true);
               }
             }}
-            className="header-action-btn px-3 py-1.5 flex items-center justify-center text-black border-2 border-black bg-[#c084fc] hover:bg-[#d8b4fe] cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000]"
+            className={`header-action-btn px-3 py-1.5 flex items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : 'text-black bg-[#c084fc] hover:bg-[#d8b4fe] shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
             title={isLoggedIn ? `${user.name} - Dashboard` : 'Sign In'}
             type="button"
@@ -340,10 +342,10 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </button>
 
-          {/* Shopping Cart Button (Lemon Yellow) */}
+          {/* Shopping Cart Button */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="header-action-btn px-3 py-1.5 flex items-center justify-center text-black border-2 border-black bg-[#ffd60a] hover:bg-[#fde047] cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000]"
+            className={`header-action-btn px-3 py-1.5 flex items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : 'text-black bg-[#ffd60a] hover:bg-[#fde047] shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
             title="Cart"
             type="button"
@@ -351,10 +353,10 @@ export const Header: React.FC<HeaderProps> = ({
             <span>BAG ({cartCount})</span>
           </button>
 
-          {/* Wishlist Button (Cyber Cyan) */}
+          {/* Wishlist Button */}
           <button
             onClick={() => setIsWishlistOpen(true)}
-            className="header-action-btn hidden sm:flex px-3 py-1.5 items-center justify-center text-black border-2 border-black bg-[#00f0ff] hover:bg-[#38bdf8] cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000]"
+            className={`header-action-btn hidden sm:flex px-3 py-1.5 items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : 'text-black bg-[#00f0ff] hover:bg-[#38bdf8] shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
             title="Wishlist"
             type="button"
@@ -367,7 +369,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleLanguage}
             title={language === 'en' ? 'Translate to Vietnamese' : 'Switch to English'}
             type="button"
-            className="header-lang-btn hidden sm:flex notranslate hover:bg-neutral-100 items-center px-2.5 py-1 text-xs font-mono font-bold border-2 border-black bg-white text-black h-8 sm:h-9 cursor-pointer transition-colors duration-100 shadow-[2px_2px_0px_#000000]"
+            className={`header-lang-btn hidden sm:flex notranslate hover:bg-black hover:text-white items-center px-2.5 py-1 text-xs font-mono font-bold border-2 border-black bg-white text-black h-8 sm:h-9 cursor-pointer transition-colors duration-100 ${isGaming ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
           >
             <span>[{language === 'en' ? 'EN' : 'VI'}]</span>
@@ -378,7 +380,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleThemeMode}
             title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             type="button"
-            className="header-action-btn hidden sm:flex notranslate hover:bg-neutral-100 px-2.5 py-1 items-center justify-center text-black border-2 border-black bg-white font-bold uppercase cursor-pointer transition-colors duration-100 h-8 sm:h-9 text-[11px] shadow-[2px_2px_0px_#000000]"
+            className={`header-action-btn hidden sm:flex notranslate hover:bg-black hover:text-white px-2.5 py-1 items-center justify-center text-black border-2 border-black bg-white font-bold uppercase cursor-pointer transition-colors duration-100 h-8 sm:h-9 text-[11px] ${isGaming ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
           >
             {themeMode === 'dark' ? '[LIGHT]' : '[DARK]'}
@@ -389,10 +391,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleFontSize}
             title={isLargeFont ? 'Standard Text Size' : 'Enlarge Text Size (+12.5%)'}
             type="button"
-            className={`header-action-btn hidden sm:flex notranslate w-8 sm:w-9 h-8 sm:h-9 items-center justify-center border-2 border-black font-mono font-bold text-xs cursor-pointer transition-colors duration-100 shadow-[2px_2px_0px_#000000] ${isLargeFont
-                ? 'bg-[#ff2e93] text-white'
-                : 'hover:bg-neutral-100 text-black bg-white'
-              }`}
+            className={`header-action-btn hidden sm:flex notranslate w-8 sm:w-9 h-8 sm:h-9 items-center justify-center border-2 border-black font-mono font-bold text-xs cursor-pointer transition-colors duration-100 ${isGaming ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'} ${isLargeFont ? 'bg-black text-white' : 'hover:bg-black hover:text-white text-black bg-white'}`}
             style={{ borderRadius: '0px' }}
           >
             <span>{isLargeFont ? 'A+' : 'A'}</span>
@@ -415,12 +414,12 @@ export const Header: React.FC<HeaderProps> = ({
       {/* SECONDARY CATEGORY NAVIGATION BAR (Desktop Only) */}
       <div className="desktop-subnav header-subnav w-full border-t border-black border-b-4 border-black relative z-30 bg-white">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between h-11 sm:h-[50px] relative gap-4">
-          {/* [ ≡ ALL MD ] Hot Pink Pop Button with Exact Dropdown */}
+          {/* [ ≡ ALL MD ] Button with Exact Dropdown */}
           <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center', zIndex: 60 }}>
             <button
               onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
               type="button"
-              className="header-allmd-btn hover:bg-[#ff007f] transition-all duration-100"
+              className={`header-allmd-btn transition-colors duration-100 ${isGaming ? 'hover:bg-white hover:text-black' : 'hover:opacity-90'}`}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -428,9 +427,9 @@ export const Header: React.FC<HeaderProps> = ({
                 gap: '8px',
                 padding: '8px 18px',
                 height: '36px',
-                backgroundColor: '#ff2e93',
+                backgroundColor: isGaming ? '#000000' : '#ff2e93',
                 color: '#ffffff',
-                fontFamily: "var(--font-mono), monospace",
+                fontFamily: "var(--font-jetbrains), var(--font-mono), monospace",
                 fontSize: '11px',
                 fontWeight: 900,
                 letterSpacing: '0.1em',
@@ -439,7 +438,7 @@ export const Header: React.FC<HeaderProps> = ({
                 borderRadius: '0px',
                 cursor: 'pointer',
                 flexShrink: 0,
-                boxShadow: '3px 3px 0px #000000',
+                boxShadow: isGaming ? 'none' : '3px 3px 0px #000000',
               }}
             >
               <Menu style={{ width: '15px', height: '15px', flexShrink: 0, strokeWidth: 2.5 }} />
@@ -613,7 +612,7 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* Horizontal Links with Clean Minimalist Monochrome Editorial Typography */}
+          {/* Horizontal Links */}
           <nav className="flex items-center gap-6 sm:gap-8 lg:gap-10 xl:gap-12 flex-nowrap h-full shrink-0 overflow-x-auto scrollbar-none">
             {isManga ? (
               <>

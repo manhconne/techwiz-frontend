@@ -11,7 +11,20 @@ interface ChatbotModalProps {
 export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOpenCart }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
+  const [isGamingTheme, setIsGamingTheme] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      const themeAttr = document.documentElement.getAttribute('data-fandom-theme') || 
+                        document.body.getAttribute('data-fandom-theme');
+      setIsGamingTheme(themeAttr === 'gaming');
+    };
+    checkTheme();
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['data-fandom-theme'] });
+    return () => observer.disconnect();
+  }, []);
 
   const initialMessages: ChatMessage[] = [
     {
@@ -180,28 +193,28 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
 
   return (
     <>
-      {/* Floating Action Trigger Button (Vibrant Y2K Cyber Terminal Badge) */}
+      {/* Floating Action Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         style={{ borderRadius: '0px' }}
-        className="fixed bottom-6 right-6 z-40 px-4 py-3 bg-[#ff2e93] text-white hover:bg-[#e11d48] border-3 border-black font-mono text-xs font-black uppercase tracking-widest cursor-pointer transition-colors duration-100 flex items-center gap-2.5 shadow-[4px_4px_0px_#000000]"
+        className={`fixed bottom-6 right-6 z-40 px-4 py-3 ${isGamingTheme ? 'bg-black text-white hover:bg-white hover:text-black border-2 border-black shadow-none' : 'bg-[#ff2e93] text-white hover:bg-[#e11d48] border-3 border-black shadow-[4px_4px_0px_#000000]'} font-mono text-xs font-black uppercase tracking-widest cursor-pointer transition-colors duration-100 flex items-center gap-2.5`}
         title="Launch AI Fandom Assistant"
         type="button"
       >
-        <span className="w-2.5 h-2.5 bg-[#ffd60a] border border-black animate-ping" />
+        <span className={`w-2.5 h-2.5 ${isGamingTheme ? 'bg-white' : 'bg-[#ffd60a]'} border border-black animate-ping`} />
         <span>★ AI BOT // FANDOM OS ✦</span>
       </button>
 
-      {/* Chat Window Modal (Y2K Retro OS Window) */}
+      {/* Chat Window Modal */}
       {isOpen && (
         <div 
           style={{ borderRadius: '0px' }}
-          className="fixed bottom-24 right-4 sm:right-6 z-50 w-[94vw] sm:w-[450px] max-h-[620px] h-[560px] bg-white text-black border-3 border-black flex flex-col overflow-hidden shadow-[8px_8px_0px_#000000] font-mono text-xs"
+          className={`fixed bottom-24 right-4 sm:right-6 z-50 w-[94vw] sm:w-[450px] max-h-[620px] h-[560px] bg-white text-black border-3 border-black flex flex-col overflow-hidden ${isGamingTheme ? 'shadow-none' : 'shadow-[8px_8px_0px_#000000]'} font-mono text-xs`}
         >
           {/* Y2K Window Bar Header */}
-          <div className="bg-[#ffd60a] text-black px-4 py-2.5 flex items-center justify-between border-b-3 border-black select-none">
+          <div className={`${isGamingTheme ? 'bg-black text-white' : 'bg-[#ffd60a] text-black'} px-4 py-2.5 flex items-center justify-between border-b-3 border-black select-none`}>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 bg-[#ff2e93] border border-black" />
+              <span className={`w-2.5 h-2.5 ${isGamingTheme ? 'bg-white' : 'bg-[#ff2e93]'} border border-black`} />
               <span className="font-black tracking-widest text-[11px] uppercase">
                 SYS.AI // FANDOM_OPERATOR_V2.0
               </span>
@@ -210,7 +223,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
             <div className="flex items-center gap-2">
               <button
                 onClick={handleClearHistory}
-                className="bg-white hover:bg-[#ecfeff] text-black px-2 py-0.5 border border-black text-[10px] font-black uppercase shadow-[1px_1px_0px_#000] cursor-pointer"
+                className={`bg-white ${isGamingTheme ? 'hover:bg-black hover:text-white shadow-none' : 'hover:bg-[#ecfeff] shadow-[1px_1px_0px_#000]'} text-black px-2 py-0.5 border border-black text-[10px] font-black uppercase cursor-pointer`}
                 title="Purge chat log"
                 type="button"
               >
@@ -218,7 +231,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="bg-[#ff2e93] text-white hover:bg-[#e11d48] px-2 py-0.5 border-2 border-black text-[10px] font-black cursor-pointer shadow-[1px_1px_0px_#000]"
+                className={`${isGamingTheme ? 'bg-black text-white hover:bg-white hover:text-black border-2 border-white shadow-none' : 'bg-[#ff2e93] text-white hover:bg-[#e11d48] border-2 border-black shadow-[1px_1px_0px_#000]'} px-2 py-0.5 text-[10px] font-black cursor-pointer`}
                 title="Close Window"
                 type="button"
               >
@@ -228,13 +241,13 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
           </div>
 
           {/* Quick FAQ Chips Bar */}
-          <div className="p-2.5 bg-[#ecfeff] border-b-2 border-black flex gap-1.5 overflow-x-auto scrollbar-none text-[10px]">
+          <div className={`p-2.5 ${isGamingTheme ? 'bg-neutral-100' : 'bg-[#ecfeff]'} border-b-2 border-black flex gap-1.5 overflow-x-auto scrollbar-none text-[10px]`}>
             {promptSuggestions.map((prompt, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSend(prompt)}
                 style={{ borderRadius: '0px' }}
-                className="whitespace-nowrap px-2.5 py-1 bg-white hover:bg-[#ffd60a] text-black border-2 border-black font-black uppercase transition-colors cursor-pointer shrink-0 shadow-[1px_1px_0px_#000]"
+                className={`whitespace-nowrap px-2.5 py-1 ${isGamingTheme ? 'bg-white hover:bg-black hover:text-white shadow-none' : 'bg-white hover:bg-[#ffd60a] shadow-[1px_1px_0px_#000]'} text-black border-2 border-black font-black uppercase transition-colors cursor-pointer shrink-0`}
                 type="button"
               >
                 ★ {prompt}
