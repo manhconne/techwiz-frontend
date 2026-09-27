@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { AdminHeader } from '../../../components/admin/AdminHeader';
 import { AdminSidebar } from '../../../components/admin/AdminSidebar';
 import { useAdminLanguage } from '../../../context/AdminLanguageContext';
+import { getAccessToken } from '../../../utils/authUtils';
 import {
   Users,
   Search,
@@ -93,14 +94,7 @@ export default function AdminUsersPage() {
     setErrorMessage(null);
 
     // Get Admin JWT token from cookie or localStorage
-    let token = '';
-    if (typeof window !== 'undefined') {
-      token = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
-      if (!token) {
-        const match = document.cookie.match(/access_token=([^;]+)/);
-        if (match) token = match[1];
-      }
-    }
+    const token = getAccessToken();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -178,14 +172,7 @@ export default function AdminUsersPage() {
     setBanningUserId(targetUser.id);
     setActionToast(null);
 
-    let token = '';
-    if (typeof window !== 'undefined') {
-      token = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
-      if (!token) {
-        const match = document.cookie.match(/access_token=([^;]+)/);
-        if (match) token = match[1];
-      }
-    }
+    const token = getAccessToken();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',

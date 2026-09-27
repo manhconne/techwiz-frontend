@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { AdminHeader } from '../../../components/admin/AdminHeader';
 import { AdminSidebar } from '../../../components/admin/AdminSidebar';
 import { useAdminLanguage } from '../../../context/AdminLanguageContext';
+import { getAccessToken } from '../../../utils/authUtils';
 import {
   Calendar,
   Ticket,
@@ -146,14 +147,7 @@ export default function AdminEventsPage() {
     setErrorMessage(null);
 
     // Get Admin JWT token from storage or cookie
-    let token = '';
-    if (typeof window !== 'undefined') {
-      token = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
-      if (!token) {
-        const match = document.cookie.match(/access_token=([^;]+)/);
-        if (match) token = match[1];
-      }
-    }
+    const token = getAccessToken();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -239,14 +233,7 @@ export default function AdminEventsPage() {
     setIsSubmittingApprove(true);
     setActionToast(null);
 
-    let token = '';
-    if (typeof window !== 'undefined') {
-      token = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
-      if (!token) {
-        const match = document.cookie.match(/access_token=([^;]+)/);
-        if (match) token = match[1];
-      }
-    }
+    const token = getAccessToken();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -326,14 +313,7 @@ export default function AdminEventsPage() {
     setIsSubmittingReview(true);
     setActionToast(null);
 
-    let token = '';
-    if (typeof window !== 'undefined') {
-      token = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
-      if (!token) {
-        const match = document.cookie.match(/access_token=([^;]+)/);
-        if (match) token = match[1];
-      }
-    }
+    const token = getAccessToken();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -408,14 +388,7 @@ export default function AdminEventsPage() {
     setIsSubmittingDelete(true);
     setActionToast(null);
 
-    let token = '';
-    if (typeof window !== 'undefined') {
-      token = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
-      if (!token) {
-        const match = document.cookie.match(/access_token=([^;]+)/);
-        if (match) token = match[1];
-      }
-    }
+    const token = getAccessToken();
 
     const headers: Record<string, string> = {
       Accept: 'application/json',

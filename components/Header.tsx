@@ -8,6 +8,7 @@ import { useCartWishlist } from '../context/CartWishlistContext';
 import { useAuth } from '../context/AuthContext';
 import { useDomainTheme } from '../context/DomainContext';
 import { PersonalDashboardModal } from './PersonalDashboardModal';
+import { checkIsAdmin } from '../utils/authUtils';
 import {
   Menu,
   Search,
@@ -429,14 +430,14 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Admin shortcut if admin */}
-          {user.role === 'admin' && (
+          {checkIsAdmin(user) && (
             <Link
               href="/admin"
-              className="flex items-center gap-1 px-2.5 py-1 text-xs font-black bg-amber-100 text-amber-800 border border-amber-300 rounded-md cursor-pointer h-8 text-decoration-none"
-              title="Admin Portal"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-black bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-lg shadow-sm transition-all text-decoration-none cursor-pointer"
+              title="Vào trang Quản trị (Admin Portal)"
             >
-              <ShieldCheck style={{ width: '15px', height: '15px', color: '#d97706' }} />
-              <span className="hidden md:inline">Admin</span>
+              <ShieldCheck style={{ width: '15px', height: '15px' }} />
+              <span>Admin</span>
             </Link>
           )}
         </div>
@@ -758,6 +759,30 @@ export const Header: React.FC<HeaderProps> = ({
             >
               B2B/BULK
             </Link>
+            {checkIsAdmin(user) && (
+              <Link
+                href="/admin"
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 900,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  padding: '14px 8px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  cursor: 'pointer',
+                  color: '#d97706',
+                  transition: 'all 0.15s ease',
+                  borderBottom: pathname?.startsWith('/admin') ? '2.5px solid #d97706' : '2.5px solid transparent',
+                  textDecoration: 'none',
+                }}
+                className="header-nav-link hover:opacity-80"
+              >
+                <ShieldCheck style={{ width: '15px', height: '15px' }} />
+                <span>ADMIN PORTAL</span>
+              </Link>
+            )}
           </nav>
         </div>
       </div>
@@ -1296,24 +1321,30 @@ export const Header: React.FC<HeaderProps> = ({
                         const data = await response.json().catch(() => ({}));
 
                         if (response.status === 200 || response.status === 201) {
-                          // Save access_token to cookie
-                          if (data.access_token) {
-                            document.cookie = `access_token=${data.access_token}; path=/; max-age=604800; SameSite=Lax`;
-                            localStorage.setItem('access_token', data.access_token);
+                          const accessToken = data.data?.accessToken || data.accessToken || data.access_token;
+                          const refreshToken = data.data?.refreshToken || data.refreshToken || data.refresh_token;
+
+                          if (accessToken) {
+                            document.cookie = `access_token=${accessToken}; path=/; max-age=604800; SameSite=Lax`;
+                            localStorage.setItem('access_token', accessToken);
                           }
-                          if (data.refresh_token) {
-                            document.cookie = `refresh_token=${data.refresh_token}; path=/; max-age=2592000; SameSite=Lax`;
-                            localStorage.setItem('refresh_token', data.refresh_token);
+                          if (refreshToken) {
+                            document.cookie = `refresh_token=${refreshToken}; path=/; max-age=2592000; SameSite=Lax`;
+                            localStorage.setItem('refresh_token', refreshToken);
                           }
 
-                          const userInfo = data.user_info || {};
-                          const userRole = (userInfo.role || loginEmail).toLowerCase().includes('admin') ? 'admin' : 'registered';
+                          const userObj = data.data?.user || data.user || data.user_info || {};
+                          const roles: string[] = Array.isArray(userObj.roles)
+                            ? userObj.roles
+                            : (userObj.role ? [userObj.role] : []);
+                          const isAdmin = roles.some((r: string) => String(r).toLowerCase() === 'admin') || loginEmail.toLowerCase().includes('admin');
+                          const userRole = isAdmin ? 'admin' : 'registered';
 
                           setAuthNotification(data.message || 'Login successful!');
                           loginAs(userRole, {
-                            id: userInfo.id || data.user_id || 'usr_' + Date.now(),
-                            name: userInfo.full_name || userInfo.name || data.full_name || loginEmail.split('@')[0],
-                            email: userInfo.email || loginEmail,
+                            id: userObj.id || data.user_id || 'usr_' + Date.now(),
+                            name: userObj.fullName || userObj.name || userObj.full_name || loginEmail.split('@')[0],
+                            email: userObj.email || loginEmail,
                           });
 
                           setTimeout(() => {
@@ -1517,20 +1548,24 @@ export const Header: React.FC<HeaderProps> = ({
                         const data = await response.json().catch(() => ({}));
 
                         if (response.ok || response.status === 200 || response.status === 201) {
-                          if (data.access_token) {
-                            document.cookie = `access_token=${data.access_token}; path=/; max-age=604800; SameSite=Lax`;
-                            localStorage.setItem('access_token', data.access_token);
+                          const accessToken = data.data?.accessToken || data.accessToken || data.access_token;
+                          const refreshToken = data.data?.refreshToken || data.refreshToken || data.refresh_token;
+
+                          if (accessToken) {
+                            document.cookie = `access_token=${accessToken}; path=/; max-age=604800; SameSite=Lax`;
+                            localStorage.setItem('access_token', accessToken);
                           }
-                          if (data.refresh_token) {
-                            document.cookie = `refresh_token=${data.refresh_token}; path=/; max-age=2592000; SameSite=Lax`;
-                            localStorage.setItem('refresh_token', data.refresh_token);
+                          if (refreshToken) {
+                            document.cookie = `refresh_token=${refreshToken}; path=/; max-age=2592000; SameSite=Lax`;
+                            localStorage.setItem('refresh_token', refreshToken);
                           }
 
+                          const userObj = data.data?.user || data.user || {};
                           setAuthNotification(data.message || 'Account created successfully!');
                           loginAs('registered', {
-                            id: data.user_id || 'usr_' + Date.now(),
-                            name: signupName,
-                            email: signupEmail,
+                            id: userObj.id || data.user_id || 'usr_' + Date.now(),
+                            name: userObj.fullName || userObj.name || signupName,
+                            email: userObj.email || signupEmail,
                           });
                           setTimeout(() => {
                             setIsAuthModalOpen(false);

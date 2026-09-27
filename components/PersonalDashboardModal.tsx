@@ -22,10 +22,12 @@ import {
   Radio,
   Share2,
   Tv,
-  Bell
+  Bell,
+  ArrowRight
 } from 'lucide-react';
 import { useAuth, UserActivity } from '../context/AuthContext';
 import { useCartWishlist } from '../context/CartWishlistContext';
+import { checkIsAdmin } from '../utils/authUtils';
 
 interface PersonalDashboardModalProps {
   isOpen: boolean;
@@ -144,6 +146,20 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 <span>•</span>
                 <span className="text-amber-400 font-bold">Cấp độ: Diamond Stan ⭐</span>
               </div>
+
+              {checkIsAdmin(user) && (
+                <div className="pt-3 flex justify-center sm:justify-start">
+                  <Link
+                    href="/admin"
+                    onClick={onClose}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-xs rounded-xl shadow-md transition-all active:scale-95 no-underline"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-white" />
+                    <span>Vào Bảng Điều Khiển Admin (Dashboard)</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useAdminLanguage } from '../../context/AdminLanguageContext';
+import { getAccessToken } from '../../utils/authUtils';
 import {
   DollarSign,
   ShoppingBag,
@@ -271,14 +272,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
     }
     setIsConnectionError(false);
 
-    let token = '';
-    if (typeof window !== 'undefined') {
-      token = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
-      if (!token) {
-        const match = document.cookie.match(/access_token=([^;]+)/);
-        if (match) token = match[1];
-      }
-    }
+    const token = getAccessToken();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
