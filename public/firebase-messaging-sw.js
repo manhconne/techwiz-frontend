@@ -5,7 +5,6 @@ importScripts(
   "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js",
 );
 
-// TODO: Đặt config giống hệt utils/firebase.ts
 firebase.initializeApp({
   apiKey: "AIzaSyCAybtREcntMMH0aCQsC66hvHSkltNjOxs",
   authDomain: "notificationservice-aacfd.firebaseapp.com",
