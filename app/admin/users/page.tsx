@@ -220,24 +220,10 @@ export default function AdminUsersPage() {
       setTimeout(() => setActionToast(null), 4000);
     } catch (err: any) {
       console.warn('Connection error on PUT /api/v1/admin/users/{id}/ban:', err);
-      // Strictly handle "lỗi api thì để là lỗi kết nối nha"
-      if (showDemoPreview || users.length === 0) {
-        setUsers((prev) =>
-          prev.map((u) => (u.id === targetUser.id ? { ...u, status: nextStatus } : u))
-        );
-        if (selectedUser && selectedUser.id === targetUser.id) {
-          setSelectedUser((prev) => (prev ? { ...prev, status: nextStatus } : null));
-        }
-        setActionToast({
-          type: 'warning',
-          message: `Connection Error: Server offline. (Simulated ${actionLabel.toLowerCase()} action in demo preview)`,
-        });
-      } else {
-        setActionToast({
-          type: 'error',
-          message: 'Connection Error: Failed to update user status to backend server.',
-        });
-      }
+      setActionToast({
+        type: 'error',
+        message: isVi ? 'Lỗi kết nối: Không thể cập nhật trạng thái người dùng.' : 'Connection Error: Failed to update user status to backend server.',
+      });
       setTimeout(() => setActionToast(null), 5000);
     } finally {
       setBanningUserId(null);
@@ -367,28 +353,6 @@ export default function AdminUsersPage() {
                 <span>{'Refresh'}</span>
               </button>
 
-              {isConnectionError && (
-                <button
-                  type="button"
-                  onClick={() => setShowDemoPreview(!showDemoPreview)}
-                  style={{
-                    borderRadius: '8px',
-                    backgroundColor: '#e0e7ff',
-                    color: '#3730a3',
-                    border: '1px solid #c7d2fe',
-                    padding: '8px 14px',
-                    fontWeight: 700,
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                  }}
-                >
-                  <Database className="w-3.5 h-3.5" />
-                  <span>{showDemoPreview ? (isVi ? 'Ẩn bản mẫu' : 'Hide Demo Preview') : (isVi ? 'Xem giao diện mẫu (Demo)' : 'View Demo Data')}</span>
-                </button>
-              )}
             </div>
           </div>
 
@@ -432,22 +396,7 @@ export default function AdminUsersPage() {
                 >
                   {'Retry Connection'}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setShowDemoPreview(true)}
-                  style={{
-                    borderRadius: '6px',
-                    backgroundColor: '#ffffff',
-                    color: '#92400e',
-                    border: '1px solid #fcd34d',
-                    padding: '6px 14px',
-                    fontWeight: 700,
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {isVi ? 'Xem bản mẫu' : 'View Demo'}
-                </button>
+
               </div>
             </div>
           )}
@@ -625,22 +574,7 @@ export default function AdminUsersPage() {
                       >
                         {'Retry Connection'}
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowDemoPreview(true)}
-                        style={{
-                          borderRadius: '8px',
-                          backgroundColor: '#f1f5f9',
-                          color: '#334155',
-                          border: '1px solid #cbd5e1',
-                          padding: '8px 16px',
-                          fontSize: '12px',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {isVi ? 'Xem bản mẫu (Demo)' : 'Enable Demo Preview'}
-                      </button>
+
                     </div>
                   </div>
                 ) : (

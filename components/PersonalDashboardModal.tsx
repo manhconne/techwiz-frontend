@@ -20,7 +20,9 @@ import {
   Radio,
   Share2,
   Tv,
-  Bell
+  Bell,
+  ShieldCheck,
+  ArrowRight
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCartWishlist } from '../context/CartWishlistContext';

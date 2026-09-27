@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShieldAlert, ArrowLeft, LogOut, Lock, RefreshCw } from 'lucide-react';
+import { ShieldAlert, ArrowLeft, LogOut, Lock, RefreshCw, User } from 'lucide-react';
 import { checkIsAdmin, getAccessToken } from '../../utils/authUtils';
 import { useAuth } from '../../context/AuthContext';
 
@@ -31,46 +31,84 @@ export const AdminGuard: React.FC<{ children: React.ReactNode }> = ({ children }
 
   if (isChecking) {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4 text-white">
-        <RefreshCw className="w-8 h-8 text-amber-500 animate-spin mb-3" />
-        <p className="text-sm font-bold text-slate-300">Đang xác thực quyền Quản trị viên...</p>
+      <div className="min-h-screen bg-[#0b0f17] flex flex-col items-center justify-center p-4 text-white">
+        <div className="w-12 h-12 rounded-lg bg-[#111622] border border-slate-800 flex items-center justify-center shadow-lg mb-3">
+          <RefreshCw className="w-5 h-5 text-indigo-400 animate-spin" />
+        </div>
+        <p className="text-xs font-bold tracking-wide text-slate-400 font-mono">Đang xác thực quyền Quản trị viên...</p>
       </div>
     );
   }
 
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-slate-100">
-        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl text-center space-y-6">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500">
-            <ShieldAlert className="w-8 h-8" />
-          </div>
+      <div className="min-h-screen bg-[#0b0f17] flex flex-col items-center justify-center p-4 sm:p-6 text-slate-100 relative selection:bg-rose-500 selection:text-white">
+        {/* Ambient background glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(225,29,72,0.08),transparent_50%)] pointer-events-none" />
 
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-black uppercase tracking-wider">
+        {/* Square Modern Card Container */}
+        <div className="relative max-w-md w-full bg-[#111622] border border-slate-800 rounded-lg shadow-2xl p-6 sm:p-8 space-y-6">
+          {/* Top accent gradient bar */}
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-rose-500 via-pink-500 to-indigo-500 rounded-t-lg" />
+
+          {/* Header Section */}
+          <div className="flex flex-col items-center text-center space-y-3.5">
+            {/* Square Icon Badge */}
+            <div className="w-14 h-14 rounded-lg bg-rose-500/10 border border-rose-500/25 flex items-center justify-center text-rose-500 shadow-inner relative">
+              <ShieldAlert className="w-7 h-7" />
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-xs animate-ping opacity-75" />
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-600 rounded-xs" />
+            </div>
+
+            {/* Status Tag */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-rose-950/70 border border-rose-900/80 text-rose-400 text-[11px] font-mono font-bold tracking-wider uppercase">
               <Lock className="w-3.5 h-3.5" />
-              <span>403 Forbidden · Quyền truy cập bị từ chối</span>
+              <span>403 FORBIDDEN · QUYỀN TRUY CẬP BỊ TỪ CHỐI</span>
             </div>
-            <h1 className="text-2xl font-black text-white tracking-tight">
-              Khu Vực Quản Trị Viên (Admin)
-            </h1>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Bạn không có quyền truy cập vào hệ thống Admin Dashboard. Trang này chỉ dành riêng cho tài khoản được cấp quyền Administrator.
-            </p>
+
+            <div className="space-y-1.5 pt-1">
+              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                Khu Vực Quản Trị Viên (Admin)
+              </h1>
+              <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+                Bạn không có quyền truy cập vào hệ thống Admin Dashboard. Trang này chỉ dành riêng cho tài khoản được cấp quyền Administrator.
+              </p>
+            </div>
           </div>
 
-          {user && user.email && (
-            <div className="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 text-xs text-slate-400 text-left space-y-1 font-mono">
-              <div className="text-[11px] uppercase tracking-wider text-slate-300 font-bold">Tài khoản hiện tại:</div>
-              <div className="text-white font-semibold truncate">{user.email}</div>
-              <div className="text-amber-400 text-[11px]">Vai trò: {user.role || 'Người dùng thông thường'}</div>
+          {/* Square Account Info Card */}
+          <div className="bg-[#0b0e14] border border-slate-800 rounded-lg p-4 space-y-3">
+            <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 font-bold uppercase tracking-wider pb-2 border-b border-slate-800/80">
+              <span className="flex items-center gap-1.5 text-slate-300">
+                <User className="w-3.5 h-3.5 text-slate-400" />
+                Tài khoản hiện tại
+              </span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-xs bg-slate-800/80 text-slate-400 border border-slate-700/60 font-mono">
+                SESSION
+              </span>
             </div>
-          )}
 
-          <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+            <div className="space-y-1">
+              <div className="text-[11px] text-slate-500 font-medium">Email:</div>
+              <div className="text-xs font-mono font-bold text-white truncate bg-slate-900/70 px-3 py-2 rounded-sm border border-slate-800">
+                {user?.email || 'Chưa đăng nhập'}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-1">
+              <span className="text-xs text-slate-400 font-medium">Vai trò:</span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm text-xs font-mono font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                {user?.role || 'visitor'}
+              </span>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="space-y-2.5 pt-1">
             <Link
               href="/"
-              className="w-full sm:flex-1 py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-950 text-xs font-black transition-colors flex items-center justify-center gap-2 no-underline"
+              className="w-full py-2.5 px-4 rounded-lg bg-white hover:bg-slate-100 text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm no-underline active:scale-[0.99]"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Quay lại trang chủ</span>
@@ -79,10 +117,10 @@ export const AdminGuard: React.FC<{ children: React.ReactNode }> = ({ children }
             <button
               onClick={() => {
                 logout();
-                router.push('/');
+                router.push('/login');
               }}
               type="button"
-              className="w-full sm:flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white text-xs font-bold border border-slate-700/80 hover:border-slate-600 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
             >
               <LogOut className="w-4 h-4 text-rose-400" />
               <span>Đổi tài khoản</span>

@@ -24,4 +24,4 @@ export const authApi = {
     });
     return res.json();
   }
-}; \
+};

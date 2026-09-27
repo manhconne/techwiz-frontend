@@ -288,17 +288,169 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
     },
   ];
 
-  // Regional Sales
-  const regions = [
-    { region: language === 'vi' ? 'Việt Nam' : 'Vietnam', percent: 45, color: '#ef4444' },
-    { region: language === 'vi' ? 'Mỹ & Toàn cầu' : 'US & Global', percent: 25, color: '#3b82f6' },
-    { region: language === 'vi' ? 'Hàn Quốc' : 'South Korea', percent: 18, color: '#10b981' },
-    { region: language === 'vi' ? 'Nhật Bản' : 'Japan', percent: 12, color: '#f59e0b' },
-  ];
 
-  const handleDeleteAlbum = (id: string) => {
-    setAlbumsList((prev) => prev.filter((a) => a.id !== id));
-  };
+  const dynamicTraffic = overviewData?.traffic || overviewData?.weeklyTraffic;
+  const weeklyTrafficData = isOnline ? (
+    Array.isArray(dynamicTraffic) && dynamicTraffic.length > 0
+      ? dynamicTraffic.map((t: any) => ({
+        day: t.day || t.label || '',
+        legit: Number(t.legit || t.success || 0),
+        bot: Number(t.bot || t.blocked || 0),
+        rate: Number(t.rate || 99.8),
+        isPeak: !!t.isPeak,
+      }))
+      : [
+        { day: isVi ? 'T2' : 'Mon', legit: 4200, bot: 1800, rate: 99.8 },
+        { day: isVi ? 'T3' : 'Tue', legit: 5600, bot: 2100, rate: 99.9 },
+        { day: isVi ? 'T4' : 'Wed', legit: 6800, bot: 2400, rate: 99.7 },
+        { day: isVi ? 'T5' : 'Thu', legit: 8900, bot: 3200, rate: 99.8 },
+        { day: isVi ? 'T6' : 'Fri', legit: 12400, bot: 5800, rate: 99.9 },
+        { day: isVi ? 'T7' : 'Sat', legit: 18900, bot: 9400, rate: 99.8, isPeak: true },
+        { day: isVi ? 'CN' : 'Sun', legit: 14200, bot: 6100, rate: 99.9 },
+      ]
+  ) : [
+    { day: isVi ? 'T2' : 'Mon', legit: 0, bot: 0, rate: 0, isPeak: false },
+    { day: isVi ? 'T3' : 'Tue', legit: 0, bot: 0, rate: 0, isPeak: false },
+    { day: isVi ? 'T4' : 'Wed', legit: 0, bot: 0, rate: 0, isPeak: false },
+    { day: isVi ? 'T5' : 'Thu', legit: 0, bot: 0, rate: 0, isPeak: false },
+    { day: isVi ? 'T6' : 'Fri', legit: 0, bot: 0, rate: 0, isPeak: false },
+    { day: isVi ? 'T7' : 'Sat', legit: 0, bot: 0, rate: 0, isPeak: false },
+    { day: isVi ? 'CN' : 'Sun', legit: 0, bot: 0, rate: 0, isPeak: false },
+  ];
+  const maxWeeklyTraffic = 20000;
+
+  const fetchDashboardData = useCallback(async (isManualRefresh = false) => {
+    if (isManualRefresh) {
+      setIsRefreshing(true);
+    } else {
+      setIsLoading(true);
+    }
+    setIsConnectionError(false);
+
+    const token = getAccessToken();
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const apiBase = (typeof window !== 'undefined' && (process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || process.env.NEXT_PUBLIC_API_URL)) || '';
+    let successCount = 0;
+
+    const overviewEndpoint = `${apiBase}/api/v1/admin/dashboard/overview`;
+    try {
+      const res = await fetch(overviewEndpoint, {
+        method: 'GET',
+        headers,
+        cache: 'no-store',
+      });
+      if (res.ok) {
+        const json = await res.json();
+        const data = json?.data || json;
+        if (data && typeof data === 'object') {
+          setOverviewData(data);
+          successCount++;
+          if (Array.isArray(data.pendingEvents)) setPendingEvents(data.pendingEvents);
+          if (Array.isArray(data.recentEvents)) setPendingEvents(data.recentEvents);
+          if (Array.isArray(data.users)) setUsers(data.users);
+          if (Array.isArray(data.recentUsers)) setUsers(data.recentUsers);
+          if (Array.isArray(data.financialReports)) setFinancialReports(data.financialReports);
+          if (Array.isArray(data.reports)) setFinancialReports(data.reports);
+        }
+      }
+    } catch {
+    }
+
+    const eventsEndpoint = `${apiBase}/api/v1/admin/events/pending?page=1&limit=5&sort=newest`;
+    try {
+      const res = await fetch(eventsEndpoint, {
+        method: 'GET',
+        headers,
+        cache: 'no-store',
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && Array.isArray(json.data)) {
+          setPendingEvents(json.data);
+          setPendingMeta({ total: Number(json.meta?.total) || json.data.length });
+          successCount++;
+        } else if (Array.isArray(json)) {
+          setPendingEvents(json);
+          setPendingMeta({ total: json.length });
+          successCount++;
+        }
+      }
+    } catch {
+    }
+
+    const reportsEndpoint = `${apiBase}/api/v1/admin/financial/reports?page=1&limit=5&sort=newest`;
+    try {
+      const res = await fetch(reportsEndpoint, {
+        method: 'GET',
+        headers,
+        cache: 'no-store',
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && Array.isArray(json.data)) {
+          setFinancialReports(json.data);
+          setReportsMeta({ total: Number(json.meta?.total) || json.data.length });
+          successCount++;
+        } else if (Array.isArray(json)) {
+          setFinancialReports(json);
+          setReportsMeta({ total: json.length });
+          successCount++;
+        }
+      }
+    } catch {
+    }
+
+    const usersEndpoint = `${apiBase}/api/v1/admin/users?page=1&limit=5`;
+    try {
+      const res = await fetch(usersEndpoint, {
+        method: 'GET',
+        headers,
+        cache: 'no-store',
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && Array.isArray(json.data)) {
+          setUsers(json.data);
+          setUsersMeta({ total: Number(json.meta?.total) || json.data.length });
+          successCount++;
+        } else if (Array.isArray(json)) {
+          setUsers(json);
+          setUsersMeta({ total: json.length });
+          successCount++;
+        }
+      }
+    } catch {
+    }
+
+    const hasAnySuccess = successCount > 0;
+    setIsConnectionError(!hasAnySuccess);
+    if (!hasAnySuccess) {
+      setOverviewData(null);
+      setPendingEvents([]);
+      setPendingMeta({ total: 0 });
+      setFinancialReports([]);
+      setReportsMeta({ total: 0 });
+      setUsers([]);
+      setUsersMeta({ total: 0 });
+    }
+
+    setLastSyncTime(new Date().toLocaleTimeString());
+    setIsLoading(false);
+    setIsRefreshing(false);
+  }, []);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
+
 
   const filteredPendingEvents = pendingEvents.filter(
     (e) =>
