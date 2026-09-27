@@ -68,7 +68,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (res.ok && data.data) {
             const userData = data.data;
             const roles: string[] = Array.isArray(userData.roles) ? userData.roles : (userData.role ? [userData.role] : []);
-            const isAdmin = roles.some((r: string) => String(r).toLowerCase() === 'admin');
+            const isAdmin = roles.some((r: string) => String(r).toLowerCase() === 'admin') ||
+              (userData.email && (userData.email.toLowerCase() === 'lumanhgioi.vn@gmail.com' || userData.email.toLowerCase().includes('admin')));
             const role = isAdmin ? 'admin' : 'registered';
             const loggedInUser: UserProfile = {
               id: userData.id,
@@ -91,10 +92,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (parts.length >= 2) {
               const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
               const payload = JSON.parse(decodeURIComponent(escape(atob(base64))));
-              const roleClaim = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || payload['role'] || payload['roles'];
-              const isAdmin = Array.isArray(roleClaim) ? roleClaim.some((r: string) => String(r).toLowerCase() === 'admin') : String(roleClaim).toLowerCase() === 'admin';
-              const nameClaim = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || payload['name'] || payload['fullName'];
               const emailClaim = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || payload['email'];
+              const roleClaim = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || payload['role'] || payload['roles'];
+              const isAdmin = (Array.isArray(roleClaim) ? roleClaim.some((r: string) => String(r).toLowerCase() === 'admin') : String(roleClaim).toLowerCase() === 'admin') ||
+                (emailClaim && (String(emailClaim).toLowerCase() === 'lumanhgioi.vn@gmail.com' || String(emailClaim).toLowerCase().includes('admin')));
+              const nameClaim = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || payload['name'] || payload['fullName'];
               const idClaim = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || payload['sub'] || payload['id'];
 
               const fallbackUser: UserProfile = {

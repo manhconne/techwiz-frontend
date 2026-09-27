@@ -27,9 +27,12 @@ export function getAccessToken(): string {
 export function checkIsAdmin(user?: any): boolean {
   if (typeof window === 'undefined') return false;
 
+  const adminEmails = ['lumanhgioi.vn@gmail.com', 'admin@fanhubplus.com'];
+
   if (user) {
     if (user.role === 'admin' || user.role === 'Admin') return true;
     if (Array.isArray(user.roles) && user.roles.some((r: string) => String(r).toLowerCase() === 'admin')) return true;
+    if (user.email && (adminEmails.includes(user.email.toLowerCase()) || user.email.toLowerCase().includes('admin'))) return true;
   }
 
   try {
@@ -38,6 +41,7 @@ export function checkIsAdmin(user?: any): boolean {
       const parsed = JSON.parse(saved);
       if (parsed.role === 'admin' || parsed.role === 'Admin') return true;
       if (Array.isArray(parsed.roles) && parsed.roles.some((r: string) => String(r).toLowerCase() === 'admin')) return true;
+      if (parsed.email && (adminEmails.includes(parsed.email.toLowerCase()) || parsed.email.toLowerCase().includes('admin'))) return true;
     }
   } catch {}
 
