@@ -58,7 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               'Authorization': `Bearer ${token}`
             }
           });
-          const data = await res.json();
+          const text = await res.text();
+          const data = text ? JSON.parse(text) : {};
           if (res.ok && data.data) {
             const userData = data.data;
             const role = (userData.roles && userData.roles.includes('Admin')) ? 'admin' : 'registered';
