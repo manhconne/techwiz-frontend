@@ -22,7 +22,7 @@ export default function SystemMonitorPage() {
       }
     };
     fetchStatus();
-    const iv = setInterval(fetchStatus, 800);
+    const iv = setInterval(fetchStatus, 300);
     return () => clearInterval(iv);
   }, []);
 
@@ -69,9 +69,14 @@ export default function SystemMonitorPage() {
             </div>
             <div className="text-right">
               <div className="text-[10px] text-slate-500 font-mono uppercase">Traffic Processed</div>
-              <div className="text-sm font-mono font-bold text-white">
-                {svc.totalRequests?.toLocaleString() || 0} <span className="text-[10px] text-slate-400">reqs</span>
-                {svc.rps > 0 && <span className="text-[11px] text-amber-400 ml-2 font-bold animate-pulse">({svc.rps} r/s)</span>}
+              <div className="text-sm font-mono font-bold text-white flex items-center justify-end gap-1.5">
+                <span>{svc.totalRequests?.toLocaleString() || 0}</span>
+                <span className="text-[10px] text-slate-400">reqs</span>
+                {svc.rps > 0 && (
+                  <span className="text-[10px] bg-amber-500/20 border border-amber-500/40 text-amber-400 px-1.5 py-0.5 rounded font-bold animate-pulse">
+                    {svc.rps} r/s
+                  </span>
+                )}
               </div>
             </div>
           </div>
