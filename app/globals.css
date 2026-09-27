@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Fira+Code:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Fira+Code:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Kalam:wght@400;700&family=Outfit:wght@400;500;600;700;800;900&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap');
 @import './domain-themes.css';
 @import './fandom-styles.css';
 
@@ -15,6 +15,8 @@
   --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
   --font-syne: var(--font-playfair), 'Playfair Display', serif;
   --font-outfit: var(--font-source-serif), 'Source Serif 4', serif;
+  --font-kalam: 'Kalam', cursive, sans-serif;
+  --font-patrick: 'Patrick Hand', cursive, sans-serif;
 
   --ease-instant: cubic-bezier(0, 0, 1, 1);
 }
@@ -314,7 +316,7 @@ input, select, textarea {
 }
 
 .archetype-tactile-accent:hover {
-  transform: rotate(0deg) scale(1.05);
+  transform: rotate(-2deg);
 }
 
 .tactile-amber {
@@ -412,10 +414,10 @@ input, select, textarea {
 .btn-primary:hover {
   background: #1e293b;
   box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.25);
-  transform: translateY(-1px);
+  transform: none;
 }
 .btn-primary:active {
-  transform: translateY(0) scale(0.98);
+  transform: none;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -432,7 +434,7 @@ input, select, textarea {
   color: #000000 !important;
   border-color: #cbd5e1;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.06);
-  transform: translateY(-1px);
+  transform: none;
 }
 
 /* Accent Glow Button: Electric Gradient */
@@ -445,7 +447,7 @@ input, select, textarea {
 .btn-accent:hover {
   background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
   box-shadow: 0 8px 24px rgba(37, 99, 235, 0.5);
-  transform: translateY(-1px);
+  transform: none;
 }
 
 /* Outline / Glass Button */
@@ -461,7 +463,7 @@ input, select, textarea {
   color: #0f172a !important;
   border-color: #cbd5e1;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transform: translateY(-1px);
+  transform: none;
 }
 
 /* Size Modifiers */
@@ -930,7 +932,7 @@ img {
 .kpop-card:hover {
   box-shadow: var(--shadow-sky);
   border-color: #a3a3a3;
-  transform: translateY(-2px);
+  transform: none;
 }
 
 .kpop-button-primary {
@@ -951,7 +953,7 @@ img {
 
 .kpop-button-primary:hover {
   background-color: var(--color-primary-hover);
-  transform: translateY(-1px);
+  transform: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
@@ -1451,11 +1453,11 @@ textarea::placeholder {
 }
 
 .luxury-card {
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  transition: box-shadow 0.35s ease, border-color 0.35s ease;
 }
 
 .luxury-card:hover {
-  transform: translateY(-5px);
+  transform: none;
   box-shadow: 0 20px 40px -8px rgba(15, 23, 42, 0.12);
 }
 
@@ -1582,11 +1584,11 @@ button:focus-visible {
 .card-y2k {
   border: 2.5px solid #000000;
   box-shadow: 4px 4px 0px #000000;
-  transition: transform 0.15s cubic-bezier(0, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0, 0, 0.2, 1);
+  transition: box-shadow 0.15s cubic-bezier(0, 0, 0.2, 1);
 }
 
 .card-y2k:hover {
-  transform: translate(-2px, -2px);
+  transform: none;
   box-shadow: 6px 6px 0px #000000;
 }
 
@@ -1617,19 +1619,19 @@ button:focus-visible {
   font-family: var(--font-mono), monospace;
   font-weight: 800;
   text-transform: uppercase;
-  transition: all 0.1s ease;
+  transition: background-color 0.1s ease;
   cursor: pointer;
 }
 
 .btn-y2k-pink:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #000000;
+  transform: none;
+  box-shadow: 3px 3px 0px #000000;
   background-color: #ff007f;
 }
 
 .btn-y2k-pink:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px #000000;
+  transform: none;
+  box-shadow: 3px 3px 0px #000000;
 }
 
 .btn-y2k-cyan {
@@ -1640,13 +1642,13 @@ button:focus-visible {
   font-family: var(--font-mono), monospace;
   font-weight: 800;
   text-transform: uppercase;
-  transition: all 0.1s ease;
+  transition: background-color 0.1s ease;
   cursor: pointer;
 }
 
 .btn-y2k-cyan:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #000000;
+  transform: none;
+  box-shadow: 3px 3px 0px #000000;
   background-color: #38bdf8;
 }
 
@@ -1658,13 +1660,13 @@ button:focus-visible {
   font-family: var(--font-mono), monospace;
   font-weight: 800;
   text-transform: uppercase;
-  transition: all 0.1s ease;
+  transition: background-color 0.1s ease;
   cursor: pointer;
 }
 
 .btn-y2k-yellow:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #000000;
+  transform: none;
+  box-shadow: 3px 3px 0px #000000;
   background-color: #fde047;
 }
 
@@ -1707,5 +1709,97 @@ button:focus-visible {
   box-shadow: 2px 2px 0px #000000;
 }
 
+/* OpenStreetMap + Leaflet Custom Neo-Brutalist Styles */
+.leaflet-container {
+  font-family: var(--font-sans), sans-serif !important;
+  width: 100% !important;
+  height: 100% !important;
+  outline: none;
+  isolation: isolate;
+}
 
+.custom-leaflet-popup .leaflet-popup-content-wrapper {
+  border-radius: 0px !important;
+  border: 2px solid #000000 !important;
+  box-shadow: 4px 4px 0px #000000 !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+}
 
+.custom-leaflet-popup .leaflet-popup-tip-container {
+  display: none !important;
+}
+
+.custom-leaflet-popup .leaflet-popup-content {
+  margin: 10px !important;
+  line-height: 1.4 !important;
+}
+
+.custom-leaflet-popup .leaflet-popup-close-button {
+  top: 6px !important;
+  right: 6px !important;
+  color: #000000 !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  width: 20px !important;
+  height: 20px !important;
+  line-height: 20px !important;
+  text-align: center !important;
+  background: #ffffff !important;
+  border: 1.5px solid #000000 !important;
+  border-radius: 0px !important;
+}
+
+.custom-leaflet-popup .leaflet-popup-close-button:hover {
+  background: #ff2e93 !important;
+  color: #ffffff !important;
+}
+
+.leaflet-control-zoom a {
+  border-radius: 0px !important;
+  border: 2px solid #000000 !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  font-weight: 900 !important;
+  box-shadow: 2px 2px 0px #000000 !important;
+  margin-bottom: 4px !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* ========================================================================= */
+/* UNIVERSAL HOVER STABILITY: NO TILTING, SKEWING, SHIFTING OR DISPLACEMENT  */
+/* ========================================================================= */
+button:hover,
+a:hover,
+article:hover,
+[class*="hover\:translate"]:hover,
+[class*="hover\:-translate"]:hover,
+[class*="hover\:rotate"]:hover,
+.group:hover [class*="group-hover\:translate"],
+.group:hover [class*="group-hover\:-translate"],
+.group:hover [class*="group-hover\:rotate"] {
+  --tw-translate-x: 0px !important;
+  --tw-translate-y: 0px !important;
+  --tw-rotate: 0deg !important;
+  --tw-skew-x: 0deg !important;
+  --tw-skew-y: 0deg !important;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-accent:hover,
+.btn-outline:hover,
+.kpop-card:hover,
+.kpop-button-primary:hover,
+.card-y2k:hover,
+.btn-y2k-pink:hover,
+.btn-y2k-cyan:hover,
+.btn-y2k-yellow:hover,
+.luxury-card:hover,
+.fandom-card:hover {
+  transform: none !important;
+}

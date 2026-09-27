@@ -284,7 +284,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                   type="button"
                   onClick={() => setIsSubmitModalOpen(true)}
                   style={{ borderRadius: '0px' }}
-                  className="px-4 py-2 bg-[#ff2e93] text-white text-xs font-mono font-black uppercase tracking-widest hover:bg-[#ff007f] border-2 border-black transition-all duration-100 cursor-pointer shadow-[3px_3px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                  className="px-4 py-2 bg-[#ff2e93] text-white text-xs font-mono font-black uppercase tracking-widest hover:bg-[#ff007f] border-2 border-black transition-colors duration-100 cursor-pointer shadow-[3px_3px_0px_#000000]"
                   title="Submit Fandom Article"
                 >
                   <span>[+ SUBMIT POST]</span>
@@ -329,7 +329,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                       {/* Timeline Card */}
                       <div 
                         style={{ borderRadius: '0px' }}
-                        className="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#00f0ff] hover:-translate-y-1 transition-all duration-100 flex flex-col md:flex-row gap-6 group"
+                        className="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#00f0ff] transition-all duration-100 flex flex-col md:flex-row gap-6 group"
                       >
                         <img
                           src={art.coverImage}
@@ -382,7 +382,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                     <article
                       key={art.id}
                       style={{ borderRadius: '0px' }}
-                      className="group border-2 border-black bg-white shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#00f0ff] hover:-translate-y-1 transition-all duration-100 flex flex-col sm:flex-row overflow-hidden"
+                      className="group border-2 border-black bg-white shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#00f0ff] transition-all duration-100 flex flex-col sm:flex-row overflow-hidden"
                     >
                       {/* Image Thumbnail */}
                       <div className="sm:w-[42%] relative min-h-[220px] sm:min-h-[260px] overflow-hidden bg-black shrink-0 border-b-2 sm:border-b-0 sm:border-r-2 border-black">
@@ -530,7 +530,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                     <div
                       key={rel.id}
                       style={{ borderRadius: '0px' }}
-                      className="p-6 flex flex-col gap-4 group bg-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ffd60a] hover:-translate-y-1 transition-all duration-100"
+                      className="p-6 flex flex-col gap-4 group bg-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ffd60a] transition-all duration-100"
                     >
                       {/* Top Header: Badge & Days Countdown */}
                       <div className="flex items-center justify-between gap-2.5 font-mono">
@@ -606,7 +606,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                           type="button"
                           onClick={() => handlePreOrder(rel)}
                           style={{ borderRadius: '0px' }}
-                          className="flex-1 py-3 px-5 text-black text-xs font-black uppercase tracking-widest bg-[#ffd60a] border-2 border-black hover:bg-[#ff2e93] hover:text-white cursor-pointer transition-all duration-100 shadow-[3px_3px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                          className="flex-1 py-3 px-5 text-black text-xs font-black uppercase tracking-widest bg-[#ffd60a] border-2 border-black hover:bg-[#ff2e93] hover:text-white cursor-pointer transition-colors duration-100 shadow-[3px_3px_0px_#000000]"
                         >
                           [+ PRE-ORDER DROP]
                         </button>
@@ -615,7 +615,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                           type="button"
                           onClick={() => toggleReminder(rel.id)}
                           style={{ borderRadius: '0px' }}
-                          className={`px-3 py-3 border-2 border-black text-xs font-black uppercase tracking-wider transition-all duration-100 cursor-pointer shrink-0 shadow-[3px_3px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px] ${
+                          className={`px-3 py-3 border-2 border-black text-xs font-black uppercase tracking-wider transition-colors duration-100 cursor-pointer shrink-0 shadow-[3px_3px_0px_#000000] ${
                             isReminded 
                               ? 'bg-[#ff2e93] text-white' 
                               : 'bg-[#00f0ff] text-black hover:bg-[#38bdf8]'

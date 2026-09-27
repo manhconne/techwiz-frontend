@@ -329,7 +329,7 @@ export const FanCommunityFeed: React.FC = () => {
               <div 
                 key={post.id}
                 style={{ borderRadius: '0px' }}
-                className="bg-white border-3 border-black flex flex-col justify-between shadow-[5px_5px_0px_#000000] hover:shadow-[7px_7px_0px_#ff2e93] hover:-translate-y-1 transition-all duration-200"
+                className="bg-white border-3 border-black flex flex-col justify-between shadow-[5px_5px_0px_#000000] hover:shadow-[7px_7px_0px_#ff2e93] transition-all duration-200"
               >
                 {/* Card Top Header */}
                 <div className="p-6">

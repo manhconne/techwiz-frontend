@@ -151,7 +151,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
             <button
               onClick={() => addToCart(album, album.versions[0]?.name)}
               style={{ borderRadius: '0px' }}
-              className="flex-1 sm:flex-initial px-6 sm:px-8 py-3.5 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center cursor-pointer transition-all duration-100 shadow-[3px_3px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0"
+              className="flex-1 sm:flex-initial px-6 sm:px-8 py-3.5 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center cursor-pointer transition-colors duration-100 shadow-[3px_3px_0px_#000]"
               type="button"
             >
               [+ PRE-ORDER]
@@ -160,7 +160,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
             <button
               onClick={() => playTrack(album)}
               style={{ borderRadius: '0px' }}
-              className={`flex-1 sm:flex-initial px-6 sm:px-8 py-3.5 border-2 border-black text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center cursor-pointer transition-all duration-100 shadow-[3px_3px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0 ${
+              className={`flex-1 sm:flex-initial px-6 sm:px-8 py-3.5 border-2 border-black text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center cursor-pointer transition-colors duration-100 shadow-[3px_3px_0px_#000] ${
                 isThisPlaying
                   ? 'bg-[#ff2e93] text-white font-black'
                   : 'bg-[#00f0ff] hover:bg-[#38bdf8] text-black font-black'

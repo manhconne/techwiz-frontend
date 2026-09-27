@@ -20,19 +20,40 @@ import { FeedbackModal } from '../components/FeedbackModal';
 
 import { Footer } from '../components/Footer';
 import { Y2KTickerTape } from '../components/Y2KTickerTape';
+import { MangaHandDrawnView } from '../components/MangaHandDrawnView';
 // import { TestConnection } from '../components/TestConnection';
 import { Album, FandomCategoryKey } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
 
-export default function Home() {
+export default function Home({ initialCategory = 'all' }: { initialCategory?: FandomCategoryKey | 'all' } = {}) {
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedArtistFilter, setSelectedArtistFilter] = useState('all');
-  const [selectedFandomCategory, setSelectedFandomCategory] = useState<FandomCategoryKey | 'all'>('all');
+  const [selectedFandomCategory, setSelectedFandomCategory] = useState<FandomCategoryKey | 'all'>(initialCategory);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   const { setIsCartOpen, setIsWishlistOpen } = useCartWishlist();
+
+  // Check URL query params on mount for direct category access (e.g. ?category=kpop or ?category=manga)
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const catParam = params.get('category') || params.get('fandom');
+      if (catParam) {
+        const lower = catParam.toLowerCase();
+        if (lower === 'kpop' || lower === 'k-pop') {
+          setSelectedFandomCategory('K-Pop');
+        } else if (lower === 'manga') {
+          setSelectedFandomCategory('Manga');
+        } else if (lower === 'anime') {
+          setSelectedFandomCategory('Anime');
+        } else if (lower === 'gaming') {
+          setSelectedFandomCategory('Gaming');
+        }
+      }
+    }
+  }, []);
 
   // Map selectedFandomCategory to theme attribute key
   const fandomThemeKey = React.useMemo(() => {
@@ -97,45 +118,52 @@ export default function Home() {
           onSelectCategory={(cat) => setSelectedFandomCategory(cat)}
         />
 
-        {/* Y2K Marquee Ticker 01 */}
-        <Y2KTickerTape />
+        {selectedFandomCategory === 'Manga' ? (
+          /* =========================================================================
+             DEDICATED HAND-DRAWN MANGA SKETCHBOOK & TANKŌBON LAYOUT
+          ========================================================================= */
+          <MangaHandDrawnView />
+        ) : (
+          <>
+            {/* Y2K Marquee Ticker 01 */}
+            <Y2KTickerTape />
 
-        {/* 2. Character & Idol Group Profiles (Encyclopedic Archive, Characters & Lore) */}
-        <IdolProfiles 
-          onSelectArtist={handleSelectArtistFromProfiles} 
-          fandomCategory={selectedFandomCategory}
-        />
+            {/* 2. Character & Idol Group Profiles (Encyclopedic Archive, Characters & Lore) */}
+            <IdolProfiles 
+              onSelectArtist={handleSelectArtistFromProfiles} 
+              fandomCategory={selectedFandomCategory}
+            />
 
-        {/* 3. Fandom Content Explorer & Official Album Drops with Multi-Filters & Search */}
-        <AlbumGrid
-          onSelectAlbum={(album) => setSelectedAlbum(album)}
-          searchQuery={searchQuery}
-          selectedArtistFilter={selectedArtistFilter}
-          setSelectedArtistFilter={setSelectedArtistFilter}
-          fandomCategory={selectedFandomCategory}
-        />
+            {/* 3. Fandom Content Explorer & Official Album Drops with Multi-Filters & Search */}
+            <AlbumGrid
+              onSelectAlbum={(album) => setSelectedAlbum(album)}
+              searchQuery={searchQuery}
+              selectedArtistFilter={selectedArtistFilter}
+              setSelectedArtistFilter={setSelectedArtistFilter}
+              fandomCategory={selectedFandomCategory}
+            />
 
-        {/* 4. Multimedia Center Spotlight & Teaser Showcase */}
-        <MultimediaTeaserSection />
+            {/* 4. Multimedia Center Spotlight & Teaser Showcase */}
+            <MultimediaTeaserSection />
 
-        {/* 5. Trending Articles & Upcoming Drops / Release Calendar */}
-        <div id="upcoming-releases">
-          <UpcomingReleasesAndArticles 
-            initialCategory={selectedFandomCategory}
-            onSelectCategory={(cat) => setSelectedFandomCategory(cat)}
-          />
-        </div>
+            {/* 5. Trending Articles & Upcoming Drops / Release Calendar */}
+            <div id="upcoming-releases">
+              <UpcomingReleasesAndArticles 
+                initialCategory={selectedFandomCategory}
+                onSelectCategory={(cat) => setSelectedFandomCategory(cat)}
+              />
+            </div>
 
-        {/* 6. World Tour & Stadium Arenas Showcase */}
-        <WorldTourShowcase />
+            {/* 6. World Tour & Stadium Arenas Showcase */}
+            <WorldTourShowcase />
 
-        {/* Y2K Marquee Ticker 02 (Inverted Obsidian) */}
-        <Y2KTickerTape inverted />
+            {/* Y2K Marquee Ticker 02 (Inverted Obsidian) */}
+            <Y2KTickerTape inverted />
 
-        {/* 7. Fan Community Social Feed */}
-        <FanCommunityFeed />
-
-
+            {/* 7. Fan Community Social Feed */}
+            <FanCommunityFeed />
+          </>
+        )}
       </main>
 
       {/* Interactive Modals and Drawers */}

@@ -92,7 +92,7 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = () => {
             <Link
               href="/event"
               style={{ borderRadius: '0px' }}
-              className="px-5 py-2.5 bg-[#ffd60a] text-black hover:bg-[#ff2e93] hover:text-white border-2 border-black font-black uppercase tracking-widest transition-all duration-100 shadow-[3px_3px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+              className="px-5 py-2.5 bg-[#ffd60a] text-black hover:bg-[#ff2e93] hover:text-white border-2 border-black font-black uppercase tracking-widest transition-colors duration-100 shadow-[3px_3px_0px_#000000]"
             >
               [FULL TOUR SCHEDULE →]
             </Link>
@@ -106,7 +106,7 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = () => {
               <div
                 key={tour.id}
                 style={{ borderRadius: '0px' }}
-                className="group bg-white border-2 border-black flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] hover:-translate-y-1 transition-all duration-100"
+                className="group bg-white border-2 border-black flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] transition-all duration-100"
               >
                 {/* Image Container with Badges */}
                 <div>
@@ -205,7 +205,7 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = () => {
                   <Link
                     href="/event"
                     style={{ borderRadius: '0px' }}
-                    className="px-5 py-2.5 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-xs font-black uppercase tracking-widest transition-all shadow-[2px_2px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                    className="px-5 py-2.5 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-xs font-black uppercase tracking-widest transition-colors shadow-[2px_2px_0px_#000000]"
                   >
                     [BOOK PASS →]
                   </Link>

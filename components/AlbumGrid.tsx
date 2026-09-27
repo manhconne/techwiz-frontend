@@ -497,7 +497,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                   key={album.id}
                   onClick={() => onSelectAlbum(album)}
                   style={{ borderRadius: '0px' }}
-                  className="col-span-1 sm:col-span-2 lg:col-span-2 bg-white border-2 border-black p-5 sm:p-6 flex flex-col justify-between cursor-pointer group relative shadow-[5px_5px_0px_#000000] hover:shadow-[7px_7px_0px_#ff2e93] hover:-translate-y-0.5 transition-all duration-100 min-w-0 overflow-hidden"
+                  className="col-span-1 sm:col-span-2 lg:col-span-2 bg-white border-2 border-black p-5 sm:p-6 flex flex-col justify-between cursor-pointer group relative shadow-[5px_5px_0px_#000000] hover:shadow-[7px_7px_0px_#ff2e93] transition-all duration-100 min-w-0 overflow-hidden"
                 >
                   <div className="min-w-0">
                     {/* Top: Album Cover Hero Banner */}
@@ -581,7 +581,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                         addToCart(album, album.versions[0]?.name);
                       }}
                       style={{ borderRadius: '0px' }}
-                      className="px-6 py-3 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-xs font-black uppercase tracking-widest transition-all duration-100 cursor-pointer shadow-[3px_3px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                      className="px-6 py-3 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-xs font-black uppercase tracking-widest transition-colors duration-100 cursor-pointer shadow-[3px_3px_0px_#000000]"
                       type="button"
                     >
                       [+ PRE-ORDER]
@@ -600,7 +600,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                   key={album.id}
                   onClick={() => onSelectAlbum(album)}
                   style={{ borderRadius: '0px' }}
-                  className="group bg-white border-2 border-black p-4 sm:p-5 flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] hover:-translate-y-1 transition-all duration-100 cursor-pointer"
+                  className="group bg-white border-2 border-black p-4 sm:p-5 flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] transition-all duration-100 cursor-pointer"
                 >
                   <div className="flex-1 flex flex-col">
                     {/* Album Cover Container */}
@@ -704,7 +704,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                         addToCart(album, album.versions[0]?.name);
                       }}
                       style={{ borderRadius: '0px' }}
-                      className="px-3.5 py-2 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer shrink-0 shadow-[2px_2px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                      className="px-3.5 py-2 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-[11px] font-black uppercase tracking-wider transition-colors cursor-pointer shrink-0 shadow-[2px_2px_0px_#000000]"
                       type="button"
                       title="Pre-Order"
                     >
@@ -727,7 +727,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                   key={album.id}
                   onClick={() => onSelectAlbum(album)}
                   style={{ borderRadius: '0px' }}
-                  className="break-inside-avoid bg-white border-2 border-black p-5 flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
+                  className="break-inside-avoid bg-white border-2 border-black p-5 flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] transition-all duration-200 cursor-pointer group"
                 >
                   <div 
                     style={{ borderRadius: '0px' }}
@@ -789,7 +789,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                   key={album.id}
                   onClick={() => onSelectAlbum(album)}
                   style={{ borderRadius: '0px' }}
-                  className="group bg-white border-2 border-black p-4 sm:p-5 flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                  className="group bg-white border-2 border-black p-4 sm:p-5 flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] transition-all duration-200 cursor-pointer"
                 >
                   <div className="flex-1 flex flex-col">
                     <div 
