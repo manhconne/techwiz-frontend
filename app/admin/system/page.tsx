@@ -113,14 +113,14 @@ export default function SystemMonitorPage() {
                   <Users className="text-blue-400" size={24} />
                   <div>
                     <div className="text-[10px] text-slate-500 uppercase font-bold">Active Users</div>
-                    <div className="text-2xl font-black text-white font-mono">{sysStatus?.activeUsers || 0}</div>
+                    <div className="text-2xl font-black text-white font-mono">{sysStatus?.activeUsers?.toLocaleString() || 0}</div>
                   </div>
                 </div>
                 <div className="bg-slate-900 border border-slate-800 px-6 py-3 rounded-xl flex items-center gap-4">
                   <Zap className="text-amber-400" size={24} />
                   <div>
                     <div className="text-[10px] text-slate-500 uppercase font-bold">Total Requests</div>
-                    <div className="text-2xl font-black text-white font-mono">{sysStatus?.totalRequests || 0}</div>
+                    <div className="text-2xl font-black text-white font-mono">{sysStatus?.totalRequests?.toLocaleString() || 0}</div>
                   </div>
                 </div>
               </div>
