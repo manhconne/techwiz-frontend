@@ -21,6 +21,7 @@ import { FeedbackModal } from '../components/FeedbackModal';
 import { Footer } from '../components/Footer';
 import { Y2KTickerTape } from '../components/Y2KTickerTape';
 import { MangaHandDrawnView } from '../components/MangaHandDrawnView';
+import { AnimeNeoBrutalView } from '../components/AnimeNeoBrutalView';
 // import { TestConnection } from '../components/TestConnection';
 import { Album, FandomCategoryKey } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
@@ -123,6 +124,11 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
              DEDICATED HAND-DRAWN MANGA SKETCHBOOK & TANKŌBON LAYOUT
           ========================================================================= */
           <MangaHandDrawnView />
+        ) : selectedFandomCategory === 'Anime' ? (
+          /* =========================================================================
+             DEDICATED ANIME NEO-BRUTALIST SAKUGA & ARCHIVE LAYOUT
+          ========================================================================= */
+          <AnimeNeoBrutalView />
         ) : (
           <>
             {/* Y2K Marquee Ticker 01 */}

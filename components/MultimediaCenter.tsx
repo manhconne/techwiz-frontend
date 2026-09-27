@@ -320,11 +320,15 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
   return (
     <section 
       id="multimedia" 
-      className={`relative w-full pt-16 sm:pt-24 pb-20 sm:pb-28 transition-colors duration-200 border-b-4 border-black ${
-        isCinemaMode ? 'bg-[#000000] text-white' : 'bg-white text-black'
+      style={{
+        paddingTop: '80px',
+        paddingBottom: '96px',
+      }}
+      className={`relative w-full transition-colors duration-200 border-b-4 border-black ${
+        isCinemaMode ? 'bg-[#000000] text-white' : 'bg-[#fdfbf7] text-black'
       }`}
     >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 flex flex-col gap-12 sm:gap-16">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 flex flex-col gap-14 sm:gap-20">
         
         {/* ========================================================= */}
         {/* 1. EDITORIAL HEADER & CINEMA CONTROLLER                   */}
@@ -398,7 +402,7 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
         {/* ========================================================= */}
         {/* 3. MULTIMEDIA FILTER TOOLBAR                              */}
         {/* ========================================================= */}
-        <div className="pt-2 sm:pt-4">
+        <div className="pt-8 sm:pt-12">
           <MultimediaFilterBar
             selectedFormat={selectedFormat}
             selectedUniverse={selectedUniverse}
@@ -415,7 +419,7 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
         {/* ========================================================= */}
         {/* 4. MEDIA GALLERY GRID                                     */}
         {/* ========================================================= */}
-        <div className="pt-2 sm:pt-4">
+        <div className="pt-8 sm:pt-12">
           <MultimediaCardGrid
             filteredMediaList={filteredMediaList}
             activeMediaId={activeMedia.id}
@@ -438,7 +442,7 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
         {/* ========================================================= */}
         {/* 5. PROTOCOL BANNER                                        */}
         {/* ========================================================= */}
-        <div className="pt-4 sm:pt-6">
+        <div className="pt-10 sm:pt-14">
           <MultimediaProtocolBanner />
         </div>
 

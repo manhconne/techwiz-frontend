@@ -62,16 +62,16 @@ export const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({
       description: 'Manga halftone aesthetics, graphic streetwear drops & legendary Shonen masterpieces.',
       stats: '9.2M Otaku · 450+ Series'
     },
-    // 3. COSPLAY (Reference Image 2 Style: Harajuku Acid Lime & Black)
+    // 3. COSPLAY (Bauhaus Constructivist Modernism: Red #D02020 & Geometric Atelier)
     {
       id: 'Cosplay',
       label: 'Cosplay World',
-      subTitle: 'HARAJUKU SHINOBI EXPO',
+      subTitle: 'BAUHAUS GEOMETRIC ATELIER',
       styleClass: 'fandom-card-cosplay',
-      tagText: '★ COSPLAY EXPO 2026',
+      tagText: '★ BAUHAUS COSPLAY',
       icon: Shirt,
-      accentColor: '#39ff14',
-      description: 'Next-gen character transformations, tactical LED armor props & global cosplay expos.',
+      accentColor: '#D02020',
+      description: 'Geometric character transformations, constructivist atelier props & architectural cosplay expos.',
       stats: '3.4M Cosplayers'
     },
     // 4. GAMING (Reference Image 3: Cyberpunk Electro-Graffiti / Lightning Violet + Lime)

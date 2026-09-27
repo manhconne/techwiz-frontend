@@ -36,8 +36,17 @@ export const MultimediaRatingPanel: React.FC<MultimediaRatingPanelProps> = ({
         isCinemaMode ? 'bg-[#111111] text-white border-neutral-800' : 'bg-[#fdfbf7] text-black border-black'
       }`}
     >
+      {/* Accent Color Strip */}
+      <div className="flex h-1.5">
+        <div className="flex-1 bg-[#ff2e93]" />
+        <div className="flex-1 bg-[#ffd60a]" />
+        <div className="flex-1 bg-[#00f0ff]" />
+        <div className="flex-1 bg-[#ff2e93]" />
+        <div className="flex-1 bg-[#ffd60a]" />
+      </div>
+
       {/* Interactive Dock Row */}
-      <div className="p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="p-5 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-8">
         {/* Left: Dual Community Rating Widget */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
           <div className="flex items-center gap-3">

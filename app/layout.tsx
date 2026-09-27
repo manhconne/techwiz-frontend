@@ -4,6 +4,7 @@ import {
   Source_Serif_4,
   JetBrains_Mono,
   Plus_Jakarta_Sans,
+  Outfit,
 } from 'next/font/google';
 import './globals.css';
 import { CartWishlistProvider } from '../context/CartWishlistContext';
@@ -12,6 +13,13 @@ import { PlayerProvider } from '../context/PlayerContext';
 import { DomainProvider } from '../context/DomainContext';
 import { GoogleTranslate } from '../components/GoogleTranslate';
 import { DomainSelectionModal } from '../components/DomainSelectionModal';
+
+const fontOutfit = Outfit({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500', '700', '900'],
+  display: 'swap',
+  variable: '--font-outfit',
+});
 
 const fontPlayfair = Playfair_Display({
   subsets: ['latin', 'vietnamese'],
@@ -58,7 +66,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fontPlayfair.variable} ${fontSourceSerif.variable} ${fontSans.variable} ${fontJetBrains.variable}`}
+      className={`${fontOutfit.variable} ${fontPlayfair.variable} ${fontSourceSerif.variable} ${fontSans.variable} ${fontJetBrains.variable}`}
     >
       <body className={`${fontSourceSerif.className} antialiased bg-white text-black selection:bg-black selection:text-white`}>
         <GoogleTranslate />

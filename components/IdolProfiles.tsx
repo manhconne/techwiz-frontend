@@ -886,6 +886,8 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
         setSelectedCategory('anime');
       } else if (fandomCategory === 'Gaming') {
         setSelectedCategory('gaming');
+      } else if (fandomCategory === 'Cosplay') {
+        setSelectedCategory('cosplay');
       } else if (fandomCategory === 'all') {
         setSelectedCategory('all');
       }
@@ -912,7 +914,9 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                   ? artist.category === 'Movie' 
                   : selectedCategory === 'gaming' 
                     ? artist.category === 'Gaming' 
-                    : true;
+                    : selectedCategory === 'cosplay'
+                      ? artist.category === 'Cosplay'
+                      : true;
 
       const q = searchQuery.toLowerCase().trim();
       const matchQuery = 
@@ -932,6 +936,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
     { id: 'all', label: 'All Universes', count: mockArtists.length },
     { id: 'v-pop', label: 'V-Pop (Vietnam)', count: mockArtists.filter(a => a.category === 'V-Pop').length },
     { id: 'k-pop', label: 'K-Pop', count: mockArtists.filter(a => a.category === 'K-Pop').length },
+    { id: 'cosplay', label: 'Cosplay Atelier', count: mockArtists.filter(a => a.category === 'Cosplay').length },
     { id: 'anime', label: 'Anime', count: mockArtists.filter(a => a.category === 'Anime').length },
     { id: 'movie', label: 'Cinema', count: mockArtists.filter(a => a.category === 'Movie').length },
     { id: 'gaming', label: 'Gaming', count: mockArtists.filter(a => a.category === 'Gaming').length },

@@ -44,6 +44,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
 
   const currentCategory = propActiveCategory !== undefined ? propActiveCategory : internalCategory;
   const isGaming = currentCategory === 'Gaming';
+  const isAnime = currentCategory === 'Anime';
 
   // 5 Masterpiece Graphic Banners - Minimalist Monochrome with Oversized Typography
   const BANNER_SLIDES: GraphicBannerSlide[] = [
@@ -122,20 +123,38 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
     {
       id: 'slide-monochrome-king',
       category: 'Cosplay',
-      categoryLabel: 'Streetwear & Cosplay',
-      heroWord: 'VOGUE',
-      title: 'K-Pop Fandom Streetwear Collection Vol. 01',
-      subtitle: 'Monochrome dark urban style, postage stamp stickers, cat doodles, tape labels & tactical gear collection.',
-      tag: 'STREETWEAR AESTHETIC // VOL. 01',
+      categoryLabel: 'Bauhaus & Cosplay Atelier',
+      heroWord: 'BAUHAUS',
+      title: 'Constructivist Modernism: Living Geometry Cosplay Expo 2026',
+      subtitle: 'Form follows function — primary red, blue & yellow, stark black geometries and living architectural costume drops.',
+      tag: 'BAUHAUS ATELIER // 2026',
       image: '/banners/banner_monochrome_king.jpg',
-      badge: 'LIMITED EDITION DROP',
-      dateText: 'WINTER COLLECTION 2026',
-      locationText: 'Harajuku & Hongdae Pop-up',
-      priceText: 'Street Wear Kit $54.00',
-      ctaText: 'Shop Streetwear Drop',
-      secondaryCtaText: 'Explore All MD',
+      badge: 'BAUHAUS EXPO DROP',
+      dateText: 'SPRING EXHIBIT 2026',
+      locationText: 'Dessau Bauhaus & Berlin Modernist Hall',
+      priceText: 'Atelier Pass $48.00',
+      ctaText: 'Explore Bauhaus Atelier',
+      secondaryCtaText: 'View Geometric Drops',
       targetAnchor: 'albums',
       eventRefId: 'tour-ive-world',
+    },
+    {
+      id: 'slide-anime-streetwear',
+      category: 'Anime',
+      categoryLabel: 'Anime & Shonen Streetwear',
+      heroWord: 'SHONEN',
+      title: 'SHONEN STREET REVOLUTION: Acid Lime Halftone & Pedido Drop',
+      subtitle: 'Manga halftone aesthetics, oversized boxy drop-shoulder graphics & limited Harajuku Shonen anime merchandise drop.',
+      tag: 'SHONEN STREETWEAR // ACID LIME',
+      image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1600&auto=format&fit=crop&q=85',
+      badge: '★ SHONEN STREET DROP',
+      dateText: 'SPRING STREETWEAR 2026',
+      locationText: 'Akihabara & Harajuku Flagship',
+      priceText: 'Streetwear Kit $56.00',
+      ctaText: 'Shop Shonen Drop',
+      secondaryCtaText: 'Explore Halftone Archive',
+      targetAnchor: 'albums',
+      eventRefId: 'tour-atvncg-hanoi',
     },
   ];
 
@@ -164,6 +183,11 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       const kpopSlide = BANNER_SLIDES.find(s => s.category === 'K-Pop');
       const otherSlides = BANNER_SLIDES.filter(s => s.category !== 'K-Pop');
       return kpopSlide ? [kpopSlide, ...otherSlides] : BANNER_SLIDES;
+    }
+    if (currentCategory === 'Anime') {
+      const animeSlide = BANNER_SLIDES.find(s => s.category === 'Anime');
+      const otherSlides = BANNER_SLIDES.filter(s => s.category !== 'Anime');
+      return animeSlide ? [animeSlide, ...otherSlides] : BANNER_SLIDES;
     }
     const matched = BANNER_SLIDES.filter(s => s.category === currentCategory);
     return matched.length > 0 ? matched : BANNER_SLIDES;
@@ -357,9 +381,9 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
         {/* Bottom Right Slide Counter & Square Indicator Box */}
         <div
           style={{ borderRadius: '0px' }}
-          className={`absolute right-6 sm:right-12 bottom-8 sm:bottom-12 z-30 flex items-center gap-3 bg-white px-4 py-2 border-2 border-black ${isGaming ? 'shadow-none' : 'shadow-[3px_3px_0px_#000]'} text-xs font-mono text-black font-bold`}
+          className={`absolute right-6 sm:right-12 bottom-8 sm:bottom-12 z-30 flex items-center gap-3 bg-white px-4 py-2 border-2 border-black ${isGaming ? 'shadow-none' : isAnime ? 'shadow-[3px_3px_0px_#84cc16]' : 'shadow-[3px_3px_0px_#000]'} text-xs font-mono text-black font-bold`}
         >
-          <span className={`font-black text-sm ${isGaming ? 'text-black' : 'text-[#ff2e93]'}`}>0{activeIndex + 1}</span>
+          <span className={`font-black text-sm ${isGaming ? 'text-black' : isAnime ? 'text-[#65a30d]' : 'text-[#ff2e93]'}`}>0{activeIndex + 1}</span>
           <span className="text-neutral-400">/</span>
           <span className="text-neutral-700">0{filteredSlides.length}</span>
 
@@ -372,8 +396,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
                   setActiveIndex(idx);
                 }}
                 className={`w-3 h-3 transition-colors duration-100 cursor-pointer border border-black ${idx === activeIndex
-                  ? (isGaming ? 'bg-black' : 'bg-[#ff2e93]')
-                  : (isGaming ? 'bg-neutral-200 hover:bg-black' : 'bg-neutral-200 hover:bg-[#ffd60a]')
+                  ? (isGaming ? 'bg-black' : isAnime ? 'bg-[#a3e635]' : 'bg-[#ff2e93]')
+                  : (isGaming ? 'bg-neutral-200 hover:bg-black' : isAnime ? 'bg-neutral-200 hover:bg-[#a3e635]' : 'bg-neutral-200 hover:bg-[#ffd60a]')
                   }`}
                 style={{ borderRadius: '0px' }}
                 title={`Slide ${idx + 1}`}
@@ -387,7 +411,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               e.stopPropagation();
               setIsPaused(!isPaused);
             }}
-            className={`transition-colors ml-2 p-1 cursor-pointer font-mono text-xs font-black ${isGaming ? 'text-black hover:opacity-60' : 'text-black hover:text-[#ff2e93]'}`}
+            className={`transition-colors ml-2 p-1 cursor-pointer font-mono text-xs font-black ${isGaming ? 'text-black hover:opacity-60' : isAnime ? 'text-black hover:text-[#65a30d]' : 'text-black hover:text-[#ff2e93]'}`}
             title={isPaused ? 'Resume' : 'Pause'}
           >
             {isPaused ? '▶' : '❚❚'}
@@ -399,7 +423,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       {/* =========================================================================
           2. DEDICATED FANDOM CATEGORY DOCK
       ========================================================================= */}
-      <div className={`w-full ${isGaming ? 'bg-white' : 'bg-[#fdfbf7]'} border-b-4 border-black py-4 px-4 sm:px-8`}>
+      <div className={`w-full ${isGaming ? 'bg-white' : isAnime ? 'bg-[#f7fee7]' : 'bg-[#fdfbf7]'} border-b-4 border-black py-4 px-4 sm:px-8`}>
         <div className="max-w-[1440px] mx-auto flex items-center justify-center overflow-x-auto scrollbar-none">
           <div className="flex items-center gap-2 flex-wrap justify-center">
             {FANDOM_TABS.map((tab) => {
@@ -410,8 +434,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               if (tab.id === 'Gaming') activeBgClass = 'bg-black text-white';
               else if (tab.id === 'K-Pop') activeBgClass = 'bg-[#ff2e93] text-white';
               else if (tab.id === 'Manga') activeBgClass = 'bg-[#fff9c4] text-[#2d2d2d]';
-              else if (tab.id === 'Cosplay') activeBgClass = 'bg-[#fb923c] text-black';
-              else if (tab.id === 'Anime') activeBgClass = 'bg-[#f43f5e] text-white';
+              else if (tab.id === 'Cosplay') activeBgClass = 'bg-[#D02020] text-white shadow-[4px_4px_0px_#121212]';
+              else if (tab.id === 'Anime') activeBgClass = 'bg-[#a3e635] text-black shadow-[4px_4px_0px_#000000]';
               else if (tab.id === 'Comics') activeBgClass = 'bg-[#38bdf8] text-black';
               else if (tab.id === 'Movies') activeBgClass = 'bg-[#ffd60a] text-black';
               else if (tab.id === 'TV Shows') activeBgClass = 'bg-[#a3e635] text-black';

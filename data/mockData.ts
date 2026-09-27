@@ -117,6 +117,20 @@ export const mockArtists: Artist[] = [
     bannerImage: 'https://upload.wikimedia.org/wikipedia/vi/e/ed/Thanh_G%C6%B0%C6%A1m_Di%E1%BB%87t_Qu%E1%BB%B7_Chuy%E1%BA%BFn_T%C3%A0u_V%C3%B4_T%E1%BA%ADn_Poster.jpg',
     bio: 'Cinematic anime masterpiece that holds the all-time international box office record with world-class animation by ufotable.',
     totalAlbums: 3,
+  },
+  {
+    id: 'bauhaus-atelier',
+    name: 'Bauhaus Modernist Atelier',
+    koreanName: '바우하우스 코스프레 아틀리에',
+    agency: 'Bauhaus Dessau / Vanguard Costumes',
+    category: 'Cosplay',
+    fandomName: 'Constructivists',
+    debutYear: 2024,
+    members: ['Walter G.', 'Wassily K.', 'Oskar S.'],
+    image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
+    bannerImage: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80',
+    bio: 'Pioneering theatrical costume atelier transforming pure geometry (circles, squares, triangles) and primary color theory into iconic living architectural cosplay experiences.',
+    totalAlbums: 2,
   }
 ];
 
@@ -383,10 +397,199 @@ export const mockAlbums: Album[] = [
       { id: 1, title: 'Main Theme Detective Conan Cinema Mix', duration: '3:15', isTitleTrack: true }
     ],
     reviews: []
-  }
-];
+  },
+  {
+    id: 'demon-slayer-mugen-soundtrack',
+    title: 'Demon Slayer: Kimetsu no Yaiba - Mugen Train Symphonic OST & Shonen Streetwear Collector Box',
+    artist: 'Demon Slayer: Kimetsu no Yaiba',
+    artistId: 'demon-slayer',
+    category: 'Anime',
+    priceUSD: 42.0,
+    priceVND: 1050000,
+    originalPriceUSD: 48.0,
+    coverImage: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80'
+    ],
+    type: 'OST & Vinyl',
+    releaseDate: '2026-02-15',
+    tag: 'Acid Lime Halftone Edition',
+    rating: 4.97,
+    reviewCount: 2890,
+    popularityScore: 99,
+    stock: 70,
+    description:
+      'Complete orchestral soundtrack boxset featuring Go Shiina & Yuki Kajiura master compositions, Acid Lime manga halftone artbook, and Harajuku Shonen graphic streetwear kit.',
+    versions: [
+      { id: 'ds-acid-lime', name: 'Acid Lime Halftone Ver.', extraPriceUSD: 0 },
+      { id: 'ds-flame-black', name: 'Flame Black Edition', extraPriceUSD: 4 }
+    ],
+    inclusions: [
+      'Deluxe 3-CD Uncut Symphonic Master Score',
+      'Acid Lime Screentone 84-Page Artbook',
+      'Flame Hashira Nichirin Blade Metal Bookmark',
+      'Shonen Streetwear Oversized Graphic Tee Drop'
+    ],
+    photocards: [
+      {
+        member: 'Tanjiro',
+        image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80'
+      }
+    ],
+    tracks: [
+      { id: 1, title: 'Homura - Symphonic Orchestra Cut (LiSA)', duration: '4:35', isTitleTrack: true },
+      { id: 2, title: 'Mugen Train Overture', duration: '3:50', isTitleTrack: false }
+    ],
+    reviews: []
+  },
+  {
+    id: 'anime-shonen-streetwear-box',
+    title: 'Pedido Street Shonen - Acid Lime Halftone Harajuku Drop & Cassette Vault',
+    artist: 'Detective Conan Movie',
+    artistId: 'conan',
+    category: 'Anime',
+    priceUSD: 36.0,
+    priceVND: 900000,
+    originalPriceUSD: 40.0,
+    coverImage: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80'
+    ],
+    type: 'Figure & Merch',
+    releaseDate: '2026-02-20',
+    tag: 'Pedido Harajuku Drop',
+    rating: 4.94,
+    reviewCount: 1650,
+    popularityScore: 97,
+    stock: 55,
+    description:
+      'High-impact Harajuku techwear drop combining manga halftone screentone aesthetics, acid lime accents, heavy boxy drop-shoulder hoodie, and exclusive audio cassette mixtape.',
+    versions: [
+      { id: 'hoodie-lime', name: 'Acid Lime Manga Hoodie', extraPriceUSD: 0 },
+      { id: 'hoodie-black', name: 'Onyx Black Screentone', extraPriceUSD: 0 }
+    ],
+    inclusions: [
+      'Harajuku Heavyweight 420GSM Drop-Shoulder Hoodie',
+      'Exclusive Acid Lime Audio Cassette Mixtape',
+      'Manga Screentone Vinyl Sticker Pack',
+      'Shonen Streetwear Certificate of Authenticity'
+    ],
+    photocards: [],
+    tracks: [
+      { id: 1, title: 'Tokyo Underground Halftone Beat', duration: '3:10', isTitleTrack: true }
+    ],
+    reviews: []
+  },
+  {
+    id: 'album-bauhaus-cosplay-atelier',
+    title: 'Bauhaus Master Modernist Atelier - 1926 Constructivist Stage Robe & Helmet Boxset',
+    artist: 'Bauhaus Modernist Atelier',
+    artistId: 'bauhaus-atelier',
+    category: 'Cosplay',
+    priceUSD: 54.0,
+    priceVND: 1350000,
+    originalPriceUSD: 62.0,
+    coverImage: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80'
+    ],
+    type: 'Figure & Merch',
+    releaseDate: '2026-03-01',
+    tag: 'Bauhaus Limited Edition',
+    rating: 4.96,
+    reviewCount: 1420,
+    popularityScore: 98,
+    stock: 85,
+    description:
+      'Official Bauhaus Constructivist Atelier costume boxset with primary red, blue and yellow geometric panels, architectural metallic mask, and commemorative hand-bound design manual.',
+    versions: [
+      { id: 'bh-primary-red', name: 'Primary Red Edition', extraPriceUSD: 0 },
+      { id: 'bh-ultramarine', name: 'Ultramarine Blue Edition', extraPriceUSD: 5 }
+    ],
+    inclusions: [
+      'Deluxe Magnetic Geometric Box with Hard Foil Emboss',
+      'Constructivist Architectural Helmet Prop',
+      'Primary Color Block Cape with Modular Fasteners',
+      'Triadic Form 80-Page Collector Manual',
+      'Numbered Certificate of Bauhaus Authenticity'
+    ],
+    photocards: [
+      {
+        member: 'Walter G.',
+        image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80'
+      }
+    ],
+    tracks: [
+      { id: 1, title: 'Triadic Overture in Primary Colors', duration: '4:12', isTitleTrack: true }
+    ],
+    reviews: []
+  },
+  {
+    id: 'album-bauhaus-geometric-prop-kit',
+    title: 'Triadic Ballet Living Geometry - Geometric Prop Kit & Primary Visor',
+    artist: 'Bauhaus Modernist Atelier',
+    artistId: 'bauhaus-atelier',
+    category: 'Cosplay',
+    priceUSD: 38.0,
+    priceVND: 950000,
+    originalPriceUSD: 44.0,
+    coverImage: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80'
+    ],
+    type: 'Collector Box',
+    releaseDate: '2026-02-28',
+    tag: 'Atelier First Press',
+    rating: 4.92,
+    reviewCount: 960,
+    popularityScore: 94,
+    stock: 110,
+    description:
+      'Inspired by Oskar Schlemmer Triadic Ballet: full modular geometric prop components crafted from lightweight aerodynamic polymers with bold Bauhaus color theory.',
+    versions: [
+      { id: 'bh-triadic-std', name: 'Standard Modular Kit', extraPriceUSD: 0 }
+    ],
+    inclusions: [
+      'Hard Black Stenciled Box (4px Heavy Border)',
+      '3x Geometric Primary Props (Circle, Square, Triangle)',
+      'Reflective Bauhaus Visor Lens',
+      'Stage Assembly Blueprint'
+    ],
+    photocards: [],
+    tracks: [
+      { id: 1, title: 'Mechanical Rhythm No. 3', duration: '3:45', isTitleTrack: true }
+    ],
+    reviews: []
+  },
 
-export const mockTourEvents: TourEvent[] = [
+];export const mockTourEvents: TourEvent[] = [
+  {
+    id: 'tour-cosplay-bauhaus-expo',
+    artistId: 'bauhaus-atelier',
+    artistName: 'Bauhaus Modernist Atelier',
+    tourTitle: 'Bauhaus Living Geometry: International Cosplay & Design Expo 2026',
+    tourName: 'Bauhaus Living Geometry: International Cosplay & Design Expo 2026',
+    venue: 'Berlin Modernist Exhibition Hall & Arena',
+    city: 'Berlin',
+    country: 'Germany',
+    date: '2026-04-18',
+    time: '18:00',
+    ticketPriceUSD: 48,
+    ticketPriceFromUSD: 48,
+    ticketPriceVND: 1200000,
+    ticketPriceFromVND: 1200000,
+    status: 'Selling Fast',
+    coverImage: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
+    bannerImage: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80',
+    seatMapImage: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
+    mapQuery: 'Berlin Exhibition Hall Germany',
+    category: 'Cosplay',
+    badgeText: 'BAUHAUS EXPO ARENA',
+    description:
+      'The definitive international gathering of avant-garde cosplayers, architects, and costume sculptors celebrating constructivist Bauhaus stage design.',
+    perks: ['VIP Constructivist Pass', 'Signed Bauhaus Geometric Catalog', 'Exclusive Red-Ocean Prop Case']
+  },
+
   {
     id: 'tour-atsh-hn',
     artistId: 'anh-trai-say-hi',
@@ -597,6 +800,26 @@ export const mockFeaturedArticles: FeaturedArticle[] = [
     accentQuote: 'ACT:TOMORROW IN TOKYO - FAN SUPPORT BY FOREVERKOOKIE_'
   },
   {
+    id: 'art-cosplay-bauhaus-constructivism',
+    title: 'Bauhaus Constructivism in Cosplay: When Pure Geometry Meets Living Character Design',
+    excerpt: 'Red #D02020, Blue #1040C0, Yellow #F0C020 and stark architectural silhouettes: how global cosplayers are recreating theatrical Bauhaus modernist costumes for the next generation.',
+    category: 'Cosplay',
+    author: {
+      name: 'Elena Bauhaus',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+      role: 'Avant-Garde Costume Designer'
+    },
+    date: '2026-02-16',
+    readTime: '6 min read',
+    coverImage: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1000&q=80',
+    tags: ['Bauhaus', 'Constructivism', 'Primary Colors', 'Geometric Cosplay'],
+    isHot: true,
+    likes: 3890,
+    commentsCount: 342,
+    badgeText: '★ BAUHAUS ATELIER',
+    accentQuote: 'FORM FOLLOWS FUNCTION · ARCHITECTURAL COSPLAY EXPO'
+  },
+  {
     id: 'art-anime-streetwear-halftone',
     title: 'Streetwear x Anime Revolution: When Manga Screentone Meets Harajuku Techwear',
     excerpt: 'From acid-lime neon halftones to oversized boxy drop-shoulder graphics, the Pedido Street Shonen aesthetic is captivating fashion-forward youth worldwide.',
@@ -784,8 +1007,8 @@ export const mockUpcomingReleases: UpcomingRelease[] = [
   },
   {
     id: 'rel-cosplay-shinobi-neon',
-    title: 'Cyberpunk Harajuku Shinobi - Full Tactical Cosplay & Acid Visor',
-    creatorOrArtist: 'NeonCraft Workshop',
+    title: 'Bauhaus Constructivist Atelier - Geometric Cosplay Robe & Primary Mask',
+    creatorOrArtist: 'Bauhaus Modernist Atelier',
     category: 'Cosplay',
     type: 'Figure & Merch',
     releaseDate: '2026-03-15',
@@ -793,10 +1016,10 @@ export const mockUpcomingReleases: UpcomingRelease[] = [
     priceVND: 2600000,
     priceUSD: 104,
     status: 'Limited Drop',
-    coverImage: 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80',
-    perks: ['Bluetooth Programmable LED Visor', 'Weatherproof Acid-Lime Jacket', 'Tactical Gauntlet Props'],
-    badgeText: '🔥 COSPLAY EXPO DROP',
-    platformOrVenue: 'Harajuku Anime Expo'
+    coverImage: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
+    perks: ['Pure Primary Colorblocking Cloak', 'Geometric Constructivist Mask Prop', 'Hand-Numbered Bauhaus Certificate'],
+    badgeText: '★ BAUHAUS DROP',
+    platformOrVenue: 'Dessau Modernist Expo'
   },
   {
     id: 'rel-movies-dune-steelbook',

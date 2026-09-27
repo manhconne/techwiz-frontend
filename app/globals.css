@@ -14,7 +14,7 @@
   --font-sans: var(--font-source-serif), 'Source Serif 4', Georgia, serif;
   --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
   --font-syne: var(--font-playfair), 'Playfair Display', serif;
-  --font-outfit: var(--font-source-serif), 'Source Serif 4', serif;
+  --font-outfit: var(--font-outfit), 'Outfit', sans-serif;
   --font-kalam: 'Kalam', cursive, sans-serif;
   --font-patrick: 'Patrick Hand', cursive, sans-serif;
 

@@ -25,6 +25,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
   const { toggleLanguage } = useGoogleLanguage();
   const [isMangaTheme, setIsMangaTheme] = useState(false);
   const [isGamingTheme, setIsGamingTheme] = useState(false);
+  const [isCosplayTheme, setIsCosplayTheme] = useState(false);
+  const [isAnimeTheme, setIsAnimeTheme] = useState(false);
 
   useEffect(() => {
     const checkTheme = () => {
@@ -33,6 +35,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
                         document.querySelector('[data-fandom-theme]')?.getAttribute('data-fandom-theme');
       setIsMangaTheme(pathname?.startsWith('/manga') || themeAttr === 'manga');
       setIsGamingTheme(pathname?.startsWith('/gaming') || themeAttr === 'gaming');
+      setIsCosplayTheme(themeAttr === 'cosplay');
+      setIsAnimeTheme(themeAttr === 'anime');
     };
     checkTheme();
     const observer = new MutationObserver(checkTheme);
@@ -144,6 +148,110 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
         { label: '⚡ Admin Control Panel', href: '#', onClick: onOpenAdmin, highlight: true },
       ],
     },
+  ] : isCosplayTheme ? [
+    {
+      heading: 'Bauhaus Atelier',
+      badgeColor: '#D02020',
+      badgeTextColor: '#ffffff',
+      icon: <ShoppingBag size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'Constructivist Stage Robes', href: '/#albums' },
+        { label: 'Modular Geometric Props', href: '/#albums' },
+        { label: 'Living Sculpture Visors', href: '/#albums' },
+        { label: 'Triadic Atelier Boxsets', href: '/#albums' },
+        { label: 'Numbered Collector Sets', href: '/#upcoming-releases' },
+      ],
+    },
+    {
+      heading: 'Constructivists',
+      badgeColor: '#1040C0',
+      badgeTextColor: '#ffffff',
+      icon: <Users size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'Bauhaus Modernist Atelier', href: '/#artists' },
+        { label: 'Oskar Schlemmer Ballet', href: '/#artists' },
+        { label: 'Dessau Avant-Garde Group', href: '/#artists' },
+        { label: 'Primary Form Society', href: '/#artists' },
+        { label: 'Global Cosplay Guild', href: '/#artists' },
+      ],
+    },
+    {
+      heading: 'Exhibitions & Sound',
+      badgeColor: '#F0C020',
+      badgeTextColor: '#121212',
+      icon: <Headphones size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'Berlin Modernist Hall Arena', href: '/#tours' },
+        { label: 'Dessau Atelier Showcase', href: '/#tours' },
+        { label: 'Mechanical Stage Audio', href: '/#multimedia' },
+        { label: 'Avant-Garde Live Sets', href: '/#multimedia' },
+        { label: 'Cosplay Exhibition Calendar', href: '/#upcoming-releases' },
+      ],
+    },
+    {
+      heading: 'Atelier Support',
+      badgeColor: '#121212',
+      badgeTextColor: '#ffffff',
+      icon: <Settings size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'Atelier Dispatch & Logistics', href: '#' },
+        { label: '100% Certified Bauhaus Guarantee', href: '#' },
+        { label: '★ Send User Feedback', href: '#', onClick: onOpenFeedback },
+        { label: '⚡ Admin Control Panel', href: '#', onClick: onOpenAdmin, highlight: true },
+      ],
+    },
+  ] : isAnimeTheme ? [
+    {
+      heading: 'Shonen Streetwear',
+      badgeColor: '#a3e635',
+      badgeTextColor: '#000000',
+      icon: <ShoppingBag size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'Pedido Harajuku Hoodies', href: '/#albums' },
+        { label: 'Manga Halftone Boxy Tees', href: '/#albums' },
+        { label: 'Acid Lime Cyber Messenger', href: '/#albums' },
+        { label: 'Screentone Snapbacks & Caps', href: '/#albums' },
+        { label: 'Limited Streetwear Boxsets', href: '/#upcoming-releases' },
+      ],
+    },
+    {
+      heading: 'Anime Franchises',
+      badgeColor: '#000000',
+      badgeTextColor: '#a3e635',
+      icon: <Users size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'Demon Slayer Corps', href: '/#artists' },
+        { label: 'Detective Conan Mystery Club', href: '/#artists' },
+        { label: 'Studio Ghibli Archive', href: '/#artists' },
+        { label: 'Jujutsu High Sorcerers', href: '/#artists' },
+        { label: 'Shonen Jump+ Universe', href: '/#artists' },
+      ],
+    },
+    {
+      heading: 'Soundtracks & Drops',
+      badgeColor: '#a3e635',
+      badgeTextColor: '#000000',
+      icon: <Headphones size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'Mugen Train Symphonic OST', href: '/#multimedia' },
+        { label: 'Joe Hisaishi Budokan Vinyl', href: '/#multimedia' },
+        { label: 'One Piece Film RED Singles', href: '/#multimedia' },
+        { label: 'Akihabara Flagship Exclusives', href: '/#upcoming-releases' },
+        { label: 'Tokyo Shonen Expo Stage Radar', href: '/#tours' },
+      ],
+    },
+    {
+      heading: 'Harajuku Admin',
+      badgeColor: '#000000',
+      badgeTextColor: '#ffffff',
+      icon: <Settings size={12} strokeWidth={2.5} />,
+      links: [
+        { label: 'Tokyo Express DHL Dispatch', href: '#' },
+        { label: '100% Certified Import Guarantee', href: '#' },
+        { label: '★ Send User Feedback', href: '#', onClick: onOpenFeedback },
+        { label: '⚡ Admin Control Panel', href: '#', onClick: onOpenAdmin, highlight: true },
+      ],
+    },
   ] : [
     {
       heading: 'Shop',
@@ -203,7 +311,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
   return (
     <footer
       style={{
-        backgroundColor: isGamingTheme ? '#FFFFFF' : '#fdfbf7',
+        backgroundColor: isGamingTheme ? '#FFFFFF' : isAnimeTheme ? '#f7fee7' : '#fdfbf7',
         borderTop: '4px solid #000000',
         color: '#000000',
       }}
@@ -253,13 +361,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
                   fontWeight: 900,
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
-                  backgroundColor: isGamingTheme ? '#000000' : '#ffd60a',
+                  backgroundColor: isGamingTheme ? '#000000' : isAnimeTheme ? '#a3e635' : '#ffd60a',
                   color: isGamingTheme ? '#ffffff' : '#000000',
                   boxShadow: isGamingTheme ? 'none' : '2px 2px 0px #000000',
                 }}
               >
                 <Star size={10} />
-                {isMangaTheme ? 'Shonen Jump+' : 'Hanteo Official'}
+                {isMangaTheme ? 'Shonen Jump+' : isAnimeTheme ? 'Aniplex Official' : 'Hanteo Official'}
               </span>
               <span
                 style={{
@@ -274,13 +382,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
                   fontWeight: 900,
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
-                  backgroundColor: isGamingTheme ? '#ffffff' : '#00f0ff',
-                  color: '#000000',
+                  backgroundColor: isGamingTheme ? '#ffffff' : isAnimeTheme ? '#000000' : '#00f0ff',
+                  color: isAnimeTheme ? '#a3e635' : '#000000',
                   boxShadow: isGamingTheme ? 'none' : '2px 2px 0px #000000',
                 }}
               >
                 <Radio size={10} />
-                {isMangaTheme ? 'Kodansha Verified' : 'Circle Verified'}
+                {isMangaTheme ? 'Kodansha Verified' : isAnimeTheme ? 'Oricon Verified' : 'Circle Verified'}
               </span>
             </div>
           </div>
@@ -437,7 +545,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
               style={{
                 width: '10px',
                 height: '10px',
-                backgroundColor: isGamingTheme ? '#000000' : '#ff2e93',
+                backgroundColor: isGamingTheme ? '#000000' : isAnimeTheme ? '#a3e635' : isCosplayTheme ? '#D02020' : '#ff2e93',
                 border: '1px solid #000000',
                 display: 'inline-block',
                 flexShrink: 0,
@@ -452,7 +560,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              backgroundColor: isGamingTheme ? '#000000' : '#ccff00',
+              backgroundColor: isGamingTheme ? '#000000' : isAnimeTheme ? '#a3e635' : isCosplayTheme ? '#F0C020' : '#ccff00',
               color: isGamingTheme ? '#ffffff' : '#000000',
               border: '2px solid #000000',
               padding: '4px 12px',
@@ -463,7 +571,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
               boxShadow: isGamingTheme ? 'none' : '2px 2px 0px #000000',
             }}
           >
-            {isGamingTheme ? '★ MINIMALIST MONOCHROME EDITION ★' : '★ VIBRANT POP Y2K CYBER EDITION ★'}
+            {isGamingTheme ? '★ MINIMALIST MONOCHROME EDITION ★' : isAnimeTheme ? '★ SHONEN STREETWEAR & MANGA HALFTONE EDITION ★' : isCosplayTheme ? '★ BAUHAUS CONSTRUCTIVIST EDITION ★' : '★ VIBRANT POP Y2K CYBER EDITION ★'}
           </span>
 
           {/* Language Toggle */}
@@ -480,7 +588,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
               textTransform: 'uppercase',
               letterSpacing: '0.08em',
               color: isGamingTheme ? '#ffffff' : '#000000',
-              backgroundColor: isGamingTheme ? '#000000' : '#00f0ff',
+              backgroundColor: isGamingTheme ? '#000000' : isAnimeTheme ? '#a3e635' : '#00f0ff',
               border: '2px solid #000000',
               padding: '8px 16px',
               cursor: 'pointer',

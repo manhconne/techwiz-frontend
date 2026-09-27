@@ -19,16 +19,21 @@ export const MultimediaCardGrid: React.FC<MultimediaCardGridProps> = ({
   getFormatLabel,
 }) => {
   return (
-    <div className="pt-10 sm:pt-14 space-y-8">
+    <div className="pt-10 sm:pt-14 space-y-10">
       {/* Catalog Header */}
-      <div className="flex items-center justify-between font-mono text-xs pb-4 border-b-2 border-black mb-8 sm:mb-10">
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 bg-[#ff2e93] border border-black" />
+      <div className="flex items-center justify-between font-mono text-xs pb-5 border-b-4 border-black mb-10 sm:mb-12">
+        <div className="flex items-center gap-3">
+          <span className="w-3 h-3 bg-[#ff2e93] border-2 border-black" />
+          <span className="w-10 h-[3px] bg-[#00f0ff]" />
+          <span className="w-3 h-3 bg-[#ffd60a] border-2 border-black" />
           <span className="font-mono font-black uppercase tracking-widest text-black">
             CATALOG INDEX // {filteredMediaList.length} TITLES
           </span>
         </div>
-        <span className="text-neutral-500 uppercase tracking-wider font-bold text-[10px]">
+        <span 
+          style={{ borderRadius: '0px' }}
+          className="px-3 py-1.5 bg-[#fefce8] text-black border-2 border-black uppercase tracking-wider font-black text-[10px] shadow-[2px_2px_0px_#000]"
+        >
           [CLICK ENTRY TO INITIALIZE SCREEN]
         </span>
       </div>

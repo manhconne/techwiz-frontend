@@ -45,7 +45,17 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
   ];
 
   return (
-    <div className="flex flex-col gap-6 sm:gap-8 font-mono text-xs">
+    <div className="flex flex-col gap-8 sm:gap-10 font-mono text-xs">
+      {/* Section Divider with Accent */}
+      <div className="flex items-center gap-3 pb-4 border-b-4 border-black">
+        <span className="w-3 h-3 bg-[#ff2e93] border-2 border-black" />
+        <span className="w-10 h-[3px] bg-[#00f0ff]" />
+        <span className="w-3 h-3 bg-[#ffd60a] border-2 border-black" />
+        <span className="font-mono font-black uppercase tracking-widest text-black text-[11px]">
+          MULTI-FORMAT FILTER CONTROL STATION
+        </span>
+      </div>
+
       {/* 1. Format Tabs Bar */}
       <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none">
         {formatTabs.map((tab) => {

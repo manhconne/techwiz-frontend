@@ -91,6 +91,8 @@ export const Header: React.FC<HeaderProps> = ({
 
   const isManga = fandomCategory === 'Manga' || fandomThemeKey === 'manga' || pathname?.startsWith('/manga');
   const isGaming = fandomCategory === 'Gaming' || fandomThemeKey === 'gaming' || pathname?.startsWith('/gaming');
+  const isCosplay = fandomCategory === 'Cosplay' || fandomThemeKey === 'cosplay';
+  const isAnime = fandomCategory === 'Anime' || fandomThemeKey === 'anime';
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
@@ -213,7 +215,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2.5 sm:gap-4 md:gap-5 shrink-0">
           <button
             onClick={() => setIsMenuDrawerOpen(true)}
-            className={`mobile-menu-btn header-action-btn px-3 py-1.5 ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] shadow-[2px_2px_0px_#000000]'} items-center justify-center cursor-pointer shrink-0 border-2 border-black font-mono text-xs font-black uppercase tracking-widest transition-transform active:scale-95`}
+            className={`mobile-menu-btn header-action-btn px-3 py-1.5 ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : isCosplay ? 'bg-[#D02020] text-white hover:bg-[#b01818] shadow-[3px_3px_0px_#121212]' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] shadow-[2px_2px_0px_#000000]' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] shadow-[2px_2px_0px_#000000]'} items-center justify-center cursor-pointer shrink-0 border-2 border-black font-mono text-xs font-black uppercase tracking-widest transition-transform active:scale-95`}
             style={{ borderRadius: '0px' }}
             title="Menu"
             type="button"
@@ -241,7 +243,7 @@ export const Header: React.FC<HeaderProps> = ({
               alignItems: 'center',
               border: '2px solid #000000',
               backgroundColor: '#ffffff',
-              boxShadow: isGaming ? 'none' : '3px 3px 0px #000000',
+              boxShadow: isGaming ? 'none' : isCosplay ? '4px 4px 0px #121212' : isAnime ? '4px 4px 0px #84cc16' : '3px 3px 0px #000000',
               padding: '6px 12px',
               borderRadius: '0px',
             }}
@@ -249,10 +251,10 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Search prefix */}
             <span
               style={{
-                fontFamily: "var(--font-jetbrains), var(--font-mono), 'JetBrains Mono', monospace",
+                fontFamily: isCosplay ? "var(--font-outfit), 'Outfit', sans-serif" : "var(--font-jetbrains), var(--font-mono), 'JetBrains Mono', monospace",
                 fontSize: '11px',
                 fontWeight: 900,
-                color: isGaming ? '#000000' : '#ff2e93',
+                color: isGaming ? '#000000' : isCosplay ? '#D02020' : isAnime ? '#65a30d' : '#ff2e93',
                 marginRight: '8px',
                 userSelect: 'none',
               }}
@@ -262,7 +264,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             <input
               type="text"
-              placeholder={isManga ? "MANGA, TANKŌBON, AUTHOR, ARC..." : "ARTIST, ALBUM, ARCHIVE..."}
+              placeholder={isManga ? "MANGA, TANKŌBON, AUTHOR, ARC..." : isCosplay ? "BAUHAUS COSPLAY, ATELIER PROPS, EXPO..." : isAnime ? "SHONEN ANIME, PEDIDO STREETWEAR, OSTS..." : "ARTIST, ALBUM, ARCHIVE..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
@@ -427,8 +429,8 @@ export const Header: React.FC<HeaderProps> = ({
                 gap: '8px',
                 padding: '8px 18px',
                 height: '36px',
-                backgroundColor: isGaming ? '#000000' : '#ff2e93',
-                color: '#ffffff',
+                backgroundColor: isGaming ? '#000000' : isCosplay ? '#D02020' : isAnime ? '#a3e635' : '#ff2e93',
+                color: isAnime ? '#000000' : '#ffffff',
                 fontFamily: "var(--font-jetbrains), var(--font-mono), monospace",
                 fontSize: '11px',
                 fontWeight: 900,
@@ -438,11 +440,11 @@ export const Header: React.FC<HeaderProps> = ({
                 borderRadius: '0px',
                 cursor: 'pointer',
                 flexShrink: 0,
-                boxShadow: isGaming ? 'none' : '3px 3px 0px #000000',
+                boxShadow: isGaming ? 'none' : isAnime ? '3px 3px 0px #000000' : '3px 3px 0px #000000',
               }}
             >
               <Menu style={{ width: '15px', height: '15px', flexShrink: 0, strokeWidth: 2.5 }} />
-              <span style={{ whiteSpace: 'nowrap' }}>{isManga ? '★ MANGA MD' : '★ ALL MD'}</span>
+              <span style={{ whiteSpace: 'nowrap' }}>{isManga ? '★ MANGA MD' : isAnime ? '★ ANIME STREET MD' : '★ ALL MD'}</span>
             </button>
 
             {/* Dropdown Menu under [ ≡ ALL MD ] (Strictly 0px, pure monochrome, no shadow) */}

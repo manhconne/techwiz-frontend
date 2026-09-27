@@ -8,14 +8,18 @@ import { useCartWishlist } from '../context/CartWishlistContext';
 interface UpcomingReleasesAndArticlesProps {
   initialCategory?: FandomCategoryKey | 'all';
   onSelectCategory?: (category: FandomCategoryKey | 'all') => void;
+  fandomCategory?: FandomCategoryKey | 'all';
+  onSelectAlbum?: (album: any) => void;
 }
 
 export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesProps> = ({
   initialCategory = 'all',
   onSelectCategory,
+  fandomCategory,
+  onSelectAlbum,
 }) => {
   const { addToCart, setIsCartOpen } = useCartWishlist();
-  const [activeCategory, setActiveCategory] = useState<FandomCategoryKey | 'all'>(initialCategory);
+  const [activeCategory, setActiveCategory] = useState<FandomCategoryKey | 'all'>(fandomCategory || initialCategory);
   const [remindedItems, setRemindedItems] = useState<Record<string, boolean>>({});
   const [likedArticles, setLikedArticles] = useState<Record<string, number>>({});
 
@@ -45,10 +49,14 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
     }
   }, []);
 
-  // Sync with initialCategory if parent changes
+  // Sync with fandomCategory or initialCategory if parent changes
   useEffect(() => {
-    setActiveCategory(initialCategory);
-  }, [initialCategory]);
+    if (fandomCategory) {
+      setActiveCategory(fandomCategory);
+    } else if (initialCategory) {
+      setActiveCategory(initialCategory);
+    }
+  }, [initialCategory, fandomCategory]);
 
   const handleCategoryClick = (cat: FandomCategoryKey | 'all') => {
     setActiveCategory(cat);
