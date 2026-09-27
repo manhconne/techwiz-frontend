@@ -459,7 +459,7 @@ export default function AdminCharactersPage() {
   }, [characters]);
 
   return (
-    <div className="flex h-screen bg-[#0b0f17] text-slate-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-slate-50 text-slate-900 overflow-hidden font-sans">
       {/* SIDEBAR */}
       <AdminSidebar
         activeTab="characters"
@@ -480,22 +480,22 @@ export default function AdminCharactersPage() {
         />
 
         {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-800 bg-[#0f172a]/60 px-6 py-4 backdrop-blur-md">
+        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
-                <Link href="/admin" className="hover:text-amber-400 transition-colors">Admin</Link>
+              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-amber-400 font-medium">
+                <span className="text-indigo-600 font-medium">
                   {isVi ? 'Hồ sơ nhân vật (Characters)' : 'Character Profiles'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
                   <Drama className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Quản lý Hồ sơ Nhân vật' : 'Character Management'}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
                   {totalCharacters} {isVi ? 'nhân vật' : 'records'}
                 </span>
               </h1>
@@ -505,16 +505,16 @@ export default function AdminCharactersPage() {
               <button
                 onClick={() => fetchCharacters(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
                 title={isVi ? 'Làm mới' : 'Refresh'}
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-amber-400' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
                 <span className="hidden sm:inline">{isVi ? 'Làm mới' : 'Refresh'}</span>
               </button>
 
               <button
                 onClick={() => setIsCreateOpen(true)}
-                className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-amber-500/20 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
               >
                 <Plus className="w-4 h-4 stroke-[2.5]" />
                 <span>{isVi ? 'Thêm nhân vật mới' : 'Create Character'}</span>
@@ -525,24 +525,24 @@ export default function AdminCharactersPage() {
 
         {/* NOTIFICATIONS */}
         {apiSuccess && (
-          <div className="mx-6 mt-4 p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-xs flex items-center justify-between shadow-lg shadow-emerald-500/5 animate-in fade-in">
+          <div className="mx-6 mt-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-xs flex items-center justify-between shadow-xs animate-in fade-in">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
               <span>{apiSuccess}</span>
             </div>
-            <button onClick={() => setApiSuccess(null)} className="p-1 hover:bg-emerald-500/20 rounded-md">
+            <button onClick={() => setApiSuccess(null)} className="p-1 hover:bg-emerald-100 rounded-md text-emerald-600">
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
 
         {apiError && (
-          <div className="mx-6 mt-4 p-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-xs flex items-center justify-between shadow-lg shadow-rose-500/5 animate-in fade-in">
+          <div className="mx-6 mt-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center justify-between shadow-xs animate-in fade-in">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
               <span>{apiError}</span>
             </div>
-            <button onClick={() => setApiError(null)} className="p-1 hover:bg-rose-500/20 rounded-md">
+            <button onClick={() => setApiError(null)} className="p-1 hover:bg-rose-100 rounded-md text-rose-600">
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -552,34 +552,34 @@ export default function AdminCharactersPage() {
         <div className="p-6 space-y-6">
           {/* STATS OVERVIEW CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Tổng nhân vật' : 'Total Profiles'}</span>
-                <Drama className="w-4 h-4 text-amber-400" />
+                <Drama className="w-4 h-4 text-indigo-600" />
               </div>
-              <div className="text-2xl font-black text-white">{totalCharacters}</div>
+              <div className="text-2xl font-black text-slate-900">{totalCharacters}</div>
               <div className="text-[11px] text-slate-500 mt-1">
                 {isVi ? 'Đã lưu trong CSDL hệ thống' : 'Active character entries'}
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Danh mục đại diện' : 'Categories Represented'}</span>
-                <FolderTree className="w-4 h-4 text-cyan-400" />
+                <FolderTree className="w-4 h-4 text-cyan-600" />
               </div>
-              <div className="text-2xl font-black text-white">{categoriesCount}</div>
+              <div className="text-2xl font-black text-slate-900">{categoriesCount}</div>
               <div className="text-[11px] text-slate-500 mt-1">
                 {isVi ? 'Bao gồm Anime, MOBA, Game...' : 'Across media genres'}
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Có ảnh Avatar' : 'With Custom Avatar'}</span>
-                <ImageIcon className="w-4 h-4 text-emerald-400" />
+                <ImageIcon className="w-4 h-4 text-emerald-600" />
               </div>
-              <div className="text-2xl font-black text-white">
+              <div className="text-2xl font-black text-slate-900">
                 {characters.filter((c) => Boolean(c.avatar_url)).length}
               </div>
               <div className="text-[11px] text-slate-500 mt-1">
@@ -587,12 +587,12 @@ export default function AdminCharactersPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Có tiểu sử chi tiết' : 'With Biography'}</span>
-                <BookOpen className="w-4 h-4 text-purple-400" />
+                <BookOpen className="w-4 h-4 text-purple-600" />
               </div>
-              <div className="text-2xl font-black text-white">
+              <div className="text-2xl font-black text-slate-900">
                 {characters.filter((c) => Boolean(c.biography && c.biography.trim().length > 0)).length}
               </div>
               <div className="text-[11px] text-slate-500 mt-1">
@@ -602,7 +602,7 @@ export default function AdminCharactersPage() {
           </div>
 
           {/* SEARCH & FILTER BAR */}
-          <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-lg space-y-3">
+          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
               {/* Search input: ?search=naruto */}
               <div className="relative flex-1">
@@ -619,7 +619,7 @@ export default function AdminCharactersPage() {
                       ? 'Tìm kiếm nhân vật theo tên hoặc tiểu sử (vd: naruto, luffy, ahri...)...'
                       : 'Search character by name or biography (e.g. naruto, luffy)...'
                   }
-                  className="w-full pl-9 pr-8 py-2 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
+                  className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all shadow-xs"
                 />
                 {searchTerm && (
                   <button
@@ -627,7 +627,7 @@ export default function AdminCharactersPage() {
                       setSearchTerm('');
                       setPage(1);
                     }}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -643,7 +643,7 @@ export default function AdminCharactersPage() {
                       setSelectedCategoryId(e.target.value);
                       setPage(1);
                     }}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-amber-400 cursor-pointer appearance-none"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-indigo-600 cursor-pointer appearance-none shadow-xs"
                   >
                     <option value="">{isVi ? 'Tất cả danh mục' : 'All Categories'}</option>
                     {categories.map((cat) => (
@@ -656,13 +656,13 @@ export default function AdminCharactersPage() {
                 </div>
 
                 {/* View Mode Toggle */}
-                <div className="flex items-center bg-slate-900 border border-slate-700/80 rounded-xl p-0.5">
+                <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl p-0.5 shadow-xs">
                   <button
                     onClick={() => setViewMode('grid')}
                     className={`p-1.5 rounded-lg text-xs transition-colors ${
                       viewMode === 'grid'
-                        ? 'bg-amber-500/20 text-amber-400 font-semibold'
-                        : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-white text-indigo-600 font-semibold shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800'
                     }`}
                     title={isVi ? 'Xem dạng lưới card' : 'Grid View'}
                   >
@@ -672,8 +672,8 @@ export default function AdminCharactersPage() {
                     onClick={() => setViewMode('table')}
                     className={`p-1.5 rounded-lg text-xs transition-colors ${
                       viewMode === 'table'
-                        ? 'bg-amber-500/20 text-amber-400 font-semibold'
-                        : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-white text-indigo-600 font-semibold shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800'
                     }`}
                     title={isVi ? 'Xem dạng bảng' : 'Table View'}
                   >
@@ -692,8 +692,8 @@ export default function AdminCharactersPage() {
                 onClick={() => setSelectedCategoryId('')}
                 className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer shrink-0 ${
                   selectedCategoryId === ''
-                    ? 'bg-amber-500/15 border-amber-500/30 text-amber-400 font-semibold'
-                    : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200'
+                    ? 'bg-indigo-600 border-indigo-600 text-white font-semibold shadow-xs'
+                    : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
                 }`}
               >
                 {isVi ? 'Tất cả' : 'All'}
@@ -704,8 +704,8 @@ export default function AdminCharactersPage() {
                   onClick={() => setSelectedCategoryId(c.id === selectedCategoryId ? '' : c.id)}
                   className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer shrink-0 ${
                     selectedCategoryId === c.id
-                      ? 'bg-amber-500/15 border-amber-500/30 text-amber-400 font-semibold'
-                      : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200'
+                      ? 'bg-indigo-600 border-indigo-600 text-white font-semibold shadow-xs'
+                      : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
                   }`}
                 >
                   {c.name}
@@ -716,26 +716,26 @@ export default function AdminCharactersPage() {
 
           {/* MAIN CHARACTERS DISPLAY */}
           {loading ? (
-            <div className="p-12 text-center rounded-2xl bg-[#0f172a] border border-slate-800">
-              <RefreshCw className="w-8 h-8 animate-spin text-amber-400 mx-auto mb-3" />
-              <p className="text-xs text-slate-400">{isVi ? 'Đang tải danh sách nhân vật...' : 'Loading character records...'}</p>
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
+              <p className="text-xs text-slate-500">{isVi ? 'Đang tải danh sách nhân vật...' : 'Loading character records...'}</p>
             </div>
           ) : characters.length === 0 ? (
-            <div className="p-12 text-center rounded-2xl bg-[#0f172a] border border-slate-800 space-y-3">
-              <div className="w-12 h-12 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
+              <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
                 <Drama className="w-6 h-6" />
               </div>
-              <h3 className="text-sm font-bold text-white">
+              <h3 className="text-sm font-bold text-slate-900">
                 {isVi ? 'Không tìm thấy hồ sơ nhân vật nào' : 'No character profiles found'}
               </h3>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto">
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
                 {searchTerm || selectedCategoryId
                   ? (isVi ? 'Thử thay đổi từ khóa tìm kiếm hoặc bỏ chọn lọc danh mục.' : 'Try changing search keywords or clearing category filter.')
                   : (isVi ? 'Chưa có hồ sơ nhân vật nào được tạo. Hãy nhấn "Thêm nhân vật mới" để bắt đầu.' : 'No characters yet. Click "Create Character" to add one.')}
               </p>
               <button
                 onClick={() => setIsCreateOpen(true)}
-                className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl cursor-pointer"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer"
               >
                 {isVi ? 'Thêm nhân vật ngay' : 'Create Character Now'}
               </button>
@@ -747,12 +747,12 @@ export default function AdminCharactersPage() {
                 <div
                   key={item.id}
                   onClick={() => setDetailItem(item)}
-                  className="group relative bg-[#0f172a] hover:bg-slate-850/80 border border-slate-800 hover:border-slate-700/80 rounded-2xl p-4 transition-all duration-200 hover:shadow-xl hover:shadow-black/40 cursor-pointer flex flex-col justify-between"
+                  className="group relative bg-white hover:bg-slate-50/50 border border-slate-200/80 hover:border-slate-300 rounded-2xl p-4 transition-all duration-200 shadow-xs hover:shadow-md cursor-pointer flex flex-col justify-between"
                 >
                   <div>
                     {/* Top avatar & category badge */}
                     <div className="flex items-start gap-3.5 mb-3">
-                      <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-slate-800 border border-slate-700/70 shrink-0 group-hover:border-amber-500/50 transition-colors">
+                      <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 group-hover:border-indigo-500/50 transition-colors">
                         {item.avatar_url ? (
                           <img
                             src={item.avatar_url}
@@ -764,24 +764,24 @@ export default function AdminCharactersPage() {
                             }}
                           />
                         ) : null}
-                        <div className="w-full h-full flex items-center justify-center text-slate-500 bg-slate-850">
+                        <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100">
                           <User className="w-7 h-7" />
                         </div>
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1">
-                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 truncate max-w-[140px]">
+                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-indigo-50 border border-indigo-200/80 text-indigo-700 truncate max-w-[140px]">
                             {item.category || item.category_id || 'Anime'}
                           </span>
 
                           <button
                             onClick={(e) => handleCopyId(item.id, e)}
-                            className="text-[10px] text-slate-400 hover:text-white flex items-center gap-1 font-mono px-1.5 py-0.5 rounded bg-slate-900/80 border border-slate-800"
+                            className="text-[10px] text-slate-500 hover:text-slate-800 flex items-center gap-1 font-mono px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200"
                             title={isVi ? 'Sao chép ID' : 'Copy ID'}
                           >
                             {copiedId === item.id ? (
-                              <Check className="w-3 h-3 text-emerald-400" />
+                              <Check className="w-3 h-3 text-emerald-600" />
                             ) : (
                               <Copy className="w-3 h-3" />
                             )}
@@ -789,29 +789,29 @@ export default function AdminCharactersPage() {
                           </button>
                         </div>
 
-                        <h3 className="text-sm font-bold text-white mt-1.5 truncate group-hover:text-amber-400 transition-colors">
+                        <h3 className="text-sm font-bold text-slate-900 mt-1.5 truncate group-hover:text-indigo-600 transition-colors">
                           {item.name}
                         </h3>
                       </div>
                     </div>
 
                     {/* Biography excerpt */}
-                    <div className="text-xs text-slate-400 line-clamp-3 leading-relaxed mb-4 min-h-[54px]">
+                    <div className="text-xs text-slate-600 line-clamp-3 leading-relaxed mb-4 min-h-[54px]">
                       {item.biography || (isVi ? 'Chưa có tiểu sử chi tiết cho nhân vật này.' : 'No biography provided yet.')}
                     </div>
                   </div>
 
                   {/* Footer actions */}
-                  <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                     <span className="text-[11px] text-slate-500 flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-amber-400/70" />
+                      <Sparkles className="w-3 h-3 text-indigo-500" />
                       <span>{isVi ? 'Hồ sơ chuẩn' : 'Verified'}</span>
                     </span>
 
                     <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => setDetailItem(item)}
-                        className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                         title={isVi ? 'Xem chi tiết' : 'View details'}
                       >
                         <Eye className="w-3.5 h-3.5" />
@@ -820,7 +820,7 @@ export default function AdminCharactersPage() {
                       {/* EDIT: PUT /api/v1/admin/characters/{id} */}
                       <button
                         onClick={(e) => openEditModal(item, e)}
-                        className="p-1.5 text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
                         title={isVi ? 'Chỉnh sửa' : 'Edit profile'}
                       >
                         <Pencil className="w-3.5 h-3.5" />
@@ -832,7 +832,7 @@ export default function AdminCharactersPage() {
                           e.stopPropagation();
                           setDeleteItem(item);
                         }}
-                        className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                         title={isVi ? 'Xóa nhân vật' : 'Delete'}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -844,10 +844,10 @@ export default function AdminCharactersPage() {
             </div>
           ) : (
             /* TABLE VIEW */
-            <div className="rounded-2xl bg-[#0f172a] border border-slate-800 overflow-hidden shadow-lg">
+            <div className="rounded-xl bg-white border border-slate-200/80 overflow-hidden shadow-xs">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-900/80 text-slate-400 font-semibold border-b border-slate-800">
+                  <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
                     <tr>
                       <th className="px-4 py-3 w-16">{isVi ? 'Ảnh' : 'Avatar'}</th>
                       <th className="px-4 py-3">{isVi ? 'Tên nhân vật' : 'Character Name'}</th>
@@ -856,15 +856,15 @@ export default function AdminCharactersPage() {
                       <th className="px-4 py-3 text-right">{isVi ? 'Thao tác' : 'Actions'}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60">
+                  <tbody className="divide-y divide-slate-100">
                     {characters.map((item) => (
                       <tr
                         key={item.id}
                         onClick={() => setDetailItem(item)}
-                        className="hover:bg-slate-850/60 transition-colors cursor-pointer"
+                        className="hover:bg-slate-50/80 transition-colors cursor-pointer text-slate-800"
                       >
                         <td className="px-4 py-3">
-                          <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-800 border border-slate-700/60 shrink-0">
+                          <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
                             {item.avatar_url ? (
                               <img
                                 src={item.avatar_url}
@@ -872,7 +872,7 @@ export default function AdminCharactersPage() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-slate-500">
+                              <div className="w-full h-full flex items-center justify-center text-slate-400">
                                 <User className="w-4 h-4" />
                               </div>
                             )}
@@ -880,16 +880,16 @@ export default function AdminCharactersPage() {
                         </td>
 
                         <td className="px-4 py-3">
-                          <div className="font-bold text-white hover:text-amber-400 transition-colors">
+                          <div className="font-bold text-slate-900 hover:text-indigo-600 transition-colors">
                             {item.name}
                           </div>
                           <button
                             onClick={(e) => handleCopyId(item.id, e)}
-                            className="text-[10px] text-slate-500 hover:text-slate-300 font-mono flex items-center gap-1 mt-0.5"
+                            className="text-[10px] text-slate-400 hover:text-slate-600 font-mono flex items-center gap-1 mt-0.5"
                           >
                             <span>{item.id}</span>
                             {copiedId === item.id ? (
-                              <Check className="w-2.5 h-2.5 text-emerald-400" />
+                              <Check className="w-2.5 h-2.5 text-emerald-600" />
                             ) : (
                               <Copy className="w-2.5 h-2.5" />
                             )}
@@ -897,13 +897,13 @@ export default function AdminCharactersPage() {
                         </td>
 
                         <td className="px-4 py-3">
-                          <span className="px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 font-medium">
+                          <span className="px-2 py-0.5 rounded-md bg-indigo-50 border border-indigo-200/80 text-indigo-700 font-medium">
                             {item.category || item.category_id || 'Anime'}
                           </span>
                         </td>
 
                         <td className="px-4 py-3 max-w-xs">
-                          <div className="text-slate-400 truncate">
+                          <div className="text-slate-600 truncate">
                             {item.biography || (isVi ? 'Chưa có tiểu sử' : 'No biography')}
                           </div>
                         </td>
@@ -912,14 +912,14 @@ export default function AdminCharactersPage() {
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => setDetailItem(item)}
-                              className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg cursor-pointer"
+                              className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg cursor-pointer"
                               title={isVi ? 'Xem chi tiết' : 'View'}
                             >
                               <Eye className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={(e) => openEditModal(item, e)}
-                              className="p-1.5 text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg cursor-pointer"
+                              className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg cursor-pointer"
                               title={isVi ? 'Sửa' : 'Edit'}
                             >
                               <Pencil className="w-3.5 h-3.5" />
@@ -929,7 +929,7 @@ export default function AdminCharactersPage() {
                                 e.stopPropagation();
                                 setDeleteItem(item);
                               }}
-                              className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg cursor-pointer"
+                              className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer"
                               title={isVi ? 'Xóa' : 'Delete'}
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -945,7 +945,7 @@ export default function AdminCharactersPage() {
           )}
 
           {/* PAGINATION BAR */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 pt-2">
             <div>
               {isVi
                 ? `Hiển thị ${characters.length} nhân vật (Trang ${page})`
@@ -956,20 +956,20 @@ export default function AdminCharactersPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1 || loading}
-                className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1"
+                className="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 <span>{isVi ? 'Trang trước' : 'Previous'}</span>
               </button>
 
-              <span className="px-3 py-1.5 bg-slate-800 text-white rounded-xl font-bold">
+              <span className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl font-bold shadow-xs">
                 {page}
               </span>
 
               <button
                 onClick={() => setPage((p) => p + 1)}
                 disabled={characters.length < limit || loading}
-                className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1"
+                className="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs"
               >
                 <span>{isVi ? 'Trang sau' : 'Next'}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -981,23 +981,23 @@ export default function AdminCharactersPage() {
 
       {/* CREATE CHARACTER MODAL: POST /api/v1/admin/characters */}
       {isCreateOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-xl bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                <div className="p-2 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-600">
                   <Drama className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-slate-900">
                     {isVi ? 'Tạo Hồ sơ Nhân vật mới' : 'Create Character Profile'}
                   </h3>
-                  <p className="text-[11px] text-slate-400">POST /api/v1/admin/characters</p>
+                  <p className="text-[11px] text-slate-500 font-mono">POST /api/v1/admin/characters</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsCreateOpen(false)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1006,7 +1006,7 @@ export default function AdminCharactersPage() {
             <form onSubmit={handleCreateSubmit} className="p-6 space-y-4 overflow-y-auto text-xs">
               {/* Name */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Tên nhân vật *' : 'Character Name *'}
                 </label>
                 <input
@@ -1015,19 +1015,19 @@ export default function AdminCharactersPage() {
                   value={createForm.name}
                   onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
                   placeholder={isVi ? 'Ví dụ: Naruto Uzumaki, Ahri...' : 'e.g. Naruto Uzumaki, Ahri...'}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 />
               </div>
 
               {/* Category ID */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Danh mục (category_id)' : 'Category (category_id)'}
                 </label>
                 <select
                   value={createForm.category_id}
                   onChange={(e) => setCreateForm({ ...createForm, category_id: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 >
                   <option value="">{isVi ? '-- Chọn danh mục --' : '-- Select Category --'}</option>
                   {categories.map((c) => (
@@ -1040,7 +1040,7 @@ export default function AdminCharactersPage() {
 
               {/* Avatar URL */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Đường dẫn ảnh đại diện (avatar_url)' : 'Avatar URL (avatar_url)'}
                 </label>
                 <div className="flex gap-3 items-center">
@@ -1049,10 +1049,10 @@ export default function AdminCharactersPage() {
                     value={createForm.avatar_url}
                     onChange={(e) => setCreateForm({ ...createForm, avatar_url: e.target.value })}
                     placeholder="https://images.unsplash.com/..."
-                    className="flex-1 px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                    className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                   />
                   {createForm.avatar_url && (
-                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-slate-700 bg-slate-800 shrink-0">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shrink-0">
                       <img
                         src={createForm.avatar_url}
                         alt="Preview"
@@ -1066,7 +1066,7 @@ export default function AdminCharactersPage() {
 
               {/* Biography */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Tiểu sử nhân vật (biography)' : 'Biography / Lore (biography)'}
                 </label>
                 <textarea
@@ -1078,22 +1078,22 @@ export default function AdminCharactersPage() {
                       ? 'Nhập thông tin tiểu sử, lai lịch, sức mạnh hoặc vai trò của nhân vật...'
                       : 'Enter character background, backstory, powers or lore details...'
                   }
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 />
               </div>
 
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2 bg-slate-50/50 -mx-6 -mb-6 px-6 py-4">
                 <button
                   type="button"
                   onClick={() => setIsCreateOpen(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold rounded-xl cursor-pointer shadow-xs"
                 >
                   {isVi ? 'Hủy' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingCreate}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
                 >
                   {isSubmittingCreate && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isVi ? 'Tạo hồ sơ nhân vật' : 'Save Character'}</span>
@@ -1106,25 +1106,25 @@ export default function AdminCharactersPage() {
 
       {/* EDIT CHARACTER MODAL: PUT /api/v1/admin/characters/{id} */}
       {editItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-xl bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                <div className="p-2 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-600">
                   <Pencil className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-slate-900">
                     {isVi ? 'Cập nhật Hồ sơ Nhân vật' : 'Update Character Profile'}
                   </h3>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-500 font-mono">
                     PUT /api/v1/admin/characters/{editItem.id}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setEditItem(null)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1133,18 +1133,18 @@ export default function AdminCharactersPage() {
             <form onSubmit={handleEditSubmit} className="p-6 space-y-4 overflow-y-auto text-xs">
               {/* Character ID (Readonly) */}
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">Character ID (UUID)</label>
+                <label className="block text-slate-500 font-semibold mb-1">Character ID (UUID)</label>
                 <input
                   type="text"
                   readOnly
                   value={editItem.id}
-                  className="w-full px-3 py-2 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-400 font-mono cursor-not-allowed"
+                  className="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 font-mono cursor-not-allowed"
                 />
               </div>
 
               {/* Name */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Tên nhân vật *' : 'Character Name *'}
                 </label>
                 <input
@@ -1152,13 +1152,13 @@ export default function AdminCharactersPage() {
                   required
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 />
               </div>
 
               {/* Avatar URL */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Đường dẫn ảnh đại diện (avatar_url)' : 'Avatar URL (avatar_url)'}
                 </label>
                 <div className="flex gap-3 items-center">
@@ -1167,10 +1167,10 @@ export default function AdminCharactersPage() {
                     value={editForm.avatar_url}
                     onChange={(e) => setEditForm({ ...editForm, avatar_url: e.target.value })}
                     placeholder="https://..."
-                    className="flex-1 px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                    className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                   />
                   {editForm.avatar_url && (
-                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-slate-700 bg-slate-800 shrink-0">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shrink-0">
                       <img
                         src={editForm.avatar_url}
                         alt="Preview"
@@ -1184,7 +1184,7 @@ export default function AdminCharactersPage() {
 
               {/* Biography */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Tiểu sử nhân vật (biography)' : 'Biography / Lore (biography)'}
                 </label>
                 <textarea
@@ -1192,22 +1192,22 @@ export default function AdminCharactersPage() {
                   value={editForm.biography}
                   onChange={(e) => setEditForm({ ...editForm, biography: e.target.value })}
                   placeholder={isVi ? 'Cập nhật tiểu sử nhân vật...' : 'Update biography...'}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 />
               </div>
 
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2 bg-slate-50/50 -mx-6 -mb-6 px-6 py-4">
                 <button
                   type="button"
                   onClick={() => setEditItem(null)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold rounded-xl cursor-pointer shadow-xs"
                 >
                   {isVi ? 'Hủy' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingEdit}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
                 >
                   {isSubmittingEdit && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isVi ? 'Cập nhật hồ sơ' : 'Update Profile'}</span>
@@ -1220,27 +1220,27 @@ export default function AdminCharactersPage() {
 
       {/* DETAIL MODAL */}
       {detailItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="relative h-44 bg-slate-950 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-lg bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] text-slate-900">
+            <div className="relative h-44 bg-gradient-to-br from-indigo-100 via-purple-50 to-slate-100 overflow-hidden">
               {detailItem.avatar_url ? (
                 <img
                   src={detailItem.avatar_url}
                   alt={detailItem.name}
-                  className="w-full h-full object-cover blur-sm opacity-40 scale-110"
+                  className="w-full h-full object-cover blur-sm opacity-30 scale-110"
                 />
               ) : null}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent" />
 
               <button
                 onClick={() => setDetailItem(null)}
-                className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white rounded-lg bg-slate-900/80 border border-slate-700"
+                className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-600 rounded-lg bg-white/80 border border-slate-200 shadow-xs"
               >
                 <X className="w-4 h-4" />
               </button>
 
               <div className="absolute bottom-4 left-6 flex items-end gap-4">
-                <div className="w-20 h-20 rounded-2xl overflow-hidden bg-slate-800 border-2 border-amber-400 shadow-xl shrink-0">
+                <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white border-2 border-indigo-500 shadow-md shrink-0">
                   {detailItem.avatar_url ? (
                     <img
                       src={detailItem.avatar_url}
@@ -1248,41 +1248,41 @@ export default function AdminCharactersPage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-500">
+                    <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100">
                       <User className="w-10 h-10" />
                     </div>
                   )}
                 </div>
                 <div className="mb-1">
-                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">
                     {detailItem.category || detailItem.category_id || 'Anime'}
                   </span>
-                  <h2 className="text-xl font-black text-white mt-1">{detailItem.name}</h2>
+                  <h2 className="text-xl font-black text-slate-900 mt-1">{detailItem.name}</h2>
                 </div>
               </div>
             </div>
 
             <div className="p-6 space-y-4 overflow-y-auto text-xs">
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] text-slate-500 uppercase tracking-wider">Character ID (UUID)</div>
-                  <div className="font-mono text-slate-300 font-semibold mt-0.5">{detailItem.id}</div>
+                  <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Character ID (UUID)</div>
+                  <div className="font-mono text-slate-700 font-semibold mt-0.5">{detailItem.id}</div>
                 </div>
                 <button
                   onClick={() => handleCopyId(detailItem.id)}
-                  className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg flex items-center gap-1 text-[11px]"
+                  className="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg flex items-center gap-1 text-[11px] shadow-xs"
                 >
-                  {copiedId === detailItem.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                  {copiedId === detailItem.id ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
                   <span>{copiedId === detailItem.id ? 'Copied' : 'Copy'}</span>
                 </button>
               </div>
 
               <div>
-                <h4 className="text-slate-300 font-bold mb-1 flex items-center gap-1.5">
-                  <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+                <h4 className="text-slate-800 font-bold mb-1 flex items-center gap-1.5">
+                  <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
                   <span>{isVi ? 'Tiểu sử / Lore nhân vật' : 'Character Biography & Lore'}</span>
                 </h4>
-                <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800 text-slate-300 leading-relaxed whitespace-pre-line">
+                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 leading-relaxed whitespace-pre-line">
                   {detailItem.biography || (isVi ? 'Chưa có tiểu sử chi tiết.' : 'No biography documented.')}
                 </div>
               </div>
@@ -1295,14 +1295,14 @@ export default function AdminCharactersPage() {
               )}
             </div>
 
-            <div className="p-4 border-t border-slate-800 bg-slate-900/60 flex items-center justify-between">
+            <div className="p-4 border-t border-slate-200 bg-slate-50/70 flex items-center justify-between">
               <button
                 onClick={() => {
                   const item = detailItem;
                   setDetailItem(null);
                   setDeleteItem(item);
                 }}
-                className="px-3 py-2 text-rose-400 hover:bg-rose-500/10 rounded-xl text-xs font-semibold cursor-pointer"
+                className="px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-semibold cursor-pointer"
               >
                 {isVi ? 'Xóa hồ sơ' : 'Delete'}
               </button>
@@ -1310,7 +1310,7 @@ export default function AdminCharactersPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setDetailItem(null)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs cursor-pointer"
+                  className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold rounded-xl text-xs cursor-pointer shadow-xs"
                 >
                   {isVi ? 'Đóng' : 'Close'}
                 </button>
@@ -1320,7 +1320,7 @@ export default function AdminCharactersPage() {
                     setDetailItem(null);
                     openEditModal(item);
                   }}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5 shadow-xs"
                 >
                   <Pencil className="w-3.5 h-3.5" />
                   <span>{isVi ? 'Chỉnh sửa' : 'Edit'}</span>
@@ -1333,17 +1333,17 @@ export default function AdminCharactersPage() {
 
       {/* DELETE CONFIRMATION MODAL: DELETE /api/v1/admin/characters/{id} */}
       {deleteItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 text-xs text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto border border-rose-500/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-sm bg-white border border-slate-200 rounded-2xl shadow-xl p-6 text-xs text-center space-y-4">
+            <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
               <Trash2 className="w-6 h-6" />
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-slate-900">
                 {isVi ? 'Xác nhận xóa hồ sơ nhân vật?' : 'Delete Character Profile?'}
               </h3>
-              <p className="text-slate-400 mt-1">
+              <p className="text-slate-600 mt-1">
                 {isVi
                   ? `Bạn có chắc chắn muốn xóa hồ sơ "${deleteItem.name}" (ID: ${deleteItem.id})? Hành động này không thể hoàn tác.`
                   : `Are you sure you want to permanently delete "${deleteItem.name}"?`}
@@ -1353,14 +1353,14 @@ export default function AdminCharactersPage() {
             <div className="flex items-center justify-center gap-2 pt-2">
               <button
                 onClick={() => setDeleteItem(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg cursor-pointer"
+                className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold rounded-xl cursor-pointer shadow-xs"
               >
                 {isVi ? 'Hủy bỏ' : 'Cancel'}
               </button>
               <button
                 onClick={handleDeleteSubmit}
                 disabled={isSubmittingDelete}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
               >
                 {isSubmittingDelete && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                 <span>{isVi ? 'Xác nhận xóa' : 'Confirm Delete'}</span>

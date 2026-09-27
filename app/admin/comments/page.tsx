@@ -330,7 +330,7 @@ export default function AdminCommentsPage() {
   return (
     <div
       translate="no"
-      className="notranslate min-h-screen bg-slate-900 text-slate-100 font-sans flex"
+      className="notranslate min-h-screen bg-slate-50 text-slate-900 font-sans flex"
     >
       {/* Admin Sidebar */}
       <AdminSidebar
@@ -354,20 +354,19 @@ export default function AdminCommentsPage() {
           {/* Action Toast Alert Banner */}
           {actionToast && (
             <div
-              style={{ borderRadius: '10px' }}
-              className={`p-3.5 text-xs font-bold flex items-center justify-between gap-3 shadow-lg border ${
+              className={`p-3.5 text-xs font-bold flex items-center justify-between gap-3 shadow-xs rounded-xl border ${
                 actionToast.type === 'success'
-                  ? 'bg-emerald-600 text-white border-emerald-500'
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                   : actionToast.type === 'warning'
-                  ? 'bg-amber-600 text-white border-amber-500'
-                  : 'bg-rose-600 text-white border-rose-500'
+                  ? 'bg-amber-50 text-amber-800 border-amber-200'
+                  : 'bg-rose-50 text-rose-800 border-rose-200'
               }`}
             >
               <div className="flex items-center gap-2">
                 {actionToast.type === 'success' ? (
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
                 ) : (
-                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
                 )}
                 <span>{actionToast.message}</span>
                 {actionToast.details && (
@@ -376,7 +375,7 @@ export default function AdminCommentsPage() {
               </div>
               <button
                 onClick={() => setActionToast(null)}
-                className="p-1 hover:bg-black/20 rounded cursor-pointer"
+                className="p-1 hover:bg-black/5 rounded-lg cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -384,20 +383,20 @@ export default function AdminCommentsPage() {
           )}
 
           {/* Page Title & Status Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-800">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200">
             <div>
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/30">
+                <div className="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 shadow-xs">
                   <ShieldAlert className="w-6 h-6" />
                 </div>
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
+                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
                     {isVi ? 'Quản Lý Bình Luận Bị Báo Cáo' : 'Flagged Comments Moderation'}
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-mono">
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-mono">
                       /api/v1/admin/comments/flagged
                     </span>
                   </h1>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-xs text-slate-500 mt-0.5">
                     {isVi
                       ? 'Kiểm duyệt các bình luận spam, thù địch hoặc vi phạm bị người dùng cắm cờ báo cáo.'
                       : 'Review and remove comments flagged by community users for spam or abuse.'}
@@ -409,14 +408,13 @@ export default function AdminCommentsPage() {
             <div className="flex items-center gap-2 self-start md:self-auto">
               {/* Endpoint Status Pill */}
               <div
-                style={{ borderRadius: '8px' }}
-                className={`px-3 py-1.5 text-xs font-semibold flex items-center gap-2 border ${
+                className={`px-3 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-2 border shadow-xs ${
                   !isConnectionError
-                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                    : 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
                 }`}
               >
-                <span className={`w-2 h-2 rounded-full ${!isConnectionError ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+                <span className={`w-2 h-2 rounded-full ${!isConnectionError ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
                 <span className="font-mono text-[11px]">
                   {!isConnectionError ? 'GET 200 OK' : 'Demo Mode (Backend Offline)'}
                 </span>
@@ -426,11 +424,10 @@ export default function AdminCommentsPage() {
               <button
                 onClick={fetchComments}
                 disabled={isLoading}
-                style={{ borderRadius: '8px' }}
-                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                 title="Làm mới danh sách từ API"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-indigo-600' : ''}`} />
                 <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
               </button>
             </div>
@@ -438,45 +435,45 @@ export default function AdminCommentsPage() {
 
           {/* Quick Metrics KPI Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-slate-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Tổng bình luận vi phạm' : 'Total Flagged'}</span>
-                <MessageSquare className="w-4 h-4 text-indigo-400" />
+                <MessageSquare className="w-4 h-4 text-indigo-600" />
               </div>
-              <div className="text-2xl font-black text-white">{totalComments}</div>
+              <div className="text-2xl font-black text-slate-900">{totalComments}</div>
               <div className="text-[11px] text-slate-400 mt-1 font-mono">meta.total: {meta.total}</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-rose-500/30 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-rose-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-rose-600 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Báo cáo cao nhất' : 'Max Reports'}</span>
-                <AlertTriangle className="w-4 h-4 text-rose-400" />
+                <AlertTriangle className="w-4 h-4 text-rose-500" />
               </div>
-              <div className="text-2xl font-black text-rose-300">{maxReports} lượt</div>
-              <div className="text-[11px] text-rose-400/80 mt-1">sort=reports_count</div>
+              <div className="text-2xl font-black text-rose-600">{maxReports} lượt</div>
+              <div className="text-[11px] text-slate-400 mt-1">sort=reports_count</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-amber-500/30 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-amber-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-amber-600 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Cần xử lý gấp (≥5)' : 'High Priority (≥5)'}</span>
-                <Clock className="w-4 h-4 text-amber-400" />
+                <Clock className="w-4 h-4 text-amber-500" />
               </div>
-              <div className="text-2xl font-black text-amber-300">{urgentCount}</div>
-              <div className="text-[11px] text-amber-400/80 mt-1">Độ ưu tiên cao</div>
+              <div className="text-2xl font-black text-amber-600">{urgentCount}</div>
+              <div className="text-[11px] text-slate-400 mt-1">Độ ưu tiên cao</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-slate-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Người dùng bị báo cáo' : 'Reported Users'}</span>
                 <User className="w-4 h-4 text-slate-400" />
               </div>
-              <div className="text-2xl font-black text-slate-200">{uniqueUsers}</div>
+              <div className="text-2xl font-black text-slate-900">{uniqueUsers}</div>
               <div className="text-[11px] text-slate-400 mt-1">Tài khoản liên quan</div>
             </div>
           </div>
 
           {/* Filtering and Search Controls */}
-          <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/60 space-y-4">
+          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-4">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               {/* Search input */}
               <div className="relative flex-1">
@@ -490,12 +487,12 @@ export default function AdminCommentsPage() {
                       ? 'Tìm theo nội dung, người dùng, mã cmt_xxx, mã bài viết cnt_xxx...'
                       : 'Search comment body, user, cmt_xxx, or post cnt_xxx...'
                   }
-                  className="w-full bg-slate-900/90 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs transition-colors"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -504,8 +501,8 @@ export default function AdminCommentsPage() {
 
               {/* Sort by & view mode controls */}
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 text-xs text-slate-400">
-                  <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
+                <div className="flex items-center gap-2 text-xs text-slate-600">
+                  <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
                   <span>{isVi ? 'Sắp xếp:' : 'Sort:'}</span>
                   <select
                     value={sort}
@@ -513,7 +510,7 @@ export default function AdminCommentsPage() {
                       setSort(e.target.value);
                       setPage(1);
                     }}
-                    className="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                    className="bg-white border border-slate-300 rounded-xl px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-indigo-600 shadow-xs cursor-pointer"
                   >
                     <option value="reports_count">{isVi ? 'Lượt báo cáo nhiều nhất' : 'Most Reported'}</option>
                     <option value="newest">{isVi ? 'Mới nhất' : 'Newest'}</option>
@@ -521,11 +518,11 @@ export default function AdminCommentsPage() {
                   </select>
                 </div>
 
-                <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-lg border border-slate-700/80">
+                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
                   <button
                     onClick={() => setViewMode('table')}
-                    className={`p-1.5 rounded-md cursor-pointer ${
-                      viewMode === 'table' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                    className={`p-1.5 rounded-lg cursor-pointer transition-all ${
+                      viewMode === 'table' ? 'bg-white text-indigo-600 shadow-xs' : 'text-slate-500 hover:text-slate-900'
                     }`}
                     title="Bảng biểu (Table)"
                   >
@@ -533,8 +530,8 @@ export default function AdminCommentsPage() {
                   </button>
                   <button
                     onClick={() => setViewMode('grid')}
-                    className={`p-1.5 rounded-md cursor-pointer ${
-                      viewMode === 'grid' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                    className={`p-1.5 rounded-lg cursor-pointer transition-all ${
+                      viewMode === 'grid' ? 'bg-white text-indigo-600 shadow-xs' : 'text-slate-500 hover:text-slate-900'
                     }`}
                     title="Dạng lưới (Grid)"
                   >
@@ -542,7 +539,7 @@ export default function AdminCommentsPage() {
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs text-slate-400">
+                <div className="flex items-center gap-2 text-xs text-slate-600">
                   <span>{isVi ? 'Hiển thị:' : 'Limit:'}</span>
                   <select
                     value={limit}
@@ -550,7 +547,7 @@ export default function AdminCommentsPage() {
                       setLimit(Number(e.target.value));
                       setPage(1);
                     }}
-                    className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                    className="bg-white border border-slate-300 rounded-xl px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-indigo-600 shadow-xs cursor-pointer"
                   >
                     <option value={10}>10</option>
                     <option value={20}>20</option>
@@ -563,19 +560,19 @@ export default function AdminCommentsPage() {
 
           {/* Content List Table / Grid */}
           {isLoading ? (
-            <div className="p-12 text-center bg-slate-800/40 rounded-xl border border-slate-700/60">
-              <RefreshCw className="w-8 h-8 text-indigo-400 animate-spin mx-auto mb-3" />
-              <p className="text-sm font-semibold text-slate-300">
+            <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
+              <p className="text-sm font-semibold text-slate-700">
                 {isVi ? 'Đang tải bình luận vi phạm từ /api/v1/admin/comments/flagged...' : 'Fetching flagged comments...'}
               </p>
             </div>
           ) : displayedComments.length === 0 ? (
-            <div className="p-12 text-center bg-slate-800/40 rounded-xl border border-slate-700/60">
-              <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
-              <h3 className="text-base font-bold text-white mb-1">
+            <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">
+              <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+              <h3 className="text-base font-bold text-slate-900 mb-1">
                 {isVi ? 'Không có bình luận vi phạm nào' : 'No flagged comments found'}
               </h3>
-              <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
+              <p className="text-xs text-slate-500 max-w-md mx-auto mb-4">
                 {isVi
                   ? 'Hệ thống hiện tại sạch hoàn toàn, không có bình luận nào bị cộng đồng báo cáo.'
                   : 'All comments are clean and no reports are currently pending review.'}
@@ -585,17 +582,17 @@ export default function AdminCommentsPage() {
                   setSearchQuery('');
                   setSort('reports_count');
                 }}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-lg cursor-pointer transition-colors"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-xs transition-colors"
               >
                 {isVi ? 'Xóa bộ lọc' : 'Clear Filters'}
               </button>
             </div>
           ) : viewMode === 'table' ? (
             /* TABLE VIEW */
-            <div className="overflow-x-auto rounded-xl border border-slate-700/70 bg-slate-800/40 backdrop-blur-sm">
+            <div className="overflow-x-auto rounded-xl border border-slate-200/80 bg-white shadow-xs">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-700/80 bg-slate-900/60 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
+                  <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
                     <th className="py-3 px-4">Mã bình luận</th>
                     <th className="py-3 px-4">{isVi ? 'Người gửi (User)' : 'User'}</th>
                     <th className="py-3 px-4">{isVi ? 'Nội dung bình luận (Body)' : 'Comment Body'}</th>
@@ -604,23 +601,23 @@ export default function AdminCommentsPage() {
                     <th className="py-3 px-4 text-right">{isVi ? 'Thao tác' : 'Actions'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800">
+                <tbody className="divide-y divide-slate-100">
                   {displayedComments.map((item) => (
                     <tr
                       key={item.id}
-                      className="hover:bg-slate-700/30 transition-colors group"
+                      className="hover:bg-slate-50/80 transition-colors group text-slate-800"
                     >
                       {/* ID with Copy button */}
                       <td className="py-3 px-4 whitespace-nowrap">
-                        <div className="flex items-center gap-1.5 font-mono text-indigo-400 font-bold">
+                        <div className="flex items-center gap-1.5 font-mono text-indigo-600 font-bold">
                           <span>{item.id}</span>
                           <button
                             onClick={() => handleCopyId(item.id)}
-                            className="text-slate-500 hover:text-indigo-300 p-1 rounded transition-colors cursor-pointer"
+                            className="text-slate-400 hover:text-indigo-600 p-1 rounded transition-colors cursor-pointer"
                             title="Sao chép ID"
                           >
                             {copiedId === item.id ? (
-                              <Check className="w-3.5 h-3.5 text-emerald-400" />
+                              <Check className="w-3.5 h-3.5 text-emerald-600" />
                             ) : (
                               <Copy className="w-3.5 h-3.5" />
                             )}
@@ -631,30 +628,30 @@ export default function AdminCommentsPage() {
                       {/* User */}
                       <td className="py-3 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold text-[10px] border border-rose-500/30">
+                          <div className="w-6 h-6 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-bold text-[10px] border border-rose-200">
                             {item.user ? item.user.charAt(0).toUpperCase() : 'U'}
                           </div>
-                          <span className="font-semibold text-slate-200">{item.user}</span>
+                          <span className="font-semibold text-slate-900">{item.user}</span>
                         </div>
                       </td>
 
                       {/* Body */}
                       <td className="py-3 px-4">
-                        <div className="text-slate-300 max-w-[420px] line-clamp-2 leading-relaxed">
+                        <div className="text-slate-700 max-w-[420px] line-clamp-2 leading-relaxed">
                           {item.body}
                         </div>
                       </td>
 
                       {/* Post ID */}
                       <td className="py-3 px-4 whitespace-nowrap">
-                        <div className="flex items-center gap-1.5 font-mono text-slate-400">
+                        <div className="flex items-center gap-1.5 font-mono text-slate-500">
                           <Link
                             href={`/admin/events`}
-                            className="hover:text-indigo-300 underline underline-offset-2 flex items-center gap-1"
+                            className="hover:text-indigo-600 underline underline-offset-2 flex items-center gap-1 transition-colors"
                             title="Xem bài viết gốc"
                           >
                             <span>{item.post_id}</span>
-                            <ExternalLink className="w-3 h-3 text-slate-500" />
+                            <ExternalLink className="w-3 h-3 text-slate-400" />
                           </Link>
                         </div>
                       </td>
@@ -662,16 +659,15 @@ export default function AdminCommentsPage() {
                       {/* Reports Count */}
                       <td className="py-3 px-4 whitespace-nowrap">
                         <span
-                          style={{ borderRadius: '6px' }}
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold border ${
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded-lg border ${
                             item.reports_count >= 8
-                              ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse'
+                              ? 'bg-rose-50 text-rose-700 border-rose-200 animate-pulse'
                               : item.reports_count >= 4
-                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                              : 'bg-slate-700/50 text-slate-300 border-slate-600'
+                              ? 'bg-amber-50 text-amber-700 border-amber-200'
+                              : 'bg-slate-100 text-slate-700 border-slate-200'
                           }`}
                         >
-                          <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                          <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
                           <span>{item.reports_count} {isVi ? 'báo cáo' : 'reports'}</span>
                         </span>
                       </td>
@@ -682,7 +678,7 @@ export default function AdminCommentsPage() {
                           {/* View Detail */}
                           <button
                             onClick={() => setSelectedComment(item)}
-                            className="p-1.5 rounded-lg bg-slate-700/80 hover:bg-slate-600 text-slate-200 transition-colors cursor-pointer"
+                            className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
                             title={isVi ? 'Xem chi tiết' : 'View Details'}
                           >
                             <Eye className="w-4 h-4" />
@@ -691,7 +687,7 @@ export default function AdminCommentsPage() {
                           {/* Dismiss Flag (Keep Comment) */}
                           <button
                             onClick={() => handleDismissFlag(item)}
-                            className="p-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/30 transition-colors cursor-pointer"
+                            className="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition-colors cursor-pointer"
                             title={isVi ? 'Bỏ qua cảnh báo' : 'Dismiss Flag'}
                           >
                             <Check className="w-4 h-4" />
@@ -700,7 +696,7 @@ export default function AdminCommentsPage() {
                           {/* Delete Comment: DELETE /api/v1/admin/comments/{id} */}
                           <button
                             onClick={() => setDeleteComment(item)}
-                            className="p-1.5 rounded-lg bg-rose-600/30 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 transition-colors cursor-pointer"
+                            className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-colors cursor-pointer"
                             title={isVi ? 'Xóa bình luận vi phạm (DELETE /{id})' : 'Delete Comment'}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -718,46 +714,45 @@ export default function AdminCommentsPage() {
               {displayedComments.map((item) => (
                 <div
                   key={item.id}
-                  className="p-5 rounded-xl bg-slate-800/60 border border-slate-700/70 hover:border-slate-600 transition-all flex flex-col justify-between space-y-4"
+                  className="p-5 rounded-xl bg-white border border-slate-200/80 hover:border-slate-300 shadow-xs transition-all flex flex-col justify-between space-y-4"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-1 font-mono text-[11px] font-bold text-indigo-400">
+                      <div className="flex items-center gap-1 font-mono text-[11px] font-bold text-indigo-600">
                         <span>{item.id}</span>
                         <button
                           onClick={() => handleCopyId(item.id)}
-                          className="p-0.5 text-slate-500 hover:text-white"
+                          className="p-0.5 text-slate-400 hover:text-slate-600"
                         >
                           <Copy className="w-3 h-3" />
                         </button>
                       </div>
 
                       <span
-                        style={{ borderRadius: '6px' }}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-bold rounded-md bg-rose-50 text-rose-700 border border-rose-200"
                       >
-                        <AlertTriangle className="w-3 h-3 text-rose-400" />
+                        <AlertTriangle className="w-3 h-3 text-rose-600" />
                         <span>{item.reports_count} {isVi ? 'báo cáo' : 'reports'}</span>
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-5 h-5 rounded-full bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold text-[10px]">
+                      <div className="w-5 h-5 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-bold text-[10px] border border-rose-200">
                         {item.user ? item.user.charAt(0).toUpperCase() : 'U'}
                       </div>
-                      <span className="font-semibold text-slate-200 text-xs">{item.user}</span>
-                      <span className="text-[10px] text-slate-500 font-mono ml-auto">Post: {item.post_id}</span>
+                      <span className="font-semibold text-slate-900 text-xs">{item.user}</span>
+                      <span className="text-[10px] text-slate-400 font-mono ml-auto">Post: {item.post_id}</span>
                     </div>
 
-                    <p className="text-xs text-slate-300 p-3 bg-slate-900/60 rounded-lg border border-slate-800/80 leading-relaxed line-clamp-3">
+                    <p className="text-xs text-slate-700 p-3 bg-slate-50 rounded-lg border border-slate-200 leading-relaxed line-clamp-3">
                       "{item.body}"
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-700/60">
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
                     <button
                       onClick={() => handleDismissFlag(item)}
-                      className="text-xs text-slate-400 hover:text-emerald-400 font-semibold cursor-pointer"
+                      className="text-xs text-slate-500 hover:text-emerald-700 font-semibold cursor-pointer transition-colors"
                     >
                       {isVi ? 'Bỏ qua' : 'Dismiss'}
                     </button>
@@ -765,13 +760,13 @@ export default function AdminCommentsPage() {
                     <div className="flex items-center gap-1.5 ml-auto">
                       <button
                         onClick={() => setSelectedComment(item)}
-                        className="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold cursor-pointer"
+                        className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer transition-colors"
                       >
                         {isVi ? 'Chi tiết' : 'View'}
                       </button>
                       <button
                         onClick={() => setDeleteComment(item)}
-                        className="px-2.5 py-1 rounded bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold cursor-pointer flex items-center gap-1"
+                        className="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold cursor-pointer flex items-center gap-1 transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         <span>{isVi ? 'Xóa' : 'Delete'}</span>
@@ -784,8 +779,8 @@ export default function AdminCommentsPage() {
           )}
 
           {/* Pagination Controls */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-slate-800/40 border border-slate-700/60">
-            <div className="text-xs text-slate-400 font-mono">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+            <div className="text-xs text-slate-500 font-mono">
               {isVi
                 ? `Hiển thị ${displayedComments.length} trên tổng ${totalComments} mục (Trang ${page} / ${totalPages})`
                 : `Showing ${displayedComments.length} of ${totalComments} entries (Page ${page} of ${totalPages})`}
@@ -795,20 +790,20 @@ export default function AdminCommentsPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-slate-200 text-xs font-bold border border-slate-700 flex items-center gap-1 transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none text-slate-700 text-xs font-bold border border-slate-300 flex items-center gap-1 transition-colors cursor-pointer shadow-xs"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>{isVi ? 'Trước' : 'Prev'}</span>
               </button>
 
-              <div className="px-3 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs font-mono font-bold text-indigo-400">
+              <div className="px-3 py-1.5 bg-indigo-600 rounded-xl text-xs font-mono font-bold text-white shadow-xs">
                 {page} / {totalPages}
               </div>
 
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-slate-200 text-xs font-bold border border-slate-700 flex items-center gap-1 transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none text-slate-700 text-xs font-bold border border-slate-300 flex items-center gap-1 transition-colors cursor-pointer shadow-xs"
               >
                 <span>{isVi ? 'Sau' : 'Next'}</span>
                 <ChevronRight className="w-4 h-4" />
@@ -820,64 +815,64 @@ export default function AdminCommentsPage() {
 
       {/* DETAIL MODAL */}
       {selectedComment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-800/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-lg bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-rose-400" />
-                <h3 className="font-bold text-white text-base">
+                <MessageSquare className="w-5 h-5 text-rose-600" />
+                <h3 className="font-bold text-slate-900 text-base">
                   {isVi ? 'Chi Tiết Bình Luận Vi Phạm' : 'Flagged Comment Details'}
                 </h3>
               </div>
               <button
                 onClick={() => setSelectedComment(null)}
-                className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="p-6 space-y-4 text-xs">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/60 border border-slate-700">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
                 <div className="flex items-center gap-2">
-                  <span className="text-slate-400 font-mono">Comment ID:</span>
-                  <span className="text-indigo-400 font-bold font-mono">{selectedComment.id}</span>
+                  <span className="text-slate-500 font-mono">Comment ID:</span>
+                  <span className="text-indigo-600 font-bold font-mono">{selectedComment.id}</span>
                 </div>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                  <AlertTriangle className="w-3.5 h-3.5" />
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-lg bg-rose-50 text-rose-700 border border-rose-200">
+                  <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
                   <span>{selectedComment.reports_count} {isVi ? 'báo cáo' : 'reports'}</span>
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                  <div className="text-slate-400 font-semibold mb-1">{isVi ? 'Người gửi (user):' : 'User:'}</div>
-                  <div className="text-white font-bold flex items-center gap-1.5">
-                    <User className="w-4 h-4 text-rose-400" />
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <div className="text-slate-500 font-semibold mb-1">{isVi ? 'Người gửi (user):' : 'User:'}</div>
+                  <div className="text-slate-900 font-bold flex items-center gap-1.5">
+                    <User className="w-4 h-4 text-rose-600" />
                     <span>{selectedComment.user}</span>
                   </div>
                 </div>
 
-                <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                  <div className="text-slate-400 font-semibold mb-1">{isVi ? 'Bài viết liên quan:' : 'Target Post:'}</div>
-                  <div className="text-indigo-400 font-mono font-bold">{selectedComment.post_id}</div>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <div className="text-slate-500 font-semibold mb-1">{isVi ? 'Bài viết liên quan:' : 'Target Post:'}</div>
+                  <div className="text-indigo-600 font-mono font-bold">{selectedComment.post_id}</div>
                 </div>
               </div>
 
               <div>
-                <label className="text-slate-400 font-semibold block mb-1">
+                <label className="text-slate-700 font-semibold block mb-1">
                   {isVi ? 'Nội dung bình luận (body):' : 'Comment Body:'}
                 </label>
-                <div className="p-4 bg-slate-800/60 rounded-lg border border-slate-700 text-slate-100 text-xs leading-relaxed whitespace-pre-wrap">
+                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-slate-800 text-xs leading-relaxed whitespace-pre-wrap">
                   {selectedComment.body}
                 </div>
               </div>
             </div>
 
-            <div className="px-6 py-4 bg-slate-800/60 border-t border-slate-800 flex items-center justify-between gap-2">
+            <div className="px-6 py-4 bg-slate-50/70 border-t border-slate-200 flex items-center justify-between gap-2">
               <button
                 onClick={() => setSelectedComment(null)}
-                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg text-xs cursor-pointer transition-colors"
+                className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold rounded-xl text-xs cursor-pointer shadow-xs transition-colors"
               >
                 {isVi ? 'Đóng' : 'Close'}
               </button>
@@ -885,7 +880,7 @@ export default function AdminCommentsPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleDismissFlag(selectedComment)}
-                  className="px-3.5 py-2 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/30 font-bold rounded-lg text-xs cursor-pointer transition-all flex items-center gap-1.5"
+                  className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold rounded-xl text-xs cursor-pointer shadow-xs transition-all flex items-center gap-1.5"
                 >
                   <Check className="w-3.5 h-3.5" />
                   <span>{isVi ? 'Bỏ qua cảnh báo' : 'Dismiss'}</span>
@@ -895,7 +890,7 @@ export default function AdminCommentsPage() {
                   onClick={() => {
                     setDeleteComment(selectedComment);
                   }}
-                  className="px-3.5 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-xs cursor-pointer transition-all flex items-center gap-1.5"
+                  className="px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs cursor-pointer shadow-xs transition-all flex items-center gap-1.5"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   <span>{isVi ? 'Xóa bình luận vi phạm' : 'Delete Comment'}</span>
@@ -908,17 +903,17 @@ export default function AdminCommentsPage() {
 
       {/* DELETE CONFIRMATION MODAL: DELETE /api/v1/admin/comments/{id} */}
       {deleteComment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 text-xs text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto border border-rose-500/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-sm bg-white border border-slate-200 rounded-2xl shadow-xl p-6 text-xs text-center space-y-4 text-slate-900">
+            <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
               <Trash2 className="w-6 h-6" />
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-slate-900">
                 {isVi ? 'Xóa bình luận vi phạm?' : 'Delete Flagged Comment?'}
               </h3>
-              <p className="text-slate-400 mt-1">
+              <p className="text-slate-600 mt-1">
                 {isVi
                   ? `Bạn có chắc chắn muốn xóa bình luận của "${deleteComment.user}" (${deleteComment.id}) với ${deleteComment.reports_count} lượt báo cáo? Hành động này không thể hoàn tác.`
                   : `Are you sure you want to delete comment from ${deleteComment.user}?`}
@@ -928,14 +923,14 @@ export default function AdminCommentsPage() {
             <div className="flex items-center justify-center gap-2 pt-2">
               <button
                 onClick={() => setDeleteComment(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg cursor-pointer"
+                className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold rounded-xl cursor-pointer shadow-xs transition-colors"
               >
                 {isVi ? 'Hủy bỏ' : 'Cancel'}
               </button>
               <button
                 onClick={handleDeleteSubmit}
                 disabled={isSubmittingDelete}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs transition-colors"
               >
                 {isSubmittingDelete && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                 <span>{isVi ? 'Xóa bình luận' : 'Confirm Delete'}</span>

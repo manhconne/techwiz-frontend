@@ -429,7 +429,7 @@ export default function AdminChatbotPage() {
   }, [faqs]);
 
   return (
-    <div className="flex h-screen bg-[#0b0f17] text-slate-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-slate-50 text-slate-900 overflow-hidden font-sans">
       {/* SIDEBAR */}
       <AdminSidebar
         activeTab="chatbot"
@@ -450,22 +450,22 @@ export default function AdminChatbotPage() {
         />
 
         {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-800 bg-[#0f172a]/60 px-6 py-4 backdrop-blur-md">
+        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
-                <Link href="/admin" className="hover:text-amber-400 transition-colors">Admin</Link>
+              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-amber-400 font-medium">
+                <span className="text-indigo-600 font-medium">
                   {isVi ? 'Kho Tri Thức Chatbot (AI FAQ)' : 'Chatbot Knowledge Base'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
                   <Bot className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Quản Lý Câu Hỏi & Tri Thức Chatbot' : 'AI Chatbot FAQs Management'}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
                   {totalFaqs} {isVi ? 'câu hỏi' : 'entries'}
                 </span>
               </h1>
@@ -474,25 +474,25 @@ export default function AdminChatbotPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsTesterOpen(true)}
-                className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold rounded-xl border border-amber-500/30 flex items-center gap-1.5 transition-all cursor-pointer"
+                className="px-3.5 py-2 bg-white hover:bg-slate-50 text-indigo-700 text-xs font-bold rounded-xl border border-indigo-200 flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
                 title={isVi ? 'Thử nghiệm Bot' : 'Test Chatbot'}
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
                 <span>{isVi ? 'Thử nghiệm Chatbot' : 'Test Bot'}</span>
               </button>
 
               <button
                 onClick={() => fetchFaqs(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-amber-400' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
                 <span className="hidden sm:inline">{isVi ? 'Làm mới' : 'Refresh'}</span>
               </button>
 
               <button
                 onClick={() => setIsCreateOpen(true)}
-                className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-amber-500/20 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
               >
                 <Plus className="w-4 h-4 stroke-[2.5]" />
                 <span>{isVi ? 'Thêm câu hỏi FAQ' : 'Add FAQ'}</span>
@@ -503,24 +503,24 @@ export default function AdminChatbotPage() {
 
         {/* NOTIFICATIONS */}
         {apiSuccess && (
-          <div className="mx-6 mt-4 p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-xs flex items-center justify-between shadow-lg shadow-emerald-500/5 animate-in fade-in">
+          <div className="mx-6 mt-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-xs flex items-center justify-between shadow-xs animate-in fade-in">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
               <span>{apiSuccess}</span>
             </div>
-            <button onClick={() => setApiSuccess(null)} className="p-1 hover:bg-emerald-500/20 rounded-md">
+            <button onClick={() => setApiSuccess(null)} className="p-1 hover:bg-emerald-100 rounded-md cursor-pointer">
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
 
         {apiError && (
-          <div className="mx-6 mt-4 p-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-xs flex items-center justify-between shadow-lg shadow-rose-500/5 animate-in fade-in">
+          <div className="mx-6 mt-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center justify-between shadow-xs animate-in fade-in">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
               <span>{apiError}</span>
             </div>
-            <button onClick={() => setApiError(null)} className="p-1 hover:bg-rose-500/20 rounded-md">
+            <button onClick={() => setApiError(null)} className="p-1 hover:bg-rose-100 rounded-md cursor-pointer">
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -530,53 +530,53 @@ export default function AdminChatbotPage() {
         <div className="p-6 space-y-6">
           {/* STATS OVERVIEW CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Tổng câu hỏi trong kho' : 'Total FAQs'}</span>
-                <Bot className="w-4 h-4 text-amber-400" />
+                <Bot className="w-4 h-4 text-indigo-600" />
               </div>
-              <div className="text-2xl font-black text-white">{totalFaqs}</div>
-              <div className="text-[11px] text-slate-500 mt-1">
+              <div className="text-2xl font-black text-slate-900">{totalFaqs}</div>
+              <div className="text-[11px] text-slate-400 mt-1">
                 {isVi ? 'Đang huấn luyện cho AI Bot' : 'Trained knowledge base'}
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Đang hoạt động (Active)' : 'Active Entries'}</span>
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
               </div>
-              <div className="text-2xl font-black text-emerald-400">{activeFaqs}</div>
-              <div className="text-[11px] text-slate-500 mt-1">
+              <div className="text-2xl font-black text-emerald-600">{activeFaqs}</div>
+              <div className="text-[11px] text-slate-400 mt-1">
                 {isVi ? 'Sẵn sàng trả lời người dùng' : 'Serving user queries'}
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Chủ đề / Danh mục' : 'Categories'}</span>
-                <FolderTree className="w-4 h-4 text-cyan-400" />
+                <FolderTree className="w-4 h-4 text-sky-600" />
               </div>
-              <div className="text-2xl font-black text-white">{categoriesCount}</div>
-              <div className="text-[11px] text-slate-500 mt-1">
+              <div className="text-2xl font-black text-slate-900">{categoriesCount}</div>
+              <div className="text-[11px] text-slate-400 mt-1">
                 Booking, Payment, Rules, v.v.
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Tỷ lệ phản hồi tự động' : 'Automation Rate'}</span>
-                <Sparkles className="w-4 h-4 text-purple-400" />
+                <Sparkles className="w-4 h-4 text-purple-600" />
               </div>
-              <div className="text-2xl font-black text-white">94.2%</div>
-              <div className="text-[11px] text-slate-500 mt-1">
+              <div className="text-2xl font-black text-slate-900">94.2%</div>
+              <div className="text-[11px] text-slate-400 mt-1">
                 {isVi ? 'Giảm tải cho đội ngũ hỗ trợ' : 'Resolved by bot'}
               </div>
             </div>
           </div>
 
           {/* FILTER & SEARCH TOOLBAR: ?search=ve&category=... */}
-          <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-lg space-y-3">
+          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
               {/* Search input: ?search=ve */}
               <div className="relative flex-1">
@@ -593,7 +593,7 @@ export default function AdminChatbotPage() {
                       ? 'Tìm kiếm câu hỏi, câu trả lời hoặc từ khóa (vd: vé, hoàn tiền, momo...)...'
                       : 'Search question, answer or keywords (e.g. ticket, refund)...'
                   }
-                  className="w-full pl-9 pr-8 py-2 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
+                  className="w-full pl-9 pr-8 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all shadow-xs"
                 />
                 {searchTerm && (
                   <button
@@ -601,7 +601,7 @@ export default function AdminChatbotPage() {
                       setSearchTerm('');
                       setPage(1);
                     }}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -610,7 +610,7 @@ export default function AdminChatbotPage() {
             </div>
 
             {/* CATEGORY TABS FILTER */}
-            <div className="flex items-center gap-2 overflow-x-auto text-xs pt-1 border-t border-slate-800/80">
+            <div className="flex items-center gap-2 overflow-x-auto text-xs pt-1 border-t border-slate-100">
               <span className="text-slate-500 shrink-0 font-medium text-[11px]">
                 {isVi ? 'Chủ đề FAQ:' : 'Category:'}
               </span>
@@ -631,14 +631,14 @@ export default function AdminChatbotPage() {
                     }}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 flex items-center gap-1.5 ${
                       isActive
-                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                        : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200'
+                        ? 'bg-indigo-600 text-white shadow-xs'
+                        : 'bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
                     }`}
                   >
                     <span>{cat === 'All' ? (isVi ? 'Tất cả' : 'All') : cat}</span>
                     <span
                       className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                        isActive ? 'bg-slate-950/20 text-slate-950' : 'bg-slate-800 text-slate-400'
+                        isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
                       }`}
                     >
                       {count}
@@ -650,10 +650,10 @@ export default function AdminChatbotPage() {
           </div>
 
           {/* TABLE OF FAQS */}
-          <div className="rounded-2xl bg-[#0f172a] border border-slate-800 overflow-hidden shadow-lg">
+          <div className="rounded-xl bg-white border border-slate-200/80 overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-900/80 text-slate-400 font-semibold border-b border-slate-800">
+                <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
                   <tr>
                     <th className="px-4 py-3">{isVi ? 'Câu hỏi (question)' : 'Question'}</th>
                     <th className="px-4 py-3">{isVi ? 'Câu trả lời tóm tắt (answer)' : 'Answer Preview'}</th>
@@ -662,46 +662,46 @@ export default function AdminChatbotPage() {
                     <th className="px-4 py-3 text-right">{isVi ? 'Thao tác' : 'Actions'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-slate-100">
                   {faqs.map((faq) => (
                     <tr
                       key={faq.id}
                       onClick={() => setPreviewItem(faq)}
-                      className="hover:bg-slate-850/60 transition-colors cursor-pointer"
+                      className="hover:bg-slate-50/80 transition-colors cursor-pointer text-slate-800"
                     >
                       <td className="px-4 py-3.5 max-w-sm">
-                        <div className="font-bold text-white hover:text-amber-400 transition-colors line-clamp-2">
+                        <div className="font-bold text-slate-900 hover:text-indigo-600 transition-colors line-clamp-2">
                           {faq.question}
                         </div>
                         <button
                           onClick={(e) => handleCopyId(faq.id, e)}
-                          className="text-[10px] text-slate-500 hover:text-slate-300 font-mono flex items-center gap-1 mt-1"
+                          className="text-[10px] text-slate-400 hover:text-indigo-600 font-mono flex items-center gap-1 mt-1 cursor-pointer"
                         >
                           <span>{faq.id}</span>
-                          {copiedId === faq.id ? <Check className="w-2.5 h-2.5 text-emerald-400" /> : <Copy className="w-2.5 h-2.5" />}
+                          {copiedId === faq.id ? <Check className="w-2.5 h-2.5 text-emerald-600" /> : <Copy className="w-2.5 h-2.5" />}
                         </button>
                       </td>
 
                       <td className="px-4 py-3.5 max-w-md">
-                        <div className="text-slate-300 line-clamp-2 leading-relaxed">
+                        <div className="text-slate-600 line-clamp-2 leading-relaxed">
                           {faq.answer}
                         </div>
                       </td>
 
                       <td className="px-4 py-3.5 whitespace-nowrap">
-                        <span className="px-2 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-slate-300 font-medium">
+                        <span className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-700 font-medium">
                           {faq.category || 'General'}
                         </span>
                       </td>
 
                       <td className="px-4 py-3.5 whitespace-nowrap">
                         {faq.is_active ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                             <span>{isVi ? 'Hoạt động' : 'Active'}</span>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-800 text-slate-400 border border-slate-700">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-500 border border-slate-200">
                             <X className="w-3 h-3" />
                             <span>{isVi ? 'Tạm ẩn' : 'Inactive'}</span>
                           </span>
@@ -712,7 +712,7 @@ export default function AdminChatbotPage() {
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => setPreviewItem(faq)}
-                            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg cursor-pointer"
+                            className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-slate-100 rounded-lg cursor-pointer transition-colors"
                             title={isVi ? 'Xem chi tiết' : 'Preview'}
                           >
                             <Eye className="w-3.5 h-3.5" />
@@ -720,7 +720,7 @@ export default function AdminChatbotPage() {
 
                           <button
                             onClick={(e) => openEditModal(faq, e)}
-                            className="p-1.5 text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg cursor-pointer"
+                            className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg cursor-pointer transition-colors"
                             title={isVi ? 'Chỉnh sửa' : 'Edit'}
                           >
                             <Pencil className="w-3.5 h-3.5" />
@@ -731,7 +731,7 @@ export default function AdminChatbotPage() {
                               e.stopPropagation();
                               setDeleteItem(faq);
                             }}
-                            className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg cursor-pointer"
+                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer transition-colors"
                             title={isVi ? 'Xóa câu hỏi' : 'Delete'}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -746,7 +746,7 @@ export default function AdminChatbotPage() {
           </div>
 
           {/* PAGINATION BAR */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 pt-2">
             <div>
               {isVi
                 ? `Hiển thị ${faqs.length} câu hỏi FAQ (Trang ${page})`
@@ -757,20 +757,20 @@ export default function AdminChatbotPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1 || loading}
-                className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1"
+                className="px-3 py-1.5 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs text-slate-700"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 <span>{isVi ? 'Trang trước' : 'Previous'}</span>
               </button>
 
-              <span className="px-3 py-1.5 bg-slate-800 text-white rounded-xl font-bold">
+              <span className="px-3 py-1.5 bg-slate-100 text-indigo-700 border border-slate-200 rounded-xl font-bold font-mono">
                 {page}
               </span>
 
               <button
                 onClick={() => setPage((p) => p + 1)}
                 disabled={faqs.length < limit || loading}
-                className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1"
+                className="px-3 py-1.5 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs text-slate-700"
               >
                 <span>{isVi ? 'Trang sau' : 'Next'}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -782,23 +782,23 @@ export default function AdminChatbotPage() {
 
       {/* CREATE FAQ MODAL: POST /api/v1/admin/chatbot/faqs */}
       {isCreateOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-xl bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">
                   <Bot className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-slate-900">
                     {isVi ? 'Thêm Câu Hỏi Mới vào Kho Tri Thức' : 'Add FAQ to Knowledge Base'}
                   </h3>
-                  <p className="text-[11px] text-slate-400 font-mono">POST /api/v1/admin/chatbot/faqs</p>
+                  <p className="text-[11px] text-slate-500 font-mono">POST /api/v1/admin/chatbot/faqs</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsCreateOpen(false)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -807,7 +807,7 @@ export default function AdminChatbotPage() {
             <form onSubmit={handleCreateSubmit} className="p-6 space-y-4 overflow-y-auto text-xs">
               {/* Question */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Câu hỏi của người dùng (question) *' : 'User Question (question) *'}
                 </label>
                 <input
@@ -816,20 +816,20 @@ export default function AdminChatbotPage() {
                   value={createForm.question}
                   onChange={(e) => setCreateForm({ ...createForm, question: e.target.value })}
                   placeholder={isVi ? 'Ví dụ: Quy định hoàn tiền vé?, Làm thế nào để lấy vé NFT?...' : 'e.g. How to get NFT ticket?...'}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 />
               </div>
 
               {/* Category & Status Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">
+                  <label className="block text-slate-700 font-semibold mb-1">
                     {isVi ? 'Chủ đề / Danh mục (category)' : 'Category'}
                   </label>
                   <select
                     value={createForm.category}
                     onChange={(e) => setCreateForm({ ...createForm, category: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                   >
                     {FAQ_CATEGORIES.filter((c) => c !== 'All').map((cat) => (
                       <option key={cat} value={cat}>
@@ -840,7 +840,7 @@ export default function AdminChatbotPage() {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">
+                  <label className="block text-slate-700 font-semibold mb-1">
                     {isVi ? 'Trạng thái hoạt động (is_active)' : 'Status (is_active)'}
                   </label>
                   <div className="flex items-center gap-2 pt-2">
@@ -849,9 +849,9 @@ export default function AdminChatbotPage() {
                       id="create_is_active"
                       checked={createForm.is_active}
                       onChange={(e) => setCreateForm({ ...createForm, is_active: e.target.checked })}
-                      className="w-4 h-4 rounded text-amber-500 focus:ring-amber-400"
+                      className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300"
                     />
-                    <label htmlFor="create_is_active" className="text-slate-300 cursor-pointer">
+                    <label htmlFor="create_is_active" className="text-slate-700 cursor-pointer font-medium">
                       {isVi ? 'Kích hoạt ngay cho Bot trả lời' : 'Active immediately'}
                     </label>
                   </div>
@@ -860,7 +860,7 @@ export default function AdminChatbotPage() {
 
               {/* Answer */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Câu trả lời chuẩn của Bot (answer) *' : 'Bot Answer (answer) *'}
                 </label>
                 <textarea
@@ -873,22 +873,22 @@ export default function AdminChatbotPage() {
                       ? 'Nhập nội dung câu trả lời chuẩn xác, dễ hiểu để AI bot gửi đến khách hàng...'
                       : 'Enter exact answer for the chatbot to provide...'
                   }
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400 leading-relaxed"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs leading-relaxed"
                 />
               </div>
 
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsCreateOpen(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-semibold border border-slate-300 rounded-xl shadow-xs transition-colors cursor-pointer"
                 >
                   {isVi ? 'Hủy' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingCreate}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
                 >
                   {isSubmittingCreate && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isVi ? 'Thêm câu hỏi' : 'Save FAQ'}</span>
@@ -901,23 +901,23 @@ export default function AdminChatbotPage() {
 
       {/* EDIT FAQ MODAL: PUT /api/v1/admin/chatbot/faqs/{id} */}
       {editItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-xl bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">
                   <Pencil className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-slate-900">
                     {isVi ? 'Cập nhật Câu Hỏi FAQ' : 'Update FAQ'}
                   </h3>
-                  <p className="text-[11px] text-slate-400 font-mono">PUT /api/v1/admin/chatbot/faqs/{editItem.id}</p>
+                  <p className="text-[11px] text-slate-500 font-mono">PUT /api/v1/admin/chatbot/faqs/{editItem.id}</p>
                 </div>
               </div>
               <button
                 onClick={() => setEditItem(null)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -926,7 +926,7 @@ export default function AdminChatbotPage() {
             <form onSubmit={handleEditSubmit} className="p-6 space-y-4 overflow-y-auto text-xs">
               {/* Question */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Câu hỏi của người dùng (question) *' : 'Question *'}
                 </label>
                 <input
@@ -934,7 +934,7 @@ export default function AdminChatbotPage() {
                   required
                   value={editForm.question}
                   onChange={(e) => setEditForm({ ...editForm, question: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 />
               </div>
 
@@ -946,9 +946,9 @@ export default function AdminChatbotPage() {
                     id="edit_is_active"
                     checked={editForm.is_active}
                     onChange={(e) => setEditForm({ ...editForm, is_active: e.target.checked })}
-                    className="w-4 h-4 rounded text-amber-500 focus:ring-amber-400"
+                    className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300"
                   />
-                  <label htmlFor="edit_is_active" className="text-slate-300 cursor-pointer font-medium">
+                  <label htmlFor="edit_is_active" className="text-slate-700 cursor-pointer font-medium">
                     {isVi ? 'Đang hoạt động (is_active)' : 'Active in bot'}
                   </label>
                 </div>
@@ -956,7 +956,7 @@ export default function AdminChatbotPage() {
 
               {/* Answer */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Nội dung câu trả lời cập nhật (answer) *' : 'Updated Answer *'}
                 </label>
                 <textarea
@@ -964,22 +964,22 @@ export default function AdminChatbotPage() {
                   required
                   value={editForm.answer}
                   onChange={(e) => setEditForm({ ...editForm, answer: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400 leading-relaxed"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs leading-relaxed"
                 />
               </div>
 
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setEditItem(null)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-semibold border border-slate-300 rounded-xl shadow-xs transition-colors cursor-pointer"
                 >
                   {isVi ? 'Hủy' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingEdit}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
                 >
                   {isSubmittingEdit && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isVi ? 'Lưu thay đổi' : 'Save Changes'}</span>
@@ -992,21 +992,21 @@ export default function AdminChatbotPage() {
 
       {/* DETAIL PREVIEW MODAL */}
       {previewItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-lg bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">
                   <HelpCircle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">{previewItem.category || 'FAQ'}</h3>
-                  <p className="text-[11px] text-slate-400 font-mono">{previewItem.id}</p>
+                  <h3 className="text-sm font-bold text-slate-900">{previewItem.category || 'FAQ'}</h3>
+                  <p className="text-[11px] text-slate-500 font-mono">{previewItem.id}</p>
                 </div>
               </div>
               <button
                 onClick={() => setPreviewItem(null)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1014,29 +1014,29 @@ export default function AdminChatbotPage() {
 
             <div className="p-6 space-y-4 text-xs overflow-y-auto">
               <div>
-                <div className="text-slate-400 text-[10px] uppercase font-semibold mb-1">
+                <div className="text-slate-500 text-[10px] uppercase font-semibold mb-1">
                   {isVi ? 'Câu hỏi người dùng:' : 'Question:'}
                 </div>
-                <div className="text-base font-bold text-white bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                <div className="text-sm font-bold text-slate-900 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                   {previewItem.question}
                 </div>
               </div>
 
               <div>
-                <div className="text-amber-400 text-[10px] uppercase font-semibold mb-1 flex items-center gap-1.5">
+                <div className="text-indigo-600 text-[10px] uppercase font-semibold mb-1 flex items-center gap-1.5">
                   <Bot className="w-3.5 h-3.5" />
                   <span>{isVi ? 'Câu trả lời của AI Chatbot:' : 'Bot Response:'}</span>
                 </div>
-                <div className="text-slate-200 bg-slate-950 p-3.5 rounded-xl border border-slate-800 leading-relaxed whitespace-pre-line">
+                <div className="text-slate-700 bg-slate-50 p-3.5 rounded-xl border border-slate-200 leading-relaxed whitespace-pre-line">
                   {previewItem.answer}
                 </div>
               </div>
             </div>
 
-            <div className="p-4 border-t border-slate-800 bg-slate-900/60 flex items-center justify-end gap-2">
+            <div className="p-4 border-t border-slate-200 bg-slate-50/70 flex items-center justify-end gap-2">
               <button
                 onClick={() => setPreviewItem(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs cursor-pointer font-bold"
+                className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs cursor-pointer font-semibold border border-slate-300 shadow-xs transition-colors"
               >
                 {isVi ? 'Đóng' : 'Close'}
               </button>
@@ -1046,7 +1046,7 @@ export default function AdminChatbotPage() {
                   setPreviewItem(null);
                   openEditModal(item);
                 }}
-                className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5 shadow-xs transition-colors"
               >
                 <Pencil className="w-3.5 h-3.5" />
                 <span>{isVi ? 'Chỉnh sửa' : 'Edit'}</span>
@@ -1058,50 +1058,50 @@ export default function AdminChatbotPage() {
 
       {/* CHATBOT PLAYGROUND TESTER MODAL */}
       {isTesterOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[560px]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-lg bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col h-[560px] text-slate-900">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center">
                   <Bot className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <span>Fandom AI Chatbot Tester</span>
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   </h3>
-                  <p className="text-[10px] text-slate-400">
+                  <p className="text-[10px] text-slate-500">
                     {isVi ? 'Thử nghiệm trực tiếp với kho tri thức vừa cập nhật' : 'Live knowledge base tester'}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsTesterOpen(false)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Chat message flow */}
-            <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#0b0f17] text-xs">
+            <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50/80 text-xs">
               {chatMessages.map((msg, i) => (
                 <div
                   key={i}
                   className={`flex items-start gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {msg.sender === 'bot' && (
-                    <div className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
+                    <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-200 shadow-xs">
                       <Bot className="w-3.5 h-3.5" />
                     </div>
                   )}
 
                   <div
-                    className={`max-w-[80%] p-3 rounded-2xl leading-relaxed text-xs ${
+                    className={`max-w-[80%] p-3 rounded-2xl leading-relaxed text-xs shadow-xs ${
                       msg.sender === 'user'
-                        ? 'bg-amber-500 text-slate-950 font-medium rounded-tr-xs'
-                        : 'bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-xs'
+                        ? 'bg-indigo-600 text-white font-medium rounded-tr-xs'
+                        : 'bg-white border border-slate-200 text-slate-800 rounded-tl-xs'
                     }`}
                   >
                     {msg.text}
@@ -1111,7 +1111,7 @@ export default function AdminChatbotPage() {
             </div>
 
             {/* Input box */}
-            <div className="p-3 border-t border-slate-800 bg-slate-950">
+            <div className="p-3 border-t border-slate-200 bg-white">
               <div className="flex items-center gap-2">
                 <input
                   type="text"
@@ -1119,11 +1119,11 @@ export default function AdminChatbotPage() {
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSendTestChat()}
                   placeholder={isVi ? 'Gõ câu hỏi để test bot (VD: hoàn tiền vé, vé NFT...)...' : 'Type a question...'}
-                  className="flex-1 px-3.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                  className="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                 />
                 <button
                   onClick={handleSendTestChat}
-                  className="p-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl cursor-pointer transition-colors"
+                  className="p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl cursor-pointer transition-colors shadow-xs"
                 >
                   <Send className="w-4 h-4" />
                 </button>
@@ -1135,17 +1135,17 @@ export default function AdminChatbotPage() {
 
       {/* DELETE CONFIRMATION MODAL: DELETE /api/v1/admin/chatbot/faqs/{id} */}
       {deleteItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 text-xs text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto border border-rose-500/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-sm bg-white border border-slate-200 rounded-2xl shadow-xl p-6 text-xs text-center space-y-4 text-slate-900">
+            <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
               <Trash2 className="w-6 h-6" />
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-slate-900">
                 {isVi ? 'Xóa câu hỏi khỏi kho tri thức?' : 'Delete FAQ?'}
               </h3>
-              <p className="text-slate-400 mt-1">
+              <p className="text-slate-600 mt-1">
                 {isVi
                   ? `Bạn có chắc chắn muốn xóa câu hỏi "${deleteItem.question}" (ID: ${deleteItem.id})? Bot sẽ không trả lời theo câu hỏi này nữa.`
                   : `Are you sure you want to delete "${deleteItem.question}"?`}
@@ -1155,14 +1155,14 @@ export default function AdminChatbotPage() {
             <div className="flex items-center justify-center gap-2 pt-2">
               <button
                 onClick={() => setDeleteItem(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg cursor-pointer"
+                className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-lg border border-slate-300 shadow-xs cursor-pointer transition-colors"
               >
                 {isVi ? 'Hủy bỏ' : 'Cancel'}
               </button>
               <button
                 onClick={handleDeleteSubmit}
                 disabled={isSubmittingDelete}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5 shadow-xs transition-colors"
               >
                 {isSubmittingDelete && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                 <span>{isVi ? 'Xác nhận xóa' : 'Confirm Delete'}</span>

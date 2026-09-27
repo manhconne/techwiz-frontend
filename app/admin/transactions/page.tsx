@@ -233,23 +233,23 @@ export default function AdminTransactionsPage() {
     const s = (status || '').toLowerCase();
     if (s === 'success' || s === 'completed') {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
           <span>{isVi ? 'Thành công' : 'Success'}</span>
         </span>
       );
     }
     if (s === 'failed' || s === 'error') {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30">
-          <XCircle className="w-3 h-3 text-rose-400" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+          <XCircle className="w-3 h-3 text-rose-600" />
           <span>{isVi ? 'Thất bại' : 'Failed'}</span>
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
-        <Clock className="w-3 h-3 text-amber-400 animate-pulse" />
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+        <Clock className="w-3 h-3 text-amber-600 animate-pulse" />
         <span>{isVi ? 'Đang xử lý' : 'Pending'}</span>
       </span>
     );
@@ -258,11 +258,11 @@ export default function AdminTransactionsPage() {
   // Provider Pill
   const renderProviderBadge = (provider: string) => {
     const p = (provider || '').toUpperCase();
-    let bg = 'bg-slate-800 text-slate-300 border-slate-700';
-    if (p.includes('VNPAY')) bg = 'bg-blue-500/15 text-blue-400 border-blue-500/30';
-    if (p.includes('MOMO')) bg = 'bg-pink-500/15 text-pink-400 border-pink-500/30';
-    if (p.includes('ZALOPAY')) bg = 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30';
-    if (p.includes('VIETQR')) bg = 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+    let bg = 'bg-slate-100 text-slate-700 border-slate-200';
+    if (p.includes('VNPAY')) bg = 'bg-blue-50 text-blue-700 border-blue-200';
+    if (p.includes('MOMO')) bg = 'bg-pink-50 text-pink-700 border-pink-200';
+    if (p.includes('ZALOPAY')) bg = 'bg-sky-50 text-sky-700 border-sky-200';
+    if (p.includes('VIETQR')) bg = 'bg-emerald-50 text-emerald-700 border-emerald-200';
 
     return (
       <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold font-mono border ${bg}`}>
@@ -282,7 +282,7 @@ export default function AdminTransactionsPage() {
   const pendingCount = transactions.filter((t) => (t.status || '').toLowerCase() === 'pending').length;
 
   return (
-    <div className="flex h-screen bg-[#0b0f17] text-slate-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-slate-50 text-slate-900 overflow-hidden font-sans">
       {/* SIDEBAR */}
       <AdminSidebar
         activeTab="transactions"
@@ -303,22 +303,22 @@ export default function AdminTransactionsPage() {
         />
 
         {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-800 bg-[#0f172a]/60 px-6 py-4 backdrop-blur-md">
+        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
-                <Link href="/admin" className="hover:text-amber-400 transition-colors">Admin</Link>
+              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-amber-400 font-medium">
+                <span className="text-indigo-600 font-medium">
                   {isVi ? 'Lịch sử Giao dịch (Transactions)' : 'Transaction History'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
                   <Receipt className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Nhật Ký Giao Dịch & Cổng Thanh Toán' : 'Transaction Logs & Gateways'}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
                   {transactions.length} {isVi ? 'giao dịch' : 'records'}
                 </span>
               </h1>
@@ -328,9 +328,9 @@ export default function AdminTransactionsPage() {
               <button
                 onClick={() => fetchTransactions(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-amber-400' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
                 <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
               </button>
             </div>
@@ -341,55 +341,55 @@ export default function AdminTransactionsPage() {
         <div className="p-6 space-y-6">
           {/* STATS OVERVIEW */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Tổng tiền thanh toán' : 'Settled Volume'}</span>
-                <DollarSign className="w-4 h-4 text-emerald-400" />
+                <DollarSign className="w-4 h-4 text-emerald-600" />
               </div>
-              <div className="text-2xl font-black text-emerald-400 font-mono">
+              <div className="text-2xl font-black text-emerald-600 font-mono">
                 {formatCurrency(totalVolume)}
               </div>
-              <div className="text-[11px] text-slate-500 mt-1">
+              <div className="text-[11px] text-slate-400 mt-1">
                 {isVi ? 'Đã thanh toán thành công' : 'Captured successfully'}
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Giao dịch thành công' : 'Successful'}</span>
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
               </div>
-              <div className="text-2xl font-black text-white">{successCount}</div>
-              <div className="text-[11px] text-slate-500 mt-1">
+              <div className="text-2xl font-black text-slate-900">{successCount}</div>
+              <div className="text-[11px] text-slate-400 mt-1">
                 {isVi ? 'Tỷ lệ thanh toán chuẩn 100%' : 'Processed without issues'}
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Giao dịch chờ xử lý' : 'Pending'}</span>
-                <Clock className="w-4 h-4 text-amber-400" />
+                <Clock className="w-4 h-4 text-amber-500" />
               </div>
-              <div className="text-2xl font-black text-amber-400">{pendingCount}</div>
-              <div className="text-[11px] text-slate-500 mt-1">
+              <div className="text-2xl font-black text-amber-600">{pendingCount}</div>
+              <div className="text-[11px] text-slate-400 mt-1">
                 {isVi ? 'Đang đợi webhook cổng' : 'Awaiting IPN callback'}
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Cổng thanh toán' : 'Payment Gateways'}</span>
-                <CreditCard className="w-4 h-4 text-cyan-400" />
+                <CreditCard className="w-4 h-4 text-indigo-600" />
               </div>
-              <div className="text-2xl font-black text-white">VNPay, MoMo, VietQR</div>
-              <div className="text-[11px] text-slate-500 mt-1">
+              <div className="text-2xl font-black text-slate-900">VNPay, MoMo, VietQR</div>
+              <div className="text-[11px] text-slate-400 mt-1">
                 {isVi ? 'Hỗ trợ quét mã & thẻ ngân hàng' : 'Multi-gateway routing'}
               </div>
             </div>
           </div>
 
           {/* FILTER & SEARCH BAR */}
-          <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-lg space-y-3">
+          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
               {/* Search input */}
               <div className="relative flex-1">
@@ -406,7 +406,7 @@ export default function AdminTransactionsPage() {
                       ? 'Tìm kiếm theo mã đơn (ORD_xxx), mã GD, tên khách hàng...'
                       : 'Search by merchant_ref, transaction id, customer...'
                   }
-                  className="w-full pl-9 pr-8 py-2 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
+                  className="w-full pl-9 pr-8 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all shadow-xs"
                 />
                 {searchTerm && (
                   <button
@@ -414,7 +414,7 @@ export default function AdminTransactionsPage() {
                       setSearchTerm('');
                       setPage(1);
                     }}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -430,7 +430,7 @@ export default function AdminTransactionsPage() {
                       setProviderFilter(e.target.value);
                       setPage(1);
                     }}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-amber-400 cursor-pointer appearance-none"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-indigo-600 cursor-pointer appearance-none shadow-xs"
                   >
                     <option value="">{isVi ? 'Tất cả Cổng (Provider)' : 'All Providers'}</option>
                     <option value="VNPay">VNPay</option>
@@ -450,7 +450,7 @@ export default function AdminTransactionsPage() {
                       setStatusFilter(e.target.value);
                       setPage(1);
                     }}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-amber-400 cursor-pointer appearance-none"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-indigo-600 cursor-pointer appearance-none shadow-xs"
                   >
                     <option value="">{isVi ? 'Tất cả Trạng thái' : 'All Statuses'}</option>
                     <option value="Success">{isVi ? 'Thành công' : 'Success'}</option>
@@ -464,10 +464,10 @@ export default function AdminTransactionsPage() {
           </div>
 
           {/* TABLE OF TRANSACTIONS */}
-          <div className="rounded-2xl bg-[#0f172a] border border-slate-800 overflow-hidden shadow-lg">
+          <div className="rounded-xl bg-white border border-slate-200/80 overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-900/80 text-slate-400 font-semibold border-b border-slate-800">
+                <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
                   <tr>
                     <th className="px-4 py-3">{isVi ? 'Mã Giao dịch (id)' : 'Tx ID'}</th>
                     <th className="px-4 py-3">{isVi ? 'Khách hàng' : 'User'}</th>
@@ -479,30 +479,30 @@ export default function AdminTransactionsPage() {
                     <th className="px-4 py-3 text-right">{isVi ? 'Chi tiết' : 'Action'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-slate-100">
                   {transactions.map((tx) => (
                     <tr
                       key={tx.id}
                       onClick={() => setDetailItem(tx)}
-                      className="hover:bg-slate-850/60 transition-colors cursor-pointer"
+                      className="hover:bg-slate-50/80 transition-colors cursor-pointer text-slate-800"
                     >
-                      <td className="px-4 py-3 font-mono font-bold text-white">
+                      <td className="px-4 py-3 font-mono font-bold text-indigo-600">
                         <div className="flex items-center gap-1.5">
                           <span>{tx.id}</span>
                           <button
                             onClick={(e) => handleCopyId(tx.id, e)}
-                            className="text-slate-500 hover:text-white"
+                            className="text-slate-400 hover:text-indigo-600 cursor-pointer"
                           >
-                            {copiedId === tx.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                            {copiedId === tx.id ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
                           </button>
                         </div>
                       </td>
 
                       <td className="px-4 py-3">
-                        <div className="font-semibold text-slate-200">{getUserName(tx.user)}</div>
+                        <div className="font-semibold text-slate-800">{getUserName(tx.user)}</div>
                       </td>
 
-                      <td className="px-4 py-3 text-right font-mono font-bold text-emerald-400 whitespace-nowrap">
+                      <td className="px-4 py-3 text-right font-mono font-bold text-emerald-600 whitespace-nowrap">
                         {formatCurrency(tx.amount)}
                       </td>
 
@@ -510,7 +510,7 @@ export default function AdminTransactionsPage() {
                         {renderProviderBadge(tx.provider)}
                       </td>
 
-                      <td className="px-4 py-3 font-mono text-slate-300">
+                      <td className="px-4 py-3 font-mono text-slate-600">
                         {tx.merchant_ref}
                       </td>
 
@@ -518,9 +518,9 @@ export default function AdminTransactionsPage() {
                         {renderStatusBadge(tx.status)}
                       </td>
 
-                      <td className="px-4 py-3 font-mono text-slate-400 whitespace-nowrap">
+                      <td className="px-4 py-3 font-mono text-slate-500 whitespace-nowrap">
                         {new Date(tx.created_at).toLocaleDateString()}{' '}
-                        <span className="text-[10px] text-slate-500">
+                        <span className="text-[10px] text-slate-400">
                           {new Date(tx.created_at).toLocaleTimeString()}
                         </span>
                       </td>
@@ -528,7 +528,7 @@ export default function AdminTransactionsPage() {
                       <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                         <button
                           onClick={() => setDetailItem(tx)}
-                          className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg cursor-pointer"
+                          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-slate-100 rounded-lg cursor-pointer transition-colors"
                           title={isVi ? 'Xem chi tiết' : 'View'}
                         >
                           <Eye className="w-3.5 h-3.5" />
@@ -542,7 +542,7 @@ export default function AdminTransactionsPage() {
           </div>
 
           {/* PAGINATION BAR */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 pt-2">
             <div>
               {isVi
                 ? `Hiển thị ${transactions.length} giao dịch (Trang ${page})`
@@ -553,20 +553,20 @@ export default function AdminTransactionsPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1 || loading}
-                className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1"
+                className="px-3 py-1.5 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs text-slate-700"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 <span>{isVi ? 'Trang trước' : 'Previous'}</span>
               </button>
 
-              <span className="px-3 py-1.5 bg-slate-800 text-white rounded-xl font-bold">
+              <span className="px-3 py-1.5 bg-slate-100 text-indigo-700 border border-slate-200 rounded-xl font-bold font-mono">
                 {page}
               </span>
 
               <button
                 onClick={() => setPage((p) => p + 1)}
                 disabled={transactions.length < limit || loading}
-                className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1"
+                className="px-3 py-1.5 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs text-slate-700"
               >
                 <span>{isVi ? 'Trang sau' : 'Next'}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -578,15 +578,15 @@ export default function AdminTransactionsPage() {
 
       {/* DETAIL MODAL */}
       {detailItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200">
                   <Receipt className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-slate-900">
                     {isVi ? 'Chi tiết Giao dịch' : 'Transaction Receipt'}
                   </h3>
                   <p className="text-[11px] text-slate-400 font-mono">{detailItem.id}</p>
@@ -594,51 +594,51 @@ export default function AdminTransactionsPage() {
               </div>
               <button
                 onClick={() => setDetailItem(null)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="p-6 space-y-4 text-xs">
-              <div className="text-center py-4 bg-slate-950 rounded-2xl border border-slate-800">
-                <div className="text-xs text-slate-400 mb-1">Số tiền thanh toán</div>
-                <div className="text-2xl font-black text-emerald-400 font-mono">
+              <div className="text-center py-4 bg-slate-50 rounded-2xl border border-slate-200">
+                <div className="text-xs text-slate-500 mb-1">Số tiền thanh toán</div>
+                <div className="text-2xl font-black text-emerald-600 font-mono">
                   {formatCurrency(detailItem.amount)}
                 </div>
                 <div className="mt-2">{renderStatusBadge(detailItem.status)}</div>
               </div>
 
-              <div className="divide-y divide-slate-800 border-t border-b border-slate-800 text-xs">
+              <div className="divide-y divide-slate-100 border-t border-b border-slate-100 text-xs">
                 <div className="py-2.5 flex items-center justify-between">
-                  <span className="text-slate-400">{isVi ? 'Khách hàng' : 'Customer'}</span>
-                  <span className="font-semibold text-white">{getUserName(detailItem.user)}</span>
+                  <span className="text-slate-500">{isVi ? 'Khách hàng' : 'Customer'}</span>
+                  <span className="font-semibold text-slate-800">{getUserName(detailItem.user)}</span>
                 </div>
                 <div className="py-2.5 flex items-center justify-between">
-                  <span className="text-slate-400">{isVi ? 'Cổng thanh toán' : 'Provider'}</span>
+                  <span className="text-slate-500">{isVi ? 'Cổng thanh toán' : 'Provider'}</span>
                   <div>{renderProviderBadge(detailItem.provider)}</div>
                 </div>
                 <div className="py-2.5 flex items-center justify-between">
-                  <span className="text-slate-400">{isVi ? 'Mã đơn đối soát' : 'Merchant Ref'}</span>
-                  <span className="font-mono text-slate-200 font-bold">{detailItem.merchant_ref}</span>
+                  <span className="text-slate-500">{isVi ? 'Mã đơn đối soát' : 'Merchant Ref'}</span>
+                  <span className="font-mono text-slate-800 font-bold">{detailItem.merchant_ref}</span>
                 </div>
                 <div className="py-2.5 flex items-center justify-between">
-                  <span className="text-slate-400">{isVi ? 'Phương thức' : 'Payment Method'}</span>
-                  <span className="text-slate-300">{detailItem.payment_method || detailItem.provider}</span>
+                  <span className="text-slate-500">{isVi ? 'Phương thức' : 'Payment Method'}</span>
+                  <span className="text-slate-700">{detailItem.payment_method || detailItem.provider}</span>
                 </div>
                 <div className="py-2.5 flex items-center justify-between">
-                  <span className="text-slate-400">{isVi ? 'Thời gian' : 'Timestamp'}</span>
-                  <span className="font-mono text-slate-300">
+                  <span className="text-slate-500">{isVi ? 'Thời gian' : 'Timestamp'}</span>
+                  <span className="font-mono text-slate-700">
                     {new Date(detailItem.created_at).toLocaleString()}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 border-t border-slate-800 bg-slate-900/60 flex items-center justify-end">
+            <div className="p-4 border-t border-slate-200 bg-slate-50/70 flex items-center justify-end">
               <button
                 onClick={() => setDetailItem(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs cursor-pointer font-bold"
+                className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs cursor-pointer font-bold shadow-xs"
               >
                 {isVi ? 'Đóng' : 'Close'}
               </button>
