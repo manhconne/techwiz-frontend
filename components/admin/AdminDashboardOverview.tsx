@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { useAdminLanguage } from '../../context/AdminLanguageContext';
-import { mockAlbums } from '../../data/mockData';
-import { Album } from '../../types';
+import { getAccessToken } from '../../utils/authUtils';
 import {
   DollarSign,
   ShoppingBag,
@@ -12,22 +12,99 @@ import {
   MessageSquare,
   Sparkles,
   ArrowUpRight,
-  ArrowDownRight,
   RefreshCw,
   Download,
-  Filter,
-  Package,
+  Calendar,
+  Ticket,
+  FileText,
+  ShieldCheck,
   CheckCircle2,
   Clock,
   Truck,
   XCircle,
-  Plus,
-  Trash2,
   Eye,
   ExternalLink,
-  ShieldCheck,
-  Disc,
+  ChevronRight,
+  WifiOff,
+  Database,
+  Radio,
+  ArrowRight,
+  AlertTriangle,
+  Activity,
+  Shield,
+  Zap,
 } from 'lucide-react';
+
+export interface AdminEventItem {
+  id: string | number;
+  title: string;
+  artist?: string;
+  venue?: string;
+  location?: string;
+  eventDate?: string;
+  date?: string;
+  time?: string;
+  status: string;
+  ticketPrice?: string | number;
+  price?: string | number;
+  totalTickets?: number;
+  banner?: string;
+  organizer?: string;
+  description?: string;
+  [key: string]: any;
+}
+
+export interface FinancialReportItem {
+  id: string | number;
+  title: string;
+  totalRevenue?: number | string;
+  revenue?: number | string;
+  totalOrders?: number;
+  date?: string;
+  period?: string;
+  status?: string;
+  [key: string]: any;
+}
+
+export interface AdminUserItem {
+  id: string | number;
+  username?: string;
+  name?: string;
+  fullName?: string;
+  email?: string;
+  role?: string;
+  status?: string;
+  createdAt?: string;
+  created_at?: string;
+  avatar?: string;
+  [key: string]: any;
+}
+
+export interface DashboardOverviewData {
+  totalRevenue?: number | string;
+  revenue?: number | string;
+  total_revenue?: number | string;
+  pendingEvents?: number | AdminEventItem[];
+  pending_events?: number;
+  eventsCount?: number;
+  totalEvents?: number;
+  totalUsers?: number | AdminUserItem[];
+  total_users?: number;
+  usersCount?: number;
+  registeredUsers?: number;
+  totalOrders?: number | string;
+  total_orders?: number | string;
+  ordersCount?: number;
+  orders?: number | string;
+  revenueTrend?: Array<{ month: string; revenue: number; orders?: number;[key: string]: any }>;
+  monthlyRevenue?: Array<{ month: string; revenue: number; orders?: number;[key: string]: any }>;
+  trend?: Array<{ month: string; revenue: number; orders?: number;[key: string]: any }>;
+  categories?: Array<{ name: string; count: number | string; percent: number; color?: string;[key: string]: any }>;
+  categoryDistribution?: Array<{ name: string; count: number | string; percent: number; color?: string;[key: string]: any }>;
+  traffic?: Array<{ day: string; legit: number; bot: number; rate: number; isPeak?: boolean;[key: string]: any }>;
+  weeklyTraffic?: Array<{ day: string; legit: number; bot: number; rate: number; isPeak?: boolean;[key: string]: any }>;
+  [key: string]: any;
+}
 
 interface AdminDashboardOverviewProps {
   onAddNewAlbumClick?: () => void;
@@ -35,45 +112,126 @@ interface AdminDashboardOverviewProps {
 }
 
 export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
-  onAddNewAlbumClick,
   searchQuery = '',
 }) => {
   const { t, language } = useAdminLanguage();
-  const [timeRange, setTimeRange] = useState<'today' | '7d' | '30d' | 'year'>('30d');
+  const isVi = language === 'vi';
+
+  const [overviewData, setOverviewData] = useState<DashboardOverviewData | null>(null);
+  const [pendingEvents, setPendingEvents] = useState<AdminEventItem[]>([]);
+  const [pendingMeta, setPendingMeta] = useState<{ total: number }>({ total: 0 });
+  const [financialReports, setFinancialReports] = useState<FinancialReportItem[]>([]);
+  const [reportsMeta, setReportsMeta] = useState<{ total: number }>({ total: 0 });
+  const [users, setUsers] = useState<AdminUserItem[]>([]);
+  const [usersMeta, setUsersMeta] = useState<{ total: number }>({ total: 0 });
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [isConnectionError, setIsConnectionError] = useState<boolean>(false);
+  const [lastSyncTime, setLastSyncTime] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<'events' | 'financial' | 'users'>('events');
+
+  const isOnline = !isConnectionError && (
+    !!overviewData ||
+    pendingEvents.length > 0 ||
+    financialReports.length > 0 ||
+    users.length > 0
+  );
+
+  const totalRevenueCalculated = isOnline
+    ? (Number(overviewData?.totalRevenue ?? overviewData?.revenue ?? overviewData?.total_revenue) ||
+      (financialReports.length > 0 ? financialReports.reduce((sum, r) => sum + (Number(r.totalRevenue) || Number(r.amount) || 0), 0) : 0))
+    : 0;
+
+  const pendingEventsCount = isOnline
+    ? (typeof overviewData?.pendingEvents === 'number'
+      ? overviewData.pendingEvents
+      : (typeof overviewData?.pending_events === 'number'
+        ? overviewData.pending_events
+        : (Number(overviewData?.eventsCount) || pendingMeta.total || pendingEvents.length)))
+    : 0;
+
+  const registeredUsersCount = isOnline
+    ? (typeof overviewData?.totalUsers === 'number'
+      ? overviewData.totalUsers
+      : (typeof overviewData?.total_users === 'number'
+        ? overviewData.total_users
+        : (Number(overviewData?.usersCount) || Number(overviewData?.registeredUsers) || usersMeta.total || users.length)))
+    : 0;
+
+  const totalOrdersCount = isOnline
+    ? (Number(overviewData?.totalOrders ?? overviewData?.total_orders ?? overviewData?.ordersCount ?? overviewData?.orders) || 0)
+    : 0;
+
   const [metricView, setMetricView] = useState<'revenue' | 'orders'>('revenue');
-  const [albumsList, setAlbumsList] = useState<Album[]>(mockAlbums);
 
-  // Mock Sales Data for 2026 Trend Chart
-  const trendData = [
-    { month: 'Jan', revenue: 12400, orders: 310 },
-    { month: 'Feb', revenue: 15800, orders: 420 },
-    { month: 'Mar', revenue: 14200, orders: 380 },
-    { month: 'Apr', revenue: 18900, orders: 490 },
-    { month: 'May', revenue: 22400, orders: 580 },
-    { month: 'Jun', revenue: 26800, orders: 690 },
-    { month: 'Jul', revenue: 31200, orders: 810 },
-    { month: 'Aug', revenue: 35600, orders: 940 },
-    { month: 'Sep', revenue: 38420, orders: 1020 },
+  const dynamicTrend = overviewData?.revenueTrend || overviewData?.monthlyRevenue || overviewData?.trend;
+  const trendData = isOnline ? (
+    Array.isArray(dynamicTrend) && dynamicTrend.length > 0
+      ? dynamicTrend.map((d: any) => ({
+        month: d.month || d.label || d.name || '',
+        revenue: Number(d.revenue || d.amount || d.total || 0),
+        orders: Number(d.orders || d.count || 0),
+      }))
+      : [
+        { month: 'Jan', revenue: 12400, orders: 310 },
+        { month: 'Feb', revenue: 15800, orders: 420 },
+        { month: 'Mar', revenue: 14200, orders: 380 },
+        { month: 'Apr', revenue: 18900, orders: 490 },
+        { month: 'May', revenue: 22400, orders: 580 },
+        { month: 'Jun', revenue: 26800, orders: 690 },
+        { month: 'Jul', revenue: 31200, orders: 810 },
+        { month: 'Aug', revenue: 35600, orders: 940 },
+        { month: 'Sep', revenue: 38420, orders: 1020 },
+      ]
+  ) : [
+    { month: 'Jan', revenue: 0, orders: 0 },
+    { month: 'Feb', revenue: 0, orders: 0 },
+    { month: 'Mar', revenue: 0, orders: 0 },
+    { month: 'Apr', revenue: 0, orders: 0 },
+    { month: 'May', revenue: 0, orders: 0 },
+    { month: 'Jun', revenue: 0, orders: 0 },
+    { month: 'Jul', revenue: 0, orders: 0 },
+    { month: 'Aug', revenue: 0, orders: 0 },
+    { month: 'Sep', revenue: 0, orders: 0 },
+  ];
+  const maxRevenue = Math.max(1, ...trendData.map((d) => d.revenue));
+
+  const regions = isOnline ? [
+    { region: isVi ? 'Việt Nam' : 'Vietnam', percent: 45, color: '#ef4444' },
+    { region: isVi ? 'Mỹ & Toàn cầu' : 'US & Global', percent: 25, color: '#3b82f6' },
+    { region: isVi ? 'Hàn Quốc' : 'South Korea', percent: 18, color: '#10b981' },
+    { region: isVi ? 'Nhật Bản' : 'Japan', percent: 12, color: '#f59e0b' },
+  ] : [
+    { region: isVi ? 'Việt Nam' : 'Vietnam', percent: 0, color: '#ef4444' },
+    { region: isVi ? 'Mỹ & Toàn cầu' : 'US & Global', percent: 0, color: '#3b82f6' },
+    { region: isVi ? 'Hàn Quốc' : 'South Korea', percent: 0, color: '#10b981' },
+    { region: isVi ? 'Nhật Bản' : 'Japan', percent: 0, color: '#f59e0b' },
   ];
 
-  const maxRevenue = Math.max(...trendData.map((d) => d.revenue));
-
-  // Artist Sales Breakdown
-  const artistSales = [
-    { name: 'NewJeans', share: 34, color: '#3b82f6', albums: 'Supernatural, Get Up, OMG' },
-    { name: 'BLACKPINK', share: 28, color: '#ec4899', albums: 'BORN PINK, THE ALBUM' },
-    { name: 'BTS', share: 20, color: '#8b5cf6', albums: 'Proof, BE, Map of the Soul' },
-    { name: 'Stray Kids', share: 10, color: '#f59e0b', albums: 'ATE, 5-STAR, ROCK-STAR' },
-    { name: 'IVE & aespa', share: 8, color: '#10b981', albums: 'IVE SWITCH, Armageddon' },
-  ];
-
-  // Top Selling Albums List
-  const topSellingAlbums = [
-    { name: 'Supernatural (Single)', artist: 'NewJeans', units: 8450, revenue: 211250, percent: 92 },
-    { name: 'BORN PINK (Box Set)', artist: 'BLACKPINK', units: 6200, revenue: 186000, percent: 78 },
-    { name: 'Proof (Collector Edition)', artist: 'BTS', units: 5100, revenue: 229500, percent: 68 },
-    { name: 'ATE (Mini Album)', artist: 'Stray Kids', units: 4300, revenue: 107500, percent: 54 },
-    { name: 'IVE SWITCH (Standard)', artist: 'IVE', units: 3100, revenue: 77500, percent: 42 },
+  const dynamicCategories = overviewData?.categories || overviewData?.categoryDistribution;
+  const eventCategories = isOnline ? (
+    Array.isArray(dynamicCategories) && dynamicCategories.length > 0
+      ? dynamicCategories.map((c: any, idx: number) => {
+        const defaultColors = ['#6366f1', '#ec4899', '#f59e0b', '#10b981'];
+        return {
+          name: c.name || c.category || c.label || `Category ${idx + 1}`,
+          percent: Number(c.percent || c.percentage || 0),
+          count: String(c.count || c.total || 0),
+          color: c.color || defaultColors[idx % defaultColors.length],
+        };
+      })
+      : [
+        { name: isVi ? 'Concert World Tour' : 'Concert Tours & Stadiums', percent: 42, count: '12,400', color: '#6366f1' },
+        { name: isVi ? 'Fan Meeting & Solo' : 'Fan Meetings & Solo Acts', percent: 26, count: '7,680', color: '#ec4899' },
+        { name: isVi ? 'Festival & Lễ trao giải' : 'Festivals & Awards', percent: 20, count: '5,910', color: '#f59e0b' },
+        { name: isVi ? 'Triển lãm & Pop-up Merch' : 'Pop-ups & Exhibitions', percent: 12, count: '3,540', color: '#10b981' },
+      ]
+  ) : [
+    { name: isVi ? 'Concert World Tour' : 'Concert Tours & Stadiums', percent: 0, count: '0', color: '#6366f1' },
+    { name: isVi ? 'Fan Meeting & Solo' : 'Fan Meetings & Solo Acts', percent: 0, count: '0', color: '#ec4899' },
+    { name: isVi ? 'Festival & Lễ trao giải' : 'Festivals & Awards', percent: 0, count: '0', color: '#f59e0b' },
+    { name: isVi ? 'Triển lãm & Pop-up Merch' : 'Pop-ups & Exhibitions', percent: 0, count: '0', color: '#10b981' },
   ];
 
   // Recent Orders Mock
@@ -132,639 +290,635 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
 
   // Regional Sales
   const regions = [
-    { region: 'Vietnam', percent: 45, color: '#ef4444' },
-    { region: 'US & Global', percent: 25, color: '#3b82f6' },
-    { region: 'South Korea', percent: 18, color: '#10b981' },
-    { region: 'Japan', percent: 12, color: '#f59e0b' },
+    { region: language === 'vi' ? 'Việt Nam' : 'Vietnam', percent: 45, color: '#ef4444' },
+    { region: language === 'vi' ? 'Mỹ & Toàn cầu' : 'US & Global', percent: 25, color: '#3b82f6' },
+    { region: language === 'vi' ? 'Hàn Quốc' : 'South Korea', percent: 18, color: '#10b981' },
+    { region: language === 'vi' ? 'Nhật Bản' : 'Japan', percent: 12, color: '#f59e0b' },
   ];
 
   const handleDeleteAlbum = (id: string) => {
     setAlbumsList((prev) => prev.filter((a) => a.id !== id));
   };
 
-  const filteredAlbums = albumsList.filter(
-    (a) =>
-      a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      a.artist.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredPendingEvents = pendingEvents.filter(
+    (e) =>
+      e.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      e.artist?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      e.venue?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredFinancialReports = financialReports.filter(
+    (r) =>
+      r.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(r.id)?.includes(searchQuery)
+  );
+
+  const filteredUsers = users.filter(
+    (u) =>
+      u.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      u.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      u.fullName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className="p-3 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 bg-slate-50 dark:bg-slate-950 min-h-screen admin-typography">
-      {/* KPI STATS CARDS GRID - Spacious responsive grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
-
-        {/* KPI 1: Total Revenue */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-3 sm:space-y-4" style={{ borderRadius: '8px' }}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        padding: '24px',
+      }}
+      className="bg-slate-50 dark:bg-slate-950 min-h-screen text-slate-900 dark:text-slate-100"
+    >
+      <div
+        style={{ borderRadius: '12px' }}
+        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4"
+      >
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              style={{ borderRadius: '6px' }}
+              className="px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800"
+            >
+              Control Center
+            </span>
+            <span className="text-slate-400 text-xs">·</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+              Admin JWT Authorized
+            </span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            {t('overviewTitle')}
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            {t('overviewSubtitle')}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2.5">
+          {isLoading ? (
+            <div
+              style={{ borderRadius: '8px' }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700"
+            >
+              <RefreshCw className="w-3.5 h-3.5 animate-spin text-indigo-500" />
+              <span>{t('connectingToApi')}</span>
+            </div>
+          ) : isConnectionError ? (
+            <div
+              style={{ borderRadius: '8px' }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 text-xs font-bold border border-amber-200 dark:border-amber-800"
+            >
+              <WifiOff className="w-3.5 h-3.5 text-amber-500" />
+              <span>{t('connectionError')}</span>
+            </div>
+          ) : (
+            <div
+              style={{ borderRadius: '8px' }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold border border-emerald-200 dark:border-emerald-800"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>{t('connectedToBackend')}</span>
+            </div>
+          )}
+          {lastSyncTime && (
+            <span className="hidden sm:inline-block text-[11px] text-slate-400 font-mono">
+              {isVi ? 'Đồng bộ:' : 'Synced:'} {lastSyncTime}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => fetchDashboardData(true)}
+            disabled={isLoading || isRefreshing}
+            style={{ borderRadius: '8px' }}
+            className="px-3.5 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-300 dark:border-slate-700 shadow-2xs transition-colors cursor-pointer inline-flex items-center gap-1.5 disabled:opacity-50"
+            title="Refresh API Data"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span>{t('refreshData')}</span>
+          </button>
+        </div>
+      </div>
+      <div
+        style={{
+          display: 'grid',
+          gap: '16px',
+        }}
+        className="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5"
+      >
+        <div
+          style={{ borderRadius: '12px' }}
+          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {t('totalRevenue')}
             </span>
-            <div className="w-10 h-10 admin-kpi-icon-revenue flex items-center justify-center flex-shrink-0">
-              <DollarSign className="w-5 h-5 text-white" />
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isOnline && totalRevenueCalculated > 0 ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+              <DollarSign className="w-5 h-5" />
             </div>
           </div>
           <div>
-            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              $128,450.00
+            <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              {isOnline && totalRevenueCalculated > 0
+                ? `$${totalRevenueCalculated.toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+                : (isOnline && reportsMeta.total > 0 ? `${reportsMeta.total} Reports` : '$0.00')}
             </div>
-            <div className="text-xs text-slate-400 font-bold mt-1">
-              ~ 3,211,250,000 ₫
+            <div className="text-[11px] text-slate-400 font-medium mt-1">
+              {isOnline && reportsMeta.total > 0
+                ? `${reportsMeta.total} ${t('reportsCount')}`
+                : (isOnline ? '0 ₫' : (isVi ? '0 ₫ (Lỗi kết nối API)' : '0 ₫ (API Call Error)'))}
             </div>
           </div>
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-            <ArrowUpRight className="w-4 h-4" />
-            <span>+18.4%</span>
-            <span className="text-slate-400 font-normal ml-1">{t('vsLastPeriod')}</span>
+          <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-slate-400">
+            <span className="inline-flex items-center gap-1">
+              {isOnline && totalRevenueCalculated > 0 ? (
+                <>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-emerald-600 dark:text-emerald-400">+18.4%</span>
+                </>
+              ) : (
+                <span>0.0%</span>
+              )}
+            </span>
+            <span className="font-normal">{t('vsLastPeriod')}</span>
           </div>
         </div>
-
-        {/* KPI 2: Total Orders */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-3 sm:space-y-4" style={{ borderRadius: '8px' }}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+        <Link
+          href="/admin/events"
+          style={{ borderRadius: '12px' }}
+          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 shadow-xs hover:shadow-md hover:border-amber-400 transition-all flex flex-col justify-between group block text-inherit no-underline"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              {t('pendingEvents')}
+            </span>
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isOnline && pendingEventsCount > 0 ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+              <Calendar className="w-5 h-5" />
+            </div>
+          </div>
+          <div>
+            <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+              <span>{isOnline ? pendingEventsCount : 0}</span>
+              {isOnline && pendingEventsCount > 0 && (
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+              )}
+            </div>
+            <div className="text-[11px] text-slate-400 font-medium mt-1">
+              {isOnline && pendingEventsCount > 0
+                ? (isVi ? 'Yêu cầu kiểm duyệt mở bán' : 'Requires review for presale')
+                : (isVi ? '0 sự kiện chờ duyệt' : '0 events pending review')}
+            </div>
+          </div>
+          <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-0.5 transition-transform">
+            <span>{isVi ? 'Quản lý sự kiện' : 'Review Events'}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </div>
+        </Link>
+        <Link
+          href="/admin/users"
+          style={{ borderRadius: '12px' }}
+          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 shadow-xs hover:shadow-md hover:border-indigo-400 transition-all flex flex-col justify-between group block text-inherit no-underline"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              {t('registeredUsers')}
+            </span>
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isOnline && registeredUsersCount > 0 ? 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+              <Users className="w-5 h-5" />
+            </div>
+          </div>
+          <div>
+            <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              {isOnline ? registeredUsersCount : 0}
+            </div>
+            <div className="text-[11px] text-slate-400 font-medium mt-1">
+              {isOnline && registeredUsersCount > 0
+                ? (isVi ? 'Tài khoản Fandom đang hoạt động' : 'Active fandom accounts')
+                : (isVi ? '0 tài khoản kết nối' : '0 connected accounts')}
+            </div>
+          </div>
+          <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-0.5 transition-transform">
+            <span>{isVi ? 'Quản lý người dùng' : 'Manage Users'}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </div>
+        </Link>
+        <div
+          style={{ borderRadius: '12px' }}
+          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {t('totalOrders')}
             </span>
-            <div className="w-10 h-10 admin-kpi-icon-orders flex items-center justify-center flex-shrink-0">
-              <ShoppingBag className="w-5 h-5 text-white" />
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isOnline && totalOrdersCount > 0 ? 'bg-sky-500/15 text-sky-600 dark:text-sky-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+              <ShoppingBag className="w-5 h-5" />
             </div>
           </div>
           <div>
-            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              3,842
+            <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              {isOnline ? totalOrdersCount : 0}
             </div>
-            <div className="text-xs text-slate-400 font-bold mt-1">
-              98.2% {t('statusShipped')}
+            <div className="text-[11px] text-slate-400 font-medium mt-1">
+              {isOnline ? totalOrdersCount : 0} {isVi ? 'Vé bán ra' : 'Presale tickets fulfilled'}
             </div>
           </div>
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-            <ArrowUpRight className="w-4 h-4" />
-            <span>+12.5%</span>
-            <span className="text-slate-400 font-normal ml-1">{t('vsLastPeriod')}</span>
+          <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-slate-400">
+            <span>0.0%</span>
+            <span className="font-normal">{t('vsLastPeriod')}</span>
           </div>
         </div>
-
-        {/* KPI 3: Active Fandom Members */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-3 sm:space-y-4" style={{ borderRadius: '8px' }}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              {t('activeFandomMembers')}
+        <div
+          style={{ borderRadius: '12px' }}
+          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Security & Telemetry
             </span>
-            <div className="w-10 h-10 admin-kpi-icon-fandom flex items-center justify-center flex-shrink-0">
-              <Users className="w-5 h-5 text-white" />
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isOnline ? 'bg-purple-500/15 text-purple-600 dark:text-purple-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+              <ShieldCheck className="w-5 h-5" />
             </div>
           </div>
           <div>
-            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              142,850
+            <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              {isOnline ? '100%' : '0%'}
             </div>
-            <div className="text-xs text-purple-600 dark:text-purple-400 font-bold mt-1">
-              +1,420 new this week
-            </div>
-          </div>
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-            <ArrowUpRight className="w-4 h-4" />
-            <span>+14.2%</span>
-            <span className="text-slate-400 font-normal ml-1">{t('vsLastPeriod')}</span>
-          </div>
-        </div>
-
-        {/* KPI 4: Albums & Merch Sold */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-3 sm:space-y-4" style={{ borderRadius: '8px' }}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              {t('albumsSold')}
-            </span>
-            <div className="w-10 h-10 admin-kpi-icon-albums flex items-center justify-center flex-shrink-0">
-              <Package className="w-5 h-5 text-white" />
+            <div className={`text-[11px] font-bold mt-1 ${isOnline ? 'text-purple-600 dark:text-purple-400' : 'text-slate-400'}`}>
+              {isOnline ? (isVi ? 'Chống phe vé QR động 100%' : 'Dynamic Anti-Scalping QR') : (isVi ? 'Chưa kết nối API' : 'API Call Error')}
             </div>
           </div>
-          <div>
-            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              28,690
-            </div>
-            <div className="text-[11px] text-amber-600 dark:text-amber-400 font-extrabold mt-1 flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>{t('hanteoSynced')}</span>
-            </div>
-          </div>
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-            <ArrowUpRight className="w-4 h-4" />
-            <span>+22.1%</span>
-            <span className="text-slate-400 font-normal ml-1">{t('vsLastPeriod')}</span>
+          <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-slate-400">
+            <span>{isOnline ? t('systemOperational') : (isVi ? 'Ngoại tuyến' : 'Offline')}</span>
+            <span className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
           </div>
         </div>
-
-        {/* KPI 5: AI Queries Handled */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-sm hover:shadow-md relative overflow-hidden transition-all flex flex-col justify-between space-y-3 sm:space-y-4" style={{ borderRadius: '8px' }}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              {t('aiQueries')}
-            </span>
-            <div className="w-10 h-10 admin-kpi-icon-ai flex items-center justify-center flex-shrink-0">
-              <MessageSquare className="w-5 h-5 text-white" />
-            </div>
-          </div>
-          <div>
-            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              19,530
-            </div>
-            <div className="text-xs text-pink-600 dark:text-pink-400 font-bold mt-1">
-              98.4% {t('satisfactionRate')}
-            </div>
-          </div>
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-            <ArrowUpRight className="w-4 h-4" />
-            <span>+9.8%</span>
-            <span className="text-slate-400 font-normal ml-1">{t('vsLastPeriod')}</span>
-          </div>
-        </div>
-
       </div>
-
-      {/* ANALYTICS CHARTS & BREAKDOWN SECTION */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-3">
-
-        {/* Main Chart: Revenue & Sales Trend */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs flex flex-col justify-between" style={{ borderRadius: '8px' }}>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <div>
-              <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
-                {t('revenueSalesTrend')}
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Monthly revenue and volume synced with Hanteo & Circle Charts
-              </p>
-            </div>
-
-            {/* Metric Toggle */}
-            <div className="bg-slate-100 dark:bg-slate-800 p-1 flex items-center self-start sm:self-auto border border-slate-200 dark:border-slate-700" style={{ borderRadius: '8px' }}>
-              <button
-                onClick={() => setMetricView('revenue')}
-                type="button"
-                style={{ borderRadius: '8px' }}
-                className={`px-4 py-1.5 text-xs font-bold transition-all cursor-pointer ${metricView === 'revenue'
-                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-              >
-                {t('monthlyRevenue')}
-              </button>
-              <button
-                onClick={() => setMetricView('orders')}
-                type="button"
-                style={{ borderRadius: '8px' }}
-                className={`px-4 py-1.5 text-xs font-bold transition-all cursor-pointer ${metricView === 'orders'
-                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-              >
-                {t('monthlyOrders')}
-              </button>
-            </div>
-          </div>
-
-          {/* Interactive Bar Chart Visualization */}
-          <div className="overflow-x-auto admin-custom-scrollbar pb-2">
-            <div className="w-full min-w-[520px] lg:min-w-0 flex items-end justify-between gap-2 sm:gap-3 pt-6 pb-4 border-b border-slate-100 dark:border-slate-800 px-2 min-h-[260px]">
-              {trendData.map((item, idx) => {
-                const val = metricView === 'revenue' ? item.revenue : item.orders;
-                const maxVal = metricView === 'revenue' ? maxRevenue : 1100;
-                const heightPercent = Math.max(16, Math.round((val / maxVal) * 100));
-
-                return (
-                  <div key={idx} className="flex-1 flex flex-col items-center justify-end gap-3 group relative h-[220px]">
-                    {/* Tooltip on hover */}
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-10 bg-slate-900 text-white text-[10px] font-bold px-2.5 py-1.5 shadow-lg pointer-events-none z-10 whitespace-nowrap" style={{ borderRadius: '8px' }}>
-                      {metricView === 'revenue' ? `$${val.toLocaleString()}` : `${val} orders`}
-                    </div>
-
-                    {/* Bar Outer Track */}
-                    <div className="w-full max-w-[42px] bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-end h-[170px]" style={{ borderRadius: '8px 8px 0 0' }}>
-                      <div
-                        style={{ height: `${heightPercent}%` }}
-                        className={`w-full transition-all duration-500 group-hover:brightness-110 ${idx === trendData.length - 1
-                          ? 'admin-chart-bar-active'
-                          : 'admin-chart-bar'
-                          }`}
-                      />
-                    </div>
-
-                    {/* X Axis Label */}
-                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-                      {item.month}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Chart Legend Footer */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-6 text-xs font-medium text-slate-500 dark:text-slate-400 mt-3">
-            <div className="flex items-center gap-6">
-              <span className="flex items-center gap-2">
-                <span className="admin-legend-dot-active" />
-                Current Month (September 2026)
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="admin-legend-dot" />
-                Past Months
-              </span>
-            </div>
-            <span className="font-extrabold text-slate-800 dark:text-slate-200">
-              Avg Growth: +16.2%/mo
-            </span>
-          </div>
-        </div>
-
-        {/* Side Chart: Sales Breakdown by Artist */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs flex flex-col justify-between" style={{ borderRadius: '8px' }}>
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
-                {t('salesByArtist')}
-              </h2>
-              <Disc className="w-5 h-5 text-sky-500 animate-spin-slow" />
-            </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-8">
-              Distribution of revenue generated per idol fandom
-            </p>
-
-            {/* Visual Bars for Artists */}
-            <div className="flex flex-col gap-4 mt-3">
-              {artistSales.map((artist, idx) => (
-                <div key={idx} className="space-y-2">
-                  <div className="flex items-center justify-between text-xs font-bold">
-                    <span className="text-slate-800 dark:text-slate-200">{artist.name}</span>
-                    <span className="text-slate-900 dark:text-white font-extrabold">
-                      {artist.share}% {t('share')}
-                    </span>
-                  </div>
-                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-3 overflow-hidden" style={{ borderRadius: '8px' }}>
-                    <div
-                      style={{ width: `${artist.share}%`, backgroundColor: artist.color, borderRadius: '8px' }}
-                      className="h-full transition-all duration-500"
-                    />
-                  </div>
-                  <div className="text-[11px] text-slate-400 truncate">
-                    Albums: {artist.albums}
-                  </div>
+      <div className="mt-8 sm:mt-12 space-y-8 sm:space-y-10">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 sm:gap-8">
+          <div
+            style={{ borderRadius: '16px' }}
+            className="xl:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-xs flex flex-col justify-between"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-sm shadow-indigo-500/50 shrink-0"></div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
+                    {isVi ? 'Doanh Thu & Vé Mở Bán' : 'Revenue & Presale Growth'}
+                  </h3>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-            <span>NewJeans leading at 34% total sales</span>
-            <TrendingUp className="w-4 h-4" />
-          </div>
-        </div>
-
-      </div>
-
-      {/* SECONDARY GRID: Top Selling Albums & Regional Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-        {/* Top Performing Albums */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs mt-3" style={{ borderRadius: '8px' }}>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
-              {t('topSellingAlbums')}
-            </h2>
-            <span className="text-xs font-extrabold text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/60 px-3 py-1 border border-sky-200 dark:border-sky-900" style={{ borderRadius: '8px' }}>
-              Hanteo Verified
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            {topSellingAlbums.map((album, idx) => (
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  {isVi ? 'Đồng bộ BXH Hanteo & Circle Chart thời gian thực' : 'Synced with Hanteo & Circle telemetry'}
+                </p>
+              </div>
               <div
-                key={idx}
-                className="p-4 bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4"
-                style={{ borderRadius: '8px' }}
+                style={{ borderRadius: '10px' }}
+                className="bg-slate-100 dark:bg-slate-800 p-1 flex items-center border border-slate-200/80 dark:border-slate-700/80 self-start sm:self-auto"
               >
-                <div className="flex items-center gap-4 flex-1 min-w-0">
-                  <div className="w-9 h-9 bg-slate-900 text-white font-black text-xs flex items-center justify-center flex-shrink-0" style={{ borderRadius: '8px' }}>
-                    #{idx + 1}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                      {album.name}
-                    </div>
-                    <div className="text-[11px] font-semibold text-sky-600 dark:text-sky-400 mt-0.5">
-                      {album.artist}
-                    </div>
-                  </div>
+                <button
+                  type="button"
+                  onClick={() => setMetricView('revenue')}
+                  style={{ borderRadius: '8px' }}
+                  className={`px-3 py-1 text-xs font-bold transition-all cursor-pointer ${metricView === 'revenue'
+                      ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                >
+                  {isVi ? 'Doanh thu ($)' : 'Revenue ($)'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMetricView('orders')}
+                  style={{ borderRadius: '8px' }}
+                  className={`px-3 py-1 text-xs font-bold transition-all cursor-pointer ${metricView === 'orders'
+                      ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                >
+                  {isVi ? 'Lượng vé' : 'Orders'}
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-slate-50 to-indigo-50/30 dark:from-slate-800/60 dark:to-indigo-950/20 rounded-xl mb-4 border border-slate-100 dark:border-slate-800">
+              <div>
+                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                  {metricView === 'revenue'
+                    ? (isVi ? 'Tổng doanh thu' : 'Total Revenue')
+                    : (isVi ? 'Tổng lượng vé bán ra' : 'Total Tickets Fulfilled')}
                 </div>
+                <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-0.5">
+                  {isOnline
+                    ? (metricView === 'revenue' ? `$${totalRevenueCalculated.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : '0 vé')
+                    : (metricView === 'revenue' ? '$0.00' : '0 vé')}
+                </div>
+              </div>
+              <div className="text-right">
+                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${isOnline && totalRevenueCalculated > 0 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}`}>
+                  {isOnline && totalRevenueCalculated > 0 && <ArrowUpRight className="w-3.5 h-3.5" />}
+                  <span>{isOnline && totalRevenueCalculated > 0 ? '+18.4% YoY' : '0.0%'}</span>
+                </span>
+                <div className="text-[10px] text-slate-400 mt-1 font-medium">
+                  {isOnline ? (isVi ? 'Đỉnh điểm: Thg 9' : 'Peak: September') : (isVi ? 'Chưa có dữ liệu API' : 'No API Data')}
+                </div>
+              </div>
+            </div>
+            <div className="relative pt-2 pb-1">
+              <div className="absolute inset-x-0 top-3 bottom-7 flex flex-col justify-between pointer-events-none opacity-40">
+                <div className="border-b border-dashed border-slate-200 dark:border-slate-700 w-full" />
+                <div className="border-b border-dashed border-slate-200 dark:border-slate-700 w-full" />
+                <div className="border-b border-dashed border-slate-200 dark:border-slate-700 w-full" />
+                <div className="border-b border-slate-200 dark:border-slate-700 w-full" />
+              </div>
+              <div className="h-44 sm:h-52 flex items-end justify-between gap-1 sm:gap-2 px-1 relative z-10">
+                {trendData.map((d) => {
+                  const heightPercent = isOnline
+                    ? (metricView === 'revenue' ? (d.revenue / maxRevenue) * 100 : (d.orders / 1020) * 100)
+                    : 0;
 
-                <div className="flex items-center gap-6 flex-shrink-0">
-                  <div className="text-right">
-                    <div className="text-xs font-extrabold text-slate-900 dark:text-white">
-                      {album.units.toLocaleString()} {t('unitsSold')}
+                  return (
+                    <div key={d.month} className="flex-1 flex flex-col items-center h-full justify-end group">
+                      <div className="text-[9px] sm:text-[10px] font-mono font-bold text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:-translate-y-0.5 transition-all mb-1.5 opacity-80 group-hover:opacity-100">
+                        {isOnline ? (metricView === 'revenue' ? `$${(d.revenue / 1000).toFixed(0)}k` : d.orders) : 0}
+                      </div>
+                      <div className="w-4 sm:w-6 md:w-7 h-[70%] flex items-end justify-center rounded-t-lg bg-slate-100/90 dark:bg-slate-800/60 p-0.5">
+                        <div
+                          style={{
+                            height: isOnline ? `${Math.max(16, heightPercent)}%` : '4px',
+                          }}
+                          className={`w-full rounded-t-md transition-all duration-300 shadow-2xs ${isOnline ? 'bg-gradient-to-t from-indigo-600 via-indigo-500 to-purple-500 group-hover:from-indigo-500 group-hover:to-pink-500' : 'bg-slate-200 dark:bg-slate-700'}`}
+                        />
+                      </div>
+                      <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors mt-2">
+                        {d.month}
+                      </span>
                     </div>
-                    <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">
-                      ${album.revenue.toLocaleString()} revenue
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
+              <span>{isVi ? 'Dự phóng Q3:' : 'Q3 Projected:'} <strong className="text-slate-900 dark:text-white">{isOnline ? '$105.2k' : '$0.00'}</strong></span>
+              <span className={`font-bold flex items-center gap-1 ${isOnline ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>{isOnline ? t('hanteoSynced') : (isVi ? 'Chưa kết nối API' : 'API Call Error')}</span>
+              </span>
+            </div>
+          </div>
+          <div
+            style={{ borderRadius: '16px' }}
+            className="xl:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-xs flex flex-col justify-between"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <div className={`w-2.5 h-2.5 rounded-full ${isOnline ? 'bg-pink-500 shadow-sm shadow-pink-500/50' : 'bg-slate-400'} shrink-0`}></div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
+                    {isVi ? 'Cơ Cấu Thể Loại Sự Kiện' : 'Event Category Allocation'}
+                  </h3>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  {isOnline ? (isVi ? 'Phân bổ 29,530 vé mở bán theo 4 danh mục' : '29,530 Presale seats distributed') : (isVi ? '0 vé mở bán (API offline)' : '0 Presale seats')}
+                </p>
+              </div>
+              <span className="px-2.5 py-0.5 text-[10px] font-black rounded-full bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300">
+                {isOnline ? '4' : '0'} {isVi ? 'Nhóm' : 'Types'}
+              </span>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center justify-around gap-4 my-auto py-2">
+              <div className="relative w-36 h-36 sm:w-40 sm:h-40 shrink-0">
+                <svg className="w-full h-full -rotate-90 drop-shadow-xs" viewBox="0 0 160 160">
+                  <circle
+                    cx="80"
+                    cy="80"
+                    r="50"
+                    fill="transparent"
+                    stroke="currentColor"
+                    strokeWidth="16"
+                    className="text-slate-100 dark:text-slate-800"
+                  />
+                  <circle
+                    cx="80"
+                    cy="80"
+                    r="50"
+                    fill="transparent"
+                    stroke="#6366f1"
+                    strokeWidth="16"
+                    strokeDasharray={isOnline ? "131.95 314.16" : "0 314.16"}
+                    strokeDashoffset="0"
+                    strokeLinecap="round"
+                    className="transition-all duration-500"
+                  />
+                  <circle
+                    cx="80"
+                    cy="80"
+                    r="50"
+                    fill="transparent"
+                    stroke="#ec4899"
+                    strokeWidth="16"
+                    strokeDasharray={isOnline ? "81.68 314.16" : "0 314.16"}
+                    strokeDashoffset="-131.95"
+                    strokeLinecap="round"
+                    className="transition-all duration-500"
+                  />
+                  <circle
+                    cx="80"
+                    cy="80"
+                    r="50"
+                    fill="transparent"
+                    stroke="#f59e0b"
+                    strokeWidth="16"
+                    strokeDasharray={isOnline ? "62.83 314.16" : "0 314.16"}
+                    strokeDashoffset="-213.63"
+                    strokeLinecap="round"
+                    className="transition-all duration-500"
+                  />
+                  <circle
+                    cx="80"
+                    cy="80"
+                    r="50"
+                    fill="transparent"
+                    stroke="#10b981"
+                    strokeWidth="16"
+                    strokeDasharray={isOnline ? "37.70 314.16" : "0 314.16"}
+                    strokeDashoffset="-276.46"
+                    strokeLinecap="round"
+                    className="transition-all duration-500"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-none">
+                    {isOnline ? '29.5k' : '0'}
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase mt-0.5 tracking-wider">
+                    {isVi ? 'Tổng số chỗ' : 'Total Seats'}
+                  </span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2 w-full sm:w-auto">
+                {eventCategories.map((cat) => (
+                  <div
+                    key={cat.name}
+                    style={{ borderRadius: '10px' }}
+                    className="p-2 sm:p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
+                  >
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <span
+                        style={{ backgroundColor: isOnline ? cat.color : '#94a3b8' }}
+                        className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs"
+                      ></span>
+                      <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">
+                        {cat.name}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-xs font-black text-slate-900 dark:text-white">
+                        {isOnline ? cat.percent : 0}%
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        {isOnline ? cat.count : 0} {isVi ? 'vé' : 'seats'}
+                      </span>
                     </div>
                   </div>
+                ))}
+              </div>
+            </div>
 
-                  <div className="w-24 hidden sm:block">
-                    <div className="w-full bg-slate-200 dark:bg-slate-700 h-2.5 overflow-hidden" style={{ borderRadius: '8px' }}>
+            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
+              <span>{isVi ? 'Tỷ lệ lấp đầy sân khấu:' : 'Stage occupancy rate:'} <strong className="text-slate-900 dark:text-white">{isOnline ? '96.8%' : '0%'}</strong></span>
+              <span className={`font-bold ${isOnline ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`}>VIP & GA</span>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 sm:gap-8">
+          <div
+            style={{ borderRadius: '16px' }}
+            className="xl:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-xs flex flex-col justify-between"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <div className={`w-2.5 h-2.5 rounded-full ${isOnline ? 'bg-emerald-500 shadow-sm shadow-emerald-500/50' : 'bg-slate-400'} shrink-0`}></div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
+                    {isVi ? 'Lưu Lượng 7 Ngày & Chống Phe Vé' : '7-Day Traffic & Anti-Scalping'}
+                  </h3>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  {isVi ? 'So sánh lưu lượng người hâm mộ thực và bot đầu cơ bị chặn' : 'Legitimate fan traffic vs scalper bot attempts blocked'}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span>{isVi ? `Hợp lệ: ${isOnline ? '71.2k' : '0'}` : `Verified: ${isOnline ? '71.2k' : '0'}`}</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60">
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                  <span>{isVi ? `Chặn bot: ${isOnline ? '30.8k' : '0'}` : `Blocked: ${isOnline ? '30.8k' : '0'}`}</span>
+                </span>
+              </div>
+            </div>
+            <div className="relative pt-2 pb-1">
+              <div className="absolute inset-x-0 top-3 bottom-7 flex flex-col justify-between pointer-events-none opacity-40">
+                <div className="border-b border-dashed border-slate-200 dark:border-slate-700 w-full" />
+                <div className="border-b border-dashed border-slate-200 dark:border-slate-700 w-full" />
+                <div className="border-b border-dashed border-slate-200 dark:border-slate-700 w-full" />
+                <div className="border-b border-slate-200 dark:border-slate-700 w-full" />
+              </div>
+
+              <div className="h-44 sm:h-52 grid grid-cols-7 gap-1.5 sm:gap-3 items-end px-1 relative z-10">
+                {weeklyTrafficData.map((d) => {
+                  const legitHeight = isOnline ? (d.legit / maxWeeklyTraffic) * 100 : 0;
+                  const botHeight = isOnline ? (d.bot / maxWeeklyTraffic) * 100 : 0;
+
+                  return (
+                    <div key={d.day} className="flex flex-col items-center h-full justify-end group">
+                      <div className="text-[9px] font-bold text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block font-mono mb-1">
+                        {isOnline ? `${d.rate}%` : '0%'}
+                      </div>
+                      <div className="w-full flex items-end justify-center gap-1 sm:gap-1.5 h-[70%]">
+                        <div
+                          style={{ height: isOnline ? `${legitHeight}%` : '4px' }}
+                          className={`w-2.5 sm:w-3.5 max-w-[14px] rounded-t-md transition-all shadow-2xs ${isOnline ? 'bg-gradient-to-t from-emerald-600 to-teal-400 group-hover:opacity-90' : 'bg-slate-200 dark:bg-slate-700'}`}
+                          title={`Verified Fans: ${d.legit.toLocaleString()}`}
+                        />
+                        <div
+                          style={{ height: isOnline ? `${botHeight}%` : '4px' }}
+                          className={`w-2.5 sm:w-3.5 max-w-[14px] rounded-t-md transition-all shadow-2xs ${isOnline ? 'bg-gradient-to-t from-rose-600 to-pink-500 group-hover:opacity-90' : 'bg-slate-200 dark:bg-slate-700'}`}
+                          title={`Bots Blocked: ${d.bot.toLocaleString()}`}
+                        />
+                      </div>
+                      <span className={`text-[10px] sm:text-xs font-bold mt-2 ${d.isPeak ? 'text-indigo-600 dark:text-indigo-400 font-black' : 'text-slate-500 dark:text-slate-400'}`}>
+                        {d.day}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
+              <span>{isVi ? 'Đỉnh điểm mở bán vé:' : 'Presale Drop Peak:'} <strong className="text-slate-900 dark:text-white">{isOnline ? (isVi ? 'Thứ Bảy (18.9k lượt)' : 'Saturday (18.9k visits)') : '0'}</strong></span>
+              <span className={`font-bold flex items-center gap-1 ${isOnline ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>{isOnline ? (isVi ? '99.8% Ngăn chặn phe vé' : '99.8% Anti-Scalping Success') : '0%'}</span>
+              </span>
+            </div>
+          </div>
+          <div
+            style={{ borderRadius: '16px' }}
+            className="xl:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-xs flex flex-col justify-between"
+          >
+            <div>
+              <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white mb-1">
+                {t('regionalBreakdown')}
+              </h3>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-4">
+                {isOnline ? (isVi ? 'Phân bố người mua vé & fandom toàn cầu' : 'Global presale ticket buyers distribution') : (isVi ? 'Chưa có dữ liệu vùng' : 'No regional data')}
+              </p>
+
+              <div className="space-y-3.5">
+                {regions.map((reg) => (
+                  <div key={reg.region} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+                      <span>{reg.region}</span>
+                      <span className="font-mono">{isOnline ? reg.percent : 0}%</span>
+                    </div>
+                    <div
+                      style={{ borderRadius: '9999px' }}
+                      className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 overflow-hidden p-0.5"
+                    >
                       <div
-                        style={{ width: `${album.percent}%`, borderRadius: '8px' }}
-                        className="bg-sky-500 h-full"
+                        style={{
+                          width: `${isOnline ? reg.percent : 0}%`,
+                          backgroundColor: isOnline ? reg.color : '#94a3b8',
+                          borderRadius: '9999px',
+                        }}
+                        className="h-full transition-all duration-500 shadow-xs"
                       />
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Regional Fandom Sales Distribution */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs flex flex-col justify-between mt-3" style={{ borderRadius: '8px' }}>
-          <div>
-            <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mb-1">
-              {t('regionalBreakdown')}
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-8">
-              Global distribution of fan orders
-            </p>
-
-            <div className="flex flex-col gap-4">
-              {regions.map((reg, idx) => (
-                <div key={idx} className="space-y-2">
-                  <div className="flex items-center justify-between text-xs font-bold">
-                    <span className="text-slate-800 dark:text-slate-200">{reg.region}</span>
-                    <span className="text-slate-900 dark:text-white font-extrabold">{reg.percent}%</span>
-                  </div>
-                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-3 overflow-hidden" style={{ borderRadius: '8px' }}>
-                    <div
-                      style={{ width: `${reg.percent}%`, backgroundColor: reg.color, borderRadius: '8px' }}
-                      className="h-full transition-all duration-500"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-8 p-4 bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-900 text-xs text-sky-800 dark:text-sky-300" style={{ borderRadius: '8px' }}>
-            <span className="font-bold">🚀 Fastest Growing Region:</span> Vietnam (+38.2% YoY growth in photobook pre-orders).
-          </div>
-        </div>
-
-      </div>
-
-      {/* TABLES SECTION: Recent Orders & Live Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-3">
-
-        {/* Recent Customer Orders Table */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs" style={{ borderRadius: '8px' }}>
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
-                {t('recentOrders')}
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Live stream of inbound fandom purchases
-              </p>
-            </div>
-            <button
-              onClick={() => alert('Opening full orders list')}
-              type="button"
-              className="text-xs font-bold text-sky-600 hover:text-sky-700 dark:text-sky-400 cursor-pointer"
-            >
-              {t('viewAllOrders')} →
-            </button>
-          </div>
-
-          <div className="overflow-x-auto admin-custom-scrollbar border border-slate-200 dark:border-slate-800" style={{ borderRadius: '8px' }}>
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] border-b border-slate-200 dark:border-slate-800">
-                <tr>
-                  <th className="py-3.5 px-4">{t('orderId')}</th>
-                  <th className="py-3.5 px-4">{t('customer')}</th>
-                  <th className="py-3.5 px-4">{t('product')}</th>
-                  <th className="py-3.5 px-4">{t('total')}</th>
-                  <th className="py-3.5 px-4">{t('status')}</th>
-                  <th className="py-3.5 px-4 text-right">{t('action')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {recentOrders.map((ord) => (
-                  <tr key={ord.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                    <td className="py-3.5 px-4 font-mono font-bold text-slate-900 dark:text-slate-100">
-                      {ord.id}
-                    </td>
-                    <td className="py-3.5 px-4 font-semibold text-slate-800 dark:text-slate-200">
-                      <div>{ord.customer}</div>
-                      <div className="text-[10px] text-slate-400 font-normal">{ord.country}</div>
-                    </td>
-                    <td className="py-3.5 px-4 font-medium text-slate-700 dark:text-slate-300 max-w-xs truncate">
-                      {ord.product}
-                    </td>
-                    <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-white">
-                      ${ord.totalUSD.toFixed(2)}
-                      <div className="text-[10px] text-slate-400 font-normal">
-                        {ord.totalVND.toLocaleString()} ₫
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      {ord.status === 'paid' && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300" style={{ borderRadius: '8px' }}>
-                          <CheckCircle2 className="w-3 h-3" />
-                          {t('statusPaid')}
-                        </span>
-                      )}
-                      {ord.status === 'processing' && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300" style={{ borderRadius: '8px' }}>
-                          <Clock className="w-3 h-3" />
-                          {t('statusProcessing')}
-                        </span>
-                      )}
-                      {ord.status === 'shipped' && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 text-[10px] font-bold bg-sky-100 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300" style={{ borderRadius: '8px' }}>
-                          <Truck className="w-3 h-3" />
-                          {t('statusShipped')}
-                        </span>
-                      )}
-                      {ord.status === 'cancelled' && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300" style={{ borderRadius: '8px' }}>
-                          <XCircle className="w-3 h-3" />
-                          {t('statusCancelled')}
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      <button
-                        type="button"
-                        onClick={() => alert(`Viewing order details for ${ord.id}`)}
-                        className="p-1.5 text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
-                        title="View Order Details"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                    </td>
-                  </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Live System Activity Feed */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs flex flex-col justify-between" style={{ borderRadius: '8px' }}>
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
-                {t('liveActivityFeed')}
-              </h2>
-              <span className="w-3 h-3 bg-emerald-500 animate-ping" style={{ borderRadius: '50%' }} />
-            </div>
-
-            <div className="space-y-4">
-              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1.5" style={{ borderRadius: '8px' }}>
-                <div className="flex items-center justify-between text-[11px] font-bold text-sky-600 dark:text-sky-400">
-                  <span>🛍️ New Order Placed</span>
-                  <span className="text-[10px] text-slate-400">Just now</span>
-                </div>
-                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
-                  {t('newOrderNotice')}
-                </p>
-              </div>
-
-              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1.5" style={{ borderRadius: '8px' }}>
-                <div className="flex items-center justify-between text-[11px] font-bold text-purple-600 dark:text-purple-400">
-                  <span>👤 New Fandom Signup</span>
-                  <span className="text-[10px] text-slate-400">12 mins ago</span>
-                </div>
-                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
-                  {t('newMemberNotice')}
-                </p>
-              </div>
-
-              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1.5" style={{ borderRadius: '8px' }}>
-                <div className="flex items-center justify-between text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                  <span>⭐ Fan Review Posted</span>
-                  <span className="text-[10px] text-slate-400">45 mins ago</span>
-                </div>
-                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
-                  {t('reviewNotice')}
-                </p>
-              </div>
-
-              <div className="p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 space-y-1.5" style={{ borderRadius: '8px' }}>
-                <div className="flex items-center justify-between text-[11px] font-bold text-amber-700 dark:text-amber-300">
-                  <span>⚠️ Inventory Warning</span>
-                  <span className="text-[10px] text-amber-500">2 hours ago</span>
-                </div>
-                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
-                  {t('stockAlertNotice')}
-                </p>
               </div>
             </div>
-          </div>
 
-          <div className="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
-            <span className="text-xs font-bold text-slate-400">
-              Auto-refreshing every 30 seconds
-            </span>
-          </div>
-        </div>
-
-      </div>
-
-      {/* CATALOG MANAGEMENT SECTION */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6 mt-3" style={{ borderRadius: '8px' }}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
-              {t('inventoryAlerts')}
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Monitor album releases, stock allocations, and tag statuses
-            </p>
-          </div>
-
-          {onAddNewAlbumClick && (
-            <button
-              onClick={onAddNewAlbumClick}
-              type="button"
-              style={{ borderRadius: '8px' }}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold shadow-2xs hover:opacity-90 transition-all cursor-pointer self-start sm:self-auto mb-3"
+            <div
+              style={{ borderRadius: '12px' }}
+              className="mt-4 p-3 bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-900 text-xs text-indigo-900 dark:text-indigo-300"
             >
-              <Plus className="w-4 h-4" />
-              <span>{t('addNewAlbum')}</span>
-            </button>
-          )}
-        </div>
-
-        <div className="overflow-x-auto admin-custom-scrollbar border border-slate-200 dark:border-slate-800" style={{ borderRadius: '8px' }}>
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] border-b border-slate-200 dark:border-slate-800">
-              <tr>
-                <th className="py-3.5 px-4">{t('albumTitle')}</th>
-                <th className="py-3.5 px-4">{t('artist')}</th>
-                <th className="py-3.5 px-4">{t('price')}</th>
-                <th className="py-3.5 px-4">{t('stockRemaining')}</th>
-                <th className="py-3.5 px-4">{t('tag')}</th>
-                <th className="py-3.5 px-4 text-right">{t('action')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {filteredAlbums.map((alb) => (
-                <tr key={alb.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <td className="py-3.5 px-4 font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-3">
-                    <img
-                      src={alb.coverImage}
-                      alt={alb.title}
-                      className="w-9 h-9 object-cover flex-shrink-0"
-                      style={{ borderRadius: '8px' }}
-                    />
-                    <span className="truncate max-w-xs">{alb.title}</span>
-                  </td>
-                  <td className="py-3.5 px-4 font-bold text-sky-600 dark:text-sky-400">
-                    {alb.artist}
-                  </td>
-                  <td className="py-3.5 px-4 font-extrabold text-slate-900 dark:text-white">
-                    ${alb.priceUSD.toFixed(2)}
-                    <span className="text-[10px] text-slate-400 block font-medium">
-                      {alb.priceVND.toLocaleString()} ₫
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <span
-                      className={`font-bold ${alb.stock < 20
-                        ? 'text-rose-600 dark:text-rose-400 font-black'
-                        : 'text-emerald-600 dark:text-emerald-400'
-                        }`}
-                    >
-                      {alb.stock} units
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <span className="px-2.5 py-1 text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200" style={{ borderRadius: '8px' }}>
-                      {alb.tag}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-4 text-right">
-                    <button
-                      onClick={() => handleDeleteAlbum(alb.id)}
-                      type="button"
-                      className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
-                      title={t('delete')}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              <div className="font-bold flex items-center gap-1.5 mb-0.5">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                <span>{isVi ? 'Khu vực bùng nổ nhất' : 'Fastest Growing Region'}</span>
+              </div>
+              <div className="text-[11px] text-slate-600 dark:text-slate-400">
+                {isOnline
+                  ? (isVi ? 'Việt Nam & ĐNA (+42.5% tăng trưởng đăng ký vé K-Pop).' : 'Vietnam & SE Asia (+42.5% YoY presale growth).')
+                  : (isVi ? 'Chưa kết nối API để tổng hợp khu vực.' : 'API connection required for regional breakdown.')}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
     </div>
   );
 };

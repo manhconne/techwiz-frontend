@@ -2,20 +2,29 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { 
-  X, 
-  Heart, 
-  Bookmark, 
-  Clock, 
-  Sparkles, 
-  Camera, 
-  Edit3, 
-  Check, 
-  LogOut, 
-  ExternalLink
+import {
+  X,
+  Heart,
+  Bookmark,
+  Clock,
+  Sparkles,
+  Camera,
+  Edit3,
+  Check,
+  LogOut,
+  ExternalLink,
+  Flame,
+  Star,
+  Calendar,
+  Disc,
+  Radio,
+  Share2,
+  Tv,
+  Bell
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCartWishlist } from '../context/CartWishlistContext';
+import { checkIsAdmin } from '../utils/authUtils';
 
 interface PersonalDashboardModalProps {
   isOpen: boolean;
@@ -49,7 +58,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
   const { wishlist } = useCartWishlist();
 
   const [activeTab, setActiveTab] = useState<'overview' | 'fandoms' | 'activities' | 'bookmarks' | 'profile'>('overview');
-  
+
   // Profile edit form
   const [editName, setEditName] = useState(user.name);
   const [selectedAvatar, setSelectedAvatar] = useState(user.avatar);
@@ -80,11 +89,11 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-mono">
-      <div 
+      <div
         style={{ borderRadius: '0px' }}
         className="bg-white max-w-4xl w-full shadow-[10px_10px_0px_#000000] border-3 border-black overflow-hidden flex flex-col max-h-[92vh]"
       >
-        
+
         {/* ========================================================= */}
         {/* 1. DASHBOARD HEADER & PERSONAL GREETING                   */}
         {/* ========================================================= */}
@@ -138,6 +147,20 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 <span>•</span>
                 <span className="bg-[#ccff00] text-black px-1.5 py-0.2 border border-black font-black">DIAMOND STAN ⭐</span>
               </div>
+
+              {checkIsAdmin(user) && (
+                <div className="pt-3 flex justify-center sm:justify-start">
+                  <Link
+                    href="/admin"
+                    onClick={onClose}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-xs rounded-xl shadow-md transition-all active:scale-95 no-underline"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-white" />
+                    <span>Vào Bảng Điều Khiển Admin (Dashboard)</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -159,17 +182,15 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
                 style={{ borderRadius: '0px' }}
-                className={`flex items-center gap-2 py-2 px-3 text-xs font-black uppercase border-2 transition-all whitespace-nowrap cursor-pointer ${
-                  isActive
+                className={`flex items-center gap-2 py-2 px-3 text-xs font-black uppercase border-2 transition-all whitespace-nowrap cursor-pointer ${isActive
                     ? 'bg-[#ff2e93] text-white border-black shadow-[3px_3px_0px_#000] -translate-y-0.5'
                     : 'bg-white text-black border-black hover:bg-[#fff9db] shadow-[1px_1px_0px_#000]'
-                }`}
+                  }`}
               >
                 <span>{tab.label}</span>
                 {tab.count !== undefined && (
-                  <span className={`px-1.5 py-0.2 text-[10px] font-mono border border-black ${
-                    isActive ? 'bg-[#ffd60a] text-black' : 'bg-[#ecfeff] text-black'
-                  }`}>
+                  <span className={`px-1.5 py-0.2 text-[10px] font-mono border border-black ${isActive ? 'bg-[#ffd60a] text-black' : 'bg-[#ecfeff] text-black'
+                    }`}>
                     {tab.count}
                   </span>
                 )}
@@ -180,7 +201,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
 
         {/* Toast alert */}
         {saveToast && (
-          <div 
+          <div
             style={{ borderRadius: '0px' }}
             className="mx-6 mt-4 p-3 bg-[#ccff00] border-2 border-black text-black text-xs font-black flex items-center gap-2 shadow-[3px_3px_0px_#000]"
           >
@@ -193,7 +214,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         {/* 3. TAB CONTENT VIEWS                                      */}
         {/* ========================================================= */}
         <div className="p-6 overflow-y-auto flex-1 space-y-6 bg-[#fdfbf7]">
-          
+
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
@@ -303,11 +324,10 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       key={item.id}
                       onClick={() => toggleFavoriteFandom(item.name)}
                       style={{ borderRadius: '0px' }}
-                      className={`p-3.5 border-2 border-black transition-all cursor-pointer flex items-center justify-between ${
-                        isFollowed
+                      className={`p-3.5 border-2 border-black transition-all cursor-pointer flex items-center justify-between ${isFollowed
                           ? 'bg-[#ecfeff] shadow-[3px_3px_0px_#000] -translate-y-0.5'
                           : 'bg-white hover:bg-[#fff9db] shadow-[1px_1px_0px_#000]'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <div
@@ -323,11 +343,10 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       <button
                         type="button"
                         style={{ borderRadius: '0px' }}
-                        className={`px-3 py-1 text-xs font-black border-2 border-black uppercase transition-colors ${
-                          isFollowed
+                        className={`px-3 py-1 text-xs font-black border-2 border-black uppercase transition-colors ${isFollowed
                             ? 'bg-[#ff2e93] text-white shadow-[1px_1px_0px_#000]'
                             : 'bg-white text-black hover:bg-[#ffd60a]'
-                        }`}
+                          }`}
                       >
                         {isFollowed ? '✓ FOLLOWING' : '+ FOLLOW'}
                       </button>
@@ -352,7 +371,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 {activities.map((act) => (
                   <div key={act.id} className="relative group">
                     <span className="absolute -left-6 top-1.5 w-3.5 h-3.5 bg-[#ffd60a] border-2 border-black shadow-[1px_1px_0px_#000]" />
-                    <div 
+                    <div
                       style={{ borderRadius: '0px' }}
                       className="p-3.5 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-between"
                     >
@@ -397,8 +416,8 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {wishlist.map((item) => (
-                    <div 
-                      key={item.album.id} 
+                    <div
+                      key={item.album.id}
                       style={{ borderRadius: '0px' }}
                       className="p-3 border-2 border-black flex items-center gap-3 bg-white shadow-[3px_3px_0px_#000]"
                     >
@@ -459,11 +478,10 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                         setCustomAvatarUrl('');
                       }}
                       style={{ borderRadius: '0px' }}
-                      className={`w-12 h-12 object-cover cursor-pointer transition-all border-2 ${
-                        selectedAvatar === url && !customAvatarUrl
+                      className={`w-12 h-12 object-cover cursor-pointer transition-all border-2 ${selectedAvatar === url && !customAvatarUrl
                           ? 'border-[#ff2e93] shadow-[3px_3px_0px_#000] scale-105'
                           : 'border-black opacity-70 hover:opacity-100'
-                      }`}
+                        }`}
                     />
                   ))}
                 </div>

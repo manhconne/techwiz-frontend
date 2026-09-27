@@ -8,6 +8,7 @@ import { useCartWishlist } from '../context/CartWishlistContext';
 import { useAuth } from '../context/AuthContext';
 import { useDomainTheme } from '../context/DomainContext';
 import { PersonalDashboardModal } from './PersonalDashboardModal';
+import { checkIsAdmin } from '../utils/authUtils';
 import {
   Menu,
   Search,
@@ -101,7 +102,7 @@ export const Header: React.FC<HeaderProps> = ({
         setIsLargeFont(true);
         document.documentElement.classList.add('font-accessible-large');
       }
-    } catch {}
+    } catch { }
   }, []);
 
   const toggleFontSize = () => {
@@ -109,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({
     setIsLargeFont(next);
     try {
       localStorage.setItem('fanhub_font_large', String(next));
-    } catch {}
+    } catch { }
     if (next) {
       document.documentElement.classList.add('font-accessible-large');
     } else {
@@ -183,7 +184,7 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header 
+    <header
       className={`sticky top-0 z-40 w-full header-root fandom-header-${fandomThemeKey} transition-all duration-300${isScrolled ? ' header-scrolled' : ''}`}
       data-fandom-theme={fandomThemeKey}
     >
@@ -385,26 +386,24 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleFontSize}
             title={isLargeFont ? 'Standard Text Size' : 'Enlarge Text Size (+12.5%)'}
             type="button"
-            className={`header-action-btn hidden sm:flex notranslate w-8 sm:w-9 h-8 sm:h-9 items-center justify-center border-2 border-black font-mono font-bold text-xs cursor-pointer transition-colors duration-100 shadow-[2px_2px_0px_#000000] ${
-              isLargeFont 
-                ? 'bg-[#ff2e93] text-white' 
+            className={`header-action-btn hidden sm:flex notranslate w-8 sm:w-9 h-8 sm:h-9 items-center justify-center border-2 border-black font-mono font-bold text-xs cursor-pointer transition-colors duration-100 shadow-[2px_2px_0px_#000000] ${isLargeFont
+                ? 'bg-[#ff2e93] text-white'
                 : 'hover:bg-neutral-100 text-black bg-white'
-            }`}
+              }`}
             style={{ borderRadius: '0px' }}
           >
             <span>{isLargeFont ? 'A+' : 'A'}</span>
           </button>
 
           {/* Admin shortcut if admin */}
-          {user.role === 'admin' && (
+          {checkIsAdmin(user) && (
             <Link
               href="/admin"
-              className="flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-black bg-[#ff2e93] text-white border-2 border-black hover:bg-[#ff007f] transition-colors duration-100 cursor-pointer h-8 sm:h-9 text-decoration-none shadow-[2px_2px_0px_#000000]"
-              style={{ borderRadius: '0px' }}
+              className="flex items-center gap-1 px-2.5 py-1 text-xs font-black bg-amber-100 text-amber-800 border border-amber-300 rounded-md cursor-pointer h-8 text-decoration-none"
               title="Admin Portal"
             >
-              <ShieldCheck style={{ width: '13px', height: '13px', strokeWidth: 2 }} />
-              <span className="hidden md:inline">ADMIN</span>
+              <ShieldCheck style={{ width: '15px', height: '15px', color: '#d97706' }} />
+              <span className="hidden md:inline">Admin</span>
             </Link>
           )}
         </div>
@@ -739,6 +738,30 @@ export const Header: React.FC<HeaderProps> = ({
             >
               B2B/BULK
             </Link>
+            {checkIsAdmin(user) && (
+              <Link
+                href="/admin"
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 900,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  padding: '14px 8px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  cursor: 'pointer',
+                  color: '#d97706',
+                  transition: 'all 0.15s ease',
+                  borderBottom: pathname?.startsWith('/admin') ? '2.5px solid #d97706' : '2.5px solid transparent',
+                  textDecoration: 'none',
+                }}
+                className="header-nav-link hover:opacity-80"
+              >
+                <ShieldCheck style={{ width: '15px', height: '15px' }} />
+                <span>ADMIN PORTAL</span>
+              </Link>
+            )}
           </nav>
         </div>
       </div>
@@ -1278,24 +1301,30 @@ export const Header: React.FC<HeaderProps> = ({
                         const data = await response.json().catch(() => ({}));
 
                         if (response.status === 200 || response.status === 201) {
-                          // Save access_token to cookie
-                          if (data.access_token) {
-                            document.cookie = `access_token=${data.access_token}; path=/; max-age=604800; SameSite=Lax`;
-                            localStorage.setItem('access_token', data.access_token);
+                          const accessToken = data.data?.accessToken || data.accessToken || data.access_token;
+                          const refreshToken = data.data?.refreshToken || data.refreshToken || data.refresh_token;
+
+                          if (accessToken) {
+                            document.cookie = `access_token=${accessToken}; path=/; max-age=604800; SameSite=Lax`;
+                            localStorage.setItem('access_token', accessToken);
                           }
-                          if (data.refresh_token) {
-                            document.cookie = `refresh_token=${data.refresh_token}; path=/; max-age=2592000; SameSite=Lax`;
-                            localStorage.setItem('refresh_token', data.refresh_token);
+                          if (refreshToken) {
+                            document.cookie = `refresh_token=${refreshToken}; path=/; max-age=2592000; SameSite=Lax`;
+                            localStorage.setItem('refresh_token', refreshToken);
                           }
 
-                          const userInfo = data.user_info || {};
-                          const userRole = (userInfo.role || loginEmail).toLowerCase().includes('admin') ? 'admin' : 'registered';
+                          const userObj = data.data?.user || data.user || data.user_info || {};
+                          const roles: string[] = Array.isArray(userObj.roles)
+                            ? userObj.roles
+                            : (userObj.role ? [userObj.role] : []);
+                          const isAdmin = roles.some((r: string) => String(r).toLowerCase() === 'admin') || loginEmail.toLowerCase().includes('admin');
+                          const userRole = isAdmin ? 'admin' : 'registered';
 
                           setAuthNotification(data.message || 'Login successful!');
                           loginAs(userRole, {
-                            id: userInfo.id || data.user_id || 'usr_' + Date.now(),
-                            name: userInfo.full_name || userInfo.name || data.full_name || loginEmail.split('@')[0],
-                            email: userInfo.email || loginEmail,
+                            id: userObj.id || data.user_id || 'usr_' + Date.now(),
+                            name: userObj.fullName || userObj.name || userObj.full_name || loginEmail.split('@')[0],
+                            email: userObj.email || loginEmail,
                           });
 
                           setTimeout(() => {
@@ -1499,20 +1528,24 @@ export const Header: React.FC<HeaderProps> = ({
                         const data = await response.json().catch(() => ({}));
 
                         if (response.ok || response.status === 200 || response.status === 201) {
-                          if (data.access_token) {
-                            document.cookie = `access_token=${data.access_token}; path=/; max-age=604800; SameSite=Lax`;
-                            localStorage.setItem('access_token', data.access_token);
+                          const accessToken = data.data?.accessToken || data.accessToken || data.access_token;
+                          const refreshToken = data.data?.refreshToken || data.refreshToken || data.refresh_token;
+
+                          if (accessToken) {
+                            document.cookie = `access_token=${accessToken}; path=/; max-age=604800; SameSite=Lax`;
+                            localStorage.setItem('access_token', accessToken);
                           }
-                          if (data.refresh_token) {
-                            document.cookie = `refresh_token=${data.refresh_token}; path=/; max-age=2592000; SameSite=Lax`;
-                            localStorage.setItem('refresh_token', data.refresh_token);
+                          if (refreshToken) {
+                            document.cookie = `refresh_token=${refreshToken}; path=/; max-age=2592000; SameSite=Lax`;
+                            localStorage.setItem('refresh_token', refreshToken);
                           }
 
+                          const userObj = data.data?.user || data.user || {};
                           setAuthNotification(data.message || 'Account created successfully!');
                           loginAs('registered', {
-                            id: data.user_id || 'usr_' + Date.now(),
-                            name: signupName,
-                            email: signupEmail,
+                            id: userObj.id || data.user_id || 'usr_' + Date.now(),
+                            name: userObj.fullName || userObj.name || signupName,
+                            email: userObj.email || signupEmail,
                           });
                           setTimeout(() => {
                             setIsAuthModalOpen(false);
@@ -2157,11 +2190,10 @@ export const Header: React.FC<HeaderProps> = ({
                   type="button"
                   onClick={toggleFontSize}
                   style={{ borderRadius: '0px' }}
-                  className={`w-10 h-9 flex items-center justify-center border border-black text-xs font-mono font-bold cursor-pointer transition-colors duration-100 ${
-                    isLargeFont
+                  className={`w-10 h-9 flex items-center justify-center border border-black text-xs font-mono font-bold cursor-pointer transition-colors duration-100 ${isLargeFont
                       ? 'bg-black text-white'
                       : 'bg-white text-black hover:bg-black hover:text-white'
-                  }`}
+                    }`}
                   title={isLargeFont ? 'Reduce font size' : 'Increase font size'}
                 >
                   <span>{isLargeFont ? 'A+' : 'A'}</span>

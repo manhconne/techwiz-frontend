@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { AdminHeader } from '../../../components/admin/AdminHeader';
 import { AdminSidebar } from '../../../components/admin/AdminSidebar';
 import { useAdminLanguage } from '../../../context/AdminLanguageContext';
+import { getAccessToken } from '../../../utils/authUtils';
 import {
   Users,
   Search,
@@ -50,70 +51,6 @@ export interface ApiResponseMeta {
   limit: number;
 }
 
-// Fallback demo data to showcase the UI if backend is offline or deploying
-const DEMO_FALLBACK_USERS: AdminUserItem[] = [
-  {
-    id: 'USR-8001',
-    title: 'Minji Park (VIP Member)',
-    name: 'Minji Park',
-    email: 'minji.park@fanhubplus.com',
-    role: 'admin',
-    status: 'active',
-    createdAt: '2026-03-24T10:30:00Z',
-    phone: '+82 10-1234-5678',
-  },
-  {
-    id: 'USR-8002',
-    title: 'Sarah Jenkins',
-    name: 'Sarah Jenkins',
-    email: 'sarah.j@fandom.org',
-    role: 'registered',
-    status: 'active',
-    createdAt: '2026-03-23T14:15:00Z',
-    phone: '+1 415-987-6543',
-  },
-  {
-    id: 'USR-8003',
-    title: 'Kim Min-seok (Direct Distributor)',
-    name: 'Kim Min-seok',
-    email: 'minseok.k@seoulhub.kr',
-    role: 'registered',
-    status: 'active',
-    createdAt: '2026-03-22T08:45:00Z',
-    phone: '+82 10-5544-3322',
-  },
-  {
-    id: 'USR-8004',
-    title: 'Lucas Vance (B2B Bulk Manager)',
-    name: 'Lucas Vance',
-    email: 'lucas.v@kpopmerch.com',
-    role: 'admin',
-    status: 'active',
-    createdAt: '2026-03-21T18:20:00Z',
-    phone: '+44 20-7946-0958',
-  },
-  {
-    id: 'USR-8005',
-    title: 'Pham Minh Hang',
-    name: 'Pham Minh Hang',
-    email: 'hang.pham@bunnies.net',
-    role: 'registered',
-    status: 'inactive',
-    createdAt: '2026-03-20T09:10:00Z',
-    phone: '+84 934-889-900',
-  },
-  {
-    id: 'USR-8006',
-    title: 'Alexandre Roy (Policy Violation)',
-    name: 'Alexandre Roy',
-    email: 'alex.roy@outlook.com',
-    role: 'registered',
-    status: 'banned',
-    createdAt: '2026-03-18T16:05:00Z',
-    phone: '+33 6-12-34-56-78',
-  },
-];
-
 export default function AdminUsersPage() {
   const { language, setLanguage } = useAdminLanguage();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -127,7 +64,6 @@ export default function AdminUsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isConnectionError, setIsConnectionError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [showDemoPreview, setShowDemoPreview] = useState(false);
 
   // Filters & Pagination query parameters per API doc (?page=1&limit=20&sort=newest)
   const [page, setPage] = useState<number>(1);
@@ -158,14 +94,7 @@ export default function AdminUsersPage() {
     setErrorMessage(null);
 
     // Get Admin JWT token from cookie or localStorage
-    let token = '';
-    if (typeof window !== 'undefined') {
-      token = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
-      if (!token) {
-        const match = document.cookie.match(/access_token=([^;]+)/);
-        if (match) token = match[1];
-      }
-    }
+    const token = getAccessToken();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -221,7 +150,7 @@ export default function AdminUsersPage() {
       }
     } catch (err: any) {
       console.warn('Backend API connection error /api/v1/admin/users:', err);
-      // Strictly set error state to "Connection Error"  per requirement
+      // Strictly set error state to "Connection Error" / "Lỗi kết nối" per requirement
       setIsConnectionError(true);
       setErrorMessage('Connection Error');
       setUsers([]);
@@ -244,14 +173,7 @@ export default function AdminUsersPage() {
     setBanningUserId(targetUser.id);
     setActionToast(null);
 
-    let token = '';
-    if (typeof window !== 'undefined') {
-      token = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
-      if (!token) {
-        const match = document.cookie.match(/access_token=([^;]+)/);
-        if (match) token = match[1];
-      }
-    }
+    const token = getAccessToken();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -298,7 +220,7 @@ export default function AdminUsersPage() {
       setTimeout(() => setActionToast(null), 4000);
     } catch (err: any) {
       console.warn('Connection error on PUT /api/v1/admin/users/{id}/ban:', err);
-      
+      // Strictly handle "lỗi api thì để là lỗi kết nối nha"
       if (showDemoPreview || users.length === 0) {
         setUsers((prev) =>
           prev.map((u) => (u.id === targetUser.id ? { ...u, status: nextStatus } : u))
@@ -323,8 +245,8 @@ export default function AdminUsersPage() {
     }
   };
 
-  // Filtered users for local search / roles if demo data or local filter active
-  const displayedUsers = showDemoPreview && users.length === 0 ? DEMO_FALLBACK_USERS : users;
+  // Filtered users for local search / roles
+  const displayedUsers = users;
 
   const filteredUsers = displayedUsers.filter((u) => {
     const term = (searchQuery || headerSearch).toLowerCase().trim();
@@ -358,7 +280,7 @@ export default function AdminUsersPage() {
       {/* Sidebar with activeTab='users' */}
       <AdminSidebar
         activeTab="users"
-        setActiveTab={() => {}}
+        setActiveTab={() => { }}
         isOpen={isSidebarOpen}
         onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
       />
@@ -378,13 +300,12 @@ export default function AdminUsersPage() {
           {actionToast && (
             <div
               style={{ borderRadius: '8px' }}
-              className={`p-3 text-xs font-bold flex items-center justify-between gap-3 shadow-md animate-in fade-in slide-in-from-top-2 duration-200 ${
-                actionToast.type === 'success'
+              className={`p-3 text-xs font-bold flex items-center justify-between gap-3 shadow-md animate-in fade-in slide-in-from-top-2 duration-200 ${actionToast.type === 'success'
                   ? 'bg-emerald-600 text-white'
                   : actionToast.type === 'warning'
-                  ? 'bg-amber-600 text-white'
-                  : 'bg-rose-600 text-white'
-              }`}
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-rose-600 text-white'
+                }`}
             >
               <div className="flex items-center gap-2">
                 {actionToast.type === 'success' ? (
@@ -465,7 +386,7 @@ export default function AdminUsersPage() {
                   }}
                 >
                   <Database className="w-3.5 h-3.5" />
-                  <span>{showDemoPreview ? ('Hide Demo Preview') : ('View Demo Data')}</span>
+                  <span>{showDemoPreview ? (isVi ? 'Ẩn bản mẫu' : 'Hide Demo Preview') : (isVi ? 'Xem giao diện mẫu (Demo)' : 'View Demo Data')}</span>
                 </button>
               )}
             </div>
@@ -525,7 +446,7 @@ export default function AdminUsersPage() {
                     cursor: 'pointer',
                   }}
                 >
-                  {'View Demo'}
+                  {isVi ? 'Xem bản mẫu' : 'View Demo'}
                 </button>
               </div>
             </div>
@@ -539,7 +460,7 @@ export default function AdminUsersPage() {
                 <Users className="w-4 h-4 text-indigo-500" />
               </div>
               <div className="text-2xl font-black text-slate-900 dark:text-white">
-                {meta.total || (showDemoPreview ? DEMO_FALLBACK_USERS.length : 0)}
+                {meta.total || users.length}
               </div>
               <div className="text-[11px] text-slate-400 mt-1">{'From API response meta.total'}</div>
             </div>
@@ -550,7 +471,7 @@ export default function AdminUsersPage() {
                 <Shield className="w-4 h-4 text-amber-500" />
               </div>
               <div className="text-2xl font-black text-slate-900 dark:text-white">
-                {filteredUsers.filter((u) => (u.role || '').toLowerCase() === 'admin').length || (showDemoPreview ? 2 : 0)}
+                {filteredUsers.filter((u) => (u.role || '').toLowerCase() === 'admin').length}
               </div>
               <div className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1">{'Full privileged access'}</div>
             </div>
@@ -561,7 +482,7 @@ export default function AdminUsersPage() {
                 <Ban className="w-4 h-4 text-rose-500" />
               </div>
               <div className="text-2xl font-black text-rose-600 dark:text-rose-400">
-                {filteredUsers.filter((u) => (u.status || '').toLowerCase() === 'banned' || (u.status || '').toLowerCase() === 'locked').length || (showDemoPreview ? 1 : 0)}
+                {filteredUsers.filter((u) => (u.status || '').toLowerCase() === 'banned' || (u.status || '').toLowerCase() === 'locked').length}
               </div>
               <div className="text-[11px] text-slate-400 mt-1">{'Login blocked'}</div>
             </div>
@@ -718,7 +639,7 @@ export default function AdminUsersPage() {
                           cursor: 'pointer',
                         }}
                       >
-                        {'Enable Demo Preview'}
+                        {isVi ? 'Xem bản mẫu (Demo)' : 'Enable Demo Preview'}
                       </button>
                     </div>
                   </div>
@@ -772,11 +693,10 @@ export default function AdminUsersPage() {
                             <div className="flex items-center gap-3">
                               <div
                                 style={{ borderRadius: '50%' }}
-                                className={`w-8 h-8 flex items-center justify-center font-bold text-xs uppercase shrink-0 ${
-                                  isAdmin
+                                className={`w-8 h-8 flex items-center justify-center font-bold text-xs uppercase shrink-0 ${isAdmin
                                     ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
                                     : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
-                                }`}
+                                  }`}
                               >
                                 {item.avatar ? (
                                   <img

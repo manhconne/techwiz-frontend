@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './admin.css';
 import { AdminLanguageProvider } from '../../context/AdminLanguageProviderWrapper';
+import { AdminGuard } from '../../components/admin/AdminGuard';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard Overview & Control Center | Fan Hub Plus',
@@ -14,9 +15,11 @@ export default function AdminLayout({
 }) {
   return (
     <div translate="no" className="notranslate">
-      <AdminLanguageProvider>
-        {children}
-      </AdminLanguageProvider>
+      <AdminGuard>
+        <AdminLanguageProvider>
+          {children}
+        </AdminLanguageProvider>
+      </AdminGuard>
     </div>
   );
 }
