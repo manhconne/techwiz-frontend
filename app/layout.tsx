@@ -12,7 +12,9 @@ import { AuthProvider } from '../context/AuthContext';
 import { PlayerProvider } from '../context/PlayerContext';
 import { DomainProvider } from '../context/DomainContext';
 import { GoogleTranslate } from '../components/GoogleTranslate';
+import { Suspense } from 'react';
 import { DomainSelectionModal } from '../components/DomainSelectionModal';
+import { AnalyticsTracker } from '../components/AnalyticsTracker';
 
 const fontOutfit = Outfit({
   subsets: ['latin', 'latin-ext'],
@@ -71,6 +73,9 @@ export default function RootLayout({
       <body className={`${fontSourceSerif.className} antialiased bg-white text-black selection:bg-black selection:text-white`}>
         <GoogleTranslate />
         <AuthProvider>
+          <Suspense fallback={null}>
+            <AnalyticsTracker />
+          </Suspense>
           <DomainProvider>
             <CartWishlistProvider>
               <PlayerProvider>

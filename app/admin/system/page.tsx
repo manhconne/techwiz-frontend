@@ -204,7 +204,7 @@ export default function SystemMonitorPage() {
           }
         }
       `}} />
-      <AdminSidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
+      <AdminSidebar activeTab="system" setActiveTab={() => {}} isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
       
       <main className="flex-1 flex flex-col transition-all duration-300 overflow-hidden">
         <AdminHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} isSidebarOpen={isSidebarOpen} />

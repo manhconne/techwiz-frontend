@@ -332,10 +332,11 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
       headers['Authorization'] = `Bearer ${token}`;
     }
 
+    const analyticsBase = (typeof window !== 'undefined' && (process.env.NEXT_PUBLIC_ANALYTICS_SERVICE_URL || process.env.NEXT_PUBLIC_API_URL)) || 'http://localhost:5015';
     const apiBase = (typeof window !== 'undefined' && (process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || process.env.NEXT_PUBLIC_API_URL)) || '';
     let successCount = 0;
 
-    const overviewEndpoint = `${apiBase}/api/v1/admin/dashboard/overview`;
+    const overviewEndpoint = `${analyticsBase}/api/v1/admin/dashboard/overview`;
     try {
       const res = await fetch(overviewEndpoint, {
         method: 'GET',
