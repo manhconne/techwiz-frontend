@@ -20,6 +20,8 @@ import {
   RotateCcw,
   LifeBuoy,
   Bot,
+  History,
+  Settings,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -51,6 +53,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'refunds', label: isEn ? 'Refund Requests' : 'Xử lý hoàn tiền', icon: RotateCcw, href: '/admin/refunds', badge: null },
     { id: 'chatbot', label: isEn ? 'Chatbot & FAQs' : 'Kho tri thức Chatbot', icon: Bot, href: '/admin/chatbot', badge: null },
     { id: 'feedbacks', label: isEn ? 'Feedback & Support' : 'Ý kiến & Báo lỗi', icon: LifeBuoy, href: '/admin/feedbacks', badge: null },
+    { id: 'audit-logs', label: isEn ? 'Audit Logs' : 'Nhật ký kiểm toán', icon: History, href: '/admin/audit-logs', badge: null },
+    { id: 'settings', label: isEn ? 'System Settings' : 'Cấu hình hệ thống', icon: Settings, href: '/admin/settings', badge: null },
     { id: 'comments', label: isEn ? 'Flagged Comments' : 'Bình luận vi phạm', icon: MessageSquare, href: '/admin/comments', badge: null },
     { id: 'categories', label: isEn ? 'Category Management' : 'Quản lý danh mục', icon: FolderTree, href: '/admin/categories', badge: null },
     { id: 'tags', label: isEn ? 'Tag Management' : 'Quản lý thẻ (Tags)', icon: Tag, href: '/admin/tags', badge: null },

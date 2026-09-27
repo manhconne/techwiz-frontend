@@ -350,7 +350,7 @@ export default function AdminTagsPage() {
   return (
     <div
       translate="no"
-      className="notranslate min-h-screen bg-slate-900 text-slate-100 font-sans flex"
+      className="notranslate min-h-screen bg-slate-50 text-slate-900 font-sans flex"
     >
       {/* Admin Sidebar */}
       <AdminSidebar
@@ -374,20 +374,19 @@ export default function AdminTagsPage() {
           {/* Action Toast Alert Banner */}
           {actionToast && (
             <div
-              style={{ borderRadius: '10px' }}
-              className={`p-3.5 text-xs font-bold flex items-center justify-between gap-3 shadow-lg border ${
+              className={`p-3.5 text-xs font-bold flex items-center justify-between gap-3 shadow-xs rounded-xl border ${
                 actionToast.type === 'success'
-                  ? 'bg-emerald-600 text-white border-emerald-500'
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                   : actionToast.type === 'warning'
-                  ? 'bg-amber-600 text-white border-amber-500'
-                  : 'bg-rose-600 text-white border-rose-500'
+                  ? 'bg-amber-50 text-amber-800 border-amber-200'
+                  : 'bg-rose-50 text-rose-800 border-rose-200'
               }`}
             >
               <div className="flex items-center gap-2">
                 {actionToast.type === 'success' ? (
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
                 ) : (
-                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
                 )}
                 <span>{actionToast.message}</span>
                 {actionToast.details && (
@@ -396,7 +395,7 @@ export default function AdminTagsPage() {
               </div>
               <button
                 onClick={() => setActionToast(null)}
-                className="p-1 hover:bg-black/20 rounded cursor-pointer"
+                className="p-1 hover:bg-black/5 rounded-lg cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -404,20 +403,20 @@ export default function AdminTagsPage() {
           )}
 
           {/* Page Title & Status Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-800">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200">
             <div>
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-violet-600/20 text-violet-400 border border-violet-500/30">
+                <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-xs">
                   <TagIcon className="w-6 h-6" />
                 </div>
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
+                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
                     {isVi ? 'Quản Lý Thẻ (Tags)' : 'Tag Management'}
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30 font-mono">
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-mono">
                       /api/v1/admin/tags
                     </span>
                   </h1>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-xs text-slate-500 mt-0.5">
                     {isVi
                       ? 'Tạo thẻ định danh bài viết, quản lý tần suất sử dụng (used_count) và xóa thẻ không hợp lệ.'
                       : 'Create and organize content tags, track usage counts, and clean up obsolete labels.'}
@@ -433,8 +432,7 @@ export default function AdminTagsPage() {
                   setCreateTagName('');
                   setIsCreateModalOpen(true);
                 }}
-                style={{ borderRadius: '8px' }}
-                className="px-3.5 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-violet-600/20 transition-all cursor-pointer"
+                className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs rounded-xl transition-all cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>{isVi ? 'Tạo thẻ mới' : 'Add Tag'}</span>
@@ -444,11 +442,10 @@ export default function AdminTagsPage() {
               <button
                 onClick={fetchTags}
                 disabled={isLoading}
-                style={{ borderRadius: '8px' }}
-                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                 title="Làm mới danh sách từ API"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-indigo-600' : ''}`} />
                 <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
               </button>
             </div>
@@ -456,47 +453,47 @@ export default function AdminTagsPage() {
 
           {/* Quick Metrics KPI Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-slate-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Tổng số thẻ' : 'Total Tags'}</span>
-                <Layers className="w-4 h-4 text-violet-400" />
+                <Layers className="w-4 h-4 text-indigo-600" />
               </div>
-              <div className="text-2xl font-black text-white">{totalTags}</div>
+              <div className="text-2xl font-black text-slate-900">{totalTags}</div>
               <div className="text-[11px] text-slate-400 mt-1 font-mono">GET /tags?limit=50</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-violet-500/30 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-violet-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-indigo-600 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Tổng lượt gắn thẻ' : 'Total Usages'}</span>
-                <BarChart2 className="w-4 h-4 text-violet-400" />
+                <BarChart2 className="w-4 h-4 text-indigo-600" />
               </div>
-              <div className="text-2xl font-black text-violet-300">{totalUsed}</div>
-              <div className="text-[11px] text-violet-400/80 mt-1">used_count</div>
+              <div className="text-2xl font-black text-slate-900">{totalUsed}</div>
+              <div className="text-[11px] text-slate-400 mt-1">used_count</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-emerald-500/30 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-emerald-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-emerald-600 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Thẻ dùng nhiều nhất' : 'Top Tag'}</span>
-                <TrendingUp className="w-4 h-4 text-emerald-400" />
+                <TrendingUp className="w-4 h-4 text-emerald-500" />
               </div>
-              <div className="text-lg font-black text-emerald-300 truncate">
+              <div className="text-lg font-black text-emerald-600 truncate">
                 #{mostPopularTag?.name || 'N/A'}
               </div>
-              <div className="text-[11px] text-emerald-400/80 mt-1">{maxUsed} lượt sử dụng</div>
+              <div className="text-[11px] text-slate-400 mt-1">{maxUsed} lượt sử dụng</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-indigo-500/30 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-indigo-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Lượt dùng trung bình' : 'Avg per Tag'}</span>
-                <Hash className="w-4 h-4 text-indigo-400" />
+                <Hash className="w-4 h-4 text-indigo-600" />
               </div>
-              <div className="text-2xl font-black text-indigo-300">{avgUsed}</div>
-              <div className="text-[11px] text-indigo-400/80 mt-1">lượt / thẻ</div>
+              <div className="text-2xl font-black text-slate-900">{avgUsed}</div>
+              <div className="text-[11px] text-slate-400 mt-1">lượt / thẻ</div>
             </div>
           </div>
 
           {/* Quick Add Tag Bar */}
-          <div className="p-4 rounded-xl bg-gradient-to-r from-violet-950/40 via-slate-800/60 to-indigo-950/40 border border-violet-700/30">
+          <div className="p-4 rounded-xl bg-indigo-50/60 border border-indigo-100 shadow-xs">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -504,8 +501,8 @@ export default function AdminTagsPage() {
               }}
               className="flex flex-col sm:flex-row items-center gap-3"
             >
-              <div className="flex items-center gap-2 text-xs font-bold text-violet-300 shrink-0">
-                <Sparkles className="w-4 h-4 text-violet-400" />
+              <div className="flex items-center gap-2 text-xs font-bold text-indigo-900 shrink-0">
+                <Sparkles className="w-4 h-4 text-indigo-600" />
                 <span>{isVi ? 'Thêm nhanh thẻ mới:' : 'Quick Add Tag:'}</span>
               </div>
 
@@ -520,14 +517,14 @@ export default function AdminTagsPage() {
                       ? 'Nhập tên thẻ mới (ví dụ: Limited Edition, K-POP, MOBA...)'
                       : 'Enter tag name (e.g., Limited Edition, MOBA)...'
                   }
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+                  className="w-full bg-white border border-slate-300 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs transition-colors"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isQuickAdding || !quickTagName.trim()}
-                className="px-4 py-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 shrink-0 cursor-pointer shadow-sm shadow-violet-600/30"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
               >
                 {isQuickAdding && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                 <Plus className="w-4 h-4" />
@@ -537,7 +534,7 @@ export default function AdminTagsPage() {
           </div>
 
           {/* Search, Sort & View Mode Toolbar */}
-          <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/60 space-y-4">
+          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-4">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="relative flex-1 w-full">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -550,12 +547,12 @@ export default function AdminTagsPage() {
                       ? 'Tìm kiếm theo tên thẻ hoặc mã ID (tag_xxx)...'
                       : 'Search by tag name or ID (tag_xxx)...'
                   }
-                  className="w-full bg-slate-900/90 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs transition-colors"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -564,13 +561,13 @@ export default function AdminTagsPage() {
 
               <div className="flex items-center gap-3">
                 {/* Sort Option */}
-                <div className="flex items-center gap-2 text-xs text-slate-400">
-                  <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
+                <div className="flex items-center gap-2 text-xs text-slate-600">
+                  <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
                   <span>{isVi ? 'Sắp xếp:' : 'Sort:'}</span>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as any)}
-                    className="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                    className="bg-white border border-slate-300 rounded-xl px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-indigo-600 shadow-xs cursor-pointer"
                   >
                     <option value="used_count">{isVi ? 'Lượt dùng nhiều nhất' : 'Most Used'}</option>
                     <option value="name">{isVi ? 'Theo tên (A-Z)' : 'Name (A-Z)'}</option>
@@ -578,11 +575,11 @@ export default function AdminTagsPage() {
                 </div>
 
                 {/* View Switch */}
-                <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-lg border border-slate-700/80 shrink-0">
+                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0">
                   <button
                     onClick={() => setViewMode('grid')}
-                    className={`px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer flex items-center gap-1.5 ${
-                      viewMode === 'grid' ? 'bg-violet-600 text-white' : 'text-slate-400 hover:text-white'
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer flex items-center gap-1.5 transition-all ${
+                      viewMode === 'grid' ? 'bg-white text-indigo-600 shadow-xs' : 'text-slate-500 hover:text-slate-900'
                     }`}
                     title="Dạng thẻ Chip"
                   >
@@ -591,8 +588,8 @@ export default function AdminTagsPage() {
                   </button>
                   <button
                     onClick={() => setViewMode('table')}
-                    className={`px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer flex items-center gap-1.5 ${
-                      viewMode === 'table' ? 'bg-violet-600 text-white' : 'text-slate-400 hover:text-white'
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer flex items-center gap-1.5 transition-all ${
+                      viewMode === 'table' ? 'bg-white text-indigo-600 shadow-xs' : 'text-slate-500 hover:text-slate-900'
                     }`}
                     title="Dạng bảng chi tiết"
                   >
@@ -606,24 +603,24 @@ export default function AdminTagsPage() {
 
           {/* Content View */}
           {isLoading ? (
-            <div className="p-12 text-center bg-slate-800/40 rounded-xl border border-slate-700/60">
-              <RefreshCw className="w-8 h-8 text-violet-400 animate-spin mx-auto mb-3" />
-              <p className="text-sm font-semibold text-slate-300">
+            <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
+              <p className="text-sm font-semibold text-slate-700">
                 {isVi ? 'Đang tải danh sách thẻ từ /api/v1/admin/tags...' : 'Fetching tags...'}
               </p>
             </div>
           ) : displayedTags.length === 0 ? (
-            <div className="p-12 text-center bg-slate-800/40 rounded-xl border border-slate-700/60">
-              <TagIcon className="w-12 h-12 text-slate-500 mx-auto mb-3" />
-              <h3 className="text-base font-bold text-white mb-1">
+            <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">
+              <TagIcon className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+              <h3 className="text-base font-bold text-slate-900 mb-1">
                 {isVi ? 'Không tìm thấy thẻ nào' : 'No tags found'}
               </h3>
-              <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
+              <p className="text-xs text-slate-500 max-w-md mx-auto mb-4">
                 {isVi ? 'Chưa có thẻ nào phù hợp với từ khóa tìm kiếm.' : 'No tags matching your query.'}
               </p>
               <button
                 onClick={() => setSearchQuery('')}
-                className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded-lg cursor-pointer transition-colors"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-xs transition-colors"
               >
                 {isVi ? 'Xóa tìm kiếm' : 'Clear Search'}
               </button>
@@ -634,26 +631,26 @@ export default function AdminTagsPage() {
               {displayedTags.map((tag) => (
                 <div
                   key={tag.id}
-                  className="p-4 rounded-xl bg-slate-800/60 border border-slate-700/70 hover:border-violet-500/50 transition-all flex flex-col justify-between space-y-3 group"
+                  className="p-4 rounded-xl bg-white border border-slate-200/80 hover:border-indigo-300 shadow-xs transition-all flex flex-col justify-between space-y-3 group"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <div className="p-2 rounded-lg bg-violet-500/15 text-violet-300 border border-violet-500/25">
+                      <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-xs">
                         <Hash className="w-4 h-4" />
                       </div>
                       <div>
-                        <div className="font-bold text-white text-sm group-hover:text-violet-300 transition-colors">
+                        <div className="font-bold text-slate-900 text-sm group-hover:text-indigo-600 transition-colors">
                           {tag.name}
                         </div>
-                        <div className="flex items-center gap-1 font-mono text-[10px] text-slate-500 mt-0.5">
+                        <div className="flex items-center gap-1 font-mono text-[10px] text-slate-400 mt-0.5">
                           <span>{tag.id}</span>
                           <button
                             onClick={() => handleCopyId(tag.id)}
-                            className="hover:text-slate-300 p-0.5"
+                            className="hover:text-slate-600 p-0.5"
                             title="Sao chép ID"
                           >
                             {copiedId === tag.id ? (
-                              <Check className="w-3 h-3 text-emerald-400" />
+                              <Check className="w-3 h-3 text-emerald-600" />
                             ) : (
                               <Copy className="w-3 h-3" />
                             )}
@@ -664,7 +661,7 @@ export default function AdminTagsPage() {
 
                     <button
                       onClick={() => setDeleteItem(tag)}
-                      className="p-1 rounded text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                      className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                       title={isVi ? 'Xóa thẻ (DELETE /{id})' : 'Delete Tag'}
                     >
                       <Trash2 className="w-4 h-4" />
@@ -673,13 +670,13 @@ export default function AdminTagsPage() {
 
                   {/* Popularity bar */}
                   <div>
-                    <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+                    <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
                       <span>{isVi ? 'Tần suất sử dụng:' : 'Usage:'}</span>
-                      <span className="font-bold text-violet-300 font-mono">{tag.used_count || 0} bài</span>
+                      <span className="font-bold text-indigo-600 font-mono">{tag.used_count || 0} bài</span>
                     </div>
-                    <div className="w-full h-1.5 rounded-full bg-slate-700/70 overflow-hidden">
+                    <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-500"
+                        className="h-full rounded-full bg-indigo-600"
                         style={{
                           width: `${maxUsed > 0 ? Math.min(100, ((tag.used_count || 0) / maxUsed) * 100) : 0}%`,
                         }}
@@ -691,10 +688,10 @@ export default function AdminTagsPage() {
             </div>
           ) : (
             /* 2. TABLE VIEW */
-            <div className="overflow-x-auto rounded-xl border border-slate-700/70 bg-slate-800/40 backdrop-blur-sm">
+            <div className="overflow-x-auto rounded-xl border border-slate-200/80 bg-white shadow-xs">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-700/80 bg-slate-900/60 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
+                  <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
                     <th className="py-3 px-4">Mã Thẻ (ID)</th>
                     <th className="py-3 px-4">{isVi ? 'Tên thẻ (Tag Name)' : 'Tag Name'}</th>
                     <th className="py-3 px-4">{isVi ? 'Số lần sử dụng (used_count)' : 'Used Count'}</th>
@@ -702,41 +699,41 @@ export default function AdminTagsPage() {
                     <th className="py-3 px-4 text-right">{isVi ? 'Thao tác' : 'Actions'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800">
+                <tbody className="divide-y divide-slate-100">
                   {displayedTags.map((tag) => (
-                    <tr key={tag.id} className="hover:bg-slate-700/30 transition-colors group">
+                    <tr key={tag.id} className="hover:bg-slate-50/80 transition-colors group text-slate-800">
                       {/* ID with Copy */}
                       <td className="py-3 px-4 whitespace-nowrap">
-                        <div className="flex items-center gap-1.5 font-mono text-indigo-400 font-bold">
+                        <div className="flex items-center gap-1.5 font-mono text-indigo-600 font-bold">
                           <span>{tag.id}</span>
                           <button
                             onClick={() => handleCopyId(tag.id)}
-                            className="text-slate-500 hover:text-indigo-300 p-1 rounded transition-colors cursor-pointer"
+                            className="text-slate-400 hover:text-indigo-600 p-1 rounded transition-colors cursor-pointer"
                             title="Sao chép ID"
                           >
-                            {copiedId === tag.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                            {copiedId === tag.id ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                           </button>
                         </div>
                       </td>
 
                       {/* Name */}
                       <td className="py-3 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-violet-500/15 text-violet-300 border border-violet-500/30 font-bold">
-                          <Hash className="w-3.5 h-3.5 text-violet-400" />
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold">
+                          <Hash className="w-3.5 h-3.5 text-indigo-600" />
                           <span>{tag.name}</span>
                         </span>
                       </td>
 
                       {/* Used Count */}
-                      <td className="py-3 px-4 whitespace-nowrap font-mono text-white font-bold">
+                      <td className="py-3 px-4 whitespace-nowrap font-mono text-slate-900 font-bold">
                         {tag.used_count || 0} bài viết
                       </td>
 
                       {/* Popularity bar */}
                       <td className="py-3 px-4 whitespace-nowrap">
-                        <div className="w-36 h-2 rounded-full bg-slate-700/70 overflow-hidden">
+                        <div className="w-36 h-2 rounded-full bg-slate-100 overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-500"
+                            className="h-full rounded-full bg-indigo-600"
                             style={{
                               width: `${maxUsed > 0 ? Math.min(100, ((tag.used_count || 0) / maxUsed) * 100) : 0}%`,
                             }}
@@ -749,7 +746,7 @@ export default function AdminTagsPage() {
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => setDeleteItem(tag)}
-                            className="p-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 transition-colors cursor-pointer"
+                            className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-colors cursor-pointer"
                             title="Xóa thẻ (DELETE /{id})"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -767,18 +764,18 @@ export default function AdminTagsPage() {
 
       {/* CREATE MODAL: POST /api/v1/admin/tags */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-800/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <TagIcon className="w-5 h-5 text-violet-400" />
-                <h3 className="font-bold text-white text-base">
+                <TagIcon className="w-5 h-5 text-indigo-600" />
+                <h3 className="font-bold text-slate-900 text-base">
                   {isVi ? 'Tạo Thẻ Mới (POST /tags)' : 'Create Tag'}
                 </h3>
               </div>
               <button
                 onClick={() => setIsCreateModalOpen(false)}
-                className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -792,7 +789,7 @@ export default function AdminTagsPage() {
               className="p-6 space-y-4 text-xs"
             >
               <div>
-                <label className="text-slate-300 font-bold block mb-1">
+                <label className="text-slate-700 font-bold block mb-1">
                   {isVi ? 'Tên thẻ định danh (name) *' : 'Tag Name *'}
                 </label>
                 <div className="relative">
@@ -803,32 +800,32 @@ export default function AdminTagsPage() {
                     value={createTagName}
                     onChange={(e) => setCreateTagName(e.target.value)}
                     placeholder="Ví dụ: Limited Edition, MOBA, Presale..."
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-violet-500 placeholder-slate-500"
+                    className="w-full bg-white border border-slate-300 rounded-xl pl-9 pr-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 placeholder-slate-400 shadow-xs"
                   />
                 </div>
               </div>
 
               {createTagName && (
-                <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700 flex items-center gap-2">
-                  <span className="text-slate-400">Xem trước:</span>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 font-bold border border-violet-500/30">
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-2">
+                  <span className="text-slate-500">Xem trước:</span>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-bold border border-indigo-200">
                     #{createTagName.trim()}
                   </span>
                 </div>
               )}
 
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-end gap-2">
+              <div className="pt-2 border-t border-slate-200 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg text-xs cursor-pointer transition-colors"
+                  className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold rounded-xl text-xs cursor-pointer shadow-xs transition-colors"
                 >
                   {isVi ? 'Hủy' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingCreate}
-                  className="px-5 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold rounded-lg text-xs cursor-pointer transition-all flex items-center gap-1.5 shadow-md shadow-violet-600/20"
+                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs cursor-pointer transition-all flex items-center gap-1.5 shadow-xs"
                 >
                   {isSubmittingCreate && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isVi ? 'Tạo thẻ mới' : 'Submit'}</span>
@@ -841,17 +838,17 @@ export default function AdminTagsPage() {
 
       {/* DELETE CONFIRMATION MODAL: DELETE /api/v1/admin/tags/{id} */}
       {deleteItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 text-xs text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto border border-rose-500/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-sm bg-white border border-slate-200 rounded-2xl shadow-xl p-6 text-xs text-center space-y-4 text-slate-900">
+            <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
               <Trash2 className="w-6 h-6" />
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-slate-900">
                 {isVi ? 'Xác nhận xóa thẻ?' : 'Delete Tag?'}
               </h3>
-              <p className="text-slate-400 mt-1">
+              <p className="text-slate-600 mt-1">
                 {isVi
                   ? `Bạn có chắc chắn muốn xóa thẻ "#${deleteItem.name}" (${deleteItem.id}) với ${deleteItem.used_count || 0} bài viết đang gắn thẻ này?`
                   : `Are you sure you want to delete tag #${deleteItem.name}?`}
@@ -861,14 +858,14 @@ export default function AdminTagsPage() {
             <div className="flex items-center justify-center gap-2 pt-2">
               <button
                 onClick={() => setDeleteItem(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg cursor-pointer"
+                className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold rounded-xl cursor-pointer shadow-xs transition-colors"
               >
                 {isVi ? 'Hủy bỏ' : 'Cancel'}
               </button>
               <button
                 onClick={handleDeleteSubmit}
                 disabled={isSubmittingDelete}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs transition-colors"
               >
                 {isSubmittingDelete && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                 <span>{isVi ? 'Xác nhận xóa' : 'Confirm Delete'}</span>

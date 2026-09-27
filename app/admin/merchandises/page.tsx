@@ -512,7 +512,7 @@ export default function AdminMerchandisesPage() {
   }, [merchandises]);
 
   return (
-    <div className="flex h-screen bg-[#0b0f17] text-slate-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-slate-50 text-slate-900 overflow-hidden font-sans">
       {/* SIDEBAR */}
       <AdminSidebar
         activeTab="merchandises"
@@ -533,22 +533,22 @@ export default function AdminMerchandisesPage() {
         />
 
         {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-800 bg-[#0f172a]/60 px-6 py-4 backdrop-blur-md">
+        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
-                <Link href="/admin" className="hover:text-amber-400 transition-colors">Admin</Link>
+              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-amber-400 font-medium">
+                <span className="text-indigo-600 font-medium">
                   {isVi ? 'Quản lý Vật phẩm (Merchandises)' : 'Merchandise Inventory'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
                   <Store className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Quản lý Sản phẩm & Vật phẩm Store' : 'Merchandise Management'}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
                   {totalItems} {isVi ? 'vật phẩm' : 'items'}
                 </span>
               </h1>
@@ -558,16 +558,16 @@ export default function AdminMerchandisesPage() {
               <button
                 onClick={() => fetchMerchandises(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
                 title={isVi ? 'Làm mới' : 'Refresh'}
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-amber-400' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
                 <span className="hidden sm:inline">{isVi ? 'Làm mới' : 'Refresh'}</span>
               </button>
 
               <button
                 onClick={() => setIsCreateOpen(true)}
-                className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-amber-500/20 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
               >
                 <Plus className="w-4 h-4 stroke-[2.5]" />
                 <span>{isVi ? 'Thêm vật phẩm mới' : 'Add Merchandise'}</span>
@@ -578,24 +578,24 @@ export default function AdminMerchandisesPage() {
 
         {/* NOTIFICATIONS */}
         {apiSuccess && (
-          <div className="mx-6 mt-4 p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-xs flex items-center justify-between shadow-lg shadow-emerald-500/5 animate-in fade-in">
+          <div className="mx-6 mt-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-xs flex items-center justify-between shadow-xs animate-in fade-in">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
               <span>{apiSuccess}</span>
             </div>
-            <button onClick={() => setApiSuccess(null)} className="p-1 hover:bg-emerald-500/20 rounded-md">
+            <button onClick={() => setApiSuccess(null)} className="p-1 hover:bg-emerald-100 rounded-md text-emerald-600">
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
 
         {apiError && (
-          <div className="mx-6 mt-4 p-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-xs flex items-center justify-between shadow-lg shadow-rose-500/5 animate-in fade-in">
+          <div className="mx-6 mt-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center justify-between shadow-xs animate-in fade-in">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
               <span>{apiError}</span>
             </div>
-            <button onClick={() => setApiError(null)} className="p-1 hover:bg-rose-500/20 rounded-md">
+            <button onClick={() => setApiError(null)} className="p-1 hover:bg-rose-100 rounded-md text-rose-600">
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -605,23 +605,23 @@ export default function AdminMerchandisesPage() {
         <div className="p-6 space-y-6">
           {/* STATS KPI CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Tổng sản phẩm' : 'Total Items'}</span>
-                <Package className="w-4 h-4 text-amber-400" />
+                <Package className="w-4 h-4 text-indigo-600" />
               </div>
-              <div className="text-2xl font-black text-white">{totalItems}</div>
+              <div className="text-2xl font-black text-slate-900">{totalItems}</div>
               <div className="text-[11px] text-slate-500 mt-1">
                 {isVi ? 'Đang quản lý trong kho' : 'Active merchandise SKUs'}
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Tổng giá trị hàng' : 'Catalog Value'}</span>
-                <DollarSign className="w-4 h-4 text-emerald-400" />
+                <DollarSign className="w-4 h-4 text-emerald-600" />
               </div>
-              <div className="text-xl font-black text-emerald-400 truncate">
+              <div className="text-xl font-black text-emerald-600 truncate">
                 {formatCurrency(totalValue)}
               </div>
               <div className="text-[11px] text-slate-500 mt-1">
@@ -629,12 +629,12 @@ export default function AdminMerchandisesPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Đơn giá trung bình' : 'Average Price'}</span>
-                <Sparkles className="w-4 h-4 text-cyan-400" />
+                <Sparkles className="w-4 h-4 text-blue-600" />
               </div>
-              <div className="text-xl font-black text-white">
+              <div className="text-xl font-black text-slate-900">
                 {formatCurrency(avgPrice)}
               </div>
               <div className="text-[11px] text-slate-500 mt-1">
@@ -642,12 +642,12 @@ export default function AdminMerchandisesPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-md">
-              <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Danh mục phân loại' : 'Categories Covered'}</span>
-                <FolderTree className="w-4 h-4 text-purple-400" />
+                <FolderTree className="w-4 h-4 text-purple-600" />
               </div>
-              <div className="text-2xl font-black text-white">{categoriesCount}</div>
+              <div className="text-2xl font-black text-slate-900">{categoriesCount}</div>
               <div className="text-[11px] text-slate-500 mt-1">
                 {isVi ? 'Anime, Game, K-Pop, etc.' : 'Active categories'}
               </div>
@@ -655,7 +655,7 @@ export default function AdminMerchandisesPage() {
           </div>
 
           {/* SEARCH, FILTER & SORT BAR */}
-          <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 shadow-lg space-y-3">
+          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
               {/* Search input */}
               <div className="relative flex-1">
@@ -672,7 +672,7 @@ export default function AdminMerchandisesPage() {
                       ? 'Tìm kiếm vật phẩm theo tên, thẻ hoặc mô tả (vd: goku, figure, áo hoodie...)...'
                       : 'Search merchandise by name, tag or description...'
                   }
-                  className="w-full pl-9 pr-8 py-2 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
+                  className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all shadow-xs"
                 />
                 {searchTerm && (
                   <button
@@ -680,7 +680,7 @@ export default function AdminMerchandisesPage() {
                       setSearchTerm('');
                       setPage(1);
                     }}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -696,7 +696,7 @@ export default function AdminMerchandisesPage() {
                       setSelectedCategoryId(e.target.value);
                       setPage(1);
                     }}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-amber-400 cursor-pointer appearance-none"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-indigo-600 cursor-pointer appearance-none shadow-xs"
                   >
                     <option value="">{isVi ? 'Tất cả danh mục' : 'All Categories'}</option>
                     {categories.map((cat) => (
@@ -713,7 +713,7 @@ export default function AdminMerchandisesPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as any)}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-amber-400 cursor-pointer appearance-none"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-indigo-600 cursor-pointer appearance-none shadow-xs"
                   >
                     <option value="default">{isVi ? 'Sắp xếp: Mặc định' : 'Sort: Default'}</option>
                     <option value="price-asc">{isVi ? 'Giá: Thấp đến cao' : 'Price: Low to High'}</option>
@@ -723,13 +723,13 @@ export default function AdminMerchandisesPage() {
                 </div>
 
                 {/* View Mode Toggle */}
-                <div className="flex items-center bg-slate-900 border border-slate-700/80 rounded-xl p-0.5">
+                <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl p-0.5 shadow-xs">
                   <button
                     onClick={() => setViewMode('grid')}
                     className={`p-1.5 rounded-lg text-xs transition-colors ${
                       viewMode === 'grid'
-                        ? 'bg-amber-500/20 text-amber-400 font-semibold'
-                        : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-white text-indigo-600 font-semibold shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800'
                     }`}
                     title={isVi ? 'Xem dạng lưới card' : 'Grid View'}
                   >
@@ -739,8 +739,8 @@ export default function AdminMerchandisesPage() {
                     onClick={() => setViewMode('table')}
                     className={`p-1.5 rounded-lg text-xs transition-colors ${
                       viewMode === 'table'
-                        ? 'bg-amber-500/20 text-amber-400 font-semibold'
-                        : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-white text-indigo-600 font-semibold shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800'
                     }`}
                     title={isVi ? 'Xem dạng bảng' : 'Table View'}
                   >
@@ -759,8 +759,8 @@ export default function AdminMerchandisesPage() {
                 onClick={() => setSelectedCategoryId('')}
                 className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer shrink-0 ${
                   selectedCategoryId === ''
-                    ? 'bg-amber-500/15 border-amber-500/30 text-amber-400 font-semibold'
-                    : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200'
+                    ? 'bg-indigo-600 border-indigo-600 text-white font-semibold shadow-xs'
+                    : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
                 }`}
               >
                 {isVi ? 'Tất cả' : 'All'}
@@ -771,8 +771,8 @@ export default function AdminMerchandisesPage() {
                   onClick={() => setSelectedCategoryId(c.id === selectedCategoryId ? '' : c.id)}
                   className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer shrink-0 ${
                     selectedCategoryId === c.id
-                      ? 'bg-amber-500/15 border-amber-500/30 text-amber-400 font-semibold'
-                      : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200'
+                      ? 'bg-indigo-600 border-indigo-600 text-white font-semibold shadow-xs'
+                      : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
                   }`}
                 >
                   {c.name}
@@ -783,26 +783,26 @@ export default function AdminMerchandisesPage() {
 
           {/* MAIN MERCHANDISE DISPLAY */}
           {loading ? (
-            <div className="p-12 text-center rounded-2xl bg-[#0f172a] border border-slate-800">
-              <RefreshCw className="w-8 h-8 animate-spin text-amber-400 mx-auto mb-3" />
-              <p className="text-xs text-slate-400">{isVi ? 'Đang tải danh sách vật phẩm...' : 'Loading merchandise items...'}</p>
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
+              <p className="text-xs text-slate-500">{isVi ? 'Đang tải danh sách vật phẩm...' : 'Loading merchandise items...'}</p>
             </div>
           ) : sortedMerchandises.length === 0 ? (
-            <div className="p-12 text-center rounded-2xl bg-[#0f172a] border border-slate-800 space-y-3">
-              <div className="w-12 h-12 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
+              <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
                 <Store className="w-6 h-6" />
               </div>
-              <h3 className="text-sm font-bold text-white">
+              <h3 className="text-sm font-bold text-slate-900">
                 {isVi ? 'Không tìm thấy vật phẩm nào' : 'No merchandise items found'}
               </h3>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto">
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
                 {searchTerm || selectedCategoryId
                   ? (isVi ? 'Thử đổi từ khóa tìm kiếm hoặc bỏ bộ lọc danh mục.' : 'Try changing search keywords or clearing category filter.')
                   : (isVi ? 'Chưa có vật phẩm nào trong kho. Hãy bấm "Thêm vật phẩm mới" để bắt đầu.' : 'No items yet. Click "Add Merchandise" to get started.')}
               </p>
               <button
                 onClick={() => setIsCreateOpen(true)}
-                className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl cursor-pointer"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer"
               >
                 {isVi ? 'Thêm vật phẩm ngay' : 'Add Item Now'}
               </button>
@@ -814,11 +814,11 @@ export default function AdminMerchandisesPage() {
                 <div
                   key={item.id}
                   onClick={() => setDetailItem(item)}
-                  className="group relative bg-[#0f172a] hover:bg-slate-850/80 border border-slate-800 hover:border-slate-700/80 rounded-2xl overflow-hidden transition-all duration-200 hover:shadow-xl hover:shadow-black/40 cursor-pointer flex flex-col justify-between"
+                  className="group relative bg-white hover:bg-slate-50/50 border border-slate-200/80 hover:border-slate-300 rounded-2xl overflow-hidden transition-all duration-200 shadow-xs hover:shadow-md cursor-pointer flex flex-col justify-between"
                 >
                   <div>
                     {/* Top Image Banner */}
-                    <div className="relative h-48 w-full bg-slate-950 overflow-hidden">
+                    <div className="relative h-48 w-full bg-slate-100 overflow-hidden">
                       {item.image_url ? (
                         <img
                           src={item.image_url}
@@ -829,31 +829,31 @@ export default function AdminMerchandisesPage() {
                           }}
                         />
                       ) : null}
-                      <div className="w-full h-full flex items-center justify-center text-slate-600 bg-slate-900">
+                      <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100">
                         <Package className="w-12 h-12" />
                       </div>
 
                       {/* Tag Badge */}
                       {item.tag && (
-                        <div className="absolute top-3 left-3 px-2 py-0.5 rounded-md bg-amber-500/90 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-md backdrop-blur-xs">
+                        <div className="absolute top-3 left-3 px-2 py-0.5 rounded-md bg-indigo-600 text-white font-black text-[10px] uppercase tracking-wider shadow-xs backdrop-blur-xs">
                           {item.tag}
                         </div>
                       )}
 
                       {/* Category Badge */}
-                      <div className="absolute top-3 right-3 px-2 py-0.5 rounded-md bg-slate-900/80 border border-slate-700 text-slate-300 font-semibold text-[10px] backdrop-blur-xs">
+                      <div className="absolute top-3 right-3 px-2 py-0.5 rounded-md bg-white/90 border border-slate-200 text-slate-700 font-semibold text-[10px] shadow-xs backdrop-blur-xs">
                         {item.category || item.category_id || 'Anime'}
                       </div>
 
                       {/* Price Banner */}
-                      <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent p-3 pt-6 flex items-end justify-between">
-                        <div className="text-base font-black text-amber-400 drop-shadow">
+                      <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-transparent p-3 pt-6 flex items-end justify-between">
+                        <div className="text-base font-black text-white drop-shadow">
                           {formatCurrency(item.price)}
                         </div>
 
                         <button
                           onClick={(e) => handleCopyId(item.id, e)}
-                          className="text-[10px] text-slate-400 hover:text-white flex items-center gap-1 font-mono px-1.5 py-0.5 rounded bg-slate-900/80 border border-slate-800 backdrop-blur-xs"
+                          className="text-[10px] text-white/90 hover:text-white flex items-center gap-1 font-mono px-1.5 py-0.5 rounded bg-black/40 border border-white/20 backdrop-blur-xs"
                           title={isVi ? 'Sao chép ID' : 'Copy ID'}
                         >
                           {copiedId === item.id ? (
@@ -868,27 +868,27 @@ export default function AdminMerchandisesPage() {
 
                     {/* Content */}
                     <div className="p-4 space-y-2">
-                      <h3 className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors line-clamp-1">
+                      <h3 className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
                         {item.name}
                       </h3>
 
-                      <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                         {item.description || (isVi ? 'Chưa có mô tả chi tiết cho vật phẩm này.' : 'No description provided.')}
                       </p>
                     </div>
                   </div>
 
                   {/* Actions Footer */}
-                  <div className="px-4 pb-4 pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                  <div className="px-4 pb-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
                     <span className="text-[11px] text-slate-500 flex items-center gap-1">
-                      <Boxes className="w-3.5 h-3.5 text-amber-400/80" />
+                      <Boxes className="w-3.5 h-3.5 text-indigo-500" />
                       <span>{isVi ? 'Sẵn sàng giao dịch' : 'In Stock'}</span>
                     </span>
 
                     <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => setDetailItem(item)}
-                        className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                         title={isVi ? 'Xem chi tiết' : 'View details'}
                       >
                         <Eye className="w-3.5 h-3.5" />
@@ -897,7 +897,7 @@ export default function AdminMerchandisesPage() {
                       {/* EDIT: PUT /api/v1/admin/merchandises/{id} */}
                       <button
                         onClick={(e) => openEditModal(item, e)}
-                        className="p-1.5 text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
                         title={isVi ? 'Chỉnh sửa' : 'Edit item'}
                       >
                         <Pencil className="w-3.5 h-3.5" />
@@ -909,7 +909,7 @@ export default function AdminMerchandisesPage() {
                           e.stopPropagation();
                           setDeleteItem(item);
                         }}
-                        className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                         title={isVi ? 'Xóa vật phẩm' : 'Delete item'}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -921,10 +921,10 @@ export default function AdminMerchandisesPage() {
             </div>
           ) : (
             /* TABLE VIEW */
-            <div className="rounded-2xl bg-[#0f172a] border border-slate-800 overflow-hidden shadow-lg">
+            <div className="rounded-xl bg-white border border-slate-200/80 overflow-hidden shadow-xs">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-900/80 text-slate-400 font-semibold border-b border-slate-800">
+                  <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
                     <tr>
                       <th className="px-4 py-3 w-16">{isVi ? 'Ảnh' : 'Image'}</th>
                       <th className="px-4 py-3">{isVi ? 'Tên vật phẩm' : 'Item Name'}</th>
@@ -935,15 +935,15 @@ export default function AdminMerchandisesPage() {
                       <th className="px-4 py-3 text-right">{isVi ? 'Thao tác' : 'Actions'}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60">
+                  <tbody className="divide-y divide-slate-100">
                     {sortedMerchandises.map((item) => (
                       <tr
                         key={item.id}
                         onClick={() => setDetailItem(item)}
-                        className="hover:bg-slate-850/60 transition-colors cursor-pointer"
+                        className="hover:bg-slate-50/80 transition-colors cursor-pointer text-slate-800"
                       >
                         <td className="px-4 py-3">
-                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-800 border border-slate-700/60 shrink-0">
+                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
                             {item.image_url ? (
                               <img
                                 src={item.image_url}
@@ -951,7 +951,7 @@ export default function AdminMerchandisesPage() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-slate-500">
+                              <div className="w-full h-full flex items-center justify-center text-slate-400">
                                 <Package className="w-5 h-5" />
                               </div>
                             )}
@@ -959,44 +959,44 @@ export default function AdminMerchandisesPage() {
                         </td>
 
                         <td className="px-4 py-3">
-                          <div className="font-bold text-white hover:text-amber-400 transition-colors">
+                          <div className="font-bold text-slate-900 hover:text-indigo-600 transition-colors">
                             {item.name}
                           </div>
                           <button
                             onClick={(e) => handleCopyId(item.id, e)}
-                            className="text-[10px] text-slate-500 hover:text-slate-300 font-mono flex items-center gap-1 mt-0.5"
+                            className="text-[10px] text-slate-400 hover:text-slate-600 font-mono flex items-center gap-1 mt-0.5"
                           >
                             <span>{item.id}</span>
                             {copiedId === item.id ? (
-                              <Check className="w-2.5 h-2.5 text-emerald-400" />
+                              <Check className="w-2.5 h-2.5 text-emerald-600" />
                             ) : (
                               <Copy className="w-2.5 h-2.5" />
                             )}
                           </button>
                         </td>
 
-                        <td className="px-4 py-3 font-mono font-bold text-amber-400 whitespace-nowrap">
+                        <td className="px-4 py-3 font-mono font-bold text-indigo-600 whitespace-nowrap">
                           {formatCurrency(item.price)}
                         </td>
 
                         <td className="px-4 py-3">
-                          <span className="px-2 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-slate-300 font-medium">
+                          <span className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-700 font-medium">
                             {item.category || item.category_id || 'Anime'}
                           </span>
                         </td>
 
                         <td className="px-4 py-3">
                           {item.tag ? (
-                            <span className="px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 font-bold text-[10px]">
+                            <span className="px-2 py-0.5 rounded-md bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold text-[10px]">
                               {item.tag}
                             </span>
                           ) : (
-                            <span className="text-slate-600">—</span>
+                            <span className="text-slate-400">—</span>
                           )}
                         </td>
 
                         <td className="px-4 py-3 max-w-xs">
-                          <div className="text-slate-400 truncate">
+                          <div className="text-slate-600 truncate">
                             {item.description || (isVi ? 'Chưa có mô tả' : 'No description')}
                           </div>
                         </td>
@@ -1005,14 +1005,14 @@ export default function AdminMerchandisesPage() {
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => setDetailItem(item)}
-                              className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg cursor-pointer"
+                              className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg cursor-pointer"
                               title={isVi ? 'Xem chi tiết' : 'View'}
                             >
                               <Eye className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={(e) => openEditModal(item, e)}
-                              className="p-1.5 text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg cursor-pointer"
+                              className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg cursor-pointer"
                               title={isVi ? 'Sửa' : 'Edit'}
                             >
                               <Pencil className="w-3.5 h-3.5" />
@@ -1022,7 +1022,7 @@ export default function AdminMerchandisesPage() {
                                 e.stopPropagation();
                                 setDeleteItem(item);
                               }}
-                              className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg cursor-pointer"
+                              className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer"
                               title={isVi ? 'Xóa' : 'Delete'}
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -1038,7 +1038,7 @@ export default function AdminMerchandisesPage() {
           )}
 
           {/* PAGINATION BAR */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 pt-2">
             <div>
               {isVi
                 ? `Hiển thị ${sortedMerchandises.length} vật phẩm (Trang ${page})`
@@ -1049,20 +1049,20 @@ export default function AdminMerchandisesPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1 || loading}
-                className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1"
+                className="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 <span>{isVi ? 'Trang trước' : 'Previous'}</span>
               </button>
 
-              <span className="px-3 py-1.5 bg-slate-800 text-white rounded-xl font-bold">
+              <span className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl font-bold shadow-xs">
                 {page}
               </span>
 
               <button
                 onClick={() => setPage((p) => p + 1)}
                 disabled={sortedMerchandises.length < limit || loading}
-                className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1"
+                className="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs"
               >
                 <span>{isVi ? 'Trang sau' : 'Next'}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -1074,23 +1074,23 @@ export default function AdminMerchandisesPage() {
 
       {/* CREATE MODAL: POST /api/v1/admin/merchandises */}
       {isCreateOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-xl bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                <div className="p-2 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-600">
                   <Store className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-slate-900">
                     {isVi ? 'Thêm Vật phẩm mới' : 'Add New Merchandise'}
                   </h3>
-                  <p className="text-[11px] text-slate-400">POST /api/v1/admin/merchandises</p>
+                  <p className="text-[11px] text-slate-500 font-mono">POST /api/v1/admin/merchandises</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsCreateOpen(false)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1099,7 +1099,7 @@ export default function AdminMerchandisesPage() {
             <form onSubmit={handleCreateSubmit} className="p-6 space-y-4 overflow-y-auto text-xs">
               {/* Item Name */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Tên vật phẩm *' : 'Item Name *'}
                 </label>
                 <input
@@ -1108,20 +1108,20 @@ export default function AdminMerchandisesPage() {
                   value={createForm.name}
                   onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
                   placeholder={isVi ? 'Ví dụ: Figure Goku Ultra Instinct...' : 'e.g. Figure Goku Ultra Instinct...'}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 />
               </div>
 
               {/* Category ID & Price Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">
+                  <label className="block text-slate-700 font-semibold mb-1">
                     {isVi ? 'Danh mục (category_id)' : 'Category (category_id)'}
                   </label>
                   <select
                     value={createForm.category_id}
                     onChange={(e) => setCreateForm({ ...createForm, category_id: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                   >
                     <option value="">{isVi ? '-- Chọn danh mục --' : '-- Select Category --'}</option>
                     {categories.map((c) => (
@@ -1133,7 +1133,7 @@ export default function AdminMerchandisesPage() {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">
+                  <label className="block text-slate-700 font-semibold mb-1">
                     {isVi ? 'Đơn giá (VND) *' : 'Price (VND) *'}
                   </label>
                   <input
@@ -1144,10 +1144,10 @@ export default function AdminMerchandisesPage() {
                     value={createForm.price}
                     onChange={(e) => setCreateForm({ ...createForm, price: e.target.value })}
                     placeholder="1200000"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400 font-mono"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 font-mono shadow-xs"
                   />
                   {createForm.price && (
-                    <div className="text-[11px] text-amber-400 font-mono mt-1">
+                    <div className="text-[11px] text-indigo-600 font-mono font-semibold mt-1">
                       {formatCurrency(createForm.price)}
                     </div>
                   )}
@@ -1156,7 +1156,7 @@ export default function AdminMerchandisesPage() {
 
               {/* Image URL */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Đường dẫn ảnh sản phẩm (image_url)' : 'Image URL (image_url)'}
                 </label>
                 <div className="flex gap-3 items-center">
@@ -1165,10 +1165,10 @@ export default function AdminMerchandisesPage() {
                     value={createForm.image_url}
                     onChange={(e) => setCreateForm({ ...createForm, image_url: e.target.value })}
                     placeholder="https://images.unsplash.com/..."
-                    className="flex-1 px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                    className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                   />
                   {createForm.image_url && (
-                    <div className="w-12 h-12 rounded-xl overflow-hidden border border-slate-700 bg-slate-800 shrink-0">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shrink-0">
                       <img
                         src={createForm.image_url}
                         alt="Preview"
@@ -1182,7 +1182,7 @@ export default function AdminMerchandisesPage() {
 
               {/* Description */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Mô tả chi tiết (description)' : 'Description (description)'}
                 </label>
                 <textarea
@@ -1194,22 +1194,22 @@ export default function AdminMerchandisesPage() {
                       ? 'Tỷ lệ mô hình, chất liệu, kích thước, phụ kiện đi kèm...'
                       : 'Scale, material, specifications, packaging...'
                   }
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 />
               </div>
 
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2 bg-slate-50/50 -mx-6 -mb-6 px-6 py-4">
                 <button
                   type="button"
                   onClick={() => setIsCreateOpen(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold rounded-xl cursor-pointer shadow-xs"
                 >
                   {isVi ? 'Hủy' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingCreate}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
                 >
                   {isSubmittingCreate && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isVi ? 'Thêm vật phẩm' : 'Save Merchandise'}</span>
@@ -1222,25 +1222,25 @@ export default function AdminMerchandisesPage() {
 
       {/* EDIT MODAL: PUT /api/v1/admin/merchandises/{id} */}
       {editItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-xl bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                <div className="p-2 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-600">
                   <Pencil className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-slate-900">
                     {isVi ? 'Cập nhật Vật phẩm' : 'Update Merchandise'}
                   </h3>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-500 font-mono">
                     PUT /api/v1/admin/merchandises/{editItem.id}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setEditItem(null)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1249,19 +1249,19 @@ export default function AdminMerchandisesPage() {
             <form onSubmit={handleEditSubmit} className="p-6 space-y-4 overflow-y-auto text-xs">
               {/* ID Readonly */}
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">Merchandise ID (UUID)</label>
+                <label className="block text-slate-500 font-semibold mb-1">Merchandise ID (UUID)</label>
                 <input
                   type="text"
                   readOnly
                   value={editItem.id}
-                  className="w-full px-3 py-2 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-400 font-mono cursor-not-allowed"
+                  className="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 font-mono cursor-not-allowed"
                 />
               </div>
 
               {/* Name & Price Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">
+                  <label className="block text-slate-700 font-semibold mb-1">
                     {isVi ? 'Tên vật phẩm *' : 'Item Name *'}
                   </label>
                   <input
@@ -1269,12 +1269,12 @@ export default function AdminMerchandisesPage() {
                     required
                     value={editForm.name}
                     onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">
+                  <label className="block text-slate-700 font-semibold mb-1">
                     {isVi ? 'Đơn giá (VND) *' : 'Price (VND) *'}
                   </label>
                   <input
@@ -1284,10 +1284,10 @@ export default function AdminMerchandisesPage() {
                     step={1000}
                     value={editForm.price}
                     onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400 font-mono"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 font-mono shadow-xs"
                   />
                   {editForm.price && (
-                    <div className="text-[11px] text-amber-400 font-mono mt-1">
+                    <div className="text-[11px] text-indigo-600 font-mono font-semibold mt-1">
                       {formatCurrency(editForm.price)}
                     </div>
                   )}
@@ -1296,7 +1296,7 @@ export default function AdminMerchandisesPage() {
 
               {/* Image URL */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Đường dẫn ảnh sản phẩm (image_url)' : 'Image URL (image_url)'}
                 </label>
                 <div className="flex gap-3 items-center">
@@ -1305,10 +1305,10 @@ export default function AdminMerchandisesPage() {
                     value={editForm.image_url}
                     onChange={(e) => setEditForm({ ...editForm, image_url: e.target.value })}
                     placeholder="https://..."
-                    className="flex-1 px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                    className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                   />
                   {editForm.image_url && (
-                    <div className="w-12 h-12 rounded-xl overflow-hidden border border-slate-700 bg-slate-800 shrink-0">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shrink-0">
                       <img
                         src={editForm.image_url}
                         alt="Preview"
@@ -1322,7 +1322,7 @@ export default function AdminMerchandisesPage() {
 
               {/* Description */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-700 font-semibold mb-1">
                   {isVi ? 'Mô tả chi tiết (description)' : 'Description (description)'}
                 </label>
                 <textarea
@@ -1330,22 +1330,22 @@ export default function AdminMerchandisesPage() {
                   value={editForm.description}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                   placeholder={isVi ? 'Cập nhật mô tả vật phẩm...' : 'Update description...'}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 />
               </div>
 
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2 bg-slate-50/50 -mx-6 -mb-6 px-6 py-4">
                 <button
                   type="button"
                   onClick={() => setEditItem(null)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold rounded-xl cursor-pointer shadow-xs"
                 >
                   {isVi ? 'Hủy' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingEdit}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
                 >
                   {isSubmittingEdit && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isVi ? 'Lưu thay đổi' : 'Update Item'}</span>
@@ -1358,9 +1358,9 @@ export default function AdminMerchandisesPage() {
 
       {/* DETAIL MODAL */}
       {detailItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="relative h-56 bg-slate-950 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-lg bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] text-slate-900">
+            <div className="relative h-56 bg-slate-100 overflow-hidden">
               {detailItem.image_url ? (
                 <img
                   src={detailItem.image_url}
@@ -1368,58 +1368,58 @@ export default function AdminMerchandisesPage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-slate-600 bg-slate-950">
+                <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100">
                   <Package className="w-16 h-16" />
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-black/40" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-black/30" />
 
               <button
                 onClick={() => setDetailItem(null)}
-                className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white rounded-lg bg-slate-900/80 border border-slate-700"
+                className="absolute top-4 right-4 p-1.5 text-white/80 hover:text-white rounded-lg bg-black/40 border border-white/20 shadow-xs backdrop-blur-xs"
               >
                 <X className="w-4 h-4" />
               </button>
 
               <div className="absolute bottom-4 left-6 right-6">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-white/90 text-slate-900 border border-white/40 backdrop-blur-xs shadow-xs">
                     {detailItem.category || detailItem.category_id || 'Anime'}
                   </span>
                   {detailItem.tag && (
-                    <span className="text-[11px] font-black px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <span className="text-[11px] font-black px-2 py-0.5 rounded-md bg-indigo-600 text-white backdrop-blur-xs shadow-xs">
                       {detailItem.tag}
                     </span>
                   )}
                 </div>
                 <h2 className="text-lg font-black text-white">{detailItem.name}</h2>
-                <div className="text-xl font-black text-amber-400 mt-1 font-mono">
+                <div className="text-xl font-black text-white mt-1 font-mono drop-shadow">
                   {formatCurrency(detailItem.price)}
                 </div>
               </div>
             </div>
 
             <div className="p-6 space-y-4 overflow-y-auto text-xs">
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] text-slate-500 uppercase tracking-wider">Merchandise ID (UUID)</div>
-                  <div className="font-mono text-slate-300 font-semibold mt-0.5">{detailItem.id}</div>
+                  <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Merchandise ID (UUID)</div>
+                  <div className="font-mono text-slate-700 font-semibold mt-0.5">{detailItem.id}</div>
                 </div>
                 <button
                   onClick={() => handleCopyId(detailItem.id)}
-                  className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg flex items-center gap-1 text-[11px]"
+                  className="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg flex items-center gap-1 text-[11px] shadow-xs"
                 >
-                  {copiedId === detailItem.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                  {copiedId === detailItem.id ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
                   <span>{copiedId === detailItem.id ? 'Copied' : 'Copy'}</span>
                 </button>
               </div>
 
               <div>
-                <h4 className="text-slate-300 font-bold mb-1 flex items-center gap-1.5">
-                  <Store className="w-3.5 h-3.5 text-amber-400" />
+                <h4 className="text-slate-800 font-bold mb-1 flex items-center gap-1.5">
+                  <Store className="w-3.5 h-3.5 text-indigo-600" />
                   <span>{isVi ? 'Mô tả chi tiết sản phẩm' : 'Product Description'}</span>
                 </h4>
-                <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800 text-slate-300 leading-relaxed whitespace-pre-line">
+                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 leading-relaxed whitespace-pre-line">
                   {detailItem.description || (isVi ? 'Chưa có thông tin mô tả chi tiết.' : 'No detailed description.')}
                 </div>
               </div>
@@ -1432,14 +1432,14 @@ export default function AdminMerchandisesPage() {
               )}
             </div>
 
-            <div className="p-4 border-t border-slate-800 bg-slate-900/60 flex items-center justify-between">
+            <div className="p-4 border-t border-slate-200 bg-slate-50/70 flex items-center justify-between">
               <button
                 onClick={() => {
                   const item = detailItem;
                   setDetailItem(null);
                   setDeleteItem(item);
                 }}
-                className="px-3 py-2 text-rose-400 hover:bg-rose-500/10 rounded-xl text-xs font-semibold cursor-pointer"
+                className="px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-semibold cursor-pointer"
               >
                 {isVi ? 'Xóa vật phẩm' : 'Delete Item'}
               </button>
@@ -1447,7 +1447,7 @@ export default function AdminMerchandisesPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setDetailItem(null)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs cursor-pointer"
+                  className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold rounded-xl text-xs cursor-pointer shadow-xs"
                 >
                   {isVi ? 'Đóng' : 'Close'}
                 </button>
@@ -1457,7 +1457,7 @@ export default function AdminMerchandisesPage() {
                     setDetailItem(null);
                     openEditModal(item);
                   }}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5 shadow-xs"
                 >
                   <Pencil className="w-3.5 h-3.5" />
                   <span>{isVi ? 'Chỉnh sửa' : 'Edit'}</span>
@@ -1470,17 +1470,17 @@ export default function AdminMerchandisesPage() {
 
       {/* DELETE CONFIRMATION MODAL: DELETE /api/v1/admin/merchandises/{id} */}
       {deleteItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 text-xs text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto border border-rose-500/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-sm bg-white border border-slate-200 rounded-2xl shadow-xl p-6 text-xs text-center space-y-4">
+            <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
               <Trash2 className="w-6 h-6" />
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-slate-900">
                 {isVi ? 'Xóa vật phẩm khỏi danh mục?' : 'Delete Merchandise?'}
               </h3>
-              <p className="text-slate-400 mt-1">
+              <p className="text-slate-600 mt-1">
                 {isVi
                   ? `Bạn có chắc chắn muốn xóa "${deleteItem.name}" (ID: ${deleteItem.id})? Hành động này sẽ loại bỏ sản phẩm khỏi cửa hàng.`
                   : `Are you sure you want to remove "${deleteItem.name}" from catalog?`}
@@ -1490,14 +1490,14 @@ export default function AdminMerchandisesPage() {
             <div className="flex items-center justify-center gap-2 pt-2">
               <button
                 onClick={() => setDeleteItem(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg cursor-pointer"
+                className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold rounded-lg cursor-pointer shadow-xs"
               >
                 {isVi ? 'Hủy bỏ' : 'Cancel'}
               </button>
               <button
                 onClick={handleDeleteSubmit}
                 disabled={isSubmittingDelete}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5 shadow-xs"
               >
                 {isSubmittingDelete && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                 <span>{isVi ? 'Xác nhận xóa' : 'Confirm Delete'}</span>

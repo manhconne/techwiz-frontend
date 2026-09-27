@@ -664,7 +664,7 @@ export default function AdminCategoriesPage() {
   return (
     <div
       translate="no"
-      className="notranslate min-h-screen bg-slate-900 text-slate-100 font-sans flex"
+      className="notranslate min-h-screen bg-slate-50 text-slate-900 font-sans flex"
     >
       {/* Admin Sidebar */}
       <AdminSidebar
@@ -688,20 +688,19 @@ export default function AdminCategoriesPage() {
           {/* Action Toast Alert Banner */}
           {actionToast && (
             <div
-              style={{ borderRadius: '10px' }}
-              className={`p-3.5 text-xs font-bold flex items-center justify-between gap-3 shadow-lg border ${
+              className={`p-3.5 text-xs font-bold flex items-center justify-between gap-3 shadow-xs rounded-xl border ${
                 actionToast.type === 'success'
-                  ? 'bg-emerald-600 text-white border-emerald-500'
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                   : actionToast.type === 'warning'
-                  ? 'bg-amber-600 text-white border-amber-500'
-                  : 'bg-rose-600 text-white border-rose-500'
+                  ? 'bg-amber-50 text-amber-800 border-amber-200'
+                  : 'bg-rose-50 text-rose-800 border-rose-200'
               }`}
             >
               <div className="flex items-center gap-2">
                 {actionToast.type === 'success' ? (
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
                 ) : (
-                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
                 )}
                 <span>{actionToast.message}</span>
                 {actionToast.details && (
@@ -710,7 +709,7 @@ export default function AdminCategoriesPage() {
               </div>
               <button
                 onClick={() => setActionToast(null)}
-                className="p-1 hover:bg-black/20 rounded cursor-pointer"
+                className="p-1 hover:bg-black/5 rounded-lg cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -718,20 +717,20 @@ export default function AdminCategoriesPage() {
           )}
 
           {/* Page Title & Status Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-800">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200">
             <div>
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+                <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-xs">
                   <FolderTree className="w-6 h-6" />
                 </div>
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
+                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
                     {isVi ? 'Quản Lý Danh Mục (Categories)' : 'Category Management'}
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-mono">
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-mono">
                       /api/v1/admin/categories
                     </span>
                   </h1>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-xs text-slate-500 mt-0.5">
                     {isVi
                       ? 'Cấu trúc cây phân cấp danh mục cha - con (include_children=true), thống kê sự kiện và bài viết.'
                       : 'Hierarchical category tree with subcategories and linked content statistics.'}
@@ -747,8 +746,7 @@ export default function AdminCategoriesPage() {
                   setCreateForm({ name: '', slug: '', parent_id: '' });
                   setIsCreateModalOpen(true);
                 }}
-                style={{ borderRadius: '8px' }}
-                className="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/20 transition-all cursor-pointer"
+                className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs rounded-xl transition-all cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>{isVi ? 'Thêm danh mục mới' : 'Add Category'}</span>
@@ -758,11 +756,10 @@ export default function AdminCategoriesPage() {
               <button
                 onClick={fetchCategories}
                 disabled={isLoading}
-                style={{ borderRadius: '8px' }}
-                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                 title="Làm mới danh sách từ API"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-indigo-600' : ''}`} />
                 <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
               </button>
             </div>
@@ -770,45 +767,45 @@ export default function AdminCategoriesPage() {
 
           {/* Quick Metrics KPI Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-slate-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Tổng số danh mục' : 'Total Categories'}</span>
-                <Layers className="w-4 h-4 text-indigo-400" />
+                <Layers className="w-4 h-4 text-indigo-600" />
               </div>
-              <div className="text-2xl font-black text-white">{totalAll}</div>
+              <div className="text-2xl font-black text-slate-900">{totalAll}</div>
               <div className="text-[11px] text-slate-400 mt-1">Gốc: {totalRoot} · Con: {totalChildren}</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-indigo-500/30 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-indigo-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-indigo-600 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Danh mục cha (Root)' : 'Root Categories'}</span>
-                <Folder className="w-4 h-4 text-indigo-400" />
+                <Folder className="w-4 h-4 text-indigo-600" />
               </div>
-              <div className="text-2xl font-black text-indigo-300">{totalRoot}</div>
-              <div className="text-[11px] text-indigo-400/80 mt-1">parent_id: null</div>
+              <div className="text-2xl font-black text-slate-900">{totalRoot}</div>
+              <div className="text-[11px] text-slate-400 mt-1">parent_id: null</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-violet-500/30 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-violet-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-violet-600 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Sự kiện liên kết' : 'Linked Events'}</span>
-                <Calendar className="w-4 h-4 text-violet-400" />
+                <Calendar className="w-4 h-4 text-violet-600" />
               </div>
-              <div className="text-2xl font-black text-violet-300">{totalEvents}</div>
-              <div className="text-[11px] text-violet-400/80 mt-1">stats.events_count</div>
+              <div className="text-2xl font-black text-slate-900">{totalEvents}</div>
+              <div className="text-[11px] text-slate-400 mt-1">stats.events_count</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-800/60 border border-emerald-500/30 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-emerald-400 text-xs font-semibold mb-2">
+            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <div className="flex items-center justify-between text-emerald-600 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Bài viết liên kết' : 'Linked Posts'}</span>
-                <FileText className="w-4 h-4 text-emerald-400" />
+                <FileText className="w-4 h-4 text-emerald-600" />
               </div>
-              <div className="text-2xl font-black text-emerald-300">{totalPosts}</div>
-              <div className="text-[11px] text-emerald-400/80 mt-1">stats.posts_count</div>
+              <div className="text-2xl font-black text-slate-900">{totalPosts}</div>
+              <div className="text-[11px] text-slate-400 mt-1">stats.posts_count</div>
             </div>
           </div>
 
           {/* Search & View Controls */}
-          <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/60 space-y-4">
+          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-4">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="relative flex-1 w-full">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -821,12 +818,12 @@ export default function AdminCategoriesPage() {
                       ? 'Tìm kiếm theo tên danh mục, đường dẫn slug (gaming, esports)...'
                       : 'Search by category name, slug...'
                   }
-                  className="w-full bg-slate-900/90 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs transition-colors"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -834,11 +831,11 @@ export default function AdminCategoriesPage() {
               </div>
 
               {/* View Switch */}
-              <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-lg border border-slate-700/80 shrink-0">
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0">
                 <button
                   onClick={() => setViewMode('tree')}
-                  className={`px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer flex items-center gap-1.5 ${
-                    viewMode === 'tree' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer flex items-center gap-1.5 transition-all ${
+                    viewMode === 'tree' ? 'bg-white text-indigo-600 shadow-xs' : 'text-slate-500 hover:text-slate-900'
                   }`}
                   title="Xem dạng cây phân cấp (Tree View)"
                 >
@@ -847,8 +844,8 @@ export default function AdminCategoriesPage() {
                 </button>
                 <button
                   onClick={() => setViewMode('table')}
-                  className={`px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer flex items-center gap-1.5 ${
-                    viewMode === 'table' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer flex items-center gap-1.5 transition-all ${
+                    viewMode === 'table' ? 'bg-white text-indigo-600 shadow-xs' : 'text-slate-500 hover:text-slate-900'
                   }`}
                   title="Xem bảng phẳng (Flat Table)"
                 >
@@ -861,24 +858,24 @@ export default function AdminCategoriesPage() {
 
           {/* Content Views */}
           {isLoading ? (
-            <div className="p-12 text-center bg-slate-800/40 rounded-xl border border-slate-700/60">
-              <RefreshCw className="w-8 h-8 text-indigo-400 animate-spin mx-auto mb-3" />
-              <p className="text-sm font-semibold text-slate-300">
+            <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
+              <p className="text-sm font-semibold text-slate-700">
                 {isVi ? 'Đang tải danh mục từ /api/v1/admin/categories...' : 'Loading categories...'}
               </p>
             </div>
           ) : filteredCategories.length === 0 ? (
-            <div className="p-12 text-center bg-slate-800/40 rounded-xl border border-slate-700/60">
-              <FolderTree className="w-12 h-12 text-slate-500 mx-auto mb-3" />
-              <h3 className="text-base font-bold text-white mb-1">
+            <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">
+              <FolderTree className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+              <h3 className="text-base font-bold text-slate-900 mb-1">
                 {isVi ? 'Không tìm thấy danh mục nào' : 'No categories found'}
               </h3>
-              <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
+              <p className="text-xs text-slate-500 max-w-md mx-auto mb-4">
                 {isVi ? 'Chưa có danh mục nào phù hợp với từ khóa tìm kiếm.' : 'No categories match the current filter.'}
               </p>
               <button
                 onClick={() => setSearchQuery('')}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-lg cursor-pointer transition-colors"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-xs transition-colors"
               >
                 {isVi ? 'Xóa tìm kiếm' : 'Clear Search'}
               </button>
@@ -893,44 +890,44 @@ export default function AdminCategoriesPage() {
                 return (
                   <div
                     key={root.id}
-                    className="rounded-xl border border-slate-700/80 bg-slate-800/50 backdrop-blur-sm overflow-hidden"
+                    className="rounded-xl border border-slate-200/80 bg-white shadow-xs overflow-hidden"
                   >
                     {/* Root Category Row */}
-                    <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-700/30 transition-colors">
+                    <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors">
                       <div className="flex items-center gap-3">
                         {/* Expand/Collapse Toggle */}
                         <button
                           onClick={() => toggleExpand(root.id)}
-                          className={`p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 cursor-pointer ${
+                          className={`p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer ${
                             !hasChildren ? 'opacity-30 pointer-events-none' : ''
                           }`}
                         >
                           {isExpanded ? (
-                            <ChevronDown className="w-4 h-4 text-indigo-400" />
+                            <ChevronDown className="w-4 h-4 text-indigo-600" />
                           ) : (
                             <ChevronRight className="w-4 h-4" />
                           )}
                         </button>
 
-                        <div className="p-2 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+                        <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-xs">
                           {isExpanded ? <FolderOpen className="w-5 h-5" /> : <Folder className="w-5 h-5" />}
                         </div>
 
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-white text-sm">{root.name}</span>
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-700">
+                            <span className="font-bold text-slate-900 text-sm">{root.name}</span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
                               /{root.slug}
                             </span>
-                            <span className="text-[10px] font-mono text-indigo-400">ID: {root.id}</span>
+                            <span className="text-[10px] font-mono text-indigo-600 font-bold">ID: {root.id}</span>
                           </div>
 
-                          <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
+                          <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
                             <span>
                               {hasChildren ? `${root.children?.length} danh mục con` : 'Chưa có danh mục con'}
                             </span>
                             {root.stats && (
-                              <span className="text-slate-500">
+                              <span className="text-slate-400">
                                 · {root.stats.events_count || 0} sự kiện · {root.stats.posts_count || 0} bài viết
                               </span>
                             )}
@@ -946,7 +943,7 @@ export default function AdminCategoriesPage() {
                             setCreateForm({ name: '', slug: '', parent_id: root.id });
                             setIsCreateModalOpen(true);
                           }}
-                          className="px-2.5 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                          className="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer shadow-xs"
                           title="Thêm danh mục con"
                         >
                           <Plus className="w-3.5 h-3.5" />
@@ -956,7 +953,7 @@ export default function AdminCategoriesPage() {
                         {/* View details */}
                         <button
                           onClick={() => handleOpenDetailModal(root.id, root)}
-                          className="p-1.5 rounded-lg bg-slate-700/80 hover:bg-slate-600 text-slate-200 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
                           title="Xem chi tiết (GET /{id})"
                         >
                           <Eye className="w-4 h-4" />
@@ -965,7 +962,7 @@ export default function AdminCategoriesPage() {
                         {/* Edit */}
                         <button
                           onClick={() => handleOpenEditModal(root)}
-                          className="p-1.5 rounded-lg bg-indigo-600/80 hover:bg-indigo-600 text-white transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-colors cursor-pointer"
                           title="Chỉnh sửa (PUT /{id})"
                         >
                           <Pencil className="w-4 h-4" />
@@ -974,7 +971,7 @@ export default function AdminCategoriesPage() {
                         {/* Delete */}
                         <button
                           onClick={() => setDeleteItem({ id: root.id, name: root.name })}
-                          className="p-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-colors cursor-pointer"
                           title="Xóa danh mục (DELETE /{id})"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -984,27 +981,27 @@ export default function AdminCategoriesPage() {
 
                     {/* Children List */}
                     {isExpanded && hasChildren && (
-                      <div className="border-t border-slate-800 bg-slate-900/60 divide-y divide-slate-800/80 pl-6 sm:pl-12">
+                      <div className="border-t border-slate-100 bg-slate-50/50 divide-y divide-slate-100 pl-6 sm:pl-12">
                         {root.children?.map((child) => (
                           <div
                             key={child.id}
-                            className="p-3.5 pr-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-800/50 transition-colors"
+                            className="p-3.5 pr-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-100/60 transition-colors"
                           >
                             <div className="flex items-center gap-3">
-                              <span className="text-slate-600 font-mono">└─</span>
-                              <div className="p-1.5 rounded-md bg-slate-800 text-violet-400 border border-slate-700">
+                              <span className="text-slate-400 font-mono">└─</span>
+                              <div className="p-1.5 rounded-md bg-white text-indigo-600 border border-slate-200 shadow-xs">
                                 <Tag className="w-4 h-4" />
                               </div>
                               <div>
                                 <div className="flex items-center gap-2">
-                                  <span className="font-bold text-slate-100 text-xs">{child.name}</span>
-                                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-950 text-slate-400 border border-slate-800">
+                                  <span className="font-bold text-slate-900 text-xs">{child.name}</span>
+                                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white text-slate-600 border border-slate-200">
                                     /{child.slug}
                                   </span>
-                                  <span className="text-[10px] font-mono text-indigo-400">ID: {child.id}</span>
+                                  <span className="text-[10px] font-mono text-indigo-600 font-bold">ID: {child.id}</span>
                                 </div>
                                 {child.stats && (
-                                  <div className="text-[11px] text-slate-400 mt-0.5">
+                                  <div className="text-[11px] text-slate-500 mt-0.5">
                                     {child.stats.events_count || 0} sự kiện · {child.stats.posts_count || 0} bài viết
                                   </div>
                                 )}
@@ -1014,21 +1011,21 @@ export default function AdminCategoriesPage() {
                             <div className="flex items-center gap-2 self-end sm:self-auto">
                               <button
                                 onClick={() => handleOpenDetailModal(child.id, child)}
-                                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-colors cursor-pointer shadow-xs"
                                 title="Xem chi tiết"
                               >
                                 <Eye className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={() => handleOpenEditModal(child)}
-                                className="p-1.5 rounded-lg bg-indigo-600/70 hover:bg-indigo-600 text-white transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-colors cursor-pointer"
                                 title="Chỉnh sửa (PUT /{id})"
                               >
                                 <Pencil className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={() => setDeleteItem({ id: child.id, name: child.name })}
-                                className="p-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-colors cursor-pointer"
                                 title="Xóa danh mục con"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -1044,10 +1041,10 @@ export default function AdminCategoriesPage() {
             </div>
           ) : (
             /* 2. FLAT TABLE VIEW */
-            <div className="overflow-x-auto rounded-xl border border-slate-700/70 bg-slate-800/40 backdrop-blur-sm">
+            <div className="overflow-x-auto rounded-xl border border-slate-200/80 bg-white shadow-xs">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-700/80 bg-slate-900/60 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
+                  <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
                     <th className="py-3 px-4">Mã ID</th>
                     <th className="py-3 px-4">{isVi ? 'Tên danh mục' : 'Category Name'}</th>
                     <th className="py-3 px-4">{isVi ? 'Đường dẫn (Slug)' : 'Slug'}</th>
@@ -1056,19 +1053,19 @@ export default function AdminCategoriesPage() {
                     <th className="py-3 px-4 text-right">{isVi ? 'Thao tác' : 'Actions'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800">
+                <tbody className="divide-y divide-slate-100">
                   {flattenedCategories.map(({ item, isChild, parentName }) => (
-                    <tr key={item.id} className="hover:bg-slate-700/30 transition-colors group">
+                    <tr key={item.id} className="hover:bg-slate-50/80 transition-colors group text-slate-800">
                       {/* ID with Copy */}
                       <td className="py-3 px-4 whitespace-nowrap">
-                        <div className="flex items-center gap-1.5 font-mono text-indigo-400 font-bold">
+                        <div className="flex items-center gap-1.5 font-mono text-indigo-600 font-bold">
                           <span>{item.id}</span>
                           <button
                             onClick={() => handleCopyId(item.id)}
-                            className="text-slate-500 hover:text-indigo-300 p-1 rounded transition-colors cursor-pointer"
+                            className="text-slate-400 hover:text-indigo-600 p-1 rounded transition-colors cursor-pointer"
                             title="Sao chép ID"
                           >
-                            {copiedId === item.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                            {copiedId === item.id ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                           </button>
                         </div>
                       </td>
@@ -1077,17 +1074,17 @@ export default function AdminCategoriesPage() {
                       <td className="py-3 px-4 whitespace-nowrap">
                         <div className={`flex items-center gap-2 ${isChild ? 'pl-4' : ''}`}>
                           {isChild ? (
-                            <span className="text-slate-600 font-mono">└─</span>
+                            <span className="text-slate-400 font-mono">└─</span>
                           ) : (
-                            <Folder className="w-4 h-4 text-indigo-400" />
+                            <Folder className="w-4 h-4 text-indigo-600" />
                           )}
-                          <span className={`font-bold ${isChild ? 'text-slate-200' : 'text-white'}`}>{item.name}</span>
+                          <span className={`font-bold ${isChild ? 'text-slate-800' : 'text-slate-900'}`}>{item.name}</span>
                         </div>
                       </td>
 
                       {/* Slug */}
-                      <td className="py-3 px-4 whitespace-nowrap font-mono text-slate-400">
-                        <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800">
+                      <td className="py-3 px-4 whitespace-nowrap font-mono text-slate-500">
+                        <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">
                           /{item.slug}
                         </span>
                       </td>
@@ -1095,18 +1092,18 @@ export default function AdminCategoriesPage() {
                       {/* Hierarchy level */}
                       <td className="py-3 px-4 whitespace-nowrap">
                         {isChild ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 border border-violet-500/30">
+                          <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded bg-violet-50 text-violet-700 border border-violet-200">
                             <span>Con của {parentName}</span>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold">
+                          <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold">
                             <span>Danh mục gốc (Root)</span>
                           </span>
                         )}
                       </td>
 
                       {/* Stats */}
-                      <td className="py-3 px-4 whitespace-nowrap text-slate-400">
+                      <td className="py-3 px-4 whitespace-nowrap text-slate-500">
                         {item.stats ? (
                           <span>{item.stats.events_count || 0} events · {item.stats.posts_count || 0} posts</span>
                         ) : (
@@ -1119,21 +1116,21 @@ export default function AdminCategoriesPage() {
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => handleOpenDetailModal(item.id, item)}
-                            className="p-1.5 rounded-lg bg-slate-700/80 hover:bg-slate-600 text-slate-200 transition-colors cursor-pointer"
+                            className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
                             title="Xem chi tiết"
                           >
                             <Eye className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleOpenEditModal(item)}
-                            className="p-1.5 rounded-lg bg-indigo-600/80 hover:bg-indigo-600 text-white transition-colors cursor-pointer"
+                            className="p-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-colors cursor-pointer"
                             title="Chỉnh sửa"
                           >
                             <Pencil className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => setDeleteItem({ id: item.id, name: item.name })}
-                            className="p-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 transition-colors cursor-pointer"
+                            className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-colors cursor-pointer"
                             title="Xóa danh mục"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -1151,18 +1148,18 @@ export default function AdminCategoriesPage() {
 
       {/* 1. DETAIL MODAL (GET /api/v1/admin/categories/{id}) */}
       {isDetailModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-800/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-lg bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-indigo-400" />
-                <h3 className="font-bold text-white text-base">
+                <BarChart3 className="w-5 h-5 text-indigo-600" />
+                <h3 className="font-bold text-slate-900 text-base">
                   {isVi ? 'Chi Tiết Danh Mục (GET /{id})' : 'Category Details'}
                 </h3>
               </div>
               <button
                 onClick={() => setIsDetailModalOpen(false)}
-                className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1171,76 +1168,76 @@ export default function AdminCategoriesPage() {
             <div className="p-6 space-y-4 text-xs">
               {isDetailLoading ? (
                 <div className="py-12 text-center">
-                  <RefreshCw className="w-8 h-8 text-indigo-400 animate-spin mx-auto mb-2" />
-                  <p className="text-slate-400">Đang tải dữ liệu từ GET /categories/{'{id}'}...</p>
+                  <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-2" />
+                  <p className="text-slate-500">Đang tải dữ liệu từ GET /categories/{'{id}'}...</p>
                 </div>
               ) : detailItem ? (
                 <>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/70 border border-slate-700">
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-400 font-mono">ID:</span>
-                      <span className="text-indigo-400 font-bold font-mono">{detailItem.id}</span>
+                      <span className="text-slate-500 font-mono">ID:</span>
+                      <span className="text-indigo-600 font-bold font-mono">{detailItem.id}</span>
                     </div>
                     {detailItem.parent_id ? (
-                      <span className="text-[11px] px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 font-semibold border border-violet-500/30">
+                      <span className="text-[11px] px-2 py-0.5 rounded bg-violet-50 text-violet-700 font-semibold border border-violet-200">
                         Parent: {detailItem.parent_id}
                       </span>
                     ) : (
-                      <span className="text-[11px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">
+                      <span className="text-[11px] px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200">
                         Danh mục gốc (Root)
                       </span>
                     )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                      <div className="text-slate-400 font-semibold mb-1">{isVi ? 'Tên danh mục:' : 'Name:'}</div>
-                      <div className="text-white font-bold text-sm">{detailItem.name}</div>
+                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                      <div className="text-slate-500 font-semibold mb-1">{isVi ? 'Tên danh mục:' : 'Name:'}</div>
+                      <div className="text-slate-900 font-bold text-sm">{detailItem.name}</div>
                     </div>
 
-                    <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                      <div className="text-slate-400 font-semibold mb-1">{isVi ? 'Đường dẫn (slug):' : 'Slug:'}</div>
-                      <div className="text-indigo-300 font-mono font-bold">/{detailItem.slug}</div>
+                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                      <div className="text-slate-500 font-semibold mb-1">{isVi ? 'Đường dẫn (slug):' : 'Slug:'}</div>
+                      <div className="text-indigo-600 font-mono font-bold">/{detailItem.slug}</div>
                     </div>
                   </div>
 
                   {/* Stats Object: { "events_count": 12, "posts_count": 340 } */}
                   <div>
-                    <label className="text-slate-400 font-semibold block mb-2">
+                    <label className="text-slate-700 font-semibold block mb-2">
                       {isVi ? 'Thống kê nội dung liên kết (stats):' : 'Linked Content Stats:'}
                     </label>
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="p-4 rounded-xl bg-slate-800/80 border border-violet-500/30 flex items-center gap-3">
-                        <div className="p-2.5 rounded-lg bg-violet-500/20 text-violet-300">
+                      <div className="p-4 rounded-xl bg-slate-50 border border-violet-200 flex items-center gap-3">
+                        <div className="p-2.5 rounded-lg bg-violet-100 text-violet-700">
                           <Calendar className="w-5 h-5" />
                         </div>
                         <div>
-                          <div className="text-xl font-black text-white">{detailItem.stats?.events_count || 0}</div>
-                          <div className="text-[11px] text-violet-400">events_count</div>
+                          <div className="text-xl font-black text-slate-900">{detailItem.stats?.events_count || 0}</div>
+                          <div className="text-[11px] text-violet-700 font-medium">events_count</div>
                         </div>
                       </div>
 
-                      <div className="p-4 rounded-xl bg-slate-800/80 border border-emerald-500/30 flex items-center gap-3">
-                        <div className="p-2.5 rounded-lg bg-emerald-500/20 text-emerald-300">
+                      <div className="p-4 rounded-xl bg-slate-50 border border-emerald-200 flex items-center gap-3">
+                        <div className="p-2.5 rounded-lg bg-emerald-100 text-emerald-700">
                           <FileText className="w-5 h-5" />
                         </div>
                         <div>
-                          <div className="text-xl font-black text-white">{detailItem.stats?.posts_count || 0}</div>
-                          <div className="text-[11px] text-emerald-400">posts_count</div>
+                          <div className="text-xl font-black text-slate-900">{detailItem.stats?.posts_count || 0}</div>
+                          <div className="text-[11px] text-emerald-700 font-medium">posts_count</div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </>
               ) : (
-                <div className="py-8 text-center text-slate-400">Không tìm thấy thông tin danh mục.</div>
+                <div className="py-8 text-center text-slate-500">Không tìm thấy thông tin danh mục.</div>
               )}
             </div>
 
-            <div className="px-6 py-4 bg-slate-800/60 border-t border-slate-800 flex items-center justify-between">
+            <div className="px-6 py-4 bg-slate-50/70 border-t border-slate-200 flex items-center justify-between">
               <button
                 onClick={() => setIsDetailModalOpen(false)}
-                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg text-xs cursor-pointer transition-colors"
+                className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold rounded-xl text-xs cursor-pointer shadow-xs transition-colors"
               >
                 {isVi ? 'Đóng' : 'Close'}
               </button>
@@ -1252,7 +1249,7 @@ export default function AdminCategoriesPage() {
                       setIsDetailModalOpen(false);
                       handleOpenEditModal(detailItem);
                     }}
-                    className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-xs cursor-pointer transition-colors flex items-center gap-1.5"
+                    className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs cursor-pointer shadow-xs transition-colors flex items-center gap-1.5"
                   >
                     <Pencil className="w-3.5 h-3.5" />
                     <span>{isVi ? 'Chỉnh sửa' : 'Edit'}</span>
@@ -1266,18 +1263,18 @@ export default function AdminCategoriesPage() {
 
       {/* 2. CREATE MODAL (POST /api/v1/admin/categories) */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-800/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <Plus className="w-5 h-5 text-indigo-400" />
-                <h3 className="font-bold text-white text-base">
+                <Plus className="w-5 h-5 text-indigo-600" />
+                <h3 className="font-bold text-slate-900 text-base">
                   {isVi ? 'Thêm Danh Mục Mới (POST)' : 'Create Category'}
                 </h3>
               </div>
               <button
                 onClick={() => setIsCreateModalOpen(false)}
-                className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1286,7 +1283,7 @@ export default function AdminCategoriesPage() {
             <form onSubmit={handleSubmitCreate} className="p-6 space-y-4 text-xs">
               {/* Name */}
               <div>
-                <label className="text-slate-300 font-bold block mb-1">
+                <label className="text-slate-700 font-bold block mb-1">
                   {isVi ? 'Tên danh mục (name) *' : 'Category Name *'}
                 </label>
                 <input
@@ -1302,13 +1299,13 @@ export default function AdminCategoriesPage() {
                     });
                   }}
                   placeholder="Ví dụ: Esports, Review, Âm nhạc..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 placeholder-slate-500"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 placeholder-slate-400 shadow-xs"
                 />
               </div>
 
               {/* Slug */}
               <div>
-                <label className="text-slate-300 font-bold block mb-1">
+                <label className="text-slate-700 font-bold block mb-1">
                   {isVi ? 'Đường dẫn định danh (slug) *' : 'Slug *'}
                 </label>
                 <input
@@ -1317,20 +1314,20 @@ export default function AdminCategoriesPage() {
                   value={createForm.slug}
                   onChange={(e) => setCreateForm({ ...createForm, slug: e.target.value })}
                   placeholder="esports"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500 placeholder-slate-500"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-indigo-600 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 placeholder-slate-400 shadow-xs"
                 />
-                <span className="text-[11px] text-slate-500 mt-1 block">Tự động sinh từ tên danh mục</span>
+                <span className="text-[11px] text-slate-400 mt-1 block">Tự động sinh từ tên danh mục</span>
               </div>
 
               {/* Parent Category */}
               <div>
-                <label className="text-slate-300 font-bold block mb-1">
+                <label className="text-slate-700 font-bold block mb-1">
                   {isVi ? 'Danh mục cha (parent_id)' : 'Parent Category'}
                 </label>
                 <select
                   value={createForm.parent_id}
                   onChange={(e) => setCreateForm({ ...createForm, parent_id: e.target.value })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 cursor-pointer shadow-xs"
                 >
                   <option value="">{isVi ? 'Không có (Danh mục gốc - Root Category)' : 'None (Root Category)'}</option>
                   {categories.map((c) => (
@@ -1341,18 +1338,18 @@ export default function AdminCategoriesPage() {
                 </select>
               </div>
 
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-end gap-2">
+              <div className="pt-2 border-t border-slate-200 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg text-xs cursor-pointer transition-colors"
+                  className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold rounded-xl text-xs cursor-pointer shadow-xs transition-colors"
                 >
                   {isVi ? 'Hủy' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingCreate}
-                  className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-lg text-xs cursor-pointer transition-all flex items-center gap-1.5 shadow-md shadow-indigo-600/20"
+                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs cursor-pointer transition-all flex items-center gap-1.5 shadow-xs"
                 >
                   {isSubmittingCreate && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isVi ? 'Tạo danh mục' : 'Submit'}</span>
@@ -1365,32 +1362,32 @@ export default function AdminCategoriesPage() {
 
       {/* 3. EDIT MODAL (PUT /api/v1/admin/categories/{id}) */}
       {isEditModalOpen && editItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-800/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-slate-900">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <Pencil className="w-5 h-5 text-indigo-400" />
-                <h3 className="font-bold text-white text-base">
+                <Pencil className="w-5 h-5 text-indigo-600" />
+                <h3 className="font-bold text-slate-900 text-base">
                   {isVi ? 'Chỉnh Sửa Danh Mục (PUT /{id})' : 'Edit Category'}
                 </h3>
               </div>
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSubmitEdit} className="p-6 space-y-4 text-xs">
-              <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700 flex items-center justify-between">
-                <span className="text-slate-400 font-mono">Category ID:</span>
-                <span className="text-indigo-400 font-bold font-mono">{editItem.id}</span>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                <span className="text-slate-500 font-mono">Category ID:</span>
+                <span className="text-indigo-600 font-bold font-mono">{editItem.id}</span>
               </div>
 
               {/* Name */}
               <div>
-                <label className="text-slate-300 font-bold block mb-1">
+                <label className="text-slate-700 font-bold block mb-1">
                   {isVi ? 'Tên danh mục (name) *' : 'Category Name *'}
                 </label>
                 <input
@@ -1399,13 +1396,13 @@ export default function AdminCategoriesPage() {
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                   placeholder="Esports 2026..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 />
               </div>
 
               {/* Slug */}
               <div>
-                <label className="text-slate-300 font-bold block mb-1">
+                <label className="text-slate-700 font-bold block mb-1">
                   {isVi ? 'Đường dẫn định danh (slug) *' : 'Slug *'}
                 </label>
                 <input
@@ -1414,19 +1411,19 @@ export default function AdminCategoriesPage() {
                   value={editForm.slug}
                   onChange={(e) => setEditForm({ ...editForm, slug: e.target.value })}
                   placeholder="esports-2026"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-indigo-600 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 shadow-xs"
                 />
               </div>
 
               {/* Parent Category */}
               <div>
-                <label className="text-slate-300 font-bold block mb-1">
+                <label className="text-slate-700 font-bold block mb-1">
                   {isVi ? 'Danh mục cha (parent_id)' : 'Parent Category'}
                 </label>
                 <select
                   value={editForm.parent_id}
                   onChange={(e) => setEditForm({ ...editForm, parent_id: e.target.value })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 cursor-pointer shadow-xs"
                 >
                   <option value="">{isVi ? 'Không có (null - Danh mục gốc)' : 'null (Root Category)'}</option>
                   {categories
@@ -1439,18 +1436,18 @@ export default function AdminCategoriesPage() {
                 </select>
               </div>
 
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-end gap-2">
+              <div className="pt-2 border-t border-slate-200 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg text-xs cursor-pointer transition-colors"
+                  className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold rounded-xl text-xs cursor-pointer shadow-xs transition-colors"
                 >
                   {isVi ? 'Hủy' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingEdit}
-                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-xs cursor-pointer transition-all flex items-center gap-1.5 shadow-md shadow-indigo-600/20"
+                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs cursor-pointer transition-all flex items-center gap-1.5 shadow-xs"
                 >
                   {isSubmittingEdit && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isVi ? 'Lưu cập nhật (PUT)' : 'Save Changes'}</span>
@@ -1463,17 +1460,17 @@ export default function AdminCategoriesPage() {
 
       {/* 4. DELETE CONFIRMATION MODAL (DELETE /api/v1/admin/categories/{id}) */}
       {deleteItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 text-xs text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto border border-rose-500/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="w-full max-w-sm bg-white border border-slate-200 rounded-2xl shadow-xl p-6 text-xs text-center space-y-4 text-slate-900">
+            <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
               <Trash2 className="w-6 h-6" />
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-slate-900">
                 {isVi ? 'Xác nhận xóa danh mục?' : 'Delete Category?'}
               </h3>
-              <p className="text-slate-400 mt-1">
+              <p className="text-slate-600 mt-1">
                 {isVi
                   ? `Bạn có chắc chắn muốn xóa danh mục "${deleteItem.name}" (${deleteItem.id})? Các danh mục con hoặc nội dung liên quan có thể bị ảnh hưởng.`
                   : `Are you sure you want to delete category "${deleteItem.name}"?`}
@@ -1483,14 +1480,14 @@ export default function AdminCategoriesPage() {
             <div className="flex items-center justify-center gap-2 pt-2">
               <button
                 onClick={() => setDeleteItem(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg cursor-pointer"
+                className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold rounded-xl cursor-pointer shadow-xs transition-colors"
               >
                 {isVi ? 'Hủy bỏ' : 'Cancel'}
               </button>
               <button
                 onClick={handleDeleteSubmit}
                 disabled={isSubmittingDelete}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs transition-colors"
               >
                 {isSubmittingDelete && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                 <span>{isVi ? 'Xác nhận xóa' : 'Confirm Delete'}</span>
