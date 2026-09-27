@@ -19,7 +19,7 @@ export default function SystemMonitorPage() {
       }
     };
     fetchStatus();
-    const iv = setInterval(fetchStatus, 1500);
+    const iv = setInterval(fetchStatus, 800);
     return () => clearInterval(iv);
   }, []);
 
