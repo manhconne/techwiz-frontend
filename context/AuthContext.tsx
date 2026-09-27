@@ -35,10 +35,10 @@ const defaultGuestUser: UserProfile = {
 };
 
 const initialActivities: UserActivity[] = [
-  { id: 'act-1', title: 'Rated 5★ on NewJeans "Supernatural" Comeback MV trailer', type: 'media', timestamp: '10 mins ago', link: '/multimedia' },
-  { id: 'act-2', title: 'Saved SEVENTEEN World Tour [RIGHT HERE] to calendar', type: 'event', timestamp: '1 hour ago', link: '/event' },
-  { id: 'act-3', title: 'Added aespa "Whiplash" Mini Album to wishlist', type: 'bookmark', timestamp: 'Yesterday', link: '/#albums' },
-  { id: 'act-4', title: 'Joined Bunnies community (NewJeans Official Fandom)', type: 'fandom', timestamp: '3 days ago', link: '/#artists' },
+  { id: 'act-1', title: 'Đã đánh giá 5★ trailer NewJeans "Supernatural" Comeback MV', type: 'media', timestamp: '10 phút trước', link: '/multimedia' },
+  { id: 'act-2', title: 'Đã lưu sự kiện SEVENTEEN World Tour [RIGHT HERE] vào lịch', type: 'event', timestamp: '1 giờ trước', link: '/event' },
+  { id: 'act-3', title: 'Đã thêm aespa "Whiplash" Mini Album vào danh sách yêu thích', type: 'bookmark', timestamp: 'Hôm qua', link: '/#albums' },
+  { id: 'act-4', title: 'Đã tham gia cộng đồng Bunnies (NewJeans Official Fandom)', type: 'fandom', timestamp: '3 ngày trước', link: '/#artists' },
 ];
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,13 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const fetchMe = async () => {
-      let token = '';
-      if (typeof window !== 'undefined') {
-        const match = document.cookie.match(/access_token=([^;]+)/);
-        if (match && match[1]) token = decodeURIComponent(match[1]);
-        if (!token) token = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
-      }
-
+      const token = localStorage.getItem('access_token');
       if (token) {
         try {
           const res = await fetch('/api/v1/auth/me', {
@@ -67,13 +61,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const data = await res.json();
           if (res.ok && data.data) {
             const userData = data.data;
-            const roles: string[] = Array.isArray(userData.roles) ? userData.roles : (userData.role ? [userData.role] : []);
-            const isAdmin = roles.some((r: string) => String(r).toLowerCase() === 'admin') ||
-              (userData.email && (userData.email.toLowerCase() === 'lumanhgioi.vn@gmail.com' || userData.email.toLowerCase().includes('admin')));
-            const role = isAdmin ? 'admin' : 'registered';
+            const role = (userData.roles && userData.roles.includes('Admin')) ? 'admin' : 'registered';
             const loggedInUser: UserProfile = {
               id: userData.id,
-              name: userData.fullName || (userData.firstName ? `${userData.firstName} ${userData.lastName || ''}`.trim() : userData.name) || 'K-Pop Fan',
+              name: userData.firstName + ' ' + userData.lastName,
               email: userData.email,
               role: role,
               avatar: userData.avatarUrl || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
@@ -82,38 +73,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             };
             setUser(loggedInUser);
             setIsLoggedIn(true);
-            localStorage.setItem('kpop_user', JSON.stringify(loggedInUser));
             return;
           }
-        } catch {
-          // If auth/me endpoint is offline, decode JWT token payload directly
-          try {
-            const parts = token.split('.');
-            if (parts.length >= 2) {
-              const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-              const payload = JSON.parse(decodeURIComponent(escape(atob(base64))));
-              const emailClaim = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || payload['email'];
-              const roleClaim = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || payload['role'] || payload['roles'];
-              const isAdmin = (Array.isArray(roleClaim) ? roleClaim.some((r: string) => String(r).toLowerCase() === 'admin') : String(roleClaim).toLowerCase() === 'admin') ||
-                (emailClaim && (String(emailClaim).toLowerCase() === 'lumanhgioi.vn@gmail.com' || String(emailClaim).toLowerCase().includes('admin')));
-              const nameClaim = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || payload['name'] || payload['fullName'];
-              const idClaim = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || payload['sub'] || payload['id'];
-
-              const fallbackUser: UserProfile = {
-                id: idClaim || 'usr_jwt',
-                name: nameClaim || 'K-Pop Fan',
-                email: emailClaim || 'user@fanhub.com',
-                role: isAdmin ? 'admin' : 'registered',
-                avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
-                favoriteFandoms: [],
-                memberSince: '2024'
-              };
-              setUser(fallbackUser);
-              setIsLoggedIn(true);
-              localStorage.setItem('kpop_user', JSON.stringify(fallbackUser));
-              return;
-            }
-          } catch {}
+        } catch (err) {
+          console.error("Failed to fetch user profile", err);
         }
       }
 
@@ -155,7 +118,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoggedIn(true);
     localStorage.setItem('kpop_user', JSON.stringify(newUser));
 
-    addActivity('Signed in successfully to Fan Hub Universe', 'fandom');
+    addActivity('Đăng nhập thành công vào hệ thống Fan Hub Universe', 'fandom');
+    
+    // Simulate New Device Login Notification
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('fanhub_local_push', {
+        detail: {
+          type: 'system',
+          title: 'Cảnh Báo Bảo Mật',
+          message: 'Tài khoản của bạn vừa đăng nhập từ thiết bị mới (Chrome - Windows).',
+        }
+      }));
+    }, 2000);
+    
+    // Simulate Registration Welcome Notification
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('fanhub_local_push', {
+        detail: {
+          type: 'social',
+          title: 'Chào mừng gia nhập FanHub!',
+          message: 'Đăng ký tài khoản thành công. Hãy khám phá các sự kiện đang diễn ra nhé.',
+        }
+      }));
+    }, 4000);
   };
 
   const logout = () => {
@@ -174,7 +159,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('kpop_user', JSON.stringify(updated));
       return updated;
     });
-    addActivity('Updated profile information and fandom preferences', 'fandom');
+    addActivity('Đã cập nhật thông tin hồ sơ và sở thích fandom', 'fandom');
   };
 
   const toggleFavoriteFandom = (fandom: string) => {
@@ -187,7 +172,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('kpop_user', JSON.stringify(nextUser));
       return nextUser;
     });
-    addActivity(`${user.favoriteFandoms.includes(fandom) ? 'Unfollowed' : 'Followed fandom'} ${fandom}`, 'fandom');
+    addActivity(`Đã ${user.favoriteFandoms.includes(fandom) ? 'bỏ theo dõi' : 'theo dõi fandom'} ${fandom}`, 'fandom');
   };
 
   const addActivity = (title: string, type: UserActivity['type'], link?: string) => {
@@ -195,7 +180,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: `act-${Date.now()}`,
       title,
       type,
-      timestamp: 'Just now',
+      timestamp: 'Vừa xong',
       link,
     };
     setActivities((prev) => {
@@ -212,27 +197,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return {
       success: true,
       token,
-      message: `Password reset verification code has been sent to ${email}. (Simulation demo token: ${token})`,
+      message: `Mã xác thực đặt lại mật khẩu đã được gửi tới email ${email}. (Mã thử nghiệm mô phỏng: ${token})`,
     };
   };
 
   const resetPasswordWithToken = (email: string, token: string, newPass: string) => {
     const stored = localStorage.getItem(`pwd_reset_${email}`);
     if (!stored) {
-      return { success: false, message: 'Password reset request does not exist or has expired.' };
+      return { success: false, message: 'Yêu cầu đặt lại mật khẩu không tồn tại hoặc đã hết hạn.' };
     }
     try {
       const parsed = JSON.parse(stored);
       if (parsed.token !== token.trim().toUpperCase()) {
-        return { success: false, message: 'Invalid verification token. Please double check.' };
+        return { success: false, message: 'Mã xác thực token không chính xác. Vui lòng kiểm tra lại.' };
       }
       if (Date.now() > parsed.expires) {
-        return { success: false, message: 'Verification code has expired (exceeded 15 minutes).' };
+        return { success: false, message: 'Mã xác thực đã hết hạn (quá 15 phút).' };
       }
       localStorage.removeItem(`pwd_reset_${email}`);
-      return { success: true, message: 'Your password has been successfully updated! Please sign in again.' };
+      return { success: true, message: 'Mật khẩu của bạn đã được cập nhật thành công! Hãy đăng nhập lại.' };
     } catch {
-      return { success: false, message: 'Authentication verification error.' };
+      return { success: false, message: 'Lỗi xử lý xác thực.' };
     }
   };
 

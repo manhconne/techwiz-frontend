@@ -1,4 +1,4 @@
-export const IDENTITY_URL = process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || 'http://localhost:5001';
+export const IDENTITY_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL || 'http://localhost:8080';
 
 export const authApi = {
   login: async (data: any) => {

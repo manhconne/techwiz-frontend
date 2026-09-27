@@ -1,19 +1,11 @@
 'use client';
 
+import QRCode from 'react-qr-code';
 import React, { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+const RealGpsMap = dynamic(() => import('./RealGpsMap'), { ssr: false, loading: () => <div className="w-full h-[460px] flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl">Loading Map...</div> });
 
-const EventLeafletMap = dynamic(() => import('./EventLeafletMap'), { 
-  ssr: false, 
-  loading: () => (
-    <div className="w-full h-[520px] flex flex-col items-center justify-center bg-slate-950 text-white font-mono gap-3 border-2 border-black">
-      <div className="w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
-      <div className="text-xs uppercase tracking-wider text-emerald-400 font-bold">
-        Loading OpenStreetMap &amp; Leaflet Engine...
-      </div>
-    </div>
-  ) 
-});
+const Map = dynamic(() => import('./Map'), { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-slate-100 rounded-xl">Loading Map...</div> });
 import { 
   MapPin, 
   Navigation, 
@@ -64,7 +56,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
   }>({
     lat: 21.0285,
     lng: 105.8542,
-    name: 'Hanoi, Vietnam',
+    name: 'Hà Nội, Việt Nam',
     isGpsActive: false,
   });
 
@@ -96,7 +88,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
   // Auto-detect GPS Location handler
   const handleDetectGps = () => {
     if (!navigator.geolocation) {
-      setGpsError('Your browser does not support HTML5 Geolocation.');
+      setGpsError('Trình duyệt của bạn không hỗ trợ định vị HTML5 Geolocation.');
       return;
     }
 
@@ -109,7 +101,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
         setUserLocation({
           lat: latitude,
           lng: longitude,
-          name: `Your GPS Location (${latitude.toFixed(3)}°, ${longitude.toFixed(3)}°)`,
+          name: `Vị trí GPS của bạn (${latitude.toFixed(3)}°, ${longitude.toFixed(3)}°)`,
           isGpsActive: true,
         });
         setIsLocating(false);
@@ -128,9 +120,9 @@ export const LocationAwareEventExplorer: React.FC = () => {
       },
       (error) => {
         setIsLocating(false);
-        let msg = 'Unable to retrieve GPS coordinates. Please grant location permissions in your browser.';
+        let msg = 'Không thể lấy tọa độ GPS. Vui lòng cấp quyền định vị trong trình duyệt.';
         if (error.code === error.PERMISSION_DENIED) {
-          msg = 'Location permission denied. Please select a city manually below.';
+          msg = 'Bạn đã từ chối quyền truy cập vị trí. Hãy chọn thành phố thủ công bên dưới.';
         }
         setGpsError(msg);
       },
@@ -248,8 +240,8 @@ export const LocationAwareEventExplorer: React.FC = () => {
   return (
     <section 
       id="location-events"
-      style={{ scrollMarginTop: '100px', position: 'relative', zIndex: 1, isolation: 'isolate' }}
-      className="py-14 sm:py-20 w-full bg-slate-50/70 border-t border-b border-slate-200/90 relative z-1"
+      style={{ scrollMarginTop: '100px' }}
+      className="py-14 sm:py-20 w-full bg-slate-50/70 border-t border-b border-slate-200/90"
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
         
@@ -263,10 +255,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
             </div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight uppercase font-sans m-0">
-              Discover Events <span className="text-blue-600">&amp; Meetups Near You</span>
+              Khám Phá Sự Kiện <span className="text-blue-600">&amp; Meetup Gần Bạn</span>
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-2xl font-normal leading-relaxed">
-              Automatically scan with GPS to find premier stadium concerts, idol cup sleeve birthday celebrations, manga cosplay conventions, and official photocard trading events near you.
+              Tự động quét định vị GPS để tìm các đêm diễn Stadium Concert đỉnh cao, buổi offline Cup Sleeve mừng sinh nhật idol, hội chợ Manga Cosplay và quầy giao lưu trao đổi Photocard chính hãng quanh bạn.
             </p>
           </div>
 
@@ -282,7 +274,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
               }`}
             >
               <Navigation size={13} />
-              <span>GPS Map</span>
+              <span>Bản Đồ GPS</span>
             </button>
 
             <button
@@ -295,7 +287,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
               }`}
             >
               <CalendarIcon size={13} />
-              <span>Event Calendar</span>
+              <span>Lịch Sự Kiện</span>
             </button>
 
             <button
@@ -308,7 +300,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
               }`}
             >
               <Users size={13} />
-              <span>List View ({filteredEvents.length})</span>
+              <span>Danh Sách ({filteredEvents.length})</span>
             </button>
           </div>
         </div>
@@ -330,7 +322,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
             >
               <LocateFixed size={14} className={isLocating ? 'animate-spin' : ''} />
               <span>
-                {isLocating ? 'Scanning satellite GPS...' : userLocation.isGpsActive ? '✓ Using live GPS' : 'Enable GPS Near Me'}
+                {isLocating ? 'Đang quét GPS vệ tinh...' : userLocation.isGpsActive ? '✓ Đang dùng GPS trực tiếp' : 'Bật Định Vị GPS Gần Tôi'}
               </span>
             </button>
 
@@ -351,7 +343,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
           {/* Quick City Switcher Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
             <span className="text-[11px] font-bold uppercase text-slate-400 font-mono shrink-0 mr-1">
-              City:
+              Thành phố:
             </span>
             {CITIES_CONFIG.map(city => {
               const isActive = selectedCity === city.id && !userLocation.isGpsActive;
@@ -381,13 +373,13 @@ export const LocationAwareEventExplorer: React.FC = () => {
           {/* Radius Selector Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 sm:pb-0">
             <span className="text-[10.5px] font-mono font-bold uppercase tracking-wider text-slate-400 shrink-0 mr-1">
-              Radius:
+              Bán kính:
             </span>
             {[
               { val: 15, label: '< 15 km' },
               { val: 35, label: '< 35 km' },
               { val: 150, label: '< 150 km' },
-              { val: 5000, label: 'Global (All)' },
+              { val: 5000, label: 'Toàn cầu (All)' },
             ].map(r => (
               <button
                 key={r.val}
@@ -408,7 +400,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
           <div className="flex items-center gap-2 flex-wrap">
             <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs text-xs">
               {[
-                { id: 'all', label: 'All Types' },
+                { id: 'all', label: 'Tất cả loại' },
                 { id: 'stadium_concert', label: 'Concert' },
                 { id: 'cup_sleeve_cafe', label: 'Cafe Meetup' },
                 { id: 'photocard_trade', label: 'Trade Card' },
@@ -437,7 +429,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search venues, tour names, artists..."
+                placeholder="Tìm địa điểm, tên tour..."
                 className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 shadow-2xs font-sans"
               />
             </div>
@@ -451,38 +443,48 @@ export const LocationAwareEventExplorer: React.FC = () => {
         {viewMode === 'map' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
-            {/* Left 7 Columns: OpenStreetMap + Leaflet Interactive GPS Engine */}
-            <div 
-              className="lg:col-span-7 rounded-none overflow-hidden bg-slate-950 border-2 border-black shadow-[4px_4px_0px_#000000] relative flex flex-col justify-between"
-              style={{ isolation: 'isolate', zIndex: 1 }}
-            >
+            {/* Left 7 Columns: High-Tech GPS Interactive Map Canvas / Radar */}
+            <div className="lg:col-span-7 rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 shadow-xl relative min-h-[460px] sm:min-h-[540px] flex flex-col justify-between">
               
-              {/* Real Interactive OpenStreetMap + Leaflet Engine */}
-              <EventLeafletMap
-                userLocation={userLocation}
-                events={filteredEvents}
-                selectedEventId={selectedEventId}
-                onSelectEvent={(id) => setSelectedEventId(id)}
-                height="500px"
-              />
+              {/* Map Top Overlay HUD: GPS Status & Stats */}
+              <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between gap-3 pointer-events-none">
+                <div className="pointer-events-auto px-3 py-1.5 rounded-xl bg-slate-950/85 backdrop-blur-md border border-slate-700/80 text-white flex items-center gap-2 shadow-lg">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="text-[11px] font-mono font-bold tracking-wider uppercase">
+                    GPS Vệ Tinh Radar: {filteredEvents.length} Điểm Sự Kiện
+                  </span>
+                </div>
+
+                <div className="pointer-events-auto flex items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md border border-white/10 text-slate-300 text-[10px] font-mono">
+                    Tọa độ: {userLocation.lat.toFixed(2)}°N, {userLocation.lng.toFixed(2)}°E
+                  </span>
+                </div>
+              </div>
+
+              {/* REAL LEAFLET GPS MAP OVERLAY */}
+              <div className="relative w-full h-[460px] sm:h-[540px] z-10 rounded-xl overflow-hidden shadow-inner border border-slate-200">
+                <RealGpsMap 
+                  events={filteredEvents}
+                  activeEvent={activeEvent}
+                  onEventClick={(ev) => setSelectedEventId(ev.id)}
+                />
+              </div>
 
               {/* Map Bottom Legend / Compass Bar */}
-              <div className="p-3 bg-black border-t-2 border-black text-slate-300 text-xs flex items-center justify-between flex-wrap gap-2 z-10">
-                <div className="flex items-center gap-3 text-[11px] font-mono font-medium flex-wrap">
-                  <span className="flex items-center gap-1.5 text-slate-200">
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500 border border-white" /> You
+              <div className="p-3.5 bg-slate-950/90 border-t border-slate-800 text-slate-300 text-xs flex items-center justify-between flex-wrap gap-2 z-10">
+                <div className="flex items-center gap-3 text-[11px] font-medium flex-wrap">
+                  <span className="flex items-center gap-1.5 text-slate-400">
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> Bạn
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-200">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 border border-black" /> Concert
+                  <span className="flex items-center gap-1.5 text-slate-400">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400" /> Concert
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-200">
-                    <span className="w-2.5 h-2.5 rounded-full bg-pink-500 border border-black" /> Cafe Meetup
+                  <span className="flex items-center gap-1.5 text-slate-400">
+                    <span className="w-2.5 h-2.5 rounded-full bg-pink-400" /> Cafe Meetup
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-200">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500 border border-black" /> Manga/Cosplay
-                  </span>
-                  <span className="flex items-center gap-1.5 text-slate-200">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 border border-black" /> Gaming
+                  <span className="flex items-center gap-1.5 text-slate-400">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-400" /> Manga/Cosplay
                   </span>
                 </div>
 
@@ -495,10 +497,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         window.open(url, '_blank');
                       }
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563eb] hover:bg-blue-600 text-white text-[11px] font-mono font-bold uppercase transition-all cursor-pointer border-2 border-black shadow-[2px_2px_0px_#000000]"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition-all cursor-pointer"
                   >
                     <Compass size={12} />
-                    <span>GOOGLE MAPS DIRECTIONS</span>
+                    <span>Chỉ Đường Google Maps</span>
                     <ArrowUpRight size={11} />
                   </button>
                 </div>
@@ -522,7 +524,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
                     <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-mono font-bold">
                       <LocateFixed size={12} className="text-emerald-600" />
-                      <span>Within {activeEvent.distanceKm} km of you</span>
+                      <span>Cách bạn {activeEvent.distanceKm} km</span>
                     </span>
                   </div>
 
@@ -586,11 +588,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
                     <div>
                       <span className="text-[10px] text-slate-400 font-mono uppercase font-bold tracking-wider block">
-                        {activeEvent.freeEntry ? 'Admission' : 'Tickets From'}
+                        {activeEvent.freeEntry ? 'Hình Thức' : 'Giá Vé Từ'}
                       </span>
                       <div className="text-base sm:text-lg font-black text-slate-950">
                         {activeEvent.freeEntry ? (
-                          <span className="text-emerald-600">Free Entry (RSVP)</span>
+                          <span className="text-emerald-600">Miễn Phí (Free RSVP)</span>
                         ) : (
                           formatPrice(activeEvent.priceUSD, activeEvent.priceVND)
                         )}
@@ -602,7 +604,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         type="button"
                         onClick={() => handleShare(activeEvent)}
                         className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
-                        title="Share event link"
+                        title="Chia sẻ link sự kiện"
                       >
                         {copiedLink ? <Check size={14} className="text-emerald-600" /> : <Share2 size={14} />}
                       </button>
@@ -620,7 +622,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         className="px-4 py-2.5 rounded-xl hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
                       >
                         <Ticket size={13} style={{ color: '#ffffff' }} />
-                        <span>{activeEvent.freeEntry ? 'RSVP Now' : 'Book Tickets'}</span>
+                        <span>{activeEvent.freeEntry ? 'Đăng Ký Tham Gia' : 'Đặt Vé Ngay'}</span>
                       </button>
                     </div>
                   </div>
@@ -628,14 +630,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 </div>
               ) : (
                 <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500 text-sm">
-                  No events found within the selected radius. Try increasing the radius or choosing another city.
+                  Không tìm thấy sự kiện nào trong bán kính đã chọn. Hãy tăng bán kính lên hoặc chọn thành phố khác.
                 </div>
               )}
 
               {/* Quick Scrollable Nearby Events List Below Spotlight */}
               <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono block px-1">
-                  Other nearby events ({filteredEvents.length}):
+                  Các địa điểm khác lân cận ({filteredEvents.length}):
                 </span>
                 {filteredEvents.map(ev => {
                   const isCurrent = ev.id === activeEvent?.id;
@@ -687,10 +689,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
             <div className="flex items-center justify-between mb-6 flex-wrap gap-4 pb-4 border-b border-slate-100">
               <div>
                 <h3 className="text-lg sm:text-xl font-black text-slate-900 uppercase">
-                  Fandom Event Calendar by Date
+                  Lịch Sự Kiện Fandom Theo Ngày
                 </h3>
                 <p className="text-xs text-slate-500 mt-1">
-                  Select a date to quickly filter concerts, offline meetups, and anime exhibitions.
+                  Chọn ngày để lọc nhanh các concert, offline meetup và triển lãm anime.
                 </p>
               </div>
 
@@ -700,7 +702,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   onClick={() => setSelectedDate('')}
                   className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors"
                 >
-                  ✕ Clear date filter ({selectedDate})
+                  ✕ Bỏ lọc ngày ({selectedDate})
                 </button>
               )}
             </div>
@@ -723,7 +725,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     }`}
                   >
                     <span className="text-[10px] font-mono uppercase font-bold text-slate-400 block">
-                      {new Date(dateStr).toLocaleDateString('en-US', { weekday: 'short' })}
+                      {new Date(dateStr).toLocaleDateString('vi-VN', { weekday: 'short' })}
                     </span>
                     <span className="text-base font-black block my-0.5">
                       {dateStr.split('-').slice(1).join('/')}
@@ -731,7 +733,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     <span className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-full inline-block ${
                       isSelected ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-700'
                     }`}>
-                      {count} events
+                      {count} sự kiện
                     </span>
                   </button>
                 );
@@ -751,7 +753,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         {getEventTypeBadge(ev.type).label}
                       </span>
                       <span className="text-xs font-mono font-bold text-blue-600">
-                        {ev.distanceKm} km away
+                        Cách {ev.distanceKm} km
                       </span>
                     </div>
 
@@ -772,9 +774,9 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-400 font-mono block">From</span>
+                      <span className="text-[10px] text-slate-400 font-mono block">Giá từ</span>
                       <strong className="text-sm font-black text-slate-900">
-                        {ev.freeEntry ? 'Free' : formatPrice(ev.priceUSD, ev.priceVND)}
+                        {ev.freeEntry ? 'Miễn phí' : formatPrice(ev.priceUSD, ev.priceVND)}
                       </strong>
                     </div>
 
@@ -784,7 +786,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                       style={{ backgroundColor: '#000000', color: '#ffffff' }}
                       className="px-3.5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-slate-800 transition-colors"
                     >
-                      {ev.freeEntry ? 'RSVP' : 'Get Tickets'}
+                      {ev.freeEntry ? 'RSVP' : 'Mua Vé'}
                     </button>
                   </div>
                 </div>
@@ -815,7 +817,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                           {getEventTypeBadge(ev.type).label}
                         </span>
                         <span className="text-xs font-mono font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
-                          {ev.distanceKm} km away
+                          Cách bạn {ev.distanceKm} km
                         </span>
                         <span className="text-xs text-slate-400">• {ev.date} ({ev.time})</span>
                       </div>
@@ -832,9 +834,9 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
                   <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end pt-3 md:pt-0 border-t md:border-t-0 border-slate-100">
                     <div className="text-left md:text-right">
-                      <span className="text-[10px] text-slate-400 font-mono uppercase block">Tickets</span>
+                      <span className="text-[10px] text-slate-400 font-mono uppercase block">Giá vé</span>
                       <strong className="text-base font-black text-slate-900">
-                        {ev.freeEntry ? 'Free RSVP' : formatPrice(ev.priceUSD, ev.priceVND)}
+                        {ev.freeEntry ? 'Miễn phí RSVP' : formatPrice(ev.priceUSD, ev.priceVND)}
                       </strong>
                     </div>
 
@@ -846,7 +848,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                           window.open(url, '_blank');
                         }}
                         className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
-                        title="Google Maps Directions"
+                        title="Chỉ đường Google Maps"
                       >
                         <Compass size={14} />
                       </button>
@@ -857,7 +859,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         style={{ backgroundColor: '#000000', color: '#ffffff' }}
                         className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white hover:bg-slate-800 transition-all cursor-pointer shrink-0"
                       >
-                        {ev.freeEntry ? 'RSVP Now' : 'Book Tickets'}
+                        {ev.freeEntry ? 'Đăng Ký Tham Gia' : 'Đặt Vé Ngay'}
                       </button>
                     </div>
                   </div>
@@ -869,7 +871,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
       </div>
 
-      {/* ==================== 5. MODAL: DIRECT TICKET BOOKING & RSVP MEETUP ==================== */}
+      {/* ==================== 5. MODAL: ĐẶT VÉ TRỰC TIẾP & RSVP MEETUP ==================== */}
       {bookingEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200 relative">
@@ -893,7 +895,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     {getEventTypeBadge(bookingEvent.type).label}
                   </span>
                   <span className="text-xs font-mono font-bold text-slate-500">
-                    📍 {bookingEvent.city} {bookingEvent.distanceKm ? `(${bookingEvent.distanceKm} km away)` : ''}
+                    📍 {bookingEvent.city} {bookingEvent.distanceKm ? `(Cách ${bookingEvent.distanceKm} km)` : ''}
                   </span>
                 </div>
 
@@ -909,7 +911,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 {!bookingEvent.freeEntry && bookingEvent.seatTiers && bookingEvent.seatTiers.length > 0 ? (
                   <div className="space-y-4 mb-6">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-900 block font-mono">
-                      Select Ticket Tier &amp; Seating:
+                      Chọn Hạng Vé &amp; Vị Trí Ngồi:
                     </span>
                     <div className="space-y-2">
                       {bookingEvent.seatTiers.map((tier, idx) => (
@@ -934,7 +936,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                               <span className="text-xs font-bold text-slate-900">{tier.name}</span>
                             </div>
                             <span className="text-[11px] text-slate-500 block pl-5 mt-0.5">
-                              {tier.perks.join(' • ')} ({tier.availableSeats} seats remaining)
+                              {tier.perks.join(' • ')} (Còn {tier.availableSeats} chỗ)
                             </span>
                           </div>
 
@@ -949,7 +951,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
                     {/* Quantity Picker */}
                     <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                      <span className="text-xs font-bold text-slate-700">Ticket Quantity:</span>
+                      <span className="text-xs font-bold text-slate-700">Số lượng vé:</span>
                       <div className="flex items-center gap-3">
                         <button
                           type="button"
@@ -973,21 +975,21 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   /* Free Meetup RSVP Form */
                   <div className="space-y-3 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-900 block font-mono">
-                      Attendee Information (Free RSVP):
+                      Thông Tin Người Tham Gia (Miễn Phí / Free RSVP):
                     </span>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-600 block mb-1">Full Name</label>
+                      <label className="text-[11px] font-bold text-slate-600 block mb-1">Họ và tên</label>
                       <input
                         type="text"
                         value={rsvpName}
                         onChange={e => setRsvpName(e.target.value)}
                         className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
-                        placeholder="Alex Morgan"
+                        placeholder="Nguyễn Văn A"
                       />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[11px] font-bold text-slate-600 block mb-1">Email for QR Ticket</label>
+                        <label className="text-[11px] font-bold text-slate-600 block mb-1">Email nhận vé QR</label>
                         <input
                           type="email"
                           value={rsvpEmail}
@@ -996,7 +998,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] font-bold text-slate-600 block mb-1">Phone Number</label>
+                        <label className="text-[11px] font-bold text-slate-600 block mb-1">Số điện thoại / Zalo</label>
                         <input
                           type="text"
                           value={rsvpPhone}
@@ -1011,10 +1013,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 {/* Total & Submit Button */}
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
                   <div>
-                    <span className="text-[10px] text-slate-400 font-mono block">Total Payment</span>
+                    <span className="text-[10px] text-slate-400 font-mono block">Tổng thanh toán</span>
                     <strong className="text-lg font-black text-slate-950">
                       {bookingEvent.freeEntry
-                        ? '0 USD (Free)'
+                        ? '0 VNĐ (Miễn phí)'
                         : formatPrice(
                             (bookingEvent.seatTiers?.[selectedTierIndex]?.priceUSD || bookingEvent.priceUSD) * ticketQuantity,
                             (bookingEvent.seatTiers?.[selectedTierIndex]?.priceVND || bookingEvent.priceVND) * ticketQuantity
@@ -1028,7 +1030,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     style={{ backgroundColor: '#000000', color: '#ffffff' }}
                     className="px-6 py-3 rounded-xl hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
                   >
-                    {bookingEvent.freeEntry ? 'Confirm RSVP Registration' : 'Confirm & Issue Tickets'}
+                    {bookingEvent.freeEntry ? 'Xác Nhận Đăng Ký RSVP' : 'Xác Nhận & Xuất Vé'}
                   </button>
                 </div>
               </div>
@@ -1040,10 +1042,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 </div>
 
                 <h3 className="text-2xl font-black text-slate-900 uppercase mb-1">
-                  {bookingEvent.freeEntry ? 'Registration Successful!' : 'Event Ticket Booking Confirmed!'}
+                  {bookingEvent.freeEntry ? 'Đăng Ký Tham Gia Thành Công!' : 'Đặt Vé Sự Kiện Thành Công!'}
                 </h3>
                 <p className="text-xs text-slate-600 max-w-md mx-auto mb-6">
-                  Your electronic pass has been securely generated and emailed to you. Please present the QR code/barcode at the venue gate.
+                  Mã vé điện tử đã được xác thực an toàn và gửi đến email của bạn. Vui lòng xuất trình mã QR/Barcode tại cửa soát vé sự kiện.
                 </p>
 
                 {/* Digital Ticket Mock Card */}
@@ -1064,16 +1066,31 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     {bookingEvent.venue} • {bookingEvent.date}
                   </p>
 
-                  {/* Barcode Simulation */}
-                  <div className="mt-4 pt-3 border-t border-dashed border-slate-300 text-center">
-                    <div className="font-mono text-2xl tracking-[0.25em] text-slate-800 font-bold select-all">
-                      ||| | |||| | ||| || |||
+                  {/* Blockchain QR Code Simulation */}
+                    <div className="mt-4 pt-4 border-t border-slate-200 border-dashed flex flex-col items-center">
+                      <div className="p-2 bg-white rounded-xl shadow-sm border border-slate-200">
+                        <QRCode 
+                          value={`https://sepolia.etherscan.io/tx/0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa`} 
+                          size={100} 
+                          style={{ height: "auto", maxWidth: "100px", width: "100%" }}
+                          viewBox={`0 0 100 100`}
+                        />
+                      </div>
                     </div>
-                    <span className="text-[9px] font-mono text-slate-400 block mt-1">
-                      PASS ID: FHP-2025-{Math.floor(100000 + Math.random() * 900000)}
-                    </span>
+                    
+                    <div className="mt-4 text-left bg-slate-900 rounded-lg p-3">
+                        <div className="text-[10px] text-slate-400 font-mono uppercase mb-1 flex items-center justify-between">
+                            <span>Blockchain Ticket</span>
+                            <span className="text-emerald-400 font-bold">MINTED</span>
+                        </div>
+                        <div className="text-[11px] text-white font-mono break-all leading-tight">
+                            TxHash: <span className="text-blue-300">0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa</span>
+                        </div>
+                        <div className="text-[11px] text-white font-mono mt-1">
+                            TokenID: <span className="text-pink-400">#7077</span>
+                        </div>
+                    </div>
                   </div>
-                </div>
 
                 {/* Actions */}
                 <div className="flex items-center justify-center gap-3">
@@ -1086,7 +1103,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold uppercase transition-all shadow-sm cursor-pointer"
                   >
                     <Compass size={14} />
-                    <span>Open Google Maps Directions</span>
+                    <span>Mở Chỉ Đường Google Maps</span>
                   </button>
 
                   <button
@@ -1097,7 +1114,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     }}
                     className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-bold uppercase transition-all cursor-pointer"
                   >
-                    Close
+                    Đóng
                   </button>
                 </div>
               </div>

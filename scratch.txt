@@ -1,0 +1,23 @@
+ms-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
+            title={isLoggedIn ? `${user.name} - Mở Dashboard Cá Nhân` : 'Đăng Nhập'}
+            type="button"
+          >
+            {isLoggedIn ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-amber-400"
+              />
+            ) : (
+              <User style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
+            )}
+          </button>
+
+          {/* Shopping Cart Icon */}
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="header-action-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
+            title="Cart"
+            type="button"
+          >
+            <Shopping
