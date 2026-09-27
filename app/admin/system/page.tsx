@@ -68,7 +68,7 @@ export default function SystemMonitorPage() {
               <div className="text-xs font-mono font-bold text-blue-400">{route}</div>
             </div>
             <div className="text-right">
-              <div className="text-[10px] text-slate-500 font-mono uppercase">Traffic Processed</div>
+              <div className="text-[10px] text-slate-500 font-mono uppercase">Live Ingress Traffic</div>
               <div className="text-sm font-mono font-bold text-white flex items-center justify-end gap-1.5">
                 <span>{svc.totalRequests?.toLocaleString() || 0}</span>
                 <span className="text-[10px] text-slate-400">reqs</span>
