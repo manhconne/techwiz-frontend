@@ -155,7 +155,6 @@ export default function AdminUsersPage() {
         throw new Error('Invalid data format received');
       }
     } catch (err: any) {
-      console.warn('Backend API connection error /api/v1/admin/users:', err);
       // Strictly set error state to "Connection Error" / "Lỗi kết nối" per requirement
       setIsConnectionError(true);
       setErrorMessage('Connection Error');
@@ -232,7 +231,6 @@ export default function AdminUsersPage() {
       });
       setTimeout(() => setActionToast(null), 4000);
     } catch (err: any) {
-      console.warn('Connection error on PUT /api/v1/admin/users/{id}/ban:', err);
       setActionToast({
         type: 'error',
         message: isVi ? 'Lỗi kết nối: Không thể cập nhật trạng thái người dùng.' : 'Connection Error: Failed to update user status to backend server.',

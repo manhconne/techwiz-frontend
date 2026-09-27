@@ -209,7 +209,6 @@ export default function AdminEventsPage() {
         throw new Error('Invalid data format received');
       }
     } catch (err: any) {
-      console.warn('Backend API connection error /api/v1/admin/events/pending:', err);
       setIsConnectionError(true);
       setErrorMessage(isVi ? 'Lỗi kết nối' : 'Connection Error');
       setEvents([]);
@@ -296,7 +295,6 @@ export default function AdminEventsPage() {
         setSelectedEvent((prev) => (prev ? { ...prev, status: 'active' } : null));
       }
     } catch (err: any) {
-      console.warn('Connection error on POST /api/v1/admin/events/{id}/approve:', err);
       setActionToast({
         type: 'error',
         message: isVi ? 'Lỗi kết nối: Không thể gửi yêu cầu duyệt tới máy chủ backend.' : 'Connection Error: Failed to approve event on backend.',
@@ -384,7 +382,6 @@ export default function AdminEventsPage() {
         setSelectedEvent((prev) => (prev ? { ...prev, status: nextStatus, admin_note: reviewForm.admin_note } : null));
       }
     } catch (err: any) {
-      console.warn('Connection error on PUT /api/v1/admin/events/{id}:', err);
       setActionToast({
         type: 'error',
         message: isVi ? 'Lỗi kết nối: Không thể cập nhật trạng thái sự kiện.' : 'Connection Error: Failed to update event status on backend.',
@@ -459,7 +456,6 @@ export default function AdminEventsPage() {
         setSelectedEvent(null);
       }
     } catch (err: any) {
-      console.warn('Connection error on DELETE /api/v1/admin/events/{id}:', err);
       setActionToast({
         type: 'error',
         message: isVi ? 'Lỗi kết nối: Không thể gỡ sự kiện khỏi hệ thống.' : 'Connection Error: Failed to delete event on backend.',

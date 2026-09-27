@@ -110,6 +110,36 @@ export interface TranslationDictionary {
   emailAlerts: string;
   saveChanges: string;
   changesSaved: string;
+
+  // Live Dashboard & API Integration
+  pendingEvents: string;
+  pendingApproval: string;
+  financialReports: string;
+  registeredUsers: string;
+  connectedToBackend: string;
+  connectingToApi: string;
+  connectionError: string;
+  retryConnection: string;
+  viewAllEvents: string;
+  viewAllUsers: string;
+  eventTitle: string;
+  venue: string;
+  reportTitle: string;
+  amount: string;
+  role: string;
+  noPendingEvents: string;
+  noFinancialReports: string;
+  noUsers: string;
+  manageEvents: string;
+  manageUsers: string;
+  quickNavigation: string;
+  liveApiSynced: string;
+  reviewEvent: string;
+  exportCsv: string;
+  viewReport: string;
+  reportsCount: string;
+  eventsCount: string;
+  usersCount: string;
 }
 
 export const translations: Record<Language, TranslationDictionary> = {
@@ -215,6 +245,36 @@ export const translations: Record<Language, TranslationDictionary> = {
     emailAlerts: 'Email Stock Alerts to Admin',
     saveChanges: 'Save Configuration',
     changesSaved: 'Settings updated successfully!',
+
+    // Live Dashboard & API Integration
+    pendingEvents: 'Pending Events',
+    pendingApproval: 'Pending Approval',
+    financialReports: 'Financial Reports',
+    registeredUsers: 'Registered Users',
+    connectedToBackend: 'Connected to Backend API',
+    connectingToApi: 'Connecting to API...',
+    connectionError: 'Backend Connection Offline',
+    retryConnection: 'Retry Connection',
+    viewAllEvents: 'View All Events',
+    viewAllUsers: 'View All Users',
+    eventTitle: 'Event Title',
+    venue: 'Venue & Location',
+    reportTitle: 'Report Title',
+    amount: 'Amount',
+    role: 'Role',
+    noPendingEvents: 'No pending events found.',
+    noFinancialReports: 'No financial reports found.',
+    noUsers: 'No users found.',
+    manageEvents: 'Manage Events',
+    manageUsers: 'Manage Users',
+    quickNavigation: 'Quick Navigation Hub',
+    liveApiSynced: 'Live Telemetry Synced',
+    reviewEvent: 'Review Event',
+    exportCsv: 'Export CSV',
+    viewReport: 'View Report',
+    reportsCount: 'reports generated',
+    eventsCount: 'events awaiting review',
+    usersCount: 'registered users',
   },
   vi: {
     brandTitle: 'Fan Hub Plus',
@@ -318,5 +378,35 @@ export const translations: Record<Language, TranslationDictionary> = {
     emailAlerts: 'Gửi cảnh báo kho hàng qua email cho Admin',
     saveChanges: 'Lưu Cấu Hình',
     changesSaved: 'Đã cập nhật cài đặt thành công!',
+
+    // Live Dashboard & API Integration
+    pendingEvents: 'Sự kiện chờ duyệt',
+    pendingApproval: 'Chờ phê duyệt',
+    financialReports: 'Báo cáo doanh thu',
+    registeredUsers: 'Người dùng hệ thống',
+    connectedToBackend: 'Đã kết nối API Backend',
+    connectingToApi: 'Đang kết nối tới API...',
+    connectionError: 'Lỗi kết nối Backend',
+    retryConnection: 'Thử kết nối lại',
+    viewAllEvents: 'Xem tất cả sự kiện',
+    viewAllUsers: 'Xem tất cả người dùng',
+    eventTitle: 'Tên sự kiện',
+    venue: 'Địa điểm tổ chức',
+    reportTitle: 'Tên báo cáo',
+    amount: 'Số tiền',
+    role: 'Vai trò',
+    noPendingEvents: 'Không có sự kiện chờ duyệt nào.',
+    noFinancialReports: 'Không có báo cáo tài chính nào.',
+    noUsers: 'Không có người dùng nào.',
+    manageEvents: 'Quản lý sự kiện',
+    manageUsers: 'Quản lý người dùng',
+    quickNavigation: 'Trung tâm điều hướng nhanh',
+    liveApiSynced: 'Đồng bộ dữ liệu thời gian thực',
+    reviewEvent: 'Kiểm duyệt sự kiện',
+    exportCsv: 'Xuất file CSV',
+    viewReport: 'Xem báo cáo',
+    reportsCount: 'báo cáo đã tạo',
+    eventsCount: 'sự kiện chờ duyệt',
+    usersCount: 'người dùng đã đăng ký',
   },
 };
