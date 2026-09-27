@@ -1452,7 +1452,7 @@ export const Header: React.FC<HeaderProps> = ({
                           const roles: string[] = Array.isArray(userObj.roles)
                             ? userObj.roles
                             : (userObj.role ? [userObj.role] : []);
-                          const isAdmin = roles.some((r: string) => String(r).toLowerCase() === 'admin') || loginEmail.toLowerCase().includes('admin');
+                          const isAdmin = roles.some((r: string) => String(r).toLowerCase() === 'admin');
                           const userRole = isAdmin ? 'admin' : 'registered';
 
                           setAuthNotification(data.message || 'Login successful!');

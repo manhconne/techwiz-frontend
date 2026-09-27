@@ -62,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const data = text ? JSON.parse(text) : {};
           if (res.ok && data.data) {
             const userData = data.data;
-            const role = (userData.roles && userData.roles.includes('Admin')) || (userData.email && userData.email.toLowerCase().includes('admin'))) ? 'admin' : 'registered';
+            const role = (userData.roles && userData.roles.includes('Admin')) ? 'admin' : 'registered';
             const loggedInUser: UserProfile = {
               id: userData.id,
               name: userData.firstName + ' ' + userData.lastName,
