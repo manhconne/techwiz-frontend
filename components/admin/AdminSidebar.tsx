@@ -8,8 +8,18 @@ import {
   LayoutDashboard,
   Users,
   Calendar,
+  FileText,
+  MessageSquare,
+  FolderTree,
+  Tag,
+  Drama,
   ShieldCheck,
   Store,
+  TrendingUp,
+  Receipt,
+  RotateCcw,
+  LifeBuoy,
+  Bot,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -34,7 +44,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const navItems = [
     { id: 'dashboard', label: isEn ? 'Dashboard Overview' : (t('dashboard') || 'Trang Chủ Admin'), icon: LayoutDashboard, href: '/admin', badge: null },
     { id: 'users', label: isEn ? 'User Management' : (t('users') || 'Quản lý người dùng'), icon: Users, href: '/admin/users', badge: null },
-    { id: 'events', label: isEn ? 'Content & Events' : (t('events') || 'Quản lý bài viết / sự kiện'), icon: Calendar, href: '/admin/events', badge: null },
+    { id: 'events', label: isEn ? 'Event Management' : 'Quản lý sự kiện', icon: Calendar, href: '/admin/events', badge: null },
+    { id: 'contents', label: isEn ? 'Content & Posts' : 'Quản lý bài viết', icon: FileText, href: '/admin/contents', badge: null },
+    { id: 'financial', label: isEn ? 'Financial Reports' : 'Báo cáo tài chính', icon: TrendingUp, href: '/admin/financial', badge: null },
+    { id: 'transactions', label: isEn ? 'Transaction History' : 'Lịch sử giao dịch', icon: Receipt, href: '/admin/transactions', badge: null },
+    { id: 'refunds', label: isEn ? 'Refund Requests' : 'Xử lý hoàn tiền', icon: RotateCcw, href: '/admin/refunds', badge: null },
+    { id: 'chatbot', label: isEn ? 'Chatbot & FAQs' : 'Kho tri thức Chatbot', icon: Bot, href: '/admin/chatbot', badge: null },
+    { id: 'feedbacks', label: isEn ? 'Feedback & Support' : 'Ý kiến & Báo lỗi', icon: LifeBuoy, href: '/admin/feedbacks', badge: null },
+    { id: 'comments', label: isEn ? 'Flagged Comments' : 'Bình luận vi phạm', icon: MessageSquare, href: '/admin/comments', badge: null },
+    { id: 'categories', label: isEn ? 'Category Management' : 'Quản lý danh mục', icon: FolderTree, href: '/admin/categories', badge: null },
+    { id: 'tags', label: isEn ? 'Tag Management' : 'Quản lý thẻ (Tags)', icon: Tag, href: '/admin/tags', badge: null },
+    { id: 'characters', label: isEn ? 'Character Profiles' : 'Hồ sơ nhân vật', icon: Drama, href: '/admin/characters', badge: null },
+    { id: 'merchandises', label: isEn ? 'Merchandise Store' : 'Quản lý vật phẩm (Merch)', icon: Store, href: '/admin/merchandises', badge: null },
   ];
 
   return (
