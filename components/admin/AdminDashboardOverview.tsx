@@ -131,12 +131,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
   const [lastSyncTime, setLastSyncTime] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'events' | 'financial' | 'users'>('events');
 
-  const isOnline = !isConnectionError && (
-    !!overviewData ||
-    pendingEvents.length > 0 ||
-    financialReports.length > 0 ||
-    users.length > 0
-  );
+  const isOnline = true; // Bật chế độ Online vĩnh viễn để quay video
 
   const totalRevenueCalculated = isOnline
     ? (Number(overviewData?.totalRevenue ?? overviewData?.revenue ?? overviewData?.total_revenue) ||
@@ -431,15 +426,10 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
     }
 
     const hasAnySuccess = successCount > 0;
-    setIsConnectionError(!hasAnySuccess);
+    // Bỏ qua lỗi API để luôn hiển thị giao diện mẫu (Mock Data) cực đẹp cho video demo!
+    setIsConnectionError(false);
     if (!hasAnySuccess) {
-      setOverviewData(null);
-      setPendingEvents([]);
-      setPendingMeta({ total: 0 });
-      setFinancialReports([]);
-      setReportsMeta({ total: 0 });
-      setUsers([]);
-      setUsersMeta({ total: 0 });
+      // Fake delay to show loading
     }
 
     setLastSyncTime(new Date().toLocaleTimeString());
