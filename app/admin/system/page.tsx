@@ -283,8 +283,8 @@ export default function SystemMonitorPage() {
               </div>
 
               <div className="space-y-2 font-mono text-xs">
-                {sysStatus?.recentRoutes && sysStatus.recentRoutes.length > 0 ? (
-                  sysStatus.recentRoutes.map((route: any, idx: number) => (
+                {(Array.isArray(sysStatus?.recentRoutes) ? sysStatus.recentRoutes : (sysStatus?.recentRoutes ? [sysStatus.recentRoutes] : [])).length > 0 ? (
+                  (Array.isArray(sysStatus?.recentRoutes) ? sysStatus.recentRoutes : [sysStatus?.recentRoutes]).map((route: any, idx: number) => (
                     <div key={idx} className="bg-slate-950 border border-slate-800/80 px-4 py-2.5 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
                       <div className="flex items-center gap-3">
                         <span className="text-slate-500">{route.time}</span>
