@@ -1,27 +1,6 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  Calendar, 
-  Clock, 
-  Heart, 
-  MessageSquare, 
-  Flame, 
-  Bell, 
-  Check, 
-  ShoppingBag, 
-  MapPin,
-  Ticket,
-  Sparkles,
-  Plus,
-  Send,
-  X,
-  Layers,
-  Share2,
-  Tag,
-  PenTool,
-  Award
-} from 'lucide-react';
 import { mockFeaturedArticles, mockUpcomingReleases } from '../data/mockData';
 import { FandomCategoryKey, UpcomingRelease, FeaturedArticle } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
@@ -50,7 +29,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
   const [submitExcerpt, setSubmitExcerpt] = useState('');
   const [submitContent, setSubmitContent] = useState('');
   const [submitCategory, setSubmitCategory] = useState<FandomCategoryKey>('K-Pop');
-  const [submitAuthor, setSubmitAuthor] = useState('Tokki Fan VIP');
+  const [submitAuthor, setSubmitAuthor] = useState('Editorial Contributor');
   const [submitImage, setSubmitImage] = useState('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80');
   const [submitTags, setSubmitTags] = useState('Comeback, Concert, Fandom');
 
@@ -144,13 +123,13 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
       author: {
         name: submitAuthor.trim() || 'Fandom Contributor',
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-        role: 'Verified Fan Writer ⭐',
+        role: 'Verified Fan Writer',
       },
-      date: 'Hôm nay',
-      readTime: '3 phút đọc',
+      date: 'Today',
+      readTime: '3 min read',
       coverImage: submitImage.trim() || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80',
       tags: submitTags.split(',').map(t => t.trim()).filter(Boolean),
-      badgeText: 'FAN SUBMITTED ⭐',
+      badgeText: 'FAN SUBMISSION',
       isHot: true,
       likes: 1,
       commentsCount: 0,
@@ -160,7 +139,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
     setFanArticles(updated);
     localStorage.setItem('fanhub_fan_articles', JSON.stringify(updated));
 
-    setSubmitToast(`Bài viết "${submitTitle.slice(0, 32)}..." đã được gửi thành công và xuất bản lên feed!`);
+    setSubmitToast(`Article "${submitTitle.slice(0, 32)}..." submitted and published to feed!`);
     setIsSubmitModalOpen(false);
     setSubmitTitle('');
     setSubmitExcerpt('');
@@ -186,72 +165,31 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
     'Cosplay'
   ];
 
-  const isKpopTheme = activeCategory === 'K-Pop';
-  const isAllFandoms = activeCategory === 'all';
-
-  const categoryDotColor = (cat: string) => {
-    switch (cat) {
-      case 'K-Pop': return 'bg-blue-500';
-      case 'Anime': return 'bg-lime-500';
-      case 'Gaming': return 'bg-purple-500';
-      case 'Comics': return 'bg-red-500';
-      case 'Manga': return 'bg-slate-400';
-      case 'Movies': return 'bg-amber-500';
-      case 'TV Shows': return 'bg-yellow-500';
-      case 'Cosplay': return 'bg-emerald-500';
-      default: return 'bg-sky-500';
-    }
-  };
-
   return (
     <section 
-      className="w-full py-16 md:py-24 transition-all duration-300 relative"
+      id="upcoming-releases"
       style={{
-        backgroundColor: 'transparent',
+        paddingTop: '80px',
+        paddingBottom: '96px',
       }}
+      className="w-full py-20 md:py-28 bg-white border-b-4 border-black"
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8">
         
-        {/* ==================== 1. SECTION HEADER & DYNAMIC FILTER BAR ==================== */}
+        {/* ==================== 1. EDITORIAL HEADER & MONOCHROME FILTER ==================== */}
         <div>
-          {/* Top Row: Eyebrow label + Unified Category Tabs */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '32px',
-              gap: '20px',
-              flexWrap: 'wrap',
-            }}
-          >
+          {/* Eyebrow Label + Category Tabs */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
             {/* Eyebrow badge */}
-            <div className="inline-flex items-center gap-2.5 px-4.5 py-2.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs">
-              <span 
-                style={{ 
-                  width: '8px', 
-                  height: '8px', 
-                  backgroundColor: isKpopTheme ? '#2563eb' : '#0f172a', 
-                  display: 'inline-block', 
-                  borderRadius: '50%' 
-                }} 
-              />
-              <span
-                style={{
-                  fontSize: '10.5px',
-                  fontFamily: 'inherit',
-                  fontWeight: 800,
-                  letterSpacing: '0.16em',
-                  textTransform: 'uppercase',
-                  color: isKpopTheme ? '#1e40af' : '#334155',
-                }}
-              >
-                {isKpopTheme ? 'K-Pop Fandom Radar · Tokyo Dome & Weverse Schedule' : 'Editorial Radar · Release Calendar'}
+            <div className="inline-flex items-center gap-2 border-2 border-black px-4 py-2 bg-black text-white">
+              <span className="w-2 h-2 bg-white" />
+              <span className="font-mono text-xs font-bold uppercase tracking-widest">
+                EDITORIAL RADAR // RELEASE CALENDAR
               </span>
             </div>
 
-            {/* Category tabs */}
-            <div className="flex items-center gap-3.5 sm:gap-6 overflow-x-auto scrollbar-none max-w-full px-6 py-3 rounded-full bg-white/95 border border-slate-200/90 shadow-xs backdrop-blur-md">
+            {/* Category tabs (Vibrant Y2K Pop Rectangles) */}
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none max-w-full pb-2">
               {categories.map((cat) => {
                 const isSelected = activeCategory === cat;
                 return (
@@ -259,72 +197,41 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                     key={cat}
                     onClick={() => handleCategoryClick(cat)}
                     type="button"
-                    style={{
-                      padding: '4px 0 6px 0',
-                      fontSize: '11.5px',
-                      fontWeight: isSelected ? 800 : 600,
-                      letterSpacing: '0.06em',
-                      textTransform: 'uppercase',
-                      color: isSelected ? (isKpopTheme ? '#1d4ed8' : '#0f172a') : '#64748b',
-                      background: 'none',
-                      border: 'none',
-                      borderBottom: isSelected 
-                        ? `2.5px solid ${isKpopTheme ? '#2563eb' : '#0f172a'}` 
-                        : '2.5px solid transparent',
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      transition: 'all 0.15s ease',
-                    }}
-                    className="hover:text-slate-900"
+                    style={{ borderRadius: '0px' }}
+                    className={`px-4 py-2 text-xs font-mono font-black tracking-widest uppercase cursor-pointer whitespace-nowrap transition-all duration-100 border-2 border-black ${
+                      isSelected
+                        ? 'bg-[#ff2e93] text-white shadow-[3px_3px_0px_#000000] translate-x-[-1px] translate-y-[-1px]'
+                        : 'bg-white text-black hover:bg-[#fefce8] hover:shadow-[2px_2px_0px_#000000]'
+                    }`}
                   >
-                    {cat === 'all' ? 'All Fandoms' : cat}
+                    {isSelected && <span>★ </span>}
+                    {cat === 'all' ? 'All Categories' : cat}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Section Title Row */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'space-between',
-              paddingBottom: '28px',
-              borderBottom: '1px solid #e2e8f0',
-              gap: '20px',
-              flexWrap: 'wrap',
-            }}
-          >
+          {/* Section Title Row with Playfair Display and Visual Punctuation */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between pb-8 border-b-2 border-black gap-6">
             <div>
-              <h2
-                style={{
-                  fontSize: 'clamp(28px, 3.2vw, 46px)',
-                  lineHeight: 1.15,
-                  fontWeight: 900,
-                  color: '#0f172a',
-                  letterSpacing: '-0.025em',
-                  margin: 0,
-                }}
-              >
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-3 h-3 bg-[#ff2e93] border-2 border-black" />
+                <div className="w-12 h-[3px] bg-[#00f0ff]" />
+                <div className="w-3 h-3 bg-[#ffd60a] border-2 border-black" />
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-black leading-tight tracking-tight">
                 Trending Articles{' '}
-                <em style={{ fontWeight: 400, color: '#64748b', fontStyle: 'italic', fontFamily: 'serif' }}>
-                  &amp; Release Schedule
+                <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
+                  &amp; Upcoming Drops
                 </em>
               </h2>
             </div>
 
-            <div className="px-4.5 py-2.5 rounded-full flex items-center gap-2.5 bg-white/95 border border-slate-200/90 shadow-2xs">
-              <span style={{ fontSize: '12.5px', color: '#334155', fontWeight: 600 }}>
-                <strong style={{ color: isKpopTheme ? '#1d4ed8' : '#0f172a', fontWeight: 900, fontSize: '15px' }}>
-                  {filteredArticles.length}
-                </strong>{' '}
-                articles &nbsp;·&nbsp;{' '}
-                <strong style={{ color: isKpopTheme ? '#1d4ed8' : '#0f172a', fontWeight: 900, fontSize: '15px' }}>
-                  {filteredReleases.length}
-                </strong>{' '}
-                releases
-              </span>
+            <div className="border-2 border-black bg-[#fefce8] px-4 py-2 font-mono text-xs text-black flex items-center gap-2 self-start md:self-end shadow-[3px_3px_0px_#000000]">
+              <span className="font-black text-sm text-[#ff2e93]">{filteredArticles.length}</span> ARTICLES
+              <span className="text-neutral-400">/</span>
+              <span className="font-black text-sm text-black">{filteredReleases.length}</span> DROPS
             </div>
           </div>
         </div>
@@ -334,40 +241,41 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
           
           {/* -------------------- COLUMN A: FEATURED ARTICLES (7 COLS) -------------------- */}
           <div className="lg:col-span-7 flex flex-col gap-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-1">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-black">
               <div className="flex items-center gap-3">
-                <div className={`w-3.5 h-3.5 rounded-full ${isKpopTheme ? 'bg-blue-600 shadow-[0_0_10px_#2563eb]' : 'bg-red-500'} animate-pulse`} />
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight">
-                  Featured Articles &amp; Fandom Dispatches
+                <div className="w-3 h-3 bg-[#00f0ff] border border-black" />
+                <h3 className="font-serif text-2xl font-normal italic text-black">
+                  Fandom Dispatches &amp; Editorial Lore
                 </h3>
               </div>
 
               {/* View Switcher & Fan Submit Trigger */}
               <div className="flex items-center gap-2 flex-wrap">
                 {/* View Mode Toggle */}
-                <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
+                <div className="flex items-center border-2 border-black text-xs font-mono shadow-[2px_2px_0px_#000000]">
                   <button
                     type="button"
                     onClick={() => setViewMode('grid')}
-                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                    style={{ borderRadius: '0px' }}
+                    className={`px-3 py-1.5 font-black uppercase tracking-wider cursor-pointer transition-colors duration-100 ${
                       viewMode === 'grid'
-                        ? 'bg-white text-slate-900 shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900'
+                        ? 'bg-[#ffd60a] text-black'
+                        : 'bg-white text-black hover:bg-neutral-100'
                     }`}
                   >
-                    Dạng Thẻ
+                    Grid
                   </button>
                   <button
                     type="button"
                     onClick={() => setViewMode('timeline')}
-                    className={`px-3 py-1 rounded-lg font-bold transition-all flex items-center gap-1 ${
+                    style={{ borderRadius: '0px' }}
+                    className={`px-3 py-1.5 font-black uppercase tracking-wider cursor-pointer transition-colors duration-100 border-l-2 border-black ${
                       viewMode === 'timeline'
-                        ? 'bg-white text-slate-900 shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900'
+                        ? 'bg-[#ffd60a] text-black'
+                        : 'bg-white text-black hover:bg-neutral-100'
                     }`}
                   >
-                    <Layers className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Mốc Thời Gian (Timeline)</span>
+                    <span>Timeline</span>
                   </button>
                 </div>
 
@@ -375,82 +283,87 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                 <button
                   type="button"
                   onClick={() => setIsSubmitModalOpen(true)}
-                  className="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center gap-1.5 hover:bg-slate-800 transition-colors shadow-xs"
-                  title="Cho phép người dùng gửi bài viết bài đánh giá fandom"
+                  style={{ borderRadius: '0px' }}
+                  className="px-4 py-2 bg-[#ff2e93] text-white text-xs font-mono font-black uppercase tracking-widest hover:bg-[#ff007f] border-2 border-black transition-all duration-100 cursor-pointer shadow-[3px_3px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                  title="Submit Fandom Article"
                 >
-                  <PenTool className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Gửi Bài Viết</span>
+                  <span>[+ SUBMIT POST]</span>
                 </button>
               </div>
             </div>
 
             {/* Submission Toast Notification */}
             {submitToast && (
-              <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold flex items-center gap-2 shadow-sm animate-fade-in">
-                <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              <div 
+                style={{ borderRadius: '0px' }}
+                className="p-4 bg-[#ffd60a] text-black border-2 border-black text-xs font-mono font-black flex items-center gap-2 shadow-[3px_3px_0px_#000]"
+              >
+                <span>[OK]</span>
                 <span>{submitToast}</span>
               </div>
             )}
 
             {filteredArticles.length === 0 ? (
-              <div className="p-8 text-center bg-white/90 rounded-2xl border border-dashed border-slate-300 text-slate-500 text-sm">
-                No articles found in this category.
+              <div 
+                style={{ borderRadius: '0px' }}
+                className="p-12 text-center bg-neutral-50 border-2 border-dashed border-black font-mono text-neutral-600 text-sm"
+              >
+                No dispatches available in this category.
               </div>
             ) : viewMode === 'timeline' ? (
-              /* TIMELINE EVENT VIEW (MỐC THỜI GIAN SỰ KIỆN) */
-              <div className="relative pl-6 sm:pl-8 space-y-8 before:absolute before:left-3 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-300">
+              /* TIMELINE VIEW (Vibrant Y2K Pop) */
+              <div className="relative pl-8 space-y-8 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-black">
                 {filteredArticles.map((art) => {
                   const likesCount = likedArticles[art.id] !== undefined ? likedArticles[art.id] : art.likes;
 
                   return (
                     <div key={art.id} className="relative group">
-                      {/* Timeline Milestone Dot */}
-                      <span className="absolute -left-6 sm:-left-8 top-1.5 w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center border-2 border-white ring-2 ring-slate-900/20 shadow-sm">
-                        <Clock className="w-3 h-3 text-amber-400" />
+                      {/* Timeline Milestone Square */}
+                      <span 
+                        style={{ borderRadius: '0px' }}
+                        className="absolute -left-8 top-1 w-6 h-6 bg-[#ff2e93] text-white flex items-center justify-center border-2 border-black font-mono text-[9px] font-black shadow-[2px_2px_0px_#000]"
+                      >
+                        //
                       </span>
 
                       {/* Timeline Card */}
-                      <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 hover:border-slate-400 transition-all shadow-sm hover:shadow-md flex flex-col md:flex-row gap-5">
+                      <div 
+                        style={{ borderRadius: '0px' }}
+                        className="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#00f0ff] hover:-translate-y-1 transition-all duration-100 flex flex-col md:flex-row gap-6 group"
+                      >
                         <img
                           src={art.coverImage}
                           alt={art.title}
-                          className="w-full md:w-44 h-36 rounded-xl object-cover flex-shrink-0"
+                          style={{ borderRadius: '0px' }}
+                          className="w-full md:w-48 h-36 object-cover shrink-0 border-2 border-black group-hover:scale-105 transition-all duration-300"
                         />
-                        <div className="flex-1 flex flex-col justify-between space-y-2">
+                        <div className="flex-1 flex flex-col justify-between space-y-3">
                           <div>
-                            <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
-                              <span className="font-mono font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                                MỐC SỰ KIỆN: {art.date}
+                            <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500 mb-1">
+                              <span className="border border-black bg-[#fefce8] px-2 py-0.5 font-bold uppercase text-black">
+                                {art.date}
                               </span>
-                              <span className="font-bold text-slate-700">{art.readTime}</span>
+                              <span className="font-bold">{art.readTime}</span>
                             </div>
 
-                            <h4 className="text-base font-black text-slate-900 leading-snug hover:text-amber-600 transition-colors">
+                            <h4 className="font-serif text-xl font-bold leading-snug text-black">
                               {art.title}
                             </h4>
 
-                            <p className="text-xs text-slate-600 line-clamp-2 mt-1 font-normal">
+                            <p className="font-serif text-xs leading-relaxed text-neutral-600 line-clamp-2 mt-1">
                               {art.excerpt}
                             </p>
                           </div>
 
-                          <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                            <div className="flex items-center gap-2">
-                              <img
-                                src={art.author.avatar}
-                                alt={art.author.name}
-                                className="w-5 h-5 rounded-full object-cover"
-                              />
-                              <span className="text-[11px] font-bold text-slate-700">{art.author.name}</span>
-                            </div>
-
+                          <div className="pt-3 border-t-2 border-black flex items-center justify-between font-mono text-xs">
+                            <span className="font-black text-[#ff2e93]">{art.author.name}</span>
                             <button
                               onClick={() => toggleLike(art.id, art.likes)}
                               type="button"
-                              className="inline-flex items-center gap-1 text-slate-500 hover:text-rose-600 text-xs font-bold"
+                              className="inline-flex items-center gap-1.5 cursor-pointer bg-[#fdf2f8] border border-black px-2 py-0.5 text-black hover:bg-[#ff2e93] hover:text-white transition-colors"
                             >
-                              <Heart className={`w-3.5 h-3.5 ${likedArticles[art.id] ? 'fill-rose-500 text-rose-500' : ''}`} />
-                              <span>{likesCount}</span>
+                              <span className="text-[#ff2e93]">★</span>
+                              <span className="font-bold">{likesCount}</span>
                             </button>
                           </div>
                         </div>
@@ -460,214 +373,121 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                 })}
               </div>
             ) : (
-              <div className="flex flex-col gap-8">
+              /* GRID VIEW (Vibrant Y2K Pop Editorial Cards) */
+              <div className="flex flex-col gap-6">
                 {filteredArticles.map((art) => {
                   const likesCount = likedArticles[art.id] !== undefined ? likedArticles[art.id] : art.likes;
 
                   return (
                     <article
                       key={art.id}
-                      className={`group rounded-2xl transition-all duration-300 overflow-hidden flex flex-col sm:flex-row ${
-                        isKpopTheme 
-                          ? 'bg-white border border-slate-200/90 hover:border-blue-500/50 hover:shadow-[0_16px_36px_-4px_rgba(37,99,235,0.12)] hover:-translate-y-1' 
-                          : isAllFandoms
-                          ? 'bg-white border border-slate-200/90 hover:border-slate-800 hover:shadow-[0_12px_32px_rgba(15,23,42,0.08)] hover:-translate-y-1'
-                          : art.category === 'Anime'
-                          ? 'bg-white border border-lime-200 hover:border-lime-500 hover:shadow-lg'
-                          : art.category === 'Gaming'
-                          ? 'bg-white border border-purple-200 hover:border-purple-500 hover:shadow-lg'
-                          : art.category === 'Manga'
-                          ? 'bg-white border border-neutral-300 hover:border-black hover:shadow-lg'
-                          : art.category === 'Comics'
-                          ? 'bg-white border border-amber-200 hover:border-red-500 hover:shadow-lg'
-                          : 'bg-white border border-slate-200 hover:border-amber-500 hover:shadow-lg'
-                      }`}
+                      style={{ borderRadius: '0px' }}
+                      className="group border-2 border-black bg-white shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#00f0ff] hover:-translate-y-1 transition-all duration-100 flex flex-col sm:flex-row overflow-hidden"
                     >
                       {/* Image Thumbnail */}
-                      <div className="sm:w-[42%] relative min-h-[220px] sm:min-h-[280px] overflow-hidden bg-slate-900 shrink-0">
+                      <div className="sm:w-[42%] relative min-h-[220px] sm:min-h-[260px] overflow-hidden bg-black shrink-0 border-b-2 sm:border-b-0 sm:border-r-2 border-black">
                         <img 
                           src={art.coverImage} 
                           alt={art.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent sm:hidden" />
 
                         {/* Top Category Badge */}
-                        <div className="absolute top-3.5 left-3.5 z-10">
-                          {isAllFandoms ? (
-                            /* Clean Luxury All Fandoms Badge */
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-bold tracking-wider uppercase shadow-xs">
-                              <span className={`w-2 h-2 rounded-full ${categoryDotColor(art.category)}`} />
-                              <span>{art.category}</span>
-                            </span>
-                          ) : isKpopTheme ? (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-600/95 backdrop-blur-md text-white text-[10px] font-bold tracking-wider uppercase shadow-xs">
-                              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                              <span>{art.badgeText || 'K-POP EXCLUSIVE'}</span>
-                            </span>
-                          ) : art.category === 'Anime' ? (
-                            <span className="streetwear-tag text-[9px]">
-                              {art.badgeText || 'ANIME STREET'}
-                            </span>
-                          ) : art.category === 'Gaming' ? (
-                            <span className="gaming-hud-badge text-[9px] bg-black/80 text-lime-400 border-lime-400">
-                              {art.badgeText || '⚡ GAMING'}
-                            </span>
-                          ) : art.category === 'Manga' ? (
-                            <span className="manga-tag text-[9px]">
-                              {art.badgeText || '✦ MANGA'}
-                            </span>
-                          ) : art.category === 'Comics' ? (
-                            <span className="comic-burst-tag text-[9px]">
-                              {art.badgeText || '💥 COMICS'}
-                            </span>
-                          ) : (
-                            <span className="cinema-badge text-[9px] bg-black/80">
-                              {art.badgeText || '🎬 CINEMA'}
-                            </span>
-                          )}
+                        <div className="absolute top-3 left-3 z-10">
+                          <span 
+                            style={{ borderRadius: '0px' }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#ffd60a] text-black border-2 border-black font-mono text-[10px] font-black tracking-widest uppercase shadow-[2px_2px_0px_#000000]"
+                          >
+                            <span>★ {art.badgeText || art.category}</span>
+                          </span>
                         </div>
 
                         {art.isHot && (
-                          <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                            <Flame size={11} className="fill-current" />
-                            <span>HOT</span>
+                          <div 
+                            style={{ borderRadius: '0px' }}
+                            className="absolute bottom-3 left-3 px-2.5 py-1 bg-[#ff2e93] text-white font-mono text-[9px] font-black uppercase tracking-widest border-2 border-black shadow-[2px_2px_0px_#000000]"
+                          >
+                            ⚡ HOT DISPATCH
                           </div>
                         )}
                       </div>
 
                       {/* Content Body */}
-                      <div className="p-6 sm:p-7 md:p-8 flex-1 flex flex-col justify-between">
+                      <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between">
                         <div>
                           {/* Author & Meta */}
-                          <div className="flex items-center justify-between text-xs text-slate-500 mb-3.5">
-                            <div className="flex items-center gap-2">
-                              <img 
-                                src={art.author.avatar} 
-                                alt={art.author.name}
-                                className="w-6 h-6 rounded-full object-cover border border-slate-200" 
-                              />
-                              <span 
-                                className="font-bold text-slate-900"
-                                style={{ fontSize: '11.5px' }}
-                              >
-                                {art.author.name}
-                              </span>
-                            </div>
-                            <div 
-                              className="flex items-center gap-1.5 text-slate-500 font-semibold"
-                              style={{ fontSize: '11px' }}
-                            >
-                              <Clock size={13} />
+                          <div className="flex items-center justify-between font-mono text-xs text-neutral-500 mb-3">
+                            <span className="font-black tracking-wide uppercase text-[#ff2e93]">
+                              {art.author.name}
+                            </span>
+                            <div className="flex items-center gap-1.5 font-bold">
+                              <span>//</span>
                               <span>{art.readTime}</span>
                             </div>
                           </div>
 
-                          {/* Title */}
-                          <h4 className="text-base sm:text-xl font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2 mb-3">
+                          {/* Title (Playfair Display) */}
+                          <h4 className="font-serif text-xl sm:text-2xl font-bold leading-tight line-clamp-2 mb-3 text-black">
                             {art.title.replace('GAME START: ', '')}
                           </h4>
 
-                          {/* Excerpt */}
-                          <p className="text-xs sm:text-sm text-slate-600 mb-3.5 line-clamp-3 font-normal leading-relaxed">
+                          {/* Excerpt (Source Serif) */}
+                          <p className="font-serif text-xs sm:text-sm text-neutral-600 mb-4 line-clamp-3 font-normal leading-relaxed">
                             {art.excerpt}
                           </p>
 
-                          {/* Event Data Panel or Quote */}
-                          {isKpopTheme ? (
-                            <div className="p-3.5 bg-gradient-to-r from-blue-50/90 via-sky-50/60 to-blue-50/90 border border-blue-200/80 rounded-xl my-3.5 text-xs shadow-2xs">
-                              <div className="flex items-center justify-between border-b border-blue-200/60 pb-1.5 mb-2 font-bold text-blue-950">
-                                <span className="flex items-center gap-1.5">
-                                  <MapPin size={12} className="text-blue-600" />
-                                  <span>Tokyo Dome Stadium · Live World Tour</span>
-                                </span>
-                                <span className="px-2 py-0.5 rounded-md bg-blue-600 text-white text-[9px] font-bold uppercase tracking-wider">
-                                  VIP STAGE PASS
-                                </span>
-                              </div>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-blue-900 font-medium">
-                                <div className="flex items-center gap-1.5">
-                                  <Calendar size={11} className="text-blue-600" />
-                                  <span>January 21 &amp; 22, 2026</span>
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                  <Ticket size={11} className="text-emerald-600" />
-                                  <span className="text-emerald-700 font-bold">100% Certified Pass</span>
-                                </div>
-                                <div className="sm:col-span-2 text-slate-600 text-[10.5px]">
-                                  Artist: <strong className="text-blue-950">TXT &amp; Soobin</strong> · Fan Support: <span className="font-mono text-blue-800 font-bold">ForeverKookie_</span>
-                                </div>
-                              </div>
-                            </div>
-                          ) : art.category === 'K-Pop' ? (
-                            /* Modern Editorial Event Strip for All Fandoms */
-                            <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl my-3 text-xs">
-                              <div className="flex items-center justify-between border-b border-slate-200/60 pb-1.5 mb-2 font-bold text-slate-800">
-                                <span className="flex items-center gap-1.5">
-                                  <MapPin size={12} className="text-blue-600" />
-                                  <span>Tokyo Dome Stadium</span>
-                                </span>
-                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                                  STAGE PASS // 2026
-                                </span>
-                              </div>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] text-slate-600">
-                                <div className="flex items-center gap-1.5">
-                                  <Calendar size={11} className="text-slate-400" />
-                                  <span>January 21 &amp; 22, 2026</span>
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                  <Ticket size={11} className="text-emerald-600" />
-                                  <span className="text-emerald-700 font-semibold">100% Verified Pass</span>
-                                </div>
-                                <div className="sm:col-span-2 text-slate-500 text-[10.5px]">
-                                  Artist: <strong className="text-slate-800">TXT &amp; Soobin</strong> · Fan Support: <span className="font-mono text-slate-700 font-medium">ForeverKookie_</span>
-                                </div>
-                              </div>
-                            </div>
-                          ) : art.accentQuote ? (
+                          {/* Event Data Panel */}
+                          {art.category === 'K-Pop' ? (
                             <div 
-                              className="my-3.5"
-                              style={{
-                                fontSize: '11px',
-                                fontWeight: '600',
-                                color: '#475569',
-                                borderLeft: isKpopTheme ? '2.5px solid #2563eb' : '2.5px solid #0f172a',
-                                paddingLeft: '10px'
-                              }}
+                              style={{ borderRadius: '0px' }}
+                              className="p-3 bg-[#ecfeff] border-2 border-black my-3 font-mono text-xs shadow-[2px_2px_0px_#000000]"
                             >
-                              {art.accentQuote}
+                              <div className="flex items-center justify-between border-b border-black pb-1.5 mb-2 font-black uppercase tracking-wider text-black">
+                                <span>LOC // Tokyo Dome Stadium</span>
+                                <span className="bg-[#ffd60a] border border-black px-2 py-0.5 text-[10px]">
+                                  PASS // 2026
+                                </span>
+                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-bold text-neutral-700">
+                                <div>
+                                  <span>DATE // Jan 21 &amp; 22, 2026</span>
+                                </div>
+                                <div>
+                                  <span className="text-[#ff2e93]">STATUS // ★ Certified Pass</span>
+                                </div>
+                              </div>
                             </div>
                           ) : null}
                         </div>
 
                         {/* Tags & Action Stats */}
-                        <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                        <div className="pt-4 mt-4 border-t-2 border-black flex items-center justify-between font-mono text-xs">
                           <div className="flex items-center gap-2 flex-wrap">
                             {art.tags.slice(0, 2).map((t, i) => (
                               <span 
                                 key={i} 
-                                className="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium text-[11px] transition-colors"
+                                style={{ borderRadius: '0px' }}
+                                className="px-2.5 py-0.5 border border-black bg-[#fefce8] text-black text-[10px] font-black uppercase tracking-wider"
                               >
                                 #{t}
                               </span>
                             ))}
                           </div>
 
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
                             <button
                               onClick={() => toggleLike(art.id, art.likes)}
                               type="button"
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-500 border border-slate-200/80 transition-all text-xs font-semibold cursor-pointer"
+                              className="inline-flex items-center gap-1.5 cursor-pointer bg-[#fdf2f8] border border-black px-2.5 py-1 text-black hover:bg-[#ff2e93] hover:text-white transition-colors"
                               title="Like"
                             >
-                              <Heart size={13} className={likedArticles[art.id] ? 'fill-red-500 text-red-500' : ''} />
-                              <span className="text-xs font-bold text-slate-700">{likesCount}</span>
+                              <span className="text-[#ff2e93]">★</span>
+                              <span className="font-bold">{likesCount}</span>
                             </button>
 
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 text-slate-600 border border-slate-200/80 text-xs font-semibold">
-                              <MessageSquare size={13} />
-                              <span className="text-xs font-bold text-slate-700">{art.commentsCount}</span>
+                            <div className="inline-flex items-center gap-1 text-black font-bold">
+                              <span>COMMENTS:</span>
+                              <span className="font-black text-[#ff2e93]">{art.commentsCount}</span>
                             </div>
                           </div>
                         </div>
@@ -681,21 +501,24 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
           </div>
 
           {/* -------------------- COLUMN B: UPCOMING RELEASES (5 COLS) -------------------- */}
-          <div className="lg:col-span-5 flex flex-col gap-8">
-            <div className="flex items-center justify-between mb-1">
+          <div className="lg:col-span-5 flex flex-col gap-6">
+            <div className="flex items-center justify-between pb-4 border-b border-black">
               <div className="flex items-center gap-3">
-                <Calendar size={18} className={isKpopTheme ? 'text-blue-600' : 'text-amber-500'} />
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight">
-                  Upcoming Releases
+                <span className="font-mono text-sm font-bold">//</span>
+                <h3 className="font-serif text-2xl font-normal italic text-black">
+                  Scheduled Drops
                 </h3>
               </div>
-              <span className="text-xs font-bold text-slate-800 px-3.5 py-1.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs font-mono">
-                {filteredReleases.length} Scheduled Drops
+              <span className="font-mono text-xs font-bold uppercase tracking-widest border border-black px-3 py-1">
+                {filteredReleases.length} Drops
               </span>
             </div>
 
             {filteredReleases.length === 0 ? (
-              <div className="p-8 text-center bg-white/90 rounded-2xl border border-dashed border-slate-300 text-slate-500 text-sm">
+              <div 
+                style={{ borderRadius: '0px' }}
+                className="p-12 text-center bg-neutral-50 border-2 border-dashed border-black font-mono text-neutral-600 text-sm"
+              >
                 No upcoming drops scheduled in this category.
               </div>
             ) : (
@@ -706,47 +529,50 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                   return (
                     <div
                       key={rel.id}
-                      className={`p-5 sm:p-6 md:p-7 flex flex-col gap-4 group relative overflow-hidden bg-white rounded-2xl border border-slate-200/90 hover:border-blue-500/50 hover:shadow-[0_16px_36px_-4px_rgba(37,99,235,0.12)] hover:-translate-y-1 transition-all duration-300`}
+                      style={{ borderRadius: '0px' }}
+                      className="p-6 flex flex-col gap-4 group bg-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ffd60a] hover:-translate-y-1 transition-all duration-100"
                     >
                       {/* Top Header: Badge & Days Countdown */}
-                      <div className="flex items-center justify-between gap-2.5">
-                        <span className={`px-3 py-1 text-[10.5px] font-mono font-extrabold uppercase rounded-full tracking-wider ${
-                          isKpopTheme ? 'bg-blue-50 text-blue-800 border border-blue-200' : 'bg-slate-100 text-slate-800 border border-slate-200'
-                        }`}>
-                          {rel.badgeText || rel.status}
+                      <div className="flex items-center justify-between gap-2.5 font-mono">
+                        <span 
+                          style={{ borderRadius: '0px' }}
+                          className="px-3 py-1 text-[10.5px] font-black uppercase tracking-widest border-2 border-black bg-[#ff2e93] text-white shadow-[2px_2px_0px_#000]"
+                        >
+                          ★ {rel.badgeText || rel.status}
                         </span>
 
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-amber-900 text-xs font-semibold">
-                          <Clock size={12} className="text-amber-600" />
-                          <span>{rel.daysRemaining} days left</span>
+                        <div 
+                          style={{ borderRadius: '0px' }}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 border-2 border-black bg-[#ffd60a] text-black text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000]"
+                        >
+                          <span>⚡</span>
+                          <span>{rel.daysRemaining}d remaining</span>
                         </div>
                       </div>
 
                       {/* Main Release Info */}
-                      <div className="flex items-start gap-4 sm:gap-5">
+                      <div className="flex items-start gap-5">
                         <img 
                           src={rel.coverImage} 
                           alt={rel.title}
-                          className="w-20 h-20 sm:w-24 sm:h-24 object-cover shrink-0 group-hover:scale-105 transition-transform rounded-xl border border-slate-200" 
+                          style={{ borderRadius: '0px' }}
+                          className="w-24 h-24 object-cover shrink-0 border-2 border-black group-hover:scale-105 transition-all duration-300 shadow-[2px_2px_0px_#000]" 
                         />
                         <div className="flex-1 min-w-0">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                            {rel.category} • {rel.type}
+                          <span className="font-mono text-[10px] font-black text-[#ff2e93] uppercase tracking-widest block mb-1">
+                            {rel.category} // {rel.type}
                           </span>
-                          <h5 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2">
+                          <h5 className="font-serif text-lg font-bold text-black leading-snug line-clamp-2">
                             {rel.title}
                           </h5>
-                          <p className="text-xs text-slate-500 font-medium truncate mt-1">
-                            By: {rel.creatorOrArtist}
+                          <p className="font-serif text-xs text-neutral-600 truncate mt-1">
+                            {rel.creatorOrArtist}
                           </p>
-                          <div className="flex items-baseline gap-2 mt-2">
-                            <span className="text-slate-950 text-base font-black">
+                          <div className="flex items-baseline gap-2 mt-2 font-mono">
+                            <span className="text-black text-lg font-black">
                               ${rel.priceUSD}
                             </span>
-                            <span 
-                              className="text-slate-500 font-semibold"
-                              style={{ fontFamily: "'Fira Code', monospace", fontSize: '12px' }}
-                            >
+                            <span className="text-neutral-500 text-xs font-bold">
                               ({rel.priceVND.toLocaleString('vi-VN')} ₫)
                             </span>
                           </div>
@@ -755,20 +581,18 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
 
                       {/* Inclusions / Perks */}
                       {rel.perks && rel.perks.length > 0 && (
-                        <div className={`${isKpopTheme ? 'bg-blue-50/60 border-blue-100' : 'bg-slate-50/80 border-slate-100'} p-3.5 rounded-xl border text-xs text-slate-600 flex flex-col gap-1.5 my-1`}>
-                          <div className="flex items-center justify-between text-[10.5px] font-bold uppercase tracking-wider">
-                            <span className={isKpopTheme ? 'text-blue-900' : 'text-slate-500'}>INCLUSIONS &amp; PERKS:</span>
-                            <span className={isKpopTheme ? 'text-blue-600 font-semibold' : 'text-slate-400 font-semibold'}>{rel.category} Official</span>
+                        <div 
+                          style={{ borderRadius: '0px' }}
+                          className="bg-[#fefce8] p-3.5 border-2 border-black text-xs font-mono text-black flex flex-col gap-1.5 my-1 shadow-[2px_2px_0px_#000]"
+                        >
+                          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest pb-1 border-b border-black">
+                            <span className="text-[#ff2e93]">INCLUSIONS &amp; SPECIFICATIONS:</span>
+                            <span className="text-black font-bold">OFFICIAL DROP</span>
                           </div>
-                          <div className="flex flex-col gap-1 text-[11.5px] text-slate-700 font-medium">
-                            {(isKpopTheme ? [
-                              'Collector Hologram Photocard Set (5ea)',
-                              'Official Lightstick Keyring Charm',
-                              '120-Page Stage Monograph & Deluxe Box',
-                              'Exclusive Tokyo Dome Pass POB'
-                            ] : rel.perks).slice(0, 4).map((perk, pIdx) => (
-                              <div key={pIdx} className="flex items-center gap-2 truncate">
-                                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isKpopTheme ? 'bg-blue-600' : 'bg-slate-400'}`} />
+                          <div className="flex flex-col gap-1 text-[11px] pt-1">
+                            {rel.perks.slice(0, 3).map((perk, pIdx) => (
+                              <div key={pIdx} className="flex items-center gap-2 truncate font-semibold">
+                                <span className="w-1.5 h-1.5 bg-[#ff2e93] shrink-0" />
                                 <span className="truncate">{perk}</span>
                               </div>
                             ))}
@@ -776,40 +600,29 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                         </div>
                       )}
 
-                      {/* Action Buttons */}
-                      <div className="flex items-center gap-3 pt-3.5 mt-1 border-t border-slate-100">
+                      {/* Action Buttons (Vibrant Y2K Pop) */}
+                      <div className="flex items-center gap-3 pt-3 border-t-2 border-black font-mono">
                         <button
                           type="button"
                           onClick={() => handlePreOrder(rel)}
-                          style={isKpopTheme ? {
-                            background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
-                            boxShadow: '0 4px 14px rgba(37, 99, 235, 0.35)',
-                            color: '#ffffff',
-                          } : { 
-                            backgroundColor: '#000000', 
-                            color: '#ffffff' 
-                          }}
-                          className={`flex-1 py-3 px-4 text-white text-xs font-bold uppercase tracking-wider rounded-xl cursor-pointer transition-all flex items-center justify-center gap-2 shadow-xs hover:shadow-md ${
-                            isKpopTheme 
-                              ? 'hover:brightness-110' 
-                              : 'hover:bg-slate-800'
-                          }`}
+                          style={{ borderRadius: '0px' }}
+                          className="flex-1 py-3 px-5 text-black text-xs font-black uppercase tracking-widest bg-[#ffd60a] border-2 border-black hover:bg-[#ff2e93] hover:text-white cursor-pointer transition-all duration-100 shadow-[3px_3px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
                         >
-                          <ShoppingBag size={14} style={{ color: '#ffffff' }} />
-                          <span style={{ color: '#ffffff' }}>Pre-Order Now</span>
+                          [+ PRE-ORDER DROP]
                         </button>
 
                         <button
                           type="button"
                           onClick={() => toggleReminder(rel.id)}
-                          className={`p-3 rounded-xl border transition-colors cursor-pointer flex items-center justify-center ${
+                          style={{ borderRadius: '0px' }}
+                          className={`px-3 py-3 border-2 border-black text-xs font-black uppercase tracking-wider transition-all duration-100 cursor-pointer shrink-0 shadow-[3px_3px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px] ${
                             isReminded 
-                              ? 'bg-amber-100 border-amber-400 text-amber-900 shadow-xs' 
-                              : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                              ? 'bg-[#ff2e93] text-white' 
+                              : 'bg-[#00f0ff] text-black hover:bg-[#38bdf8]'
                           }`}
-                          title={isReminded ? 'Reminder set' : 'Remind me when dropped'}
+                          title={isReminded ? 'Reminder set' : 'Remind me'}
                         >
-                          {isReminded ? <Check size={16} strokeWidth={2.5} /> : <Bell size={16} strokeWidth={2} />}
+                          {isReminded ? '[ALERT ON]' : '[REMIND]'}
                         </button>
                       </div>
 
@@ -819,40 +632,29 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
               </div>
             )}
 
-            {/* Quick VIP Banner Alert */}
+            {/* Vibrant Pop Y2K Section: VIP Priority Banner */}
             <div 
-              style={{
-                background: isKpopTheme 
-                  ? 'linear-gradient(135deg, #020617 0%, #0f172a 45%, #1e3a8a 100%)' 
-                  : 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)'
-              }}
-              className="mt-8 p-6 rounded-2xl flex items-center justify-between shadow-lg text-white border border-blue-900/30"
+              style={{ borderRadius: '0px' }}
+              className="mt-6 p-7 bg-[#ffd60a] text-black border-3 border-black shadow-[6px_6px_0px_#000000] flex flex-col sm:flex-row sm:items-center justify-between gap-6"
             >
               <div>
-                <span className={`text-[10.5px] font-mono font-bold uppercase tracking-wider block ${
-                  isKpopTheme ? 'text-blue-400' : 'text-amber-400'
-                }`}>
-                  {isKpopTheme ? '★ FANDOM VIP MEMBERSHIP &amp; PRIORITY ALLOCATION' : '★ FANDOM VIP MEMBERSHIP'}
+                <span className="font-mono text-[10.5px] font-black uppercase tracking-widest bg-[#ff2e93] text-white px-2.5 py-0.5 border border-black inline-block mb-1 shadow-[2px_2px_0px_#000]">
+                  // FANDOM VIP ALLOCATION //
                 </span>
-                <h4 className="text-base font-extrabold leading-tight mt-1 text-white">
-                  Get 24H Early Drop Access &amp; Priority Allocation
+                <h4 className="font-sans text-xl sm:text-2xl font-black uppercase tracking-tight text-black mt-1">
+                  24-Hour Early Drop Allocation
                 </h4>
+                <p className="font-sans text-xs font-semibold text-neutral-800 mt-1 max-w-sm">
+                  Priority allocation for signed vinyls, limited photocard boxes &amp; stage passes.
+                </p>
               </div>
               <button 
                 type="button"
-                onClick={() => alert('VIP membership pass claimed!')}
-                style={isKpopTheme ? {
-                  background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4)',
-                } : {}}
-                className={`px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl shadow-xs cursor-pointer transition-all flex items-center gap-1.5 shrink-0 ${
-                  isKpopTheme 
-                    ? 'hover:brightness-110 text-white' 
-                    : 'bg-amber-400 hover:bg-amber-300 text-slate-950'
-                }`}
+                onClick={() => alert('VIP membership pass requested!')}
+                style={{ borderRadius: '0px' }}
+                className="px-6 py-3 bg-[#ff2e93] hover:bg-[#e11d48] text-white border-2 border-black font-mono text-xs font-black uppercase tracking-widest cursor-pointer shadow-[3px_3px_0px_#000] active:translate-y-0.5 transition-all shrink-0 self-start sm:self-center"
               >
-                <span>JOIN VIP</span>
-                <span>★</span>
+                [CLAIM ACCESS →]
               </button>
             </div>
 
@@ -862,123 +664,141 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
 
       </div>
 
-      {/* FAN-SUBMITTED CONTENT MODAL */}
+      {/* FAN-SUBMITTED CONTENT MODAL (Vibrant Pop Y2K) */}
       {isSubmitModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 relative animate-in fade-in zoom-in-95">
-            <button
-              onClick={() => setIsSubmitModalOpen(false)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900 rounded-lg hover:bg-slate-100"
-              title="Đóng"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="mb-5">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black uppercase tracking-wider mb-2">
-                <PenTool className="w-3 h-3 text-amber-600" />
-                <span>FAN-SUBMITTED ARTICLE DESK</span>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto font-mono">
+          <div 
+            style={{ borderRadius: '0px' }}
+            className="bg-white max-w-xl w-full border-3 border-black shadow-[8px_8px_0px_#000000] overflow-hidden relative"
+          >
+            {/* Title Bar */}
+            <div className="bg-[#ffd60a] px-5 py-3 border-b-3 border-black flex items-center justify-between select-none">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 bg-[#ff2e93] border border-black" />
+                <span className="font-black uppercase text-xs tracking-wider text-black">
+                  ★ COMMUNITY EDITORIAL DESK ✦
+                </span>
               </div>
-              <h3 className="text-xl font-black text-slate-900">
-                Gửi Bài Viết / Cảm Nhận Fandom Của Bạn
-              </h3>
-              <p className="text-xs text-slate-500 mt-1">
-                Chia sẻ cảm nhận concert, phân tích MV, nhật ký unboxing album hoặc kỷ niệm đu idol cùng cộng đồng.
-              </p>
+              <button
+                onClick={() => setIsSubmitModalOpen(false)}
+                style={{ borderRadius: '0px' }}
+                className="px-2 py-0.5 border-2 border-black bg-white hover:bg-[#ff2e93] hover:text-white text-xs font-black cursor-pointer shadow-[1px_1px_0px_#000] transition-colors"
+                title="Close"
+              >
+                [✕]
+              </button>
             </div>
 
-            <form onSubmit={handleFanSubmit} className="space-y-4">
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Tiêu Đề Bài Viết *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Trải nghiệm săn vé và quẩy hết mình tại concert SEVENTEEN..."
-                  value={submitTitle}
-                  onChange={(e) => setSubmitTitle(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900"
-                />
+            <div className="p-7">
+              <div className="mb-5">
+                <h3 className="font-sans text-xl font-black uppercase text-black">
+                  Submit Fan Dispatch or Review
+                </h3>
+                <p className="font-sans text-xs font-semibold text-neutral-600 mt-1">
+                  Share concert memoirs, album unboxings, or fandom analyses with our global readership.
+                </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <form onSubmit={handleFanSubmit} className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Danh Mục Fandom *</label>
-                  <select
-                    value={submitCategory}
-                    onChange={(e) => setSubmitCategory(e.target.value as any)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white"
-                  >
-                    <option value="K-Pop">K-Pop</option>
-                    <option value="Anime">Anime & Manga</option>
-                    <option value="Gaming">Gaming & Esports</option>
-                    <option value="Movies">Movies & Cinema</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Tên Tác Giả / Bút Danh *</label>
+                  <label className="font-black uppercase tracking-wider block mb-1">Title *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Tokki Fan VIP"
-                    value={submitAuthor}
-                    onChange={(e) => setSubmitAuthor(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                    placeholder="e.g. My Dinh Stadium 30,000 Fandom Experience..."
+                    value={submitTitle}
+                    onChange={(e) => setSubmitTitle(e.target.value)}
+                    style={{ borderRadius: '0px' }}
+                    className="w-full p-2.5 border-2 border-black focus:outline-none focus:border-[#ff2e93] bg-[#fdfbf7] font-medium text-xs"
                   />
                 </div>
-              </div>
 
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Tóm Tắt Ngắn (Excerpt) *</label>
-                <textarea
-                  required
-                  rows={2}
-                  placeholder="Tóm tắt nội dung chính trong 1-2 câu hấp dẫn..."
-                  value={submitExcerpt}
-                  onChange={(e) => setSubmitExcerpt(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900"
-                />
-              </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="font-black uppercase tracking-wider block mb-1">Category *</label>
+                    <select
+                      value={submitCategory}
+                      onChange={(e) => setSubmitCategory(e.target.value as any)}
+                      style={{ borderRadius: '0px' }}
+                      className="w-full p-2.5 border-2 border-black focus:outline-none focus:border-[#ff2e93] bg-[#fdfbf7] font-bold"
+                    >
+                      <option value="K-Pop">K-Pop</option>
+                      <option value="Anime">Anime &amp; Manga</option>
+                      <option value="Gaming">Gaming Arena</option>
+                      <option value="Cosplay">Cosplay &amp; Streetwear</option>
+                    </select>
+                  </div>
 
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">URL Hình Ảnh Bìa Minh Họa</label>
-                <input
-                  type="url"
-                  placeholder="https://images.unsplash.com/..."
-                  value={submitImage}
-                  onChange={(e) => setSubmitImage(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900"
-                />
-              </div>
+                  <div>
+                    <label className="font-black uppercase tracking-wider block mb-1">Author Pen Name *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Tokki Fan Club"
+                      value={submitAuthor}
+                      onChange={(e) => setSubmitAuthor(e.target.value)}
+                      style={{ borderRadius: '0px' }}
+                      className="w-full p-2.5 border-2 border-black focus:outline-none focus:border-[#ff2e93] bg-[#fdfbf7]"
+                    />
+                  </div>
+                </div>
 
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Thẻ Chủ Đề (Tags cách nhau bởi dấu phẩy)</label>
-                <input
-                  type="text"
-                  placeholder="Concert, Review, NewJeans, Fandom"
-                  value={submitTags}
-                  onChange={(e) => setSubmitTags(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900"
-                />
-              </div>
+                <div>
+                  <label className="font-black uppercase tracking-wider block mb-1">Short Excerpt *</label>
+                  <textarea
+                    required
+                    rows={2}
+                    placeholder="Compelling 1-2 sentence lead paragraph..."
+                    value={submitExcerpt}
+                    onChange={(e) => setSubmitExcerpt(e.target.value)}
+                    style={{ borderRadius: '0px' }}
+                    className="w-full p-2.5 border-2 border-black focus:outline-none focus:border-[#ff2e93] bg-[#fdfbf7] text-xs resize-none"
+                  />
+                </div>
 
-              <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => setIsSubmitModalOpen(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl"
-                >
-                  Hủy Bỏ
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 bg-slate-900 text-white text-xs font-black uppercase tracking-wider rounded-xl hover:bg-slate-800 transition-colors shadow-md flex items-center gap-1.5"
-                >
-                  <Send className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Gửi Bài Viết Fandom</span>
-                </button>
-              </div>
-            </form>
+                <div>
+                  <label className="font-black uppercase tracking-wider block mb-1">Cover Image URL</label>
+                  <input
+                    type="url"
+                    placeholder="https://images.unsplash.com/..."
+                    value={submitImage}
+                    onChange={(e) => setSubmitImage(e.target.value)}
+                    style={{ borderRadius: '0px' }}
+                    className="w-full p-2.5 border-2 border-black focus:outline-none focus:border-[#ff2e93] bg-[#fdfbf7]"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-black uppercase tracking-wider block mb-1">Tags (Comma-separated)</label>
+                  <input
+                    type="text"
+                    placeholder="Concert, Review, NewJeans, Fandom"
+                    value={submitTags}
+                    onChange={(e) => setSubmitTags(e.target.value)}
+                    style={{ borderRadius: '0px' }}
+                    className="w-full p-2.5 border-2 border-black focus:outline-none focus:border-[#ff2e93] bg-[#fdfbf7]"
+                  />
+                </div>
+
+                <div className="pt-4 flex items-center justify-end gap-3 border-t-2 border-black">
+                  <button
+                    type="button"
+                    onClick={() => setIsSubmitModalOpen(false)}
+                    style={{ borderRadius: '0px' }}
+                    className="px-4 py-2.5 border-2 border-black text-black hover:bg-neutral-100 font-black uppercase tracking-wider cursor-pointer"
+                  >
+                    CANCEL
+                  </button>
+                  <button
+                    type="submit"
+                    style={{ borderRadius: '0px' }}
+                    className="px-6 py-2.5 bg-[#ff2e93] text-white hover:bg-[#e11d48] border-2 border-black font-black uppercase tracking-widest cursor-pointer shadow-[3px_3px_0px_#000] active:translate-y-0.5 transition-all"
+                  >
+                    [PUBLISH DISPATCH →]
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

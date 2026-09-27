@@ -6,7 +6,7 @@ import { EventHeroBanner } from '../components/EventHeroBanner';
 
 import { UpcomingReleasesAndArticles } from '../components/UpcomingReleasesAndArticles';
 import { AlbumGrid } from '../components/AlbumGrid';
-import { MultimediaCenter } from '../components/MultimediaCenter';
+import { MultimediaTeaserSection } from '../components/MultimediaTeaserSection';
 import { FanCommunityFeed } from '../components/FanCommunityFeed';
 import { WorldTourShowcase } from '../components/WorldTourShowcase';
 import { AlbumDetailModal } from '../components/AlbumDetailModal';
@@ -19,6 +19,7 @@ import { AdminModal } from '../components/AdminModal';
 import { FeedbackModal } from '../components/FeedbackModal';
 
 import { Footer } from '../components/Footer';
+import { Y2KTickerTape } from '../components/Y2KTickerTape';
 // import { TestConnection } from '../components/TestConnection';
 import { Album, FandomCategoryKey } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
@@ -31,7 +32,7 @@ export default function Home() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
-  const { setIsCartOpen } = useCartWishlist();
+  const { setIsCartOpen, setIsWishlistOpen } = useCartWishlist();
 
   // Map selectedFandomCategory to theme attribute key
   const fandomThemeKey = React.useMemo(() => {
@@ -96,16 +97,16 @@ export default function Home() {
           onSelectCategory={(cat) => setSelectedFandomCategory(cat)}
         />
 
+        {/* Y2K Marquee Ticker 01 */}
+        <Y2KTickerTape />
 
-        {/* 3. Bài Viết / Nội Dung Nổi Bật Mới Nhất & Lịch Phát Hành Sắp Tới (Upcoming Releases) */}
-        <div id="upcoming-releases">
-          <UpcomingReleasesAndArticles 
-            initialCategory={selectedFandomCategory}
-            onSelectCategory={(cat) => setSelectedFandomCategory(cat)}
-          />
-        </div>
+        {/* 2. Character & Idol Group Profiles (Encyclopedic Archive, Characters & Lore) */}
+        <IdolProfiles 
+          onSelectArtist={handleSelectArtistFromProfiles} 
+          fandomCategory={selectedFandomCategory}
+        />
 
-        {/* 4. Fandom Content Explorer & Official Album Drops with Embedded Category Spotlight Banner */}
+        {/* 3. Fandom Content Explorer & Official Album Drops with Multi-Filters & Search */}
         <AlbumGrid
           onSelectAlbum={(album) => setSelectedAlbum(album)}
           searchQuery={searchQuery}
@@ -114,19 +115,24 @@ export default function Home() {
           fandomCategory={selectedFandomCategory}
         />
 
-        {/* 4. Character & Idol Group Profiles */}
-        <IdolProfiles 
-          onSelectArtist={handleSelectArtistFromProfiles} 
-          fandomCategory={selectedFandomCategory}
-        />
+        {/* 4. Multimedia Center Spotlight & Teaser Showcase */}
+        <MultimediaTeaserSection />
 
-        {/* 5. Multimedia Center (Trailers, Videos, Podcasts, Livestreams, Soundtracks & Dual Ratings) */}
-        <MultimediaCenter />
+        {/* 5. Trending Articles & Upcoming Drops / Release Calendar */}
+        <div id="upcoming-releases">
+          <UpcomingReleasesAndArticles 
+            initialCategory={selectedFandomCategory}
+            onSelectCategory={(cat) => setSelectedFandomCategory(cat)}
+          />
+        </div>
 
         {/* 6. World Tour & Stadium Arenas Showcase */}
         <WorldTourShowcase />
 
-        {/* 6. Fan Community Social Feed */}
+        {/* Y2K Marquee Ticker 02 (Inverted Obsidian) */}
+        <Y2KTickerTape inverted />
+
+        {/* 7. Fan Community Social Feed */}
         <FanCommunityFeed />
 
 

@@ -94,7 +94,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     durationSeconds: 222,
     views: 18450200,
     releaseDate: '24/06/2024',
-    description: "Siêu phẩm trở lại mùa hè của NewJeans kết hợp cùng huyền thoại Pharrell Williams mang âm hưởng New Jack Swing thập niên 90 độc đáo. Hình ảnh 4K HDR rực rỡ với màu sắc cổ điển retro Y2K cùng vũ đạo năng động.",
+    description: "NewJeans summer blockbuster collaboration with music icon Pharrell Williams, infusing nostalgic 90s New Jack Swing beats. Brilliant 4K HDR visuals with authentic retro Y2K aesthetic and energetic choreography.",
     qualityBadge: '4K ULTRA HD • DOLBY ATMOS',
     rating: {
       average: 4.9,
@@ -118,7 +118,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     ],
     tags: ['NewJeans', 'Supernatural', 'K-Pop', 'MV 4K', 'ADOR', 'Pharrell Williams'],
     trailerMeta: {
-      premiereDate: '24 Tháng 6, 2024',
+      premiereDate: 'June 24, 2024',
       productionStudio: 'ADOR Visual Team & Shin Woo-seok',
       aspectRatio: '16:9 DCI 4K'
     }
@@ -128,7 +128,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
   {
     id: 'media-live-1',
     title: '🔴 [LIVE NOW] SEVENTEEN World Tour [RIGHT HERE] in Goyang Stadium',
-    subtitle: 'Đang phát sóng trực tiếp từ Sân vận động Goyang • Multi-View 4K',
+    subtitle: 'Broadcasting live from Goyang Stadium • Multi-View 4K',
     artist: 'SEVENTEEN',
     agency: 'PLEDIS Entertainment',
     type: 'livestream',
@@ -138,12 +138,12 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     duration: 'LIVE',
     durationSeconds: 0,
     views: 489200,
-    releaseDate: 'Hôm nay',
-    description: 'Buổi hòa nhạc khai mạc chuyến lưu diễn vòng quanh thế giới của SEVENTEEN với 13 thành viên trên sân khấu sân vận động sức chứa 50.000 khán giả. Kết nối Lightstick Caratbong Bluetooth thời gian thực.',
+    releaseDate: 'Today',
+    description: 'Opening kickoff concert for SEVENTEEN world tour with all 13 members in front of 50,000 fans. Real-time Bluetooth Caratbong lightstick syncing enabled.',
     qualityBadge: '4K MULTI-VIEW 60FPS',
     isLive: true,
     liveViewers: 38450,
-    liveStatusText: '38,450 CARATs đang theo dõi trực tiếp',
+    liveStatusText: '38,450 CARATs tuning in live right now',
     rating: {
       average: 5.0,
       count: 42100,
@@ -158,20 +158,20 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       thumbsDown: 820,
     },
     chatMessages: [
-      { id: 'c1', user: 'MinGyu_Stan_VN', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80', badge: 'CARAT VIP', badgeColor: '#f43f5e', message: 'Âm thanh đập đã quá mn ơi! Mingyu đẹp trai đỉnh chóp 🔥🔥🔥', timestamp: '11:58' },
-      { id: 'c2', user: 'Seoul_Vibe_Hoshi', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80', badge: 'TIGER HORANGI', badgeColor: '#f59e0b', message: 'HORANGHAE!! Vũ đạo Super đỉnh thực sự!', timestamp: '11:58' },
-      { id: 'c3', user: 'MaiAnh_KpopFan', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80', badge: 'FAN CỨNG', badgeColor: '#10b981', message: 'Ai có link mua vé concert ở Bangkok tháng 12 chưa ạ?', timestamp: '11:59' },
+      { id: 'c1', user: 'MinGyu_Stan_VN', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80', badge: 'CARAT VIP', badgeColor: '#f43f5e', message: 'The sound system is insane! Mingyu visual is out of this world 🔥🔥🔥', timestamp: '11:58' },
+      { id: 'c2', user: 'Seoul_Vibe_Hoshi', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80', badge: 'TIGER HORANGI', badgeColor: '#f59e0b', message: 'HORANGHAE!! The Super choreography is unreal!', timestamp: '11:58' },
+      { id: 'c3', user: 'MaiAnh_KpopFan', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80', badge: 'TOP FAN', badgeColor: '#10b981', message: 'Does anyone have the official ticketing link for Bangkok in December?', timestamp: '11:59' },
       { id: 'c4', user: 'Joshua_Guitar_Hero', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80', badge: 'SUPER CHAT $10', badgeColor: '#6366f1', message: 'Sending love from Vietnam to all 13 members! Stay healthy! ❤️', timestamp: '11:59' },
     ],
     tags: ['SEVENTEEN', 'RIGHT HERE', 'Livestream', 'Concert 4K', 'CARAT', 'Live Stage']
   },
 
-  // 3. VIDEO: Anh Trai "Say Hi" - Chung Kết Live Stage & Hậu Trường Fancam 4K
+  // 3. VIDEO: Say Hi All-Stars - Grand Finale Stage & Backstage Fancam 4K
   {
     id: 'media-video-1',
-    title: 'Anh Trai "Say Hi" Chung Kết: Sân Khấu "Ngáo Ngơ" & Hậu Trường Tập Luyện 4K',
-    subtitle: 'Tập đặc biệt: Full Performance, Multi-angle Dance & Behind The Stage',
-    artist: 'HIEUTHUHAI, Anh Tú Atus, JSOL, Erik, Quang Hùng MasterD',
+    title: 'Say Hi All-Stars Finale: Stage Performance & Behind-The-Scenes 4K',
+    subtitle: 'Special Episode: Full Performance, Multi-angle Dance & Behind The Stage',
+    artist: 'HIEUTHUHAI, Anh Tu Atus, JSOL, Erik, Quang Hung MasterD',
     agency: 'VieON / Vie Channel',
     type: 'video',
     category: 'V-Pop',
@@ -181,7 +181,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     durationSeconds: 1695,
     views: 8940000,
     releaseDate: '15/09/2024',
-    description: 'Trọn vẹn màn trình diễn bùng nổ của liên quân Anh Trai Say Hi cùng toàn bộ những khoảnh khắc vui nhộn, xúc động sau cánh gà trong đêm chung khấu concert quy mô hơn 25.000 khán giả tại TP.HCM.',
+    description: 'Explosive live stage performance from Say Hi All-Stars with emotional and funny backstage moments at the monumental 25,000-seat stadium concert.',
     qualityBadge: 'FULL HD 1080P60',
     rating: {
       average: 4.8,
@@ -197,19 +197,19 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       thumbsDown: 3100,
     },
     chapters: [
-      { time: '00:00', seconds: 0, title: 'Hậu trường phòng tập vũ đạo' },
-      { time: '06:12', seconds: 372, title: 'Phỏng vấn độc quyền HIEUTHUHAI' },
-      { time: '12:45', seconds: 765, title: 'Live Stage: Bản phối hoàn toàn mới' },
-      { time: '21:30', seconds: 1290, title: 'Khoảnh khắc trao cúp & Bế mạc' }
+      { time: '00:00', seconds: 0, title: 'Backstage choreography rehearsal' },
+      { time: '06:12', seconds: 372, title: 'Exclusive backstage artist interview' },
+      { time: '12:45', seconds: 765, title: 'Live Stage: Brand new audio mix' },
+      { time: '21:30', seconds: 1290, title: 'Trophy ceremony & grand finale' }
     ],
-    tags: ['Anh Trai Say Hi', 'HIEUTHUHAI', 'V-Pop', 'Concert 2024', 'Fancam 4K']
+    tags: ['Say Hi All-Stars', 'HIEUTHUHAI', 'V-Pop', 'Concert 2024', 'Fancam 4K']
   },
 
   // 4. PODCAST: Daebak Show w/ Eric Nam & aespa Karina
   {
     id: 'media-podcast-1',
-    title: 'Daebak Show Ep. 165: aespa Karina & Winter Chia Sẻ Về Bản Hit "Whiplash" & Cyberpunk Tour',
-    subtitle: 'Fandom Audio Talkshow • Phỏng vấn độc quyền về áp lực và khát vọng âm nhạc',
+    title: 'Daebak Show Ep. 165: aespa Karina & Winter on "Whiplash" & Cyberpunk Tour',
+    subtitle: 'Fandom Audio Talkshow • Exclusive in-depth interview on music and creative drive',
     artist: 'Eric Nam ft. Karina & Winter (aespa)',
     agency: 'DIVE Studios',
     type: 'podcast',
@@ -221,7 +221,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     durationSeconds: 2720,
     views: 1250000,
     releaseDate: '02/10/2024',
-    description: 'Tập podcast đặc biệt chào đón Karina và Winter chia sẻ những câu chuyện chưa từng tiết lộ: quá trình luyện thanh cho concept Cyberpunk "Whiplash", cuộc sống ký túc xá và tình cảm dành cho người hâm mộ quốc tế.',
+    description: 'Special podcast episode featuring Karina & Winter sharing unreleased stories: vocal training for the Cyberpunk "Whiplash" concept, dorm life, and appreciation for global MYs.',
     qualityBadge: 'HI-RES PODCAST • STEREO MASTER',
     rating: {
       average: 4.9,
@@ -237,10 +237,10 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       thumbsDown: 640,
     },
     chapters: [
-      { time: '00:00', seconds: 0, title: 'Chào mừng Karina & Winter đến DIVE Studio' },
-      { time: '08:30', seconds: 510, title: 'Concept Cyberpunk trong Whiplash đến từ đâu?' },
-      { time: '22:15', seconds: 1335, title: 'Thói quen ăn uống & Kỷ niệm thời thực tập sinh' },
-      { time: '37:40', seconds: 2260, title: 'Lời nhắn gửi đặc biệt đến cộng đồng MY' }
+      { time: '00:00', seconds: 0, title: 'Welcoming Karina & Winter to DIVE Studio' },
+      { time: '08:30', seconds: 510, title: 'The origin of the Cyberpunk concept in Whiplash' },
+      { time: '22:15', seconds: 1335, title: 'Favorite food habits & trainee day memories' },
+      { time: '37:40', seconds: 2260, title: 'Special heartfelt message to global MY fandom' }
     ],
     podcastMeta: {
       host: 'Eric Nam',
@@ -251,11 +251,11 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     tags: ['Podcast', 'aespa', 'Karina', 'Winter', 'Eric Nam', 'DIVE Studios']
   },
 
-  // 5. SOUNDTRACK: Queen of Tears (Nước Mắt Nữ Hoàng) OST - BSS (SEVENTEEN)
+  // 5. SOUNDTRACK: Queen of Tears OST - BSS (SEVENTEEN)
   {
     id: 'media-ost-1',
     title: 'Queen of Tears OST: "The Reasons of My Smiles" (자꾸만 웃게 돼) - BSS (SEVENTEEN)',
-    subtitle: 'Nhạc phim chính thức bản phòng thu Lossless 24-bit / 96kHz Hi-Res',
+    subtitle: 'Official Original Soundtrack • Lossless 24-bit / 96kHz Hi-Res Studio Master',
     artist: 'BSS (Seungkwan, DK, Hoshi - SEVENTEEN)',
     agency: 'Studio Dragon / Genie Music',
     type: 'soundtrack',
@@ -267,7 +267,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     durationSeconds: 214,
     views: 34200000,
     releaseDate: '10/03/2024',
-    description: 'Ca khúc nhạc phim làm mưa làm gió toàn châu Á từ bộ phim truyền hình kỷ lục "Queen of Tears" (Kim Soo-hyun & Kim Ji-won). Giọng ca ấm áp và đầy cảm xúc của nhóm nhỏ BSS chạm đến trái tim người nghe.',
+    description: 'The pan-Asian hit soundtrack from record-shattering television drama "Queen of Tears". Heartwarming vocals by SEVENTEEN subunit BSS delivering deep emotional resonance.',
     qualityBadge: 'FLAC 24-BIT / 96KHZ LOSSLESS',
     rating: {
       average: 5.0,
@@ -288,7 +288,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       totalTracks: 12,
       bitrate: 'FLAC 24-bit / 96kHz Lossless Studio Master',
       composer: 'Nam Hye-seung, Kim Kyung-hee',
-      lyricsSnippet: 'Dù mưa gió bão bùng cuộc đời, nụ cười của em luôn là lý do duy nhất khiến anh muốn trở về...'
+      lyricsSnippet: 'Even through stormy rain and wind, your smile remains the only reason I want to return home...'
     },
     tags: ['Soundtrack', 'Queen of Tears', 'BSS', 'SEVENTEEN', 'K-Drama OST', 'Lossless']
   },
@@ -296,8 +296,8 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
   // 6. TRAILER: Demon Slayer: Kimetsu no Yaiba - Infinity Castle Arc Movie Trilogy
   {
     id: 'media-trailer-2',
-    title: 'Demon Slayer: Kimetsu no Yaiba "Infinity Castle" (Vô Hạn Thành) - Official 4K Movie Trailer',
-    subtitle: 'Trailer điện ảnh bom tấn bộ ba phần Infinity Castle Trilogy • Ufotable',
+    title: 'Demon Slayer: Kimetsu no Yaiba "Infinity Castle" - Official 4K Movie Trailer',
+    subtitle: 'Blockbuster movie trailer for the Infinity Castle Trilogy • Ufotable',
     artist: 'Ufotable & Aniplex',
     agency: 'Ufotable Animation Studio',
     type: 'trailer',
@@ -308,7 +308,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     durationSeconds: 168,
     views: 42100000,
     releaseDate: '2024/2025',
-    description: 'Trailer điện ảnh chính thức của arc Vô Hạn Thành - Trận đại chiến sinh tử giữa Sát Quỷ Đội cùng các Trụ Cột chống lại Chúa Quỷ Muzan Kibutsuji và Thượng Huyền Quỷ. Đồ họa CGI 3D mãn nhãn từ Ufotable.',
+    description: 'Official theatrical trailer for the Infinity Castle arc: the final climactic war between the Demon Slayer Corps Hashira and Demon King Muzan Kibutsuji. Breathtaking 3D CGI visuals by Ufotable.',
     qualityBadge: 'IMAX CINEMA 4K HDR',
     rating: {
       average: 5.0,
@@ -324,24 +324,24 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       thumbsDown: 2300,
     },
     chapters: [
-      { time: '00:00', seconds: 0, title: 'Cánh cửa Vô Hạn Thành mở ra' },
-      { time: '00:52', seconds: 52, title: 'Các Trụ Cột hội ngộ: Giyu, Sanemi, Gyomei' },
-      { time: '01:45', seconds: 105, title: 'Thượng Huyền Nhất Kokushibo xuất hiện' },
-      { time: '02:20', seconds: 140, title: 'Tanjiro & Hơi thở Mặt Trời thức tỉnh' }
+      { time: '00:00', seconds: 0, title: 'The doors of the Infinity Castle unfold' },
+      { time: '00:52', seconds: 52, title: 'The Hashira assemble: Giyu, Sanemi, Gyomei' },
+      { time: '01:45', seconds: 105, title: 'Upper Rank One Kokushibo appears' },
+      { time: '02:20', seconds: 140, title: 'Tanjiro & Sun Breathing awakening' }
     ],
     tags: ['Demon Slayer', 'Kimetsu no Yaiba', 'Anime', 'Trailer 4K', 'Ufotable', 'Infinity Castle'],
     trailerMeta: {
-      premiereDate: '2025 (Chiếu rạp toàn cầu)',
+      premiereDate: '2025 (Worldwide Theatrical Release)',
       productionStudio: 'Ufotable & Shueisha',
       aspectRatio: '2.39:1 CinemaScope'
     }
   },
 
-  // 7. SOUNDTRACK: Solo Leveling (Tôi Thăng Cấp Một Mình) OST - "Dark Aria" by Hiroyuki Sawano
+  // 7. SOUNDTRACK: Solo Leveling OST - "Dark Aria" by Hiroyuki Sawano
   {
     id: 'media-ost-2',
     title: 'Solo Leveling Season 2 OST: "Dark Aria" (Arise Anthem) - Hiroyuki Sawano',
-    subtitle: 'Nhạc nền biến hình & Đội quân bóng tối của Sung Jin-woo • Dàn nhạc giao hưởng',
+    subtitle: 'Transformation Anthem & Shadow Monarch theme • Full Symphony Orchestra',
     artist: 'Hiroyuki Sawano ft. XAI',
     agency: 'A-1 Pictures / Sony Music Japan',
     type: 'soundtrack',
@@ -353,7 +353,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     durationSeconds: 252,
     views: 19800000,
     releaseDate: '05/01/2024',
-    description: 'Bản trường ca hùng tráng từ nhà soạn nhạc bậc thầy Hiroyuki Sawano (Attack on Titan). Hòa tấu kèn đồng, bè hợp xướng opera cùng nhịp trống dồn dập trong khoảnh khắc "Trỗi dậy" (Arise) trứ danh.',
+    description: 'Monumental orchestral epic by master composer Hiroyuki Sawano. Brass fanfares, operatic choral chants, and thunderous drums accompanying the legendary "Arise" moment.',
     qualityBadge: 'HI-RES AUDIO 24-BIT DSD',
     rating: {
       average: 4.9,
@@ -382,8 +382,8 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
   // 8. LIVESTREAM: League of Legends Worlds Championship Fan Watchalong & Concert
   {
     id: 'media-live-2',
-    title: '🔴 [LIVESTREAM] Chung Kết Thế Giới LMHT 2024: Lễ Khai Mạc & Fan Watch Party',
-    subtitle: 'Trực tiếp sân khấu khai mạc hoành tráng cùng ban nhạc Linkin Park & NewJeans',
+    title: '🔴 [LIVESTREAM] LoL World Championship 2024: Opening Ceremony & Fan Watch Party',
+    subtitle: 'Live opening ceremony stage featuring Linkin Park & NewJeans',
     artist: 'Riot Games Music, Linkin Park, Faker & T1',
     agency: 'Riot Games',
     type: 'livestream',
@@ -393,12 +393,12 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     duration: 'LIVE',
     durationSeconds: 0,
     views: 1250000,
-    releaseDate: 'Hôm nay',
-    description: 'Buổi trực tiếp lễ khai mạc đỉnh cao thế giới Esports tại O2 Arena London. Sân khấu Hologram thực tế ảo 3D và bài hát chủ đề "Heavy Is The Crown".',
+    releaseDate: 'Today',
+    description: 'Live broadcast of the premier esports spectacle at the O2 Arena in London. 3D holographic augmented stage and the anthem "Heavy Is The Crown".',
     qualityBadge: '4K ULTRA LOW LATENCY',
     isLive: true,
     liveViewers: 62400,
-    liveStatusText: '62,400 game thủ & fan hâm mộ đang theo dõi',
+    liveStatusText: '62,400 gamers and fans watching live right now',
     rating: {
       average: 4.9,
       count: 38200,
@@ -413,9 +413,9 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       thumbsDown: 3500,
     },
     chatMessages: [
-      { id: 'c11', user: 'Faker_God_VN', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80', badge: 'T1 FANDOM', badgeColor: '#ef4444', message: 'T1 vô địch! Chiếc cúp thứ 5 cho Quỷ Vương Faker!', timestamp: '12:01' },
-      { id: 'c12', user: 'LinkinPark_Soldier', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80', badge: 'VIP SUB', badgeColor: '#3b82f6', message: 'Heavy is the Crown live đỉnh thật sự!! Emily hát đỉnh vãi!', timestamp: '12:02' },
-      { id: 'c13', user: 'Hanoi_Esports_Fan', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80', badge: 'FAN CỨNG', badgeColor: '#10b981', message: 'Đường truyền 4K mượt đét ko lag xíu nào luôn shop ơi', timestamp: '12:02' },
+      { id: 'c11', user: 'Faker_God_VN', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80', badge: 'T1 FANDOM', badgeColor: '#ef4444', message: 'T1 Champions! The 5th trophy for the Unkillable Demon King Faker!', timestamp: '12:01' },
+      { id: 'c12', user: 'LinkinPark_Soldier', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80', badge: 'VIP SUB', badgeColor: '#3b82f6', message: 'Heavy is the Crown live is unbelievable!! Emily vocals are crazy good!', timestamp: '12:02' },
+      { id: 'c13', user: 'Hanoi_Esports_Fan', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80', badge: 'TOP FAN', badgeColor: '#10b981', message: '4K live stream is crystal clear with zero buffering, amazing broadcast!', timestamp: '12:02' },
     ],
     tags: ['LMHT', 'Worlds 2024', 'Faker', 'T1', 'Linkin Park', 'Gaming']
   },
@@ -423,8 +423,8 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
   // 9. VIDEO: BTS Run BTS! Special Episode - Telepathy Challenge
   {
     id: 'media-video-2',
-    title: 'Run BTS! 2024 Special Edition: "Thử Thách Thần Giao Cách Cảm" (Full 1080p60)',
-    subtitle: 'Tập phát sóng độc quyền với phụ đề tiếng Việt chuẩn và góc máy đa thành viên',
+    title: 'Run BTS! 2024 Special Edition: "Telepathy Challenge" (Full 1080p60)',
+    subtitle: 'Exclusive episode with multi-language subtitles and member individual cams',
     artist: 'BTS (RM, Jin, SUGA, j-hope, Jimin, V, Jung Kook)',
     agency: 'BIGHIT MUSIC / HYBE',
     type: 'video',
@@ -435,7 +435,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     durationSeconds: 2050,
     views: 29500000,
     releaseDate: '18/07/2024',
-    description: 'Tập show tạp kỹ huyền thoại của BTS nơi 7 chàng trai phải tìm đến cùng một địa điểm chỉ dựa trên ký ức và sự thấu hiểu sau hơn 10 năm gắn bó. Ngập tràn tiếng cười và những câu chuyện xúc động.',
+    description: 'Legendary BTS variety show episode where the 7 members must reunite at the same location purely guided by shared memories after a decade together. Filled with heartfelt humor.',
     qualityBadge: 'FULL HD 1080P60 • MULTI-SUB',
     rating: {
       average: 5.0,
@@ -451,21 +451,21 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       thumbsDown: 1200,
     },
     chapters: [
-      { time: '00:00', seconds: 0, title: 'Mở đầu & Luật chơi Thần giao cách cảm' },
-      { time: '08:15', seconds: 495, title: 'Nơi chốn gắn liền với ngày ra mắt 2013' },
-      { time: '18:40', seconds: 1120, title: 'Khoảnh khắc hội ngộ đầy xúc động tại bờ sông Hàn' },
-      { time: '29:10', seconds: 1750, title: 'Bữa tiệc BBQ và tâm sự cùng ARMY' }
+      { time: '00:00', seconds: 0, title: 'Intro & Telepathy Game Rules' },
+      { time: '08:15', seconds: 495, title: 'The memory site linked to 2013 debut day' },
+      { time: '18:40', seconds: 1120, title: 'Emotional reunion moment by the Han River' },
+      { time: '29:10', seconds: 1750, title: 'BBQ dinner and heartfelt message to ARMY' }
     ],
     tags: ['BTS', 'Run BTS', 'ARMY', 'BIGHIT', 'K-Pop Show', 'Variety']
   },
 
-  // 10. PODCAST: Fandom Radio Night - Tâm sự đêm muộn cùng Fan Việt
+  // 10. PODCAST: Fandom Radio Night - Late Night Stories With Fans
   {
     id: 'media-podcast-2',
-    title: 'Fandom Radio Night #42: "Hành Trình 10 Năm Đu Idol - Những Vé Concert Đầu Đời & Kỷ Niệm"',
-    subtitle: 'Podcast Radio đêm muộn cùng Host Minh Anh & Những lá thư gửi từ thính giả',
-    artist: 'Minh Anh & Khách mời Fandom Legends',
-    agency: 'FanHub Studios Vietnam',
+    title: 'Fandom Radio Night #42: "A Decade of Fandom - First Concert Tickets & Cherished Memories"',
+    subtitle: 'Late night fandom radio talk with Host Minh Anh & Listener letters',
+    artist: 'Minh Anh & Fandom Community Guests',
+    agency: 'FanHub Global Studios',
     type: 'podcast',
     category: 'V-Pop',
     thumbnailUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
@@ -475,7 +475,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     durationSeconds: 3130,
     views: 450000,
     releaseDate: '12/10/2024',
-    description: 'Chương trình podcast lắng đọng dành riêng cho cộng đồng người hâm mộ tại Việt Nam. Cùng nhìn lại hành trình trưởng thành, những lần săn vé camp thâu đêm, và niềm hạnh phúc khi gặp thần tượng ngoài đời thật.',
+    description: 'Reflective late-night podcast dedicated to global fandom stories. Looking back on growing up with idols, overnight ticket camping, and the joy of live arena concerts.',
     qualityBadge: 'WARM ANALOG RADIO 320KBPS',
     rating: {
       average: 4.9,
@@ -496,14 +496,14 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       episode: 42,
       topics: ['Concert Ticketing Stories', 'Fandom Culture in VN', 'Lightstick Memories', 'Growing Up With Idols']
     },
-    tags: ['Podcast', 'Radio', 'Fandom Việt Nam', 'Tâm sự', 'Concert Experience']
+    tags: ['Podcast', 'Radio', 'Fandom Stories', 'Late Night', 'Concert Experience']
   },
 
   // 11. TRAILER: Black Myth: Wukong - Cinematic Story & Orchestral Trailer
   {
     id: 'media-trailer-3',
-    title: 'Black Myth: Wukong - Official Cinematic Story Trailer & Dàn Nhạc Giao Hưởng Dân Gian 4K',
-    subtitle: 'Kiệt tác game hành động nhập vai lấy cảm hứng từ Tây Du Ký • Game Science',
+    title: 'Black Myth: Wukong - Official Cinematic Story Trailer & Folk Symphony 4K',
+    subtitle: 'Action RPG Masterpiece inspired by Journey to the West • Game Science',
     artist: 'Game Science Music Ensemble',
     agency: 'Game Science',
     type: 'trailer',
@@ -514,7 +514,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     durationSeconds: 270,
     views: 31200000,
     releaseDate: '20/08/2024',
-    description: 'Trailer cốt truyện và màn hòa tấu đàn tỳ bà, trống trận cổ cùng dàn nhạc giao hưởng 80 người. Khắc họa vẻ đẹp huyền ảo của thần thoại phương Đông cùng chất lượng đồ họa Unreal Engine 5 đỉnh cao.',
+    description: 'Cinematic trailer featuring an 80-piece symphony orchestra with traditional pipa and war drums. Highlighting Eastern mythology rendered in state-of-the-art Unreal Engine 5.',
     qualityBadge: '4K RAY TRACING • DOLBY CINEMA',
     rating: {
       average: 5.0,
@@ -530,10 +530,10 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       thumbsDown: 1400,
     },
     chapters: [
-      { time: '00:00', seconds: 0, title: 'Tiếng đàn tỳ bà bên rặng núi Hoa Quả Sơn' },
-      { time: '01:15', seconds: 75, title: 'Cuộc chạm trán Kim Trì Trưởng Lão' },
-      { time: '02:40', seconds: 160, title: 'Hòa tấu giao hưởng cao trào' },
-      { time: '03:50', seconds: 230, title: 'Định hải thần châm thức tỉnh' }
+      { time: '00:00', seconds: 0, title: 'Pipa melodies over Mount Huaguo' },
+      { time: '01:15', seconds: 75, title: 'Confrontation with Elder Jinchi' },
+      { time: '02:40', seconds: 160, title: 'Climactic orchestral crescendo' },
+      { time: '03:50', seconds: 230, title: 'The golden staff awakes' }
     ],
     tags: ['Black Myth Wukong', 'Gaming', 'Trailer 4K', 'Unreal Engine 5', 'Orchestra']
   },
@@ -542,7 +542,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
   {
     id: 'media-ost-3',
     title: 'Lady Gaga & Bruno Mars - "Die With A Smile" (Official Acoustic Vinyl Master)',
-    subtitle: 'Bản phối mộc mạc Guitar & Piano cổ điển • Chuẩn Master phòng thu 24-bit',
+    subtitle: 'Acoustic Guitar & Vintage Grand Piano • 24-bit Studio Master Edition',
     artist: 'Lady Gaga & Bruno Mars',
     agency: 'Interscope / Atlantic Records',
     type: 'soundtrack',
@@ -554,7 +554,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     durationSeconds: 251,
     views: 56000000,
     releaseDate: '16/08/2024',
-    description: 'Bản ballad tình ca bất hủ đứng đầu Billboard Hot 100 nhiều tuần liên tiếp. Giọng hát hòa quyện đỉnh cao của hai biểu tượng âm nhạc đương đại với âm thanh acoustic mộc mạc và chân thành.',
+    description: 'Timeless Billboard Hot 100 #1 ballad. Two legendary music icons uniting their powerhouse vocals with warm acoustic guitar and grand piano arrangements.',
     qualityBadge: 'VINYL MASTER 24-BIT / 96KHZ',
     rating: {
       average: 5.0,

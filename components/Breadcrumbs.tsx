@@ -29,7 +29,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = '' 
             className="flex items-center gap-1.5 text-slate-600 hover:text-slate-950 transition-colors"
           >
             <Home className="w-3.5 h-3.5 text-slate-400" />
-            <span className="font-bold">Trang Chủ</span>
+            <span className="font-bold">Home</span>
           </Link>
         </li>
 

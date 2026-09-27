@@ -44,7 +44,7 @@ export default function ArtistPage() {
         <div className="bg-slate-50 border-b border-slate-200">
           <Breadcrumbs
             items={[
-              { label: 'Hồ Sơ Nhân Vật & Nghệ Sĩ (Lore & Dossiers)', isActive: true }
+              { label: 'Artist Dossiers & Character Lore', isActive: true }
             ]}
           />
         </div>

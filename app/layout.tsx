@@ -1,5 +1,10 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import {
+  Playfair_Display,
+  Source_Serif_4,
+  JetBrains_Mono,
+  Plus_Jakarta_Sans,
+} from 'next/font/google';
 import './globals.css';
 import { CartWishlistProvider } from '../context/CartWishlistContext';
 import { AuthProvider } from '../context/AuthContext';
@@ -8,10 +13,34 @@ import { DomainProvider } from '../context/DomainContext';
 import { GoogleTranslate } from '../components/GoogleTranslate';
 import { DomainSelectionModal } from '../components/DomainSelectionModal';
 
+const fontPlayfair = Playfair_Display({
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '600', '700', '800', '900'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-playfair',
+});
+
+const fontSourceSerif = Source_Serif_4({
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '600', '700'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-source-serif',
+});
+
 const fontSans = Plus_Jakarta_Sans({
   subsets: ['latin', 'vietnamese'],
   weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
+  variable: '--font-sans',
+});
+
+const fontJetBrains = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-jetbrains',
 });
 
 export const metadata: Metadata = {
@@ -27,8 +56,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={fontSans.className}>
-      <body>
+    <html
+      lang="en"
+      className={`${fontPlayfair.variable} ${fontSourceSerif.variable} ${fontSans.variable} ${fontJetBrains.variable}`}
+    >
+      <body className={`${fontSourceSerif.className} antialiased bg-white text-black selection:bg-black selection:text-white`}>
         <GoogleTranslate />
         <AuthProvider>
           <DomainProvider>
@@ -36,7 +68,7 @@ export default function RootLayout({
               <PlayerProvider>
                 {children}
                 <DomainSelectionModal />
-                              </PlayerProvider>
+              </PlayerProvider>
             </CartWishlistProvider>
           </DomainProvider>
         </AuthProvider>

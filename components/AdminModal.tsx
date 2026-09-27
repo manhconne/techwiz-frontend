@@ -55,38 +55,38 @@ interface UserReviewItem {
 const DEFAULT_MODERATION_ARTICLES: FeaturedArticle[] = [
   {
     id: 'fan-sub-001',
-    title: 'Cảm nhận trọn vẹn concert NewJeans Tokyo Dome: Cơn lốc visual và âm nhạc tương lai',
-    excerpt: 'Trải nghiệm trực tiếp từ hàng ghế VIP tại thánh đường âm nhạc Nhật Bản với hệ thống âm thanh vòm sống động...',
+    title: 'Full Experience at NewJeans Tokyo Dome: A Futuristic Visual & Sonic Storm',
+    excerpt: 'Firsthand review from VIP seats at Tokyo Dome featuring dynamic 3D spatial surround sound...',
     category: 'K-Pop',
     author: {
       name: 'Bunnies_Tokyo99',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
       role: 'Fan Contributor ⭐',
     },
-    date: 'Hôm nay 09:30',
-    readTime: '4 phút đọc',
+    date: 'Today 09:30',
+    readTime: '4 min read',
     coverImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80',
     tags: ['NewJeans', 'Tokyo Dome', 'Live Experience'],
-    badgeText: 'CHỜ DUYỆT ⏳',
+    badgeText: 'PENDING REVIEW ⏳',
     isHot: false,
     likes: 12,
     commentsCount: 3,
   },
   {
     id: 'fan-sub-002',
-    title: 'Phân tích chi tiết Lore Metaverse aespa trong đợt comeback Armageddon',
-    excerpt: 'Hé lộ các Easter Eggs về thực thể đa vũ trụ Black Mamba và sự thức tỉnh của 4 bản thể ae-avatar...',
+    title: 'In-Depth Analysis of aespa Metaverse Lore in Armageddon Comeback',
+    excerpt: 'Revealing multiverse Easter eggs about Black Mamba and the awakening of the 4 ae-avatars...',
     category: 'Gaming',
     author: {
       name: 'CyberMY_Meta',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
       role: 'Lore Researcher 🧬',
     },
-    date: 'Hôm qua 21:15',
-    readTime: '6 phút đọc',
+    date: 'Yesterday 21:15',
+    readTime: '6 min read',
     coverImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80',
     tags: ['aespa', 'Metaverse', 'Armageddon'],
-    badgeText: 'CHỜ DUYỆT ⏳',
+    badgeText: 'PENDING REVIEW ⏳',
     isHot: false,
     likes: 28,
     commentsCount: 7,
@@ -101,7 +101,7 @@ const INITIAL_USER_REVIEWS: UserReviewItem[] = [
     targetTitle: 'NewJeans 2nd EP Get Up (Bunny Beach Bag Ver.)',
     ratingType: 'star',
     starScore: 5,
-    comment: 'Photobook chất lượng siêu đỉnh, đĩa CD nguyên seal sắc nét không tì vết. Đặt trước nhận vé sớm chuẩn 10/10!',
+    comment: 'Superb photobook print quality, pristine unsealed CD disc. Early bird preorder arrived flawless, 10/10!',
     date: '26/09/2026',
     status: 'approved'
   },
@@ -112,7 +112,7 @@ const INITIAL_USER_REVIEWS: UserReviewItem[] = [
     targetTitle: 'aespa Armageddon CD Player Edition',
     ratingType: 'thumb',
     isThumbUp: true,
-    comment: 'Máy phát nhạc CD di động thật sự nghe rất êm, bass tròn và hỗ trợ jack 3.5mm xịn sò.',
+    comment: 'The portable CD player sounds remarkably rich with deep bass and high-end 3.5mm jack support.',
     date: '25/09/2026',
     status: 'approved'
   },
@@ -123,7 +123,7 @@ const INITIAL_USER_REVIEWS: UserReviewItem[] = [
     targetTitle: 'BTS Proof (Collector Edition Boxset)',
     ratingType: 'star',
     starScore: 1,
-    comment: 'Nhấp vào link kiếm tiền miễn phí tại abcxyz.com nhận quà ngay hôm nay...',
+    comment: 'Click here for free reward offers at abcxyz.com to claim gifts today...',
     date: '24/09/2026',
     status: 'hidden'
   }
@@ -211,25 +211,25 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
     setAlbums([created, ...albums]);
     setNewTitle('');
     setIsAdding(false);
-    showToast(`Đã thêm album "${newTitle}" vào kho dữ liệu thành công!`);
+    showToast(`Added album "${newTitle}" to database successfully!`);
   };
 
   const handleDeleteAlbum = (id: string) => {
     setAlbums((prev) => prev.filter((a) => a.id !== id));
-    showToast('Đã xóa ấn phẩm khỏi kho dữ liệu.');
+    showToast('Removed release from catalog.');
   };
 
   // Moderation handlers
   const handleApproveArticle = (articleId: string) => {
     const updated = moderationArticles.map(art => {
       if (art.id === articleId) {
-        return { ...art, badgeText: 'ĐÃ DUYỆT ⭐' };
+        return { ...art, badgeText: 'APPROVED ⭐' };
       }
       return art;
     });
     setModerationArticles(updated);
     localStorage.setItem('fanhub_fan_articles', JSON.stringify(updated));
-    showToast('Đã duyệt và xuất bản bài viết lên feed người dùng!');
+    showToast('Approved and published article to community feed!');
   };
 
   const handlePinArticle = (articleId: string) => {
@@ -239,33 +239,33 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
         return { 
           ...art, 
           isHot: nextHot, 
-          badgeText: nextHot ? 'GHIM TRANG CHỦ 🔥' : 'ĐÃ DUYỆT ⭐' 
+          badgeText: nextHot ? 'PINNED TO HOME 🔥' : 'APPROVED ⭐' 
         };
       }
       return art;
     });
     setModerationArticles(updated);
     localStorage.setItem('fanhub_fan_articles', JSON.stringify(updated));
-    showToast('Đã cập nhật trạng thái ghim nổi bật cho bài viết!');
+    showToast('Updated featured pin status for article!');
   };
 
   const handleRejectArticle = (articleId: string) => {
     const updated = moderationArticles.map(art => {
       if (art.id === articleId) {
-        return { ...art, badgeText: 'ĐÃ TỪ CHỐI ❌' };
+        return { ...art, badgeText: 'REJECTED ❌' };
       }
       return art;
     });
     setModerationArticles(updated);
     localStorage.setItem('fanhub_fan_articles', JSON.stringify(updated));
-    showToast('Đã từ chối duyệt bài viết.');
+    showToast('Rejected article submission.');
   };
 
   const handleDeleteArticle = (articleId: string) => {
     const updated = moderationArticles.filter(art => art.id !== articleId);
     setModerationArticles(updated);
     localStorage.setItem('fanhub_fan_articles', JSON.stringify(updated));
-    showToast('Đã xóa vĩnh viễn bài viết khỏi hệ thống.');
+    showToast('Permanently deleted article.');
   };
 
   const handleToggleReviewStatus = (reviewId: string) => {
@@ -276,7 +276,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
       }
       return rev;
     }));
-    showToast('Đã cập nhật trạng thái hiển thị của bình luận!');
+    showToast('Updated review visibility status!');
   };
 
   // Filtered albums in catalog
@@ -286,7 +286,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
     return albums.filter(a => a.title.toLowerCase().includes(q) || a.artist.toLowerCase().includes(q));
   }, [albums, catalogSearch]);
 
-  const pendingArticlesCount = moderationArticles.filter(a => a.badgeText?.includes('CHỜ DUYỆT')).length;
+  const pendingArticlesCount = moderationArticles.filter(a => a.badgeText?.includes('PENDING')).length;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
@@ -302,12 +302,12 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold tracking-tight">Bảng Điều Khiển Admin (Control Panel)</h2>
+                <h2 className="text-base font-bold tracking-tight">Admin Control Panel</h2>
                 <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30 font-bold">
                   Root Admin
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">Quản lý kho nội dung, duyệt bài viết fandom & thống kê lượt truy cập</p>
+              <p className="text-[11px] text-slate-400">Manage catalog, moderate fandom submissions & real-time analytics</p>
             </div>
           </div>
 
@@ -317,7 +317,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               onClick={onClose}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg transition-all shadow-xs"
             >
-              <span>Trang Admin Đầy Đủ</span>
+              <span>Full Admin Portal</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </Link>
 
@@ -325,7 +325,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               onClick={onClose}
               className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               type="button"
-              aria-label="Đóng bảng điều khiển"
+              aria-label="Close admin control panel"
             >
               <X className="w-5 h-5" />
             </button>
@@ -357,7 +357,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
             }`}
           >
             <Layers className="w-4 h-4" />
-            <span>Kho Nội Dung & Album</span>
+            <span>Catalog & Releases</span>
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-mono">
               {albums.length}
             </span>
@@ -373,10 +373,10 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
             }`}
           >
             <FileText className="w-4 h-4" />
-            <span>Duyệt Bài Viết & Phản Hồi</span>
+            <span>Submissions & Reviews</span>
             {pendingArticlesCount > 0 && (
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500 text-white font-mono font-bold animate-pulse">
-                {pendingArticlesCount} chờ
+                {pendingArticlesCount} pending
               </span>
             )}
           </button>
@@ -391,7 +391,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
             }`}
           >
             <BarChart3 className="w-4 h-4" />
-            <span>Thống Kê Lượt Truy Cập</span>
+            <span>Traffic Analytics</span>
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-mono font-bold">
               1.28M views
             </span>
@@ -407,26 +407,26 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               {/* Quick Stats Banner */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="p-3 bg-white border border-slate-200 rounded-lg">
-                  <div className="text-[11px] text-slate-500 font-bold uppercase mb-1">Tổng Ấn Phẩm</div>
+                  <div className="text-[11px] text-slate-500 font-bold uppercase mb-1">Total Releases</div>
                   <div className="text-xl font-black text-slate-900">{albums.length}</div>
                   <div className="text-[10px] text-sky-600 font-medium">Mini Album, Full & Single</div>
                 </div>
                 <div className="p-3 bg-white border border-slate-200 rounded-lg">
-                  <div className="text-[11px] text-slate-500 font-bold uppercase mb-1">Hàng Đặt Trước</div>
+                  <div className="text-[11px] text-slate-500 font-bold uppercase mb-1">Pre-Orders</div>
                   <div className="text-xl font-black text-amber-600">
                     {albums.filter(a => a.tag === 'Pre-Order').length}
                   </div>
-                  <div className="text-[10px] text-slate-500 font-medium">Có quà tặng First-Press</div>
+                  <div className="text-[10px] text-slate-500 font-medium">Includes First-Press gifts</div>
                 </div>
                 <div className="p-3 bg-white border border-slate-200 rounded-lg">
-                  <div className="text-[11px] text-slate-500 font-bold uppercase mb-1">Bản Giới Hạn</div>
+                  <div className="text-[11px] text-slate-500 font-bold uppercase mb-1">Limited Edition</div>
                   <div className="text-xl font-black text-indigo-600">
                     {albums.filter(a => a.tag === 'Limited Edition').length}
                   </div>
                   <div className="text-[10px] text-slate-500 font-medium">Limited Boxset & CD Player</div>
                 </div>
                 <div className="p-3 bg-white border border-slate-200 rounded-lg">
-                  <div className="text-[11px] text-slate-500 font-bold uppercase mb-1">Tồn Kho Tổng</div>
+                  <div className="text-[11px] text-slate-500 font-bold uppercase mb-1">Total Stock</div>
                   <div className="text-xl font-black text-emerald-600">
                     {albums.reduce((acc, curr) => acc + (curr.stock || 0), 0)}
                   </div>
@@ -440,7 +440,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
-                    placeholder="Tìm tên album, nghệ sĩ..."
+                    placeholder="Search album, artist..."
                     value={catalogSearch}
                     onChange={(e) => setCatalogSearch(e.target.value)}
                     className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-sky-500"
@@ -454,7 +454,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                     className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
-                    <span>Thêm Ấn Phẩm Mới</span>
+                    <span>Add New Release</span>
                   </button>
                 </div>
               </div>
@@ -463,13 +463,13 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               {isAdding && (
                 <form onSubmit={handleAddNew} className="bg-white p-5 border border-slate-200 rounded-xl space-y-4 shadow-sm">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                    <h4 className="text-xs font-bold text-slate-900 uppercase">Thêm Album / Merchandise Vào Danh Mục</h4>
-                    <span className="text-[11px] text-slate-500">Mẫu phát hành tiêu chuẩn</span>
+                    <h4 className="text-xs font-bold text-slate-900 uppercase">Add Album / Merchandise to Catalog</h4>
+                    <span className="text-[11px] text-slate-500">Standard release format</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Tên Ấn Phẩm</label>
+                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Release Title</label>
                       <input
                         type="text"
                         required
@@ -480,7 +480,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Nghệ Sĩ / Fandom</label>
+                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Artist / Fandom</label>
                       <select
                         value={newArtist}
                         onChange={(e) => setNewArtist(e.target.value)}
@@ -497,7 +497,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                       </select>
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Giá Tham Chiếu ($ USD)</label>
+                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Reference Price ($ USD)</label>
                       <input
                         type="number"
                         required
@@ -508,7 +508,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Phân Loại / Tag</label>
+                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Category / Tag</label>
                       <select
                         value={newTag}
                         onChange={(e) => setNewTag(e.target.value as any)}
@@ -528,13 +528,13 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                       onClick={() => setIsAdding(false)}
                       className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg cursor-pointer"
                     >
-                      Hủy Bỏ
+                      Cancel
                     </button>
                     <button
                       type="submit"
                       className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg cursor-pointer shadow-xs"
                     >
-                      Lưu Ấn Phẩm
+                      Save Release
                     </button>
                   </div>
                 </form>
@@ -546,11 +546,11 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                   <table className="w-full text-left text-xs">
                     <thead className="bg-slate-100/70 text-slate-700 uppercase font-bold text-[10px] border-b border-slate-200">
                       <tr>
-                        <th className="py-3 px-3.5">Ấn Phẩm & Nghệ Sĩ</th>
-                        <th className="py-3 px-3.5">Giá Tham Chiếu</th>
-                        <th className="py-3 px-3.5">Số Lượng Dự Kiến</th>
-                        <th className="py-3 px-3.5">Trạng Thái Tag</th>
-                        <th className="py-3 px-3.5 text-right">Thao Tác</th>
+                        <th className="py-3 px-3.5">Release & Artist</th>
+                        <th className="py-3 px-3.5">Reference Price</th>
+                        <th className="py-3 px-3.5">Estimated Stock</th>
+                        <th className="py-3 px-3.5">Tag Status</th>
+                        <th className="py-3 px-3.5 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -568,7 +568,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                           </td>
                           <td className="py-3 px-3.5">
                             <span className="font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[11px]">
-                              {alb.stock} chiếc
+                              {alb.stock} units
                             </span>
                           </td>
                           <td className="py-3 px-3.5">
@@ -588,7 +588,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                             <button
                               onClick={() => handleDeleteAlbum(alb.id)}
                               className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
-                              title="Xóa ấn phẩm"
+                              title="Delete release"
                               type="button"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -618,7 +618,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                         : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
                     }`}
                   >
-                    📰 Bài Viết Fan Gửi ({moderationArticles.length})
+                    📰 Fan Submissions ({moderationArticles.length})
                   </button>
                   <button
                     onClick={() => setModerationType('reviews')}
@@ -629,12 +629,12 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                         : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
                     }`}
                   >
-                    💬 Đánh Giá & Bình Luận User ({userReviews.length})
+                    💬 User Reviews & Feedback ({userReviews.length})
                   </button>
                 </div>
 
                 <div className="text-[11px] text-slate-500 font-medium">
-                  Tự động lưu và đồng bộ lên bộ nhớ hệ thống
+                  Auto-saves and syncs with system cache
                 </div>
               </div>
 
@@ -643,14 +643,14 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                 <div className="space-y-4">
                   {moderationArticles.length === 0 ? (
                     <div className="text-center py-10 bg-white border border-slate-200 rounded-xl text-slate-500 text-xs">
-                      Không có bài viết nào cần duyệt trong hàng đợi.
+                      No pending articles in review queue.
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 gap-3.5">
                       {moderationArticles.map((art) => {
-                        const isPending = art.badgeText?.includes('CHỜ DUYỆT');
-                        const isApproved = art.badgeText?.includes('ĐÃ DUYỆT') || art.badgeText?.includes('GHIM');
-                        const isRejected = art.badgeText?.includes('TỪ CHỐI');
+                        const isPending = art.badgeText?.includes('PENDING');
+                        const isApproved = art.badgeText?.includes('APPROVED') || art.badgeText?.includes('PINNED');
+                        const isRejected = art.badgeText?.includes('REJECTED');
 
                         return (
                           <div
@@ -682,7 +682,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                                   {art.isHot && (
                                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 flex items-center gap-1">
                                       <Flame className="w-3 h-3 text-indigo-600" />
-                                      <span>Nổi Bật</span>
+                                      <span>Featured</span>
                                     </span>
                                   )}
                                   <span className="text-[10px] text-slate-400">{art.date}</span>
@@ -696,7 +696,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                                 </p>
 
                                 <div className="flex items-center gap-2 mt-2 text-[10px] text-slate-500">
-                                  <span>Tác giả: <strong>{art.author.name}</strong> ({art.author.role})</span>
+                                  <span>Author: <strong>{art.author.name}</strong> ({art.author.role})</span>
                                   <span>•</span>
                                   <span>Tags: {art.tags.join(', ')}</span>
                                 </div>
@@ -710,10 +710,10 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                                 onClick={() => handleApproveArticle(art.id)}
                                 type="button"
                                 className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1 cursor-pointer shadow-xs transition-colors"
-                                title="Phê duyệt bài viết"
+                                title="Approve article"
                               >
                                 <Check className="w-3.5 h-3.5" />
-                                <span>Duyệt Bài</span>
+                                <span>Approve</span>
                               </button>
 
                               {/* Pin Button */}
@@ -725,7 +725,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                                     ? 'bg-indigo-600 text-white' 
                                     : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200'
                                 }`}
-                                title="Ghim nổi bật đầu trang"
+                                title="Pin to top"
                               >
                                 <Pin className="w-3.5 h-3.5" />
                                 <span className="hidden sm:inline">Ghim</span>
@@ -736,10 +736,10 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                                 onClick={() => handleRejectArticle(art.id)}
                                 type="button"
                                 className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold rounded-lg flex items-center gap-1 cursor-pointer transition-colors"
-                                title="Từ chối duyệt bài"
+                                title="Reject submission"
                               >
                                 <XCircle className="w-3.5 h-3.5" />
-                                <span className="hidden sm:inline">Từ Chối</span>
+                                <span className="hidden sm:inline">Reject</span>
                               </button>
 
                               {/* Delete Permanently */}
@@ -747,7 +747,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                                 onClick={() => handleDeleteArticle(art.id)}
                                 type="button"
                                 className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg cursor-pointer transition-colors"
-                                title="Xóa bài viết"
+                                title="Delete article"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -767,12 +767,12 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                     <table className="w-full text-left text-xs">
                       <thead className="bg-slate-100/70 text-slate-700 uppercase font-bold text-[10px] border-b border-slate-200">
                         <tr>
-                          <th className="py-3 px-3.5">Người Dùng</th>
-                          <th className="py-3 px-3.5">Ấn Phẩm / Nội Dung</th>
-                          <th className="py-3 px-3.5">Đánh Giá</th>
-                          <th className="py-3 px-3.5">Nội Dung Nhận Xét</th>
-                          <th className="py-3 px-3.5">Trạng Thái</th>
-                          <th className="py-3 px-3.5 text-right">Thao Tác</th>
+                          <th className="py-3 px-3.5">User</th>
+                          <th className="py-3 px-3.5">Release / Media</th>
+                          <th className="py-3 px-3.5">Rating</th>
+                          <th className="py-3 px-3.5">Review Content</th>
+                          <th className="py-3 px-3.5">Status</th>
+                          <th className="py-3 px-3.5 text-right">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
@@ -803,7 +803,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                               ) : (
                                 <div className="flex items-center gap-1 text-emerald-600 font-bold">
                                   <ThumbsUp className="w-3.5 h-3.5" />
-                                  <span>Thích</span>
+                                  <span>Helpful</span>
                                 </div>
                               )}
                             </td>
@@ -818,7 +818,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                                     : 'bg-rose-100 text-rose-800'
                                 }`}
                               >
-                                {rev.status === 'approved' ? 'Công Khai' : 'Đã Ẩn'}
+                                {rev.status === 'approved' ? 'Public' : 'Hidden'}
                               </span>
                             </td>
                             <td className="py-3 px-3.5 text-right">
@@ -831,7 +831,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                                     : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
                                 }`}
                               >
-                                {rev.status === 'approved' ? 'Ẩn Bình Luận' : 'Hiện Lại'}
+                                {rev.status === 'approved' ? 'Hide Review' : 'Restore'}
                               </button>
                             </td>
                           </tr>
@@ -850,8 +850,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               {/* Telemetry Filter Buttons */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900">Báo Cáo Lưu Lượng & Hành Vi Người Dùng</h4>
-                  <p className="text-[11px] text-slate-500">Cập nhật thời gian thực từ CDN toàn cầu</p>
+                  <h4 className="text-sm font-bold text-slate-900">Traffic & User Behavior Analytics</h4>
+                  <p className="text-[11px] text-slate-500">Real-time CDN metrics across global nodes</p>
                 </div>
 
                 <div className="flex items-center gap-1 bg-white p-1 border border-slate-200 rounded-lg text-xs">
@@ -862,7 +862,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                       analyticsTimeframe === 'today' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    Hôm Nay
+                    Today
                   </button>
                   <button
                     onClick={() => setAnalyticsTimeframe('7d')}
@@ -871,7 +871,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                       analyticsTimeframe === '7d' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    7 Ngày Qua
+                    Last 7 Days
                   </button>
                   <button
                     onClick={() => setAnalyticsTimeframe('30d')}
@@ -880,7 +880,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                       analyticsTimeframe === '30d' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    30 Ngày Qua
+                    Last 30 Days
                   </button>
                 </div>
               </div>
@@ -889,41 +889,41 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
                 <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-2xs">
                   <div className="flex items-center justify-between text-slate-500 text-[11px] font-bold uppercase mb-2">
-                    <span>Tổng Lượt Xem (Views)</span>
+                    <span>Total Pageviews</span>
                     <TrendingUp className="w-4 h-4 text-emerald-600" />
                   </div>
                   <div className="text-2xl font-black text-slate-900 font-mono">1,280,450</div>
-                  <div className="text-[10px] text-emerald-600 font-semibold mt-1">↑ +18.4% so với tháng trước</div>
+                  <div className="text-[10px] text-emerald-600 font-semibold mt-1">↑ +18.4% vs last month</div>
                 </div>
 
                 <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-2xs">
                   <div className="flex items-center justify-between text-slate-500 text-[11px] font-bold uppercase mb-2">
-                    <span>Người Dùng Độc Lập</span>
+                    <span>Unique Visitors</span>
                     <Users className="w-4 h-4 text-sky-600" />
                   </div>
                   <div className="text-2xl font-black text-slate-900 font-mono">142,850</div>
-                  <div className="text-[10px] text-sky-600 font-semibold mt-1">45+ Quốc gia truy cập</div>
+                  <div className="text-[10px] text-sky-600 font-semibold mt-1">45+ countries active</div>
                 </div>
 
                 <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-2xs">
                   <div className="flex items-center justify-between text-slate-500 text-[11px] font-bold uppercase mb-2">
-                    <span>Đang Trực Tuyến</span>
+                    <span>Currently Online</span>
                     <Activity className="w-4 h-4 text-rose-500 animate-pulse" />
                   </div>
                   <div className="text-2xl font-black text-slate-900 font-mono flex items-center gap-2">
                     <span>842</span>
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping inline-block"></span>
                   </div>
-                  <div className="text-[10px] text-slate-500 font-semibold mt-1">Nghe nhạc & giữ chỗ vé</div>
+                  <div className="text-[10px] text-slate-500 font-semibold mt-1">Streaming & RSVP queuing</div>
                 </div>
 
                 <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-2xs">
                   <div className="flex items-center justify-between text-slate-500 text-[11px] font-bold uppercase mb-2">
-                    <span>Thời Lượng Phiên</span>
+                    <span>Session Duration</span>
                     <Calendar className="w-4 h-4 text-indigo-600" />
                   </div>
                   <div className="text-2xl font-black text-slate-900 font-mono">6m 45s</div>
-                  <div className="text-[10px] text-emerald-600 font-semibold mt-1">Bounce rate thấp 21.2%</div>
+                  <div className="text-[10px] text-emerald-600 font-semibold mt-1">Low bounce rate 21.2%</div>
                 </div>
               </div>
 
@@ -931,20 +931,20 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
               <div className="bg-white p-5 border border-slate-200 rounded-xl shadow-2xs">
                 <div className="flex items-center justify-between mb-4">
                   <h5 className="text-xs font-bold text-slate-900 uppercase">
-                    Biểu Đồ Lưu Lượng Truy Cập 7 Ngày Gần Nhất
+                    7-Day Traffic Velocity Trend
                   </h5>
-                  <span className="text-[11px] text-slate-500">Đơn vị: Nghìn lượt xem (K Pageviews)</span>
+                  <span className="text-[11px] text-slate-500">Unit: Thousand Views (K Pageviews)</span>
                 </div>
 
                 <div className="grid grid-cols-7 gap-2 sm:gap-4 items-end h-40 pt-6 border-b border-slate-200">
                   {[
-                    { day: 'Thứ 2', val: 125, height: '44%' },
-                    { day: 'Thứ 3', val: 138, height: '48%' },
-                    { day: 'Thứ 4', val: 154, height: '54%' },
-                    { day: 'Thứ 5', val: 148, height: '52%' },
-                    { day: 'Thứ 6', val: 182, height: '64%' },
-                    { day: 'Thứ 7', val: 245, height: '85%' },
-                    { day: 'Chủ Nhật', val: 288, height: '100%' },
+                    { day: 'Mon', val: 125, height: '44%' },
+                    { day: 'Tue', val: 138, height: '48%' },
+                    { day: 'Wed', val: 154, height: '54%' },
+                    { day: 'Thu', val: 148, height: '52%' },
+                    { day: 'Fri', val: 182, height: '64%' },
+                    { day: 'Sat', val: 245, height: '85%' },
+                    { day: 'Sun', val: 288, height: '100%' },
                   ].map((bar, idx) => (
                     <div key={idx} className="flex flex-col items-center h-full justify-end group">
                       <span className="text-[10px] font-mono text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity mb-1 font-bold">
@@ -971,12 +971,12 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                 <div className="bg-white p-4 border border-slate-200 rounded-xl shadow-2xs">
                   <h5 className="text-xs font-bold text-slate-900 uppercase mb-3 flex items-center gap-1.5">
                     <Monitor className="w-3.5 h-3.5 text-sky-600" />
-                    <span>Lượt Xem Theo Trang</span>
+                    <span>Views by Page</span>
                   </h5>
                   <div className="space-y-2.5">
                     {[
                       { route: '/multimedia (Media Center)', pct: 38, count: '486.5K' },
-                      { route: '/ (Trang Chủ & Feed)', pct: 32, count: '409.7K' },
+                      { route: '/ (Home & Feed)', pct: 32, count: '409.7K' },
                       { route: '/event (GPS Radar & Tour)', pct: 16, count: '204.8K' },
                       { route: '/cd-dvd-book (Physical)', pct: 9, count: '115.2K' },
                       { route: '/md (Official Merchandise)', pct: 5, count: '64.2K' },
@@ -998,7 +998,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                 <div className="bg-white p-4 border border-slate-200 rounded-xl shadow-2xs">
                   <h5 className="text-xs font-bold text-slate-900 uppercase mb-3 flex items-center gap-1.5">
                     <Smartphone className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Phân Bổ Thiết Bị</span>
+                    <span>Device Breakdown</span>
                   </h5>
                   <div className="space-y-3">
                     <div className="p-2.5 bg-slate-50 rounded-lg flex items-center justify-between">
@@ -1006,7 +1006,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                         <Smartphone className="w-4 h-4 text-slate-600" />
                         <div>
                           <div className="font-bold text-xs text-slate-900">Mobile (iOS / Android)</div>
-                          <div className="text-[10px] text-slate-500">Tối ưu chạm & vuốt mượt</div>
+                          <div className="text-[10px] text-slate-500">Optimized touch & gesture flow</div>
                         </div>
                       </div>
                       <span className="text-xs font-mono font-black text-slate-900">68%</span>
@@ -1040,14 +1040,14 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                 <div className="bg-white p-4 border border-slate-200 rounded-xl shadow-2xs">
                   <h5 className="text-xs font-bold text-slate-900 uppercase mb-3 flex items-center gap-1.5">
                     <Search className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Top Từ Khóa Fandom</span>
+                    <span>Top Fandom Queries</span>
                   </h5>
                   <div className="space-y-2">
                     {[
                       { query: 'NewJeans Supernatural Limited', count: '42.1K' },
                       { query: 'aespa Armageddon CD Player', count: '35.8K' },
                       { query: 'BTS Monograph Boxset', count: '28.4K' },
-                      { query: 'Tour concert Hà Nội 2026', count: '19.2K' },
+                      { query: 'Stadium Live Concert Tour 2026', count: '19.2K' },
                       { query: 'Solo Leveling OST Soundtrack', count: '15.7K' },
                     ].map((k, idx) => (
                       <div key={idx} className="flex items-center justify-between py-1 border-b border-slate-100 last:border-0 text-xs">

@@ -4,17 +4,17 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useCartWishlist } from '../context/CartWishlistContext';
 import { mockTourEvents } from '../data/mockData';
 import { TourEvent, EventPlatform, EventType } from '../types';
-import { 
-  MapPin, 
-  Calendar, 
-  Ticket, 
-  Check, 
-  X, 
-  ExternalLink, 
-  Sparkles, 
-  Flame, 
-  Radio, 
-  ShieldCheck, 
+import {
+  MapPin,
+  Calendar,
+  Ticket,
+  Check,
+  X,
+  ExternalLink,
+  Sparkles,
+  Flame,
+  Radio,
+  ShieldCheck,
   QrCode,
   ArrowUpRight,
   Heart,
@@ -65,8 +65,8 @@ export const TourCalendar: React.FC = () => {
   // Withmuu Fansign & Lucky Draw Modal State
   const [fansignModalEvent, setFansignModalEvent] = useState<TourEvent | null>(null);
   const [albumEntryQty, setAlbumEntryQty] = useState<number>(3);
-  const [applicantName, setApplicantName] = useState<string>('Nguyen Anh Tu');
-  const [applicantContact, setApplicantContact] = useState<string>('@anhtu_kpop (KakaoTalk)');
+  const [applicantName, setApplicantName] = useState<string>('Alex Morgan');
+  const [applicantContact, setApplicantContact] = useState<string>('@alex_kpop (KakaoTalk)');
   const [fansignSuccess, setFansignSuccess] = useState<boolean>(false);
   const [generatedEntryId, setGeneratedEntryId] = useState<string>('');
 
@@ -193,8 +193,8 @@ export const TourCalendar: React.FC = () => {
   };
 
   return (
-    <section 
-      id="tours" 
+    <section
+      id="tours"
       style={{
         backgroundColor: '#ffffff',
         color: '#0f172a',
@@ -203,10 +203,10 @@ export const TourCalendar: React.FC = () => {
       className="py-12 md:py-20 w-full border-t border-slate-100"
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16">
-        
+
         {/* ==================== 1. Editorial Section Header ==================== */}
         <div className="mb-8">
-          
+
           {/* Eyebrow & Platform Badges */}
           <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
             <div className="flex items-center gap-2">
@@ -237,7 +237,7 @@ export const TourCalendar: React.FC = () => {
           {/* Heading Row: Serif Title + Search */}
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-5 border-b border-slate-200">
             <div>
-              <h2 
+              <h2
                 style={{
                   fontFamily: activeConfig.fontFamily,
                   fontSize: 'clamp(28px, 3.2vw, 44px)',
@@ -299,11 +299,10 @@ export const TourCalendar: React.FC = () => {
                     selectSubCategory(cat.subId);
                   }}
                   type="button"
-                  className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-bold uppercase rounded-full cursor-pointer transition-all shrink-0 border ${
-                    isActive
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-bold uppercase rounded-full cursor-pointer transition-all shrink-0 border ${isActive
                       ? 'bg-black text-white border-black shadow-xs'
                       : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200 hover:text-black'
-                  }`}
+                    }`}
                 >
                   <IconComp className={`w-3 h-3 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   <span>{cat.label}</span>
@@ -328,17 +327,15 @@ export const TourCalendar: React.FC = () => {
                   key={tab.id}
                   onClick={() => setSelectedPlatform(tab.id)}
                   type="button"
-                  className={`inline-flex items-center gap-2 px-3.5 py-2 text-xs font-bold uppercase tracking-wider font-mono rounded cursor-pointer transition-all shrink-0 border ${
-                    isActive
+                  className={`inline-flex items-center gap-2 px-3.5 py-2 text-xs font-bold uppercase tracking-wider font-mono rounded cursor-pointer transition-all shrink-0 border ${isActive
                       ? 'bg-black text-white border-black shadow-sm'
                       : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-slate-50'
-                  }`}
+                    }`}
                 >
                   <IconComp className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-500'}`} />
                   <span>{tab.label}</span>
-                  <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
-                  }`}>
+                  <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                    }`}>
                     {tab.badge}
                   </span>
                 </button>
@@ -362,11 +359,10 @@ export const TourCalendar: React.FC = () => {
                 key={fmt.id}
                 onClick={() => setSelectedEventType(fmt.id)}
                 type="button"
-                className={`px-2.5 py-1 text-[11px] font-semibold rounded-full cursor-pointer transition-colors shrink-0 ${
-                  selectedEventType === fmt.id
+                className={`px-2.5 py-1 text-[11px] font-semibold rounded-full cursor-pointer transition-colors shrink-0 ${selectedEventType === fmt.id
                     ? 'bg-slate-900 text-white'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
+                  }`}
               >
                 {fmt.label}
               </button>
@@ -382,11 +378,10 @@ export const TourCalendar: React.FC = () => {
                   key={c.id}
                   onClick={() => setSelectedCity(c.id)}
                   type="button"
-                  className={`pb-2 text-[11px] tracking-wider uppercase font-semibold transition-all border-b-2 cursor-pointer flex items-center gap-1.5 shrink-0 ${
-                    isActive
+                  className={`pb-2 text-[11px] tracking-wider uppercase font-semibold transition-all border-b-2 cursor-pointer flex items-center gap-1.5 shrink-0 ${isActive
                       ? 'border-black text-black font-extrabold'
                       : 'border-transparent text-slate-600 hover:text-black font-medium'
-                  }`}
+                    }`}
                 >
                   <span>{c.name}</span>
                   <span className={`text-[10px] font-mono font-bold ${isActive ? 'text-black' : 'text-slate-600'}`}>
@@ -497,7 +492,7 @@ export const TourCalendar: React.FC = () => {
                 >
                   {/* ---------- TOP SECTION: Atmosphere Banner & Badges ---------- */}
                   <div>
-                    <div 
+                    <div
                       style={{
                         position: 'relative',
                         height: '170px',
@@ -505,7 +500,7 @@ export const TourCalendar: React.FC = () => {
                         overflow: 'hidden',
                       }}
                     >
-                      <img 
+                      <img
                         src={event.coverImage || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80'}
                         alt={event.tourName}
                         style={{
@@ -517,18 +512,18 @@ export const TourCalendar: React.FC = () => {
                         }}
                         className="group-hover:scale-105"
                       />
-                      
+
                       {/* Vignette Overlay */}
-                      <div 
+                      <div
                         style={{
                           position: 'absolute',
                           inset: 0,
                           background: 'linear-gradient(180deg, rgba(15,23,42,0.45) 0%, rgba(15,23,42,0.15) 35%, rgba(15,23,42,0.95) 100%)',
-                        }} 
+                        }}
                       />
 
                       {/* Top Badges Row: Status + Platform Tag */}
-                      <div 
+                      <div
                         style={{
                           position: 'absolute',
                           top: '12px',
@@ -542,7 +537,7 @@ export const TourCalendar: React.FC = () => {
                         }}
                       >
                         {/* Live / Status Indicator */}
-                        <span 
+                        <span
                           style={{
                             fontSize: '10px',
                             fontFamily: 'monospace',
@@ -559,21 +554,21 @@ export const TourCalendar: React.FC = () => {
                             borderRadius: '2px',
                           }}
                         >
-                          <span 
-                            style={{ 
-                              width: '5px', 
-                              height: '5px', 
-                              borderRadius: '50%', 
+                          <span
+                            style={{
+                              width: '5px',
+                              height: '5px',
+                              borderRadius: '50%',
                               backgroundColor: statusDot,
                               display: 'inline-block',
-                            }} 
+                            }}
                             className={event.status === 'Live Now' || event.status === 'Voting Active' ? 'animate-ping' : ''}
                           />
                           <span>{event.badgeText || event.status}</span>
                         </span>
 
                         {/* Ecosystem Branding Tag (Weverse / Withmuu / Mubeat) */}
-                        <span 
+                        <span
                           style={{
                             fontSize: '9px',
                             fontFamily: 'monospace',
@@ -592,7 +587,7 @@ export const TourCalendar: React.FC = () => {
                       </div>
 
                       {/* Bottom Overlay Info: Avatar + Artist / Fandom Title */}
-                      <div 
+                      <div
                         style={{
                           position: 'absolute',
                           bottom: '12px',
@@ -604,7 +599,7 @@ export const TourCalendar: React.FC = () => {
                           zIndex: 10,
                         }}
                       >
-                        <div 
+                        <div
                           style={{
                             width: '46px',
                             height: '46px',
@@ -616,7 +611,7 @@ export const TourCalendar: React.FC = () => {
                             borderRadius: '4px',
                           }}
                         >
-                          <img 
+                          <img
                             src={event.artistAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
                             alt={event.artistName}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -624,11 +619,11 @@ export const TourCalendar: React.FC = () => {
                         </div>
 
                         <div style={{ overflow: 'hidden' }}>
-                          <span 
-                            style={{ 
-                              fontSize: '9px', 
-                              fontFamily: 'monospace', 
-                              color: '#cbd5e1', 
+                          <span
+                            style={{
+                              fontSize: '9px',
+                              fontFamily: 'monospace',
+                              color: '#cbd5e1',
                               fontWeight: 700,
                               letterSpacing: '0.12em',
                               textTransform: 'uppercase',
@@ -638,7 +633,7 @@ export const TourCalendar: React.FC = () => {
                           >
                             {event.artistName} {event.fandomName ? `· ${event.fandomName}` : ''}
                           </span>
-                          <h3 
+                          <h3
                             style={{
                               fontFamily: "'Playfair Display', Georgia, serif",
                               fontSize: '16px',
@@ -658,7 +653,7 @@ export const TourCalendar: React.FC = () => {
                     </div>
 
                     {/* ---------- TICKET STUB PERFORATED DIVIDER ---------- */}
-                    <div 
+                    <div
                       style={{
                         position: 'relative',
                         height: '18px',
@@ -669,7 +664,7 @@ export const TourCalendar: React.FC = () => {
                       }}
                     >
                       {/* Left & Right Semicircular Ticket Notches */}
-                      <div 
+                      <div
                         style={{
                           position: 'absolute',
                           left: '-9px',
@@ -682,9 +677,9 @@ export const TourCalendar: React.FC = () => {
                           border: '1.5px solid #e2e8f0',
                           boxShadow: 'inset -2px 0 3px rgba(0,0,0,0.06)',
                           zIndex: 10,
-                        }} 
+                        }}
                       />
-                      <div 
+                      <div
                         style={{
                           position: 'absolute',
                           right: '-9px',
@@ -697,26 +692,26 @@ export const TourCalendar: React.FC = () => {
                           border: '1.5px solid #e2e8f0',
                           boxShadow: 'inset 2px 0 3px rgba(0,0,0,0.06)',
                           zIndex: 10,
-                        }} 
+                        }}
                       />
                       {/* Perforated Dashed Line */}
-                      <div 
+                      <div
                         style={{
                           width: '100%',
                           margin: '0 16px',
                           borderTop: '1.5px dashed #cbd5e1',
-                        }} 
+                        }}
                       />
                     </div>
 
                     {/* ---------- MIDDLE SECTION: Date, Venue, Perks & Progress ---------- */}
                     <div style={{ padding: '4px 20px 16px 20px' }}>
-                      
+
                       {/* Date Block + Venue Info Row */}
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', marginBottom: '14px' }}>
-                        
+
                         {/* Bold Calendar Stamp */}
-                        <div 
+                        <div
                           style={{
                             width: '54px',
                             border: '1.5px solid #000000',
@@ -730,7 +725,7 @@ export const TourCalendar: React.FC = () => {
                             overflow: 'hidden',
                           }}
                         >
-                          <span 
+                          <span
                             style={{
                               width: '100%',
                               backgroundColor: '#000000',
@@ -744,7 +739,7 @@ export const TourCalendar: React.FC = () => {
                           >
                             {dateParts.month}
                           </span>
-                          <span 
+                          <span
                             style={{
                               fontSize: '20px',
                               fontWeight: 900,
@@ -756,7 +751,7 @@ export const TourCalendar: React.FC = () => {
                           >
                             {dateParts.day}
                           </span>
-                          <span 
+                          <span
                             style={{
                               fontSize: '8px',
                               fontFamily: 'monospace',
@@ -786,13 +781,13 @@ export const TourCalendar: React.FC = () => {
 
                           <div style={{ fontSize: '11px', color: '#64748b', paddingLeft: '17px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                             <span>{event.city}, {event.country}</span>
-                            <a 
+                            <a
                               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.mapQuery)}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              style={{ 
-                                color: '#94a3b8', 
-                                display: 'inline-flex', 
+                              style={{
+                                color: '#94a3b8',
+                                display: 'inline-flex',
                                 alignItems: 'center',
                                 textDecoration: 'none',
                               }}
@@ -820,7 +815,7 @@ export const TourCalendar: React.FC = () => {
 
                           {/* Progress bar */}
                           <div className="w-full bg-purple-200/70 h-2 rounded-full overflow-hidden mb-2">
-                            <div 
+                            <div
                               className="h-full bg-purple-600 transition-all duration-500 rounded-full"
                               style={{ width: `${Math.min(event.votingProgress.percentage, 100)}%` }}
                             />
@@ -873,7 +868,7 @@ export const TourCalendar: React.FC = () => {
 
                       {/* Event Perks Micro-Badges */}
                       {event.perks && event.perks.length > 0 && (
-                        <div 
+                        <div
                           style={{
                             backgroundColor: '#f8fafc',
                             border: '1px solid #f1f5f9',
@@ -885,7 +880,7 @@ export const TourCalendar: React.FC = () => {
                           }}
                         >
                           {event.perks.map((perk, idx) => (
-                            <span 
+                            <span
                               key={idx}
                               style={{
                                 fontSize: '9px',
@@ -908,7 +903,7 @@ export const TourCalendar: React.FC = () => {
                   </div>
 
                   {/* ---------- BOTTOM SECTION: Pricing & Action CTA ---------- */}
-                  <div 
+                  <div
                     style={{
                       padding: '14px 20px',
                       borderTop: '1px solid #f1f5f9',
@@ -920,7 +915,7 @@ export const TourCalendar: React.FC = () => {
                     }}
                   >
                     <div>
-                      <span 
+                      <span
                         style={{
                           fontSize: '9px',
                           fontFamily: 'monospace',
@@ -933,7 +928,7 @@ export const TourCalendar: React.FC = () => {
                       >
                         {isVoting ? 'VOTING CURRENCY' : isFansignOrLucky ? 'ALBUM ENTRY' : 'PASS PRICE'}
                       </span>
-                      <span 
+                      <span
                         style={{
                           fontFamily: "'Playfair Display', Georgia, serif",
                           fontSize: '17px',
@@ -942,10 +937,10 @@ export const TourCalendar: React.FC = () => {
                           letterSpacing: '-0.02em',
                         }}
                       >
-                        {isVoting 
-                          ? 'Heart Beats (Free)' 
-                          : event.ticketPriceFromUSD === 0 
-                            ? 'Free RSVP' 
+                        {isVoting
+                          ? 'Heart Beats (Free)'
+                          : event.ticketPriceFromUSD === 0
+                            ? 'Free RSVP'
                             : formatPrice(event.ticketPriceFromUSD, event.ticketPriceFromVND)
                         }
                       </span>
@@ -958,12 +953,12 @@ export const TourCalendar: React.FC = () => {
                       style={{
                         height: '38px',
                         padding: '0 16px',
-                        backgroundColor: isSoldOut 
-                          ? '#e2e8f0' 
-                          : isVoting 
-                            ? '#7e22ce' 
-                            : isFansignOrLucky 
-                              ? '#be185d' 
+                        backgroundColor: isSoldOut
+                          ? '#e2e8f0'
+                          : isVoting
+                            ? '#7e22ce'
+                            : isFansignOrLucky
+                              ? '#be185d'
                               : '#000000',
                         color: isSoldOut ? '#94a3b8' : '#ffffff',
                         border: 'none',
@@ -1009,7 +1004,7 @@ export const TourCalendar: React.FC = () => {
 
         {/* ==================== 4. MODAL 1: VIP CONCERT PASS DISPATCH MODAL ==================== */}
         {bookedTour && (
-          <div 
+          <div
             style={{
               position: 'fixed',
               inset: 0,
@@ -1023,7 +1018,7 @@ export const TourCalendar: React.FC = () => {
             }}
             onClick={() => setBookedTour(null)}
           >
-            <div 
+            <div
               style={{
                 backgroundColor: '#ffffff',
                 maxWidth: '460px',
@@ -1037,7 +1032,7 @@ export const TourCalendar: React.FC = () => {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Top Banner */}
-              <div 
+              <div
                 style={{
                   backgroundColor: '#000000',
                   color: '#ffffff',
@@ -1075,7 +1070,7 @@ export const TourCalendar: React.FC = () => {
               {/* Modal Body */}
               <div style={{ padding: '24px' }}>
                 <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                  <div 
+                  <div
                     style={{
                       width: '48px',
                       height: '48px',
@@ -1090,7 +1085,7 @@ export const TourCalendar: React.FC = () => {
                   >
                     <Check style={{ width: '24px', height: '24px' }} />
                   </div>
-                  <h3 
+                  <h3
                     style={{
                       fontFamily: "'Playfair Display', Georgia, serif",
                       fontSize: '20px',
@@ -1107,7 +1102,7 @@ export const TourCalendar: React.FC = () => {
                 </div>
 
                 {/* Ticket Stub Simulation */}
-                <div 
+                <div
                   style={{
                     border: '1.5px solid #000000',
                     backgroundColor: '#f8fafc',
@@ -1154,7 +1149,7 @@ export const TourCalendar: React.FC = () => {
                   </div>
 
                   {/* Priority Code */}
-                  <div 
+                  <div
                     style={{
                       padding: '10px 12px',
                       backgroundColor: '#fffbeb',
@@ -1205,7 +1200,7 @@ export const TourCalendar: React.FC = () => {
 
         {/* ==================== 5. MODAL 2: WITHMUU FANSIGN & LUCKY DRAW APPLICATION MODAL ==================== */}
         {fansignModalEvent && (
-          <div 
+          <div
             style={{
               position: 'fixed',
               inset: 0,
@@ -1219,7 +1214,7 @@ export const TourCalendar: React.FC = () => {
             }}
             onClick={() => setFansignModalEvent(null)}
           >
-            <div 
+            <div
               style={{
                 backgroundColor: '#ffffff',
                 maxWidth: '480px',
@@ -1233,7 +1228,7 @@ export const TourCalendar: React.FC = () => {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div 
+              <div
                 style={{
                   backgroundColor: '#be185d',
                   color: '#ffffff',
@@ -1284,11 +1279,10 @@ export const TourCalendar: React.FC = () => {
                               key={qty}
                               type="button"
                               onClick={() => setAlbumEntryQty(qty)}
-                              className={`px-2.5 py-1 text-xs font-mono font-bold rounded cursor-pointer ${
-                                albumEntryQty === qty
+                              className={`px-2.5 py-1 text-xs font-mono font-bold rounded cursor-pointer ${albumEntryQty === qty
                                   ? 'bg-pink-700 text-white'
                                   : 'bg-white border border-pink-300 text-pink-800 hover:bg-pink-100'
-                              }`}
+                                }`}
                             >
                               {qty}x
                             </button>
@@ -1391,7 +1385,7 @@ export const TourCalendar: React.FC = () => {
 
         {/* ==================== 6. MODAL 3: MUBEAT HEART BEATS VOTING MODAL ==================== */}
         {votingModalEvent && (
-          <div 
+          <div
             style={{
               position: 'fixed',
               inset: 0,
@@ -1405,7 +1399,7 @@ export const TourCalendar: React.FC = () => {
             }}
             onClick={() => setVotingModalEvent(null)}
           >
-            <div 
+            <div
               style={{
                 backgroundColor: '#ffffff',
                 maxWidth: '480px',
@@ -1419,7 +1413,7 @@ export const TourCalendar: React.FC = () => {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div 
+              <div
                 style={{
                   backgroundColor: '#7e22ce',
                   color: '#ffffff',
@@ -1485,11 +1479,10 @@ export const TourCalendar: React.FC = () => {
                           key={c.rank}
                           type="button"
                           onClick={() => setSelectedContender(c.name)}
-                          className={`w-full p-2.5 rounded text-left border flex items-center justify-between cursor-pointer transition-colors text-xs ${
-                            selectedContender === c.name
+                          className={`w-full p-2.5 rounded text-left border flex items-center justify-between cursor-pointer transition-colors text-xs ${selectedContender === c.name
                               ? 'bg-purple-100/70 border-purple-600 text-purple-950 font-bold'
                               : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                          }`}
+                            }`}
                         >
                           <div className="flex items-center gap-2">
                             <span className="w-5 h-5 rounded-full bg-purple-200 text-purple-800 text-[10px] flex items-center justify-center font-bold">
@@ -1515,11 +1508,10 @@ export const TourCalendar: React.FC = () => {
                         key={amt}
                         type="button"
                         onClick={() => setVoteAmount(amt)}
-                        className={`py-2 text-xs font-mono font-bold rounded border cursor-pointer ${
-                          voteAmount === amt
+                        className={`py-2 text-xs font-mono font-bold rounded border cursor-pointer ${voteAmount === amt
                             ? 'bg-purple-700 text-white border-purple-700'
                             : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
-                        }`}
+                          }`}
                       >
                         +{amt} Beats
                       </button>

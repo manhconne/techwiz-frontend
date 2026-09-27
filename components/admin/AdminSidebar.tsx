@@ -31,8 +31,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const isEn = language === 'en';
 
   const navItems = [
-    { id: 'dashboard', label: isEn ? 'Dashboard Overview' : (t('dashboard') || 'Trang Chủ Admin'), icon: LayoutDashboard, href: '/admin', badge: null },
-    { id: 'users', label: isEn ? 'User Management' : (t('users') || 'Quản lý người dùng'), icon: Users, href: '/admin/users', badge: null },
+    { id: 'dashboard', label: isEn ? 'Dashboard Overview' : (t('dashboard') || 'Dashboard Overview'), icon: LayoutDashboard, href: '/admin', badge: null },
+    { id: 'users', label: isEn ? 'User Management' : (t('users') || 'User Management'), icon: Users, href: '/admin/users', badge: null },
   ];
 
   return (
@@ -54,7 +54,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             <Link href="/" className="overflow-hidden group w-100 text-center">
               {isOpen && (
                 <span className="font-black text-sm tracking-wider text-white uppercase text-center w-100">
-                  {isEn ? 'ADMINISTRATOR' : 'QUẢN TRỊ VIÊN'}
+                  ADMINISTRATOR
                 </span>
               )}
             </Link>
@@ -73,7 +73,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <div className="p-3 space-y-2 overflow-y-auto max-h-[calc(100vh-180px)]">
             {isOpen && (
               <div className="pt-2 text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2">
-                <span>{isEn ? 'Main Menu' : 'Menu Chính'}</span>
+                <span>Main Menu</span>
               </div>
             )}
 

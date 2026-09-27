@@ -187,30 +187,45 @@ export const Header: React.FC<HeaderProps> = ({
       className={`sticky top-0 z-40 w-full header-root fandom-header-${fandomThemeKey} transition-all duration-300${isScrolled ? ' header-scrolled' : ''}`}
       data-fandom-theme={fandomThemeKey}
     >
+      {/* Y2K System Status Ribbon */}
+      <div className="w-full bg-black text-white px-4 sm:px-8 py-1 font-mono text-[10px] font-bold tracking-widest uppercase flex items-center justify-between border-b border-black select-none">
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 bg-white animate-pulse" />
+            <span>PORTAL // READY</span>
+          </span>
+          <span className="hidden md:inline text-neutral-400">SYS.VER: 2026.1.0</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="hidden sm:inline text-neutral-400">HANTEO &amp; CIRCLE CERTIFIED</span>
+          <span>TIME // 2026 UTC</span>
+        </div>
+      </div>
 
       {/* Main Bar - Responsive Header Bar */}
-      <div className="header-inner max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-2.5 sm:py-4 flex items-center justify-between gap-4 md:gap-8 transition-colors duration-300">
+      <div className="header-inner max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-2.5 sm:py-3.5 flex items-center justify-between gap-4 md:gap-8 transition-colors duration-300">
         {/* LEFT: Menu button (Mobile only, hidden on PC) & Logo */}
         <div className="flex items-center gap-2.5 sm:gap-4 md:gap-5 shrink-0">
           <button
             onClick={() => setIsMenuDrawerOpen(true)}
-            className="mobile-menu-btn header-action-btn w-9 h-9 rounded-full bg-black text-white items-center justify-center cursor-pointer hover:opacity-90 shrink-0 border-0 transition-transform active:scale-95"
+            className="mobile-menu-btn header-action-btn px-3 py-1.5 bg-[#ff2e93] text-white items-center justify-center cursor-pointer hover:bg-[#ff007f] shrink-0 border-2 border-black font-mono text-xs font-black uppercase tracking-widest transition-transform active:scale-95 shadow-[2px_2px_0px_#000000]"
+            style={{ borderRadius: '0px' }}
             title="Menu"
             type="button"
           >
-            <Menu className="w-5 h-5" />
+            [MENU]
           </button>
 
           <Link href="/" className="flex items-center notranslate shrink-0">
             <img
               src="/logo-dark.png?v=2"
               alt="Fan Hub Plus"
-              className="header-logo h-8 sm:h-9 md:h-11 w-auto object-contain block transition-all"
+              className="header-logo h-8 sm:h-9 md:h-11 w-auto object-contain block transition-all hover:scale-105"
             />
           </Link>
         </div>
 
-        {/* CENTER: Wide Underline Search Bar (Desktop) - Clean Flex Layout, Icon separated from text */}
+        {/* CENTER: Wide Y2K Search Bar (Desktop) - Clean Flex Layout */}
         <div className="hidden md:flex flex-1 justify-center max-w-[560px] mx-4 lg:mx-8">
           <div
             className="header-search-bar"
@@ -219,28 +234,29 @@ export const Header: React.FC<HeaderProps> = ({
               width: '100%',
               display: 'flex',
               alignItems: 'center',
-              borderBottom: themeMode === 'dark' ? '2px solid #ffffff' : '2px solid #000000',
-              paddingBottom: '6px',
-              paddingTop: '6px',
+              border: '2px solid #000000',
+              backgroundColor: '#ffffff',
+              boxShadow: '3px 3px 0px #000000',
+              padding: '6px 12px',
             }}
           >
-            {/* Search Icon on the left with dedicated right margin */}
-            <Search
-              className="header-search-icon"
+            {/* Search prefix */}
+            <span
               style={{
-                width: '18px',
-                height: '18px',
-                color: themeMode === 'dark' ? '#ffffff' : '#0f172a',
-                flexShrink: 0,
-                marginRight: '12px',
-                marginLeft: '4px',
-                pointerEvents: 'none',
+                fontFamily: "var(--font-mono), 'JetBrains Mono', monospace",
+                fontSize: '11px',
+                fontWeight: 900,
+                color: '#ff2e93',
+                marginRight: '8px',
+                userSelect: 'none',
               }}
-            />
+            >
+              [SEARCH//]
+            </span>
 
             <input
               type="text"
-              placeholder="Search album, OST, anime, game (e.g. Demon Slayer, NewJeans)..."
+              placeholder="ARTIST, ALBUM, ARCHIVE..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
@@ -253,13 +269,16 @@ export const Header: React.FC<HeaderProps> = ({
               style={{
                 flex: 1,
                 width: '100%',
-                fontSize: '15px',
-                fontWeight: 500,
+                fontFamily: "var(--font-mono), 'JetBrains Mono', monospace",
+                fontSize: '12px',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
                 border: 'none',
                 outline: 'none',
                 backgroundColor: 'transparent',
-                color: themeMode === 'dark' ? '#ffffff' : '#000000',
+                color: '#000000',
                 padding: '0px',
+                textTransform: 'uppercase',
               }}
             />
 
@@ -267,39 +286,36 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="header-clear-btn hover:text-black"
+                className="header-clear-btn hover:text-[#ff2e93] font-mono text-xs font-bold"
                 style={{
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
-                  color: '#94a3b8',
-                  padding: '4px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
+                  color: '#000000',
+                  padding: '2px 6px',
                 }}
                 title="Clear"
               >
-                <X style={{ width: '16px', height: '16px' }} />
+                [×]
               </button>
             )}
           </div>
         </div>
 
-        {/* RIGHT: Action Icons */}
-        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
-          {/* Mobile Search Icon Button -> Opens Dedicated Mobile Search Modal */}
+        {/* RIGHT: Action Buttons (Vibrant Y2K Pop Neo-Brutalist Colors) */}
+        <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0 font-mono text-xs">
+          {/* Mobile Search Button */}
           <button
             onClick={() => setIsSearchModalOpen(true)}
-            className="mobile-search-btn header-action-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
+            className="mobile-search-btn header-action-btn px-2.5 py-1.5 items-center justify-center text-black border-2 border-black hover:bg-[#ffd60a] cursor-pointer bg-white transition-colors duration-100 font-bold shadow-[2px_2px_0px_#000000]"
+            style={{ borderRadius: '0px' }}
             title="Search"
             type="button"
           >
-            <Search style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
+            [?]
           </button>
 
-          {/* User Profile Icon / Dashboard Trigger */}
+          {/* User Profile Button (Lilac Purple) */}
           <button
             onClick={() => {
               if (isLoggedIn) {
@@ -308,174 +324,127 @@ export const Header: React.FC<HeaderProps> = ({
                 setIsAuthModalOpen(true);
               }
             }}
-            className="header-action-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors"
-            title={isLoggedIn ? `${user.name} - Mở Dashboard Cá Nhân` : 'Đăng Nhập'}
+            className="header-action-btn px-3 py-1.5 flex items-center justify-center text-black border-2 border-black bg-[#c084fc] hover:bg-[#d8b4fe] cursor-pointer font-black uppercase transition-all duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+            style={{ borderRadius: '0px' }}
+            title={isLoggedIn ? `${user.name} - Dashboard` : 'Sign In'}
             type="button"
           >
             {isLoggedIn ? (
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-amber-400"
-              />
+              <span className="truncate max-w-[80px]">{user.name.split(' ')[0]}</span>
             ) : (
-              <User style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
+              <span>[ID]</span>
             )}
           </button>
 
-          {/* Shopping Cart Icon */}
+          {/* Shopping Cart Button (Lemon Yellow) */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="header-action-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
+            className="header-action-btn px-3 py-1.5 flex items-center justify-center text-black border-2 border-black bg-[#ffd60a] hover:bg-[#fde047] cursor-pointer font-black uppercase transition-all duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+            style={{ borderRadius: '0px' }}
             title="Cart"
             type="button"
           >
-            <ShoppingBag style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
-            {cartCount > 0 && (
-              <span
-                style={{
-                  position: 'absolute',
-                  top: '1px',
-                  right: '1px',
-                  backgroundColor: '#000000',
-                  color: '#ffffff',
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '50%',
-                  fontSize: '10px',
-                  fontWeight: 800,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '2px solid #ffffff',
-                }}
-                className="header-badge notranslate"
-              >
-                {cartCount}
-              </span>
-            )}
+            <span>BAG ({cartCount})</span>
           </button>
 
-          {/* Wishlist / Document Icon */}
+          {/* Wishlist Button (Cyber Cyan) */}
           <button
             onClick={() => setIsWishlistOpen(true)}
-            className="header-action-btn hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center text-black hover:bg-slate-100 cursor-pointer border-0 bg-transparent relative transition-colors"
+            className="header-action-btn hidden sm:flex px-3 py-1.5 items-center justify-center text-black border-2 border-black bg-[#00f0ff] hover:bg-[#38bdf8] cursor-pointer font-black uppercase transition-all duration-100 h-8 sm:h-9 shadow-[2px_2px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+            style={{ borderRadius: '0px' }}
             title="Wishlist"
             type="button"
           >
-            <FileText style={{ width: '20px', height: '20px', strokeWidth: 1.8 }} />
-            {wishlistCount > 0 && (
-              <span
-                style={{
-                  position: 'absolute',
-                  top: '1px',
-                  right: '1px',
-                  backgroundColor: '#000000',
-                  color: '#ffffff',
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '50%',
-                  fontSize: '10px',
-                  fontWeight: 800,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '2px solid #ffffff',
-                }}
-                className="header-badge notranslate"
-              >
-                {wishlistCount}
-              </span>
-            )}
+            <span>SAVED ({wishlistCount})</span>
           </button>
 
-          {/* Language Switcher Pill [ 🌐 VI / EN ] */}
+          {/* Language Switcher Button [ EN / VI ] */}
           <button
             onClick={toggleLanguage}
-            title={language === 'en' ? 'Translate to Vietnamese (Google Translate)' : 'Chuyển sang Tiếng Anh'}
+            title={language === 'en' ? 'Translate to Vietnamese' : 'Switch to English'}
             type="button"
-            className="header-lang-btn hidden sm:flex notranslate hover:bg-slate-900 hover:text-white items-center gap-1.5 px-3 py-1 text-xs font-black border-2 border-black rounded-full bg-white text-black h-8 sm:h-9 cursor-pointer transition-all"
+            className="header-lang-btn hidden sm:flex notranslate hover:bg-neutral-100 items-center px-2.5 py-1 text-xs font-mono font-bold border-2 border-black bg-white text-black h-8 sm:h-9 cursor-pointer transition-colors duration-100 shadow-[2px_2px_0px_#000000]"
+            style={{ borderRadius: '0px' }}
           >
-            <Globe style={{ width: '15px', height: '15px' }} />
-            <span>{language === 'en' ? 'EN' : 'VI'}</span>
+            <span>[{language === 'en' ? 'EN' : 'VI'}]</span>
           </button>
 
-          {/* Light / Dark Mode Toggle Button */}
+          {/* Theme Mode Toggle Button */}
           <button
             onClick={toggleThemeMode}
             title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             type="button"
-            className="header-action-btn hidden sm:flex notranslate hover:bg-slate-100 w-9 h-9 rounded-full items-center justify-center text-black border-0 bg-transparent cursor-pointer transition-transform"
+            className="header-action-btn hidden sm:flex notranslate hover:bg-neutral-100 px-2.5 py-1 items-center justify-center text-black border-2 border-black bg-white font-bold uppercase cursor-pointer transition-colors duration-100 h-8 sm:h-9 text-[11px] shadow-[2px_2px_0px_#000000]"
+            style={{ borderRadius: '0px' }}
           >
-            {themeMode === 'dark' ? (
-              <Sun style={{ width: '20px', height: '20px', strokeWidth: 2, color: '#f59e0b' }} />
-            ) : (
-              <Moon style={{ width: '20px', height: '20px', strokeWidth: 2 }} />
-            )}
+            {themeMode === 'dark' ? '[LIGHT]' : '[DARK]'}
           </button>
 
-          {/* Accessible Font Size Adjuster Button (A / A+) */}
+          {/* Font Size Adjuster Button */}
           <button
             onClick={toggleFontSize}
-            title={isLargeFont ? 'Thu nhỏ cỡ chữ chuẩn (Mặc định 16px)' : 'Phóng to cỡ chữ (+12.5% Text Size)'}
+            title={isLargeFont ? 'Standard Text Size' : 'Enlarge Text Size (+12.5%)'}
             type="button"
-            className={`header-action-btn hidden sm:flex notranslate w-9 h-9 rounded-full items-center justify-center border font-bold text-xs cursor-pointer transition-all ${
+            className={`header-action-btn hidden sm:flex notranslate w-8 sm:w-9 h-8 sm:h-9 items-center justify-center border-2 border-black font-mono font-bold text-xs cursor-pointer transition-colors duration-100 shadow-[2px_2px_0px_#000000] ${
               isLargeFont 
-                ? 'bg-slate-900 text-white border-slate-900 shadow-xs' 
-                : 'hover:bg-slate-100 text-slate-800 border-slate-300'
+                ? 'bg-[#ff2e93] text-white' 
+                : 'hover:bg-neutral-100 text-black bg-white'
             }`}
+            style={{ borderRadius: '0px' }}
           >
-            <span className="font-mono text-xs font-black tracking-tight">{isLargeFont ? 'A+' : 'A'}</span>
+            <span>{isLargeFont ? 'A+' : 'A'}</span>
           </button>
 
           {/* Admin shortcut if admin */}
           {user.role === 'admin' && (
             <Link
               href="/admin"
-              className="flex items-center gap-1 px-2.5 py-1 text-xs font-black bg-amber-100 text-amber-800 border border-amber-300 rounded-md cursor-pointer h-8 text-decoration-none"
+              className="flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-black bg-[#ff2e93] text-white border-2 border-black hover:bg-[#ff007f] transition-colors duration-100 cursor-pointer h-8 sm:h-9 text-decoration-none shadow-[2px_2px_0px_#000000]"
+              style={{ borderRadius: '0px' }}
               title="Admin Portal"
             >
-              <ShieldCheck style={{ width: '15px', height: '15px', color: '#d97706' }} />
-              <span className="hidden md:inline">Admin</span>
+              <ShieldCheck style={{ width: '13px', height: '13px', strokeWidth: 2 }} />
+              <span className="hidden md:inline">ADMIN</span>
             </Link>
           )}
         </div>
       </div>
 
       {/* SECONDARY CATEGORY NAVIGATION BAR (Desktop Only) */}
-      <div className="desktop-subnav header-subnav w-full border-t border-b relative z-30 transition-colors duration-300">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between h-11 sm:h-[54px] relative gap-4">
-          {/* [ ≡ ALL MD ] Black Button with Exact Dropdown */}
+      <div className="desktop-subnav header-subnav w-full border-t border-black border-b-4 border-black relative z-30 bg-white">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between h-11 sm:h-[50px] relative gap-4">
+          {/* [ ≡ ALL MD ] Hot Pink Pop Button with Exact Dropdown */}
           <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center', zIndex: 60 }}>
             <button
               onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
               type="button"
-              className="header-allmd-btn hover:opacity-90 active:scale-95"
+              className="header-allmd-btn hover:bg-[#ff007f] transition-all duration-100"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',
-                padding: '8px 22px',
-                height: '38px',
-                backgroundColor: '#000000',
+                padding: '8px 18px',
+                height: '36px',
+                backgroundColor: '#ff2e93',
                 color: '#ffffff',
-                fontSize: '13px',
+                fontFamily: "var(--font-mono), monospace",
+                fontSize: '11px',
                 fontWeight: 900,
-                letterSpacing: '0.06em',
+                letterSpacing: '0.1em',
                 textTransform: 'uppercase',
-                border: 'none',
-                borderRadius: '4px',
+                border: '2px solid #000000',
+                borderRadius: '0px',
                 cursor: 'pointer',
                 flexShrink: 0,
-                transition: 'opacity 0.15s ease',
+                boxShadow: '3px 3px 0px #000000',
               }}
             >
-              <Menu style={{ width: '16px', height: '16px', flexShrink: 0 }} />
-              <span style={{ whiteSpace: 'nowrap' }}>ALL MD</span>
+              <Menu style={{ width: '15px', height: '15px', flexShrink: 0, strokeWidth: 2.5 }} />
+              <span style={{ whiteSpace: 'nowrap' }}>★ ALL MD</span>
             </button>
 
-            {/* Dropdown Menu under [ ≡ ALL MD ] (border radius 8px, English default, library icons) */}
+            {/* Dropdown Menu under [ ≡ ALL MD ] (Strictly 0px, pure monochrome, no shadow) */}
             {isAllMdDropdownOpen && (
               <>
                 {/* Backdrop to close on click outside */}
@@ -489,37 +458,37 @@ export const Header: React.FC<HeaderProps> = ({
                     position: 'absolute',
                     left: 0,
                     top: '100%',
-                    marginTop: '8px',
+                    marginTop: '2px',
                     width: '340px',
                     maxWidth: '92vw',
                     backgroundColor: '#ffffff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '8px',
+                    border: '2px solid #000000',
+                    borderRadius: '0px',
                     padding: '14px',
-                    boxShadow: '0 20px 45px -10px rgba(15, 23, 42, 0.18)',
+                    boxShadow: 'none',
                     zIndex: 9999,
                     display: 'block',
                   }}
-                  className="animate-in fade-in-0 zoom-in-95 duration-150"
+                  className="animate-in fade-in-0 duration-100"
                 >
                   {/* Header Title */}
                   <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-slate-100">
                     <div className="flex items-center gap-2">
                       <div
-                        style={{ borderRadius: '4px' }}
+                        style={{ borderRadius: '0px' }}
                         className="w-5 h-5 bg-black text-white flex items-center justify-center"
                       >
                         <Sparkles className="w-3 h-3" />
                       </div>
-                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-900">
+                      <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-black">
                         CATEGORIES &amp; FUNCTIONS
                       </span>
                     </div>
                     <button
                       type="button"
                       onClick={() => setIsAllMdDropdownOpen(false)}
-                      style={{ borderRadius: '4px' }}
-                      className="w-6 h-6 hover:bg-slate-100 text-slate-400 hover:text-black flex items-center justify-center border-0 bg-transparent cursor-pointer transition-colors"
+                      style={{ borderRadius: '0px' }}
+                      className="w-6 h-6 border border-black hover:bg-black hover:text-white text-black flex items-center justify-center bg-white cursor-pointer transition-colors duration-100"
                       title="Close"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -527,7 +496,7 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
 
                   {/* Category Items with Library Icons */}
-                  <div className="flex flex-col gap-0.5">
+                  <div className="flex flex-col gap-1">
                     {allMdItems.map((item, idx) => {
                       const ItemIcon = item.icon;
                       return (
@@ -537,47 +506,47 @@ export const Header: React.FC<HeaderProps> = ({
                             setIsAllMdDropdownOpen(false);
                             item.action();
                           }}
-                          style={{ borderRadius: '6px' }}
-                          className="group w-full flex items-center justify-between px-2.5 py-1.5 hover:bg-slate-100 text-left border-0 bg-transparent cursor-pointer transition-all"
+                          style={{ borderRadius: '0px' }}
+                          className="group w-full flex items-center justify-between px-3 py-2 border border-transparent hover:border-black hover:bg-black hover:text-white text-left bg-transparent cursor-pointer transition-colors duration-100"
                           type="button"
                         >
-                          <div className="flex items-center gap-2.5">
+                          <div className="flex items-center gap-3">
                             <div
-                              style={{ borderRadius: '6px' }}
-                              className="w-7 h-7 bg-slate-100 text-slate-700 group-hover:bg-black group-hover:text-white flex items-center justify-center transition-colors shrink-0"
+                              style={{ borderRadius: '0px' }}
+                              className="w-6 h-6 border border-black bg-white text-black group-hover:bg-white group-hover:text-black flex items-center justify-center shrink-0"
                             >
                               <ItemIcon className="w-3.5 h-3.5" />
                             </div>
-                            <span className="text-[12px] font-bold text-slate-800 group-hover:text-black tracking-tight">
+                            <span className="font-mono text-[12px] font-medium tracking-tight">
                               {item.label}
                             </span>
                           </div>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-black group-hover:translate-x-0.5 transition-all shrink-0" />
+                          <ChevronRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-white shrink-0" />
                         </button>
                       );
                     })}
                   </div>
 
                   {/* Quick Sections shortcut */}
-                  <div className="pt-2.5 mt-2 border-t border-slate-100">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-2 px-1">
+                  <div className="pt-3 mt-3 border-t border-black">
+                    <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-neutral-500 block mb-2 px-1">
                       QUICK SHORTCUTS
                     </span>
-                    <div className="grid grid-cols-2 gap-1.5">
+                    <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
                         onClick={() => {
                           setIsAllMdDropdownOpen(false);
                           scrollToSection('albums');
                         }}
-                        style={{ borderRadius: '6px' }}
-                        className="group flex items-center gap-2 p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-xs font-bold text-slate-800 cursor-pointer transition-all shadow-2xs"
+                        style={{ borderRadius: '0px' }}
+                        className="group flex items-center gap-2 p-2 bg-white hover:bg-black hover:text-white border border-black text-xs font-mono font-medium cursor-pointer transition-colors duration-100"
                       >
                         <div
-                          style={{ borderRadius: '4px' }}
-                          className="w-6 h-6 bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors"
+                          style={{ borderRadius: '0px' }}
+                          className="w-5 h-5 border border-black bg-black text-white flex items-center justify-center shrink-0 group-hover:bg-white group-hover:text-black transition-colors"
                         >
-                          <Disc className="w-3.5 h-3.5" />
+                          <Disc className="w-3 h-3" />
                         </div>
                         <span className="truncate">Album Drops</span>
                       </button>
@@ -588,14 +557,14 @@ export const Header: React.FC<HeaderProps> = ({
                           setIsAllMdDropdownOpen(false);
                           scrollToSection('artists');
                         }}
-                        style={{ borderRadius: '6px' }}
-                        className="group flex items-center gap-2 p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-xs font-bold text-slate-800 cursor-pointer transition-all shadow-2xs"
+                        style={{ borderRadius: '0px' }}
+                        className="group flex items-center gap-2 p-2 bg-white hover:bg-black hover:text-white border border-black text-xs font-mono font-medium cursor-pointer transition-colors duration-100"
                       >
                         <div
-                          style={{ borderRadius: '4px' }}
-                          className="w-6 h-6 bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors"
+                          style={{ borderRadius: '0px' }}
+                          className="w-5 h-5 border border-black bg-black text-white flex items-center justify-center shrink-0 group-hover:bg-white group-hover:text-black transition-colors"
                         >
-                          <Users className="w-3.5 h-3.5" />
+                          <Users className="w-3 h-3" />
                         </div>
                         <span className="truncate">Idol Profiles</span>
                       </button>
@@ -606,14 +575,14 @@ export const Header: React.FC<HeaderProps> = ({
                           setIsAllMdDropdownOpen(false);
                           scrollToSection('tours');
                         }}
-                        style={{ borderRadius: '6px' }}
-                        className="group flex items-center gap-2 p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-xs font-bold text-slate-800 cursor-pointer transition-all shadow-2xs"
+                        style={{ borderRadius: '0px' }}
+                        className="group flex items-center gap-2 p-2 bg-white hover:bg-black hover:text-white border border-black text-xs font-mono font-medium cursor-pointer transition-colors duration-100"
                       >
                         <div
-                          style={{ borderRadius: '4px' }}
-                          className="w-6 h-6 bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-colors"
+                          style={{ borderRadius: '0px' }}
+                          className="w-5 h-5 border border-black bg-black text-white flex items-center justify-center shrink-0 group-hover:bg-white group-hover:text-black transition-colors"
                         >
-                          <Calendar className="w-3.5 h-3.5" />
+                          <Calendar className="w-3 h-3" />
                         </div>
                         <span className="truncate">World Tour</span>
                       </button>
@@ -624,14 +593,14 @@ export const Header: React.FC<HeaderProps> = ({
                           setIsAllMdDropdownOpen(false);
                           scrollToSection('community');
                         }}
-                        style={{ borderRadius: '6px' }}
-                        className="group flex items-center gap-2 p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-xs font-bold text-slate-800 cursor-pointer transition-all shadow-2xs"
+                        style={{ borderRadius: '0px' }}
+                        className="group flex items-center gap-2 p-2 bg-white hover:bg-black hover:text-white border border-black text-xs font-mono font-medium cursor-pointer transition-colors duration-100"
                       >
                         <div
-                          style={{ borderRadius: '4px' }}
-                          className="w-6 h-6 bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors"
+                          style={{ borderRadius: '0px' }}
+                          className="w-5 h-5 border border-black bg-black text-white flex items-center justify-center shrink-0 group-hover:bg-white group-hover:text-black transition-colors"
                         >
-                          <MessageSquare className="w-3.5 h-3.5" />
+                          <MessageSquare className="w-3 h-3" />
                         </div>
                         <span className="truncate">Fandom Feed</span>
                       </button>
@@ -642,119 +611,131 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* Horizontal Links */}
-          <nav className="flex items-center gap-5 sm:gap-7 lg:gap-9 xl:gap-11 flex-nowrap h-full shrink-0 overflow-x-auto scrollbar-none">
+          {/* Horizontal Links with Clean Minimalist Monochrome Editorial Typography */}
+          <nav className="flex items-center gap-6 sm:gap-8 lg:gap-10 xl:gap-12 flex-nowrap h-full shrink-0 overflow-x-auto scrollbar-none">
             <Link
               href="/artist"
               style={{
-                fontSize: '14px',
-                fontWeight: 900,
-                letterSpacing: '0.06em',
+                fontFamily: "var(--font-mono), monospace",
+                fontSize: '12px',
+                fontWeight: pathname?.startsWith('/artist') ? 700 : 500,
+                letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                padding: '14px 6px',
+                padding: '12px 4px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                borderBottom: pathname?.startsWith('/artist') ? '2.5px solid currentColor' : '2.5px solid transparent',
+                color: '#000000',
+                transition: 'all 0.1s ease',
+                borderBottom: pathname?.startsWith('/artist') ? '3px solid #000000' : '3px solid transparent',
                 textDecoration: 'none',
               }}
-              className="header-nav-link hover:opacity-60"
+              className="hover:opacity-60"
             >
               ARTIST
             </Link>
             <Link
               href="/event"
               style={{
-                fontSize: '14px',
-                fontWeight: 900,
-                letterSpacing: '0.06em',
+                fontFamily: "var(--font-mono), monospace",
+                fontSize: '12px',
+                fontWeight: pathname?.startsWith('/event') ? 700 : 500,
+                letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                padding: '14px 6px',
+                padding: '12px 4px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                borderBottom: pathname?.startsWith('/event') ? '2.5px solid currentColor' : '2.5px solid transparent',
+                color: '#000000',
+                transition: 'all 0.1s ease',
+                borderBottom: pathname?.startsWith('/event') ? '3px solid #000000' : '3px solid transparent',
                 textDecoration: 'none',
               }}
-              className="header-nav-link hover:opacity-60"
+              className="hover:opacity-60"
             >
               EVENT
             </Link>
             <Link
               href="/multimedia"
               style={{
-                fontSize: '14px',
-                fontWeight: 900,
-                letterSpacing: '0.06em',
+                fontFamily: "var(--font-mono), monospace",
+                fontSize: '12px',
+                fontWeight: pathname?.startsWith('/multimedia') ? 700 : 500,
+                letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                padding: '14px 6px',
+                padding: '12px 4px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                borderBottom: pathname?.startsWith('/multimedia') ? '2.5px solid currentColor' : '2.5px solid transparent',
+                color: '#000000',
+                transition: 'all 0.1s ease',
+                borderBottom: pathname?.startsWith('/multimedia') ? '3px solid #000000' : '3px solid transparent',
                 textDecoration: 'none',
               }}
-              className="header-nav-link hover:opacity-60"
+              className="hover:opacity-60"
             >
               MULTIMEDIA
             </Link>
             <Link
               href="/cd-dvd-book"
               style={{
-                fontSize: '14px',
-                fontWeight: 900,
-                letterSpacing: '0.06em',
+                fontFamily: "var(--font-mono), monospace",
+                fontSize: '12px',
+                fontWeight: pathname === '/cd-dvd-book' ? 700 : 500,
+                letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                padding: '14px 6px',
+                padding: '12px 4px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                borderBottom: pathname === '/cd-dvd-book' ? '2.5px solid currentColor' : '2.5px solid transparent',
+                color: '#000000',
+                transition: 'all 0.1s ease',
+                borderBottom: pathname === '/cd-dvd-book' ? '3px solid #000000' : '3px solid transparent',
                 textDecoration: 'none',
               }}
-              className="header-nav-link hover:opacity-60"
+              className="hover:opacity-60"
             >
               CD/DVD/BOOK
             </Link>
             <Link
               href="/md"
               style={{
-                fontSize: '14px',
-                fontWeight: 900,
-                letterSpacing: '0.06em',
+                fontFamily: "var(--font-mono), monospace",
+                fontSize: '12px',
+                fontWeight: pathname === '/md' ? 700 : 500,
+                letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                padding: '14px 6px',
+                padding: '12px 4px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                borderBottom: pathname === '/md' ? '2.5px solid currentColor' : '2.5px solid transparent',
+                color: '#000000',
+                transition: 'all 0.1s ease',
+                borderBottom: pathname === '/md' ? '3px solid #000000' : '3px solid transparent',
                 textDecoration: 'none',
               }}
-              className="header-nav-link hover:opacity-60"
+              className="hover:opacity-60"
             >
               MD
             </Link>
             <Link
               href="/b2b"
               style={{
-                fontSize: '14px',
-                fontWeight: 900,
-                letterSpacing: '0.06em',
+                fontFamily: "var(--font-mono), monospace",
+                fontSize: '12px',
+                fontWeight: pathname?.startsWith('/b2b') ? 700 : 500,
+                letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                padding: '14px 6px',
+                padding: '12px 4px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                borderBottom: pathname?.startsWith('/b2b') ? '2.5px solid currentColor' : '2.5px solid transparent',
+                color: '#000000',
+                transition: 'all 0.1s ease',
+                borderBottom: pathname?.startsWith('/b2b') ? '3px solid #000000' : '3px solid transparent',
                 textDecoration: 'none',
               }}
-              className="header-nav-link hover:opacity-60"
+              className="hover:opacity-60"
             >
               B2B/BULK
             </Link>
@@ -780,11 +761,12 @@ export const Header: React.FC<HeaderProps> = ({
           <div
             style={{
               backgroundColor: '#ffffff',
-              borderRadius: '8px',
+              borderRadius: '0px',
               maxWidth: '440px',
               width: '100%',
               padding: '24px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              boxShadow: 'none',
+              border: '2px solid #000000',
               position: 'relative'
             }}
           >
@@ -794,7 +776,7 @@ export const Header: React.FC<HeaderProps> = ({
                 position: 'absolute',
                 top: '16px',
                 right: '16px',
-                color: '#94a3b8',
+                color: '#000000',
                 cursor: 'pointer'
               }}
               type="button"
@@ -804,37 +786,37 @@ export const Header: React.FC<HeaderProps> = ({
 
             <div className="flex items-center gap-2 mb-2">
               <Palette style={{ width: '22px', height: '22px', color: '#000000' }} />
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-base font-bold text-black uppercase font-mono tracking-wide">
                 CUSTOM ZONE - Fan DIY Studio
               </h3>
             </div>
-            <p className="text-xs text-slate-500 mb-4">
+            <p className="text-xs text-neutral-600 mb-4">
               Personalize your bias lightstick, holographic toploader binders, and custom photocard sleeves.
             </p>
 
-            <div className="space-y-2.5 text-xs">
-              <div className="p-3 bg-slate-50 border border-slate-200 rounded flex items-center justify-between">
+            <div className="space-y-2.5 text-xs font-mono">
+              <div className="p-3 bg-white border border-black flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-slate-800">Holographic Toploader Deco Kit</div>
-                  <div className="text-[11px] text-slate-500">Stickers, charms, and protective UV sleeves</div>
+                  <div className="font-bold text-black">Holographic Toploader Deco Kit</div>
+                  <div className="text-[11px] text-neutral-500">Stickers, charms, and protective UV sleeves</div>
                 </div>
-                <span className="font-bold text-sky-600">$12.00</span>
+                <span className="font-bold text-black">$12.00</span>
               </div>
 
-              <div className="p-3 bg-slate-50 border border-slate-200 rounded flex items-center justify-between">
+              <div className="p-3 bg-white border border-black flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-slate-800">Lightstick Custom Dome Decals</div>
-                  <div className="text-[11px] text-slate-500">NewJeans, BLACKPINK, BTS strap & decal sets</div>
+                  <div className="font-bold text-black">Lightstick Custom Dome Decals</div>
+                  <div className="text-[11px] text-neutral-500">NewJeans, BLACKPINK, BTS strap & decal sets</div>
                 </div>
-                <span className="font-bold text-sky-600">$9.50</span>
+                <span className="font-bold text-black">$9.50</span>
               </div>
 
-              <div className="p-3 bg-slate-50 border border-slate-200 rounded flex items-center justify-between">
+              <div className="p-3 bg-white border border-black flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-slate-800">Custom Bias NFC Keychain Card</div>
-                  <div className="text-[11px] text-slate-500">Taps on smartphone to play idol voice note</div>
+                  <div className="font-bold text-black">Custom Bias NFC Keychain Card</div>
+                  <div className="text-[11px] text-neutral-500">Taps on smartphone to play idol voice note</div>
                 </div>
-                <span className="font-bold text-sky-600">$15.00</span>
+                <span className="font-bold text-black">$15.00</span>
               </div>
             </div>
 
@@ -843,11 +825,11 @@ export const Header: React.FC<HeaderProps> = ({
                 setIsCustomZoneOpen(false);
                 scrollToSection('albums');
               }}
-              className="mt-5 w-full py-2.5 text-white text-xs font-bold rounded cursor-pointer"
-              style={{ backgroundColor: '#000000' }}
+              className="mt-5 w-full py-3 text-white text-xs font-mono font-bold uppercase tracking-widest cursor-pointer bg-black border-2 border-black hover:bg-white hover:text-black transition-colors duration-100"
+              style={{ borderRadius: '0px' }}
               type="button"
             >
-              Explore Official Custom Kits in Catalog
+              Explore Official Custom Kits
             </button>
           </div>
         </div>
@@ -860,8 +842,7 @@ export const Header: React.FC<HeaderProps> = ({
             position: 'fixed',
             inset: 0,
             zIndex: 50,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(2px)',
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -871,11 +852,12 @@ export const Header: React.FC<HeaderProps> = ({
           <div
             style={{
               backgroundColor: '#ffffff',
-              borderRadius: '8px',
+              borderRadius: '0px',
               maxWidth: '460px',
               width: '100%',
               padding: '24px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              boxShadow: 'none',
+              border: '2px solid #000000',
               position: 'relative'
             }}
           >
@@ -888,7 +870,7 @@ export const Header: React.FC<HeaderProps> = ({
                 position: 'absolute',
                 top: '16px',
                 right: '16px',
-                color: '#94a3b8',
+                color: '#000000',
                 cursor: 'pointer'
               }}
               type="button"
@@ -897,22 +879,22 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             {b2bSubmitted ? (
-              <div className="text-center py-6 space-y-3">
+              <div className="text-center py-6 space-y-3 font-mono">
                 <div
-                  className="bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto"
-                  style={{ width: '48px', height: '48px', borderRadius: '50%' }}
+                  className="bg-black text-white flex items-center justify-center mx-auto"
+                  style={{ width: '48px', height: '48px', borderRadius: '0px' }}
                 >
                   <CheckCircle2 style={{ width: '28px', height: '28px' }} />
                 </div>
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 className="text-base font-bold text-black uppercase tracking-wider">
                   B2B Group Order Request Received!
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto">
+                <p className="text-xs text-neutral-600 leading-relaxed max-w-sm mx-auto">
                   Thank you! Our Global Wholesale & Group Order department will send tier-discount quotations to your contact within 2 hours.
                 </p>
                 <div
-                  className="p-3 border text-xs text-sky-800"
-                  style={{ backgroundColor: '#fafafa', borderColor: '#d4d4d4', borderRadius: '8px' }}
+                  className="p-3 border border-black text-xs text-black"
+                  style={{ backgroundColor: '#ffffff', borderRadius: '0px' }}
                 >
                   📦 Inquiries reflect 100% on official Hanteo & Circle Charts.
                 </div>
@@ -921,8 +903,8 @@ export const Header: React.FC<HeaderProps> = ({
                     setIsB2BModalOpen(false);
                     setB2bSubmitted(false);
                   }}
-                  className="mt-4 px-6 py-2 text-white text-xs font-bold cursor-pointer"
-                  style={{ backgroundColor: '#000000', borderRadius: '8px' }}
+                  className="mt-4 px-6 py-2.5 text-white text-xs font-mono font-bold uppercase tracking-widest cursor-pointer bg-black border-2 border-black hover:bg-white hover:text-black transition-colors duration-100"
+                  style={{ borderRadius: '0px' }}
                   type="button"
                 >
                   Close
@@ -932,11 +914,11 @@ export const Header: React.FC<HeaderProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Building2 style={{ width: '20px', height: '20px', color: '#000000' }} />
-                  <h3 className="text-base font-bold text-slate-900">
+                  <h3 className="text-base font-bold text-black uppercase font-mono tracking-wider">
                     B2B & Fandom Group Orders (GO)
                   </h3>
                 </div>
-                <p className="text-xs text-slate-500 mb-4">
+                <p className="text-xs text-neutral-600 mb-4">
                   Wholesale discounts for fan clubs, international group order managers, and retailers. 100% Hanteo Chart counted.
                 </p>
 
@@ -949,7 +931,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className="space-y-3"
                 >
                   <div>
-                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                    <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-black block mb-1">
                       Fanbase / Business Organization
                     </label>
                     <input
@@ -958,13 +940,13 @@ export const Header: React.FC<HeaderProps> = ({
                       placeholder="e.g. Bunnies Global Fandom, Seoul K-Store"
                       value={b2bOrg}
                       onChange={(e) => setB2bOrg(e.target.value)}
-                      className="w-full text-xs p-2 bg-slate-50 border border-slate-200 focus:outline-none"
-                      style={{ borderRadius: '8px' }}
+                      className="w-full text-xs p-2.5 bg-white border-2 border-black focus:outline-none font-mono"
+                      style={{ borderRadius: '0px' }}
                     />
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                    <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-black block mb-1">
                       Email / WhatsApp Contact
                     </label>
                     <input
@@ -973,21 +955,21 @@ export const Header: React.FC<HeaderProps> = ({
                       placeholder="e.g. fandom_order@gmail.com / +84 912 345 678"
                       value={b2bContact}
                       onChange={(e) => setB2bContact(e.target.value)}
-                      className="w-full text-xs p-2 bg-slate-50 border border-slate-200 focus:outline-none"
-                      style={{ borderRadius: '8px' }}
+                      className="w-full text-xs p-2.5 bg-white border-2 border-black focus:outline-none font-mono"
+                      style={{ borderRadius: '0px' }}
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-black block mb-1">
                         Target Artist
                       </label>
                       <select
                         value={b2bArtist}
                         onChange={(e) => setB2bArtist(e.target.value)}
-                        className="w-full text-xs p-2 bg-slate-50 border border-slate-200 focus:outline-none"
-                        style={{ borderRadius: '8px' }}
+                        className="w-full text-xs p-2.5 bg-white border-2 border-black focus:outline-none font-mono"
+                        style={{ borderRadius: '0px' }}
                       >
                         <option value="NewJeans">NewJeans</option>
                         <option value="BLACKPINK">BLACKPINK</option>
@@ -999,7 +981,7 @@ export const Header: React.FC<HeaderProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-black block mb-1">
                         Quantity (Copies)
                       </label>
                       <input
@@ -1009,14 +991,14 @@ export const Header: React.FC<HeaderProps> = ({
                         required
                         value={b2bQty}
                         onChange={(e) => setB2bQty(e.target.value)}
-                        className="w-full text-xs p-2 bg-slate-50 border border-slate-200 focus:outline-none"
-                        style={{ borderRadius: '8px' }}
+                        className="w-full text-xs p-2.5 bg-white border-2 border-black focus:outline-none font-mono"
+                        style={{ borderRadius: '0px' }}
                       />
                     </div>
                   </div>
 
-                  <div className="p-2.5 bg-slate-50 border border-slate-200 text-[11px] text-slate-600 rounded space-y-1">
-                    <p className="font-semibold text-slate-800">Perks for Group Order Managers:</p>
+                  <div className="p-3 bg-neutral-50 border border-black text-[11px] text-black font-mono space-y-1">
+                    <p className="font-bold">Perks for Group Order Managers:</p>
                     <p>✓ Custom photocard sorting service</p>
                     <p>✓ Direct EMS / DHL Express shipping from Seoul</p>
                     <p>✓ Official Hanteo Chart authentication barcode</p>
@@ -1024,8 +1006,8 @@ export const Header: React.FC<HeaderProps> = ({
 
                   <button
                     type="submit"
-                    className="w-full text-white text-xs py-2.5 font-bold cursor-pointer shadow-xs mt-2"
-                    style={{ backgroundColor: '#000000', borderRadius: '8px' }}
+                    className="w-full text-white text-xs py-3 font-mono font-bold uppercase tracking-widest cursor-pointer bg-black border-2 border-black hover:bg-white hover:text-black transition-colors duration-100 mt-2"
+                    style={{ borderRadius: '0px' }}
                   >
                     Submit B2B Quotation Request
                   </button>
@@ -1053,14 +1035,14 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <div
             style={{
-              backgroundColor: 'var(--bg-card)',
-              borderRadius: '8px',
+              backgroundColor: '#ffffff',
+              borderRadius: '0px',
               maxWidth: '430px',
               width: '100%',
               padding: '28px 24px',
-              boxShadow: 'var(--shadow-lg)',
+              boxShadow: 'none',
               position: 'relative',
-              border: '1px solid var(--border-color)'
+              border: '2px solid #000000'
             }}
           >
             {/* Close Button */}
@@ -1073,17 +1055,17 @@ export const Header: React.FC<HeaderProps> = ({
                 position: 'absolute',
                 top: '16px',
                 right: '16px',
-                color: 'var(--text-muted)',
-                backgroundColor: 'var(--bg-body)',
-                borderRadius: '50%',
+                color: '#000000',
+                backgroundColor: '#ffffff',
+                borderRadius: '0px',
                 width: '32px',
                 height: '32px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                border: '1px solid var(--border-color)',
-                transition: 'all var(--transition-fast)'
+                border: '1px solid #000000',
+                transition: 'all 0.1s ease'
               }}
               type="button"
               title="Close"
@@ -1127,7 +1109,7 @@ export const Header: React.FC<HeaderProps> = ({
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Vai trò:</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Role:</span>
                     <span style={{ fontWeight: 800, textTransform: 'uppercase', color: 'var(--color-primary)' }}>
                       {user.role}
                     </span>
@@ -1140,7 +1122,7 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
                 </div>
 
-                {/* Dashboard Cá Nhân Hóa Button */}
+                {/* Dashboard Button */}
                 <button
                   onClick={() => {
                     setIsAuthModalOpen(false);
@@ -1165,7 +1147,7 @@ export const Header: React.FC<HeaderProps> = ({
                   type="button"
                 >
                   <Sparkles style={{ width: '16px', height: '16px', color: '#f59e0b' }} />
-                  Mở Dashboard Cá Nhân Hóa (Hoạt Động & Fandom)
+                  Open Personal Dashboard (Activity & Fandom)
                 </button>
 
                 {user.role === 'admin' && (
@@ -1193,7 +1175,7 @@ export const Header: React.FC<HeaderProps> = ({
                     type="button"
                   >
                     <ShieldCheck style={{ width: '16px', height: '16px' }} />
-                    Mở Bảng Quản Trị Admin
+                    Open Admin Dashboard
                   </button>
                 )}
 
@@ -1215,7 +1197,7 @@ export const Header: React.FC<HeaderProps> = ({
                   }}
                   type="button"
                 >
-                  Đăng Xuất Tài Khoản
+                  Sign Out
                 </button>
               </div>
             ) : (
@@ -1435,7 +1417,7 @@ export const Header: React.FC<HeaderProps> = ({
                           padding: 0
                         }}
                       >
-                        Quên mật khẩu? (Đặt lại qua Token/Email)
+                        Forgot password? (Reset via Token/Email)
                       </button>
                     </div>
 
@@ -1556,7 +1538,7 @@ export const Header: React.FC<HeaderProps> = ({
                         <input
                           type="text"
                           required
-                          placeholder="e.g. Nguyễn Văn A"
+                          placeholder="e.g. Alex Morgan"
                           value={signupName}
                           onChange={(e) => setSignupName(e.target.value)}
                           style={{
@@ -1765,7 +1747,7 @@ export const Header: React.FC<HeaderProps> = ({
 
                       if (!isResetTokenSent) {
                         if (!forgotEmail.trim()) {
-                          setAuthError('Vui lòng nhập địa chỉ email.');
+                          setAuthError('Please enter your email address.');
                           return;
                         }
                         const res = requestPasswordReset(forgotEmail);
@@ -1774,7 +1756,7 @@ export const Header: React.FC<HeaderProps> = ({
                         setAuthNotification(res.message);
                       } else {
                         if (!forgotToken.trim() || !forgotNewPassword.trim()) {
-                          setAuthError('Vui lòng nhập đầy đủ mã token và mật khẩu mới.');
+                          setAuthError('Please enter both the token and your new password.');
                           return;
                         }
                         const res = resetPasswordWithToken(forgotEmail, forgotToken, forgotNewPassword);
@@ -1796,7 +1778,7 @@ export const Header: React.FC<HeaderProps> = ({
                     {!isResetTokenSent ? (
                       <div style={{ marginBottom: '16px' }}>
                         <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
-                          Email Đăng Ký Tài Khoản
+                          Registered Account Email
                         </label>
                         <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
                           <Mail style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
@@ -1823,19 +1805,19 @@ export const Header: React.FC<HeaderProps> = ({
                           />
                         </div>
                         <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px' }}>
-                          Hệ thống sẽ gửi mã Token 6 ký tự xác minh để bạn đặt lại mật khẩu an toàn.
+                          We will send a 6-character verification token to securely reset your password.
                         </p>
                       </div>
                     ) : (
                       <div className="space-y-3">
                         <div style={{ marginBottom: '12px' }}>
                           <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
-                            Mã Token Xác Thực (Đã gửi qua email)
+                            Verification Token (Sent via email)
                           </label>
                           <input
                             type="text"
                             required
-                            placeholder="Nhập 6 ký tự token"
+                            placeholder="Enter 6-digit token"
                             value={forgotToken}
                             onChange={(e) => setForgotToken(e.target.value.toUpperCase())}
                             style={{
@@ -1857,12 +1839,12 @@ export const Header: React.FC<HeaderProps> = ({
 
                         <div style={{ marginBottom: '16px' }}>
                           <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
-                            Mật Khẩu Mới
+                            New Password
                           </label>
                           <input
                             type="password"
                             required
-                            placeholder="Tối thiểu 6 ký tự"
+                            placeholder="Minimum 6 characters"
                             value={forgotNewPassword}
                             onChange={(e) => setForgotNewPassword(e.target.value)}
                             style={{
@@ -1900,7 +1882,7 @@ export const Header: React.FC<HeaderProps> = ({
                         transition: 'all var(--transition-fast)'
                       }}
                     >
-                      <span>{isResetTokenSent ? 'Xác Nhận Đặt Lại Mật Khẩu' : 'Gửi Mã Token Xác Thực Qua Email'}</span>
+                      <span>{isResetTokenSent ? 'Confirm Password Reset' : 'Send Verification Token via Email'}</span>
                       <ArrowRight style={{ width: '16px', height: '16px' }} />
                     </button>
                   </form>
@@ -1934,14 +1916,14 @@ export const Header: React.FC<HeaderProps> = ({
                     </p>
                   ) : (
                     <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
-                      Đã nhớ lại mật khẩu?{' '}
+                      Remember your password?{' '}
                       <button
                         type="button"
                         onClick={() => { setAuthMode('signin'); setAuthNotification(null); setIsResetTokenSent(false); }}
                         style={{ fontWeight: 800, color: '#000000', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                         className="dark:text-white hover:underline"
                       >
-                        Quay lại Đăng nhập
+                        Back to Sign In
                       </button>
                     </p>
                   )}
@@ -1960,7 +1942,7 @@ export const Header: React.FC<HeaderProps> = ({
       />
 
       {/* ========================================================================= */}
-      {/* MOBILE SIDEBAR DRAWER (Chỉ có ở mobile, trên PC không bao giờ hiện) */}
+      {/* MOBILE SIDEBAR DRAWER */}
       {/* ========================================================================= */}
       {isMenuDrawerOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
@@ -1989,7 +1971,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={() => setIsMenuDrawerOpen(false)}
                 className="w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-slate-100 hover:text-black cursor-pointer shadow-xs transition-colors"
-                title="Đóng"
+                title="Close"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -2006,7 +1988,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="w-full flex items-center gap-2.5 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-lg text-xs font-semibold cursor-pointer border-0 transition-colors"
               >
                 <Search className="w-4 h-4 text-slate-600" />
-                <span>Tìm kiếm album, nghệ sĩ, OST...</span>
+                <span>Search albums, artists, OSTs...</span>
               </button>
             </div>
 
@@ -2015,7 +1997,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* 1. Main Navigation Links */}
               <div>
                 <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">
-                  Điều hướng chính / Main Menu
+                  Main Navigation
                 </div>
                 <div className="space-y-1">
                   <Link
@@ -2080,7 +2062,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div>
                 <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1 flex items-center justify-between">
                   <span>ALL MD CATEGORIES</span>
-                  <span className="bg-black text-white text-[9px] px-1.5 py-0.5 rounded font-bold">9 MỤC</span>
+                  <span className="bg-black text-white text-[9px] px-1.5 py-0.5 rounded font-bold">9 ITEMS</span>
                 </div>
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-2 space-y-1">
                   {allMdItems.map((item, idx) => (
@@ -2102,44 +2084,44 @@ export const Header: React.FC<HeaderProps> = ({
 
               {/* 3. Quick Section Jumps */}
               <div>
-                <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">
+                <div className="font-mono text-[11px] font-bold uppercase tracking-widest text-neutral-500 mb-2 px-1">
                   Quick Sections
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => scrollToSection('albums')}
-                    style={{ borderRadius: '8px' }}
-                    className="p-2.5 text-left bg-white border border-slate-200 hover:border-black text-xs font-bold text-slate-800 cursor-pointer flex items-center gap-2 shadow-2xs"
+                    style={{ borderRadius: '0px' }}
+                    className="p-2.5 text-left bg-white border border-black hover:bg-black hover:text-white text-xs font-mono font-medium text-black cursor-pointer flex items-center gap-2 transition-colors duration-100"
                   >
-                    <Disc className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                    <Disc className="w-3.5 h-3.5 shrink-0" />
                     <span>Album Drops</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => scrollToSection('artists')}
-                    style={{ borderRadius: '8px' }}
-                    className="p-2.5 text-left bg-white border border-slate-200 hover:border-black text-xs font-bold text-slate-800 cursor-pointer flex items-center gap-2 shadow-2xs"
+                    style={{ borderRadius: '0px' }}
+                    className="p-2.5 text-left bg-white border border-black hover:bg-black hover:text-white text-xs font-mono font-medium text-black cursor-pointer flex items-center gap-2 transition-colors duration-100"
                   >
-                    <Users className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                    <Users className="w-3.5 h-3.5 shrink-0" />
                     <span>Idol Profiles</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => scrollToSection('tours')}
-                    style={{ borderRadius: '8px' }}
-                    className="p-2.5 text-left bg-white border border-slate-200 hover:border-black text-xs font-bold text-slate-800 cursor-pointer flex items-center gap-2 shadow-2xs"
+                    style={{ borderRadius: '0px' }}
+                    className="p-2.5 text-left bg-white border border-black hover:bg-black hover:text-white text-xs font-mono font-medium text-black cursor-pointer flex items-center gap-2 transition-colors duration-100"
                   >
-                    <Calendar className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <Calendar className="w-3.5 h-3.5 shrink-0" />
                     <span>World Tour</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => scrollToSection('community')}
-                    style={{ borderRadius: '8px' }}
-                    className="p-2.5 text-left bg-white border border-slate-200 hover:border-black text-xs font-bold text-slate-800 cursor-pointer flex items-center gap-2 shadow-2xs"
+                    style={{ borderRadius: '0px' }}
+                    className="p-2.5 text-left bg-white border border-black hover:bg-black hover:text-white text-xs font-mono font-medium text-black cursor-pointer flex items-center gap-2 transition-colors duration-100"
                   >
-                    <MessageSquare className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <MessageSquare className="w-3.5 h-3.5 shrink-0" />
                     <span>Fandom Feed</span>
                   </button>
                 </div>
@@ -2147,47 +2129,50 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Bottom Footer Actions inside Drawer */}
-            <div className="p-3.5 border-t border-slate-200 bg-slate-50 space-y-2">
+            <div className="p-3.5 border-t border-black bg-white space-y-2">
               <div className="flex items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={toggleLanguage}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-800 hover:bg-slate-100 cursor-pointer"
+                  style={{ borderRadius: '0px' }}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 bg-white border border-black text-xs font-mono font-bold text-black hover:bg-black hover:text-white cursor-pointer transition-colors duration-100"
                 >
-                  <Globe className="w-3.5 h-3.5 text-blue-600" />
-                  <span>{language === 'en' ? 'English (EN)' : 'Tiếng Việt (VI)'}</span>
+                  <Globe className="w-3.5 h-3.5" />
+                  <span>{language === 'en' ? 'EN' : 'VI'}</span>
                 </button>
                 <button
                   type="button"
                   onClick={toggleThemeMode}
-                  className="w-10 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-100 cursor-pointer"
-                  title="Đổi giao diện Sáng / Tối"
+                  style={{ borderRadius: '0px' }}
+                  className="w-10 h-9 flex items-center justify-center bg-white border border-black text-black hover:bg-black hover:text-white cursor-pointer transition-colors duration-100"
+                  title="Theme toggle"
                 >
                   {themeMode === 'dark' ? (
-                    <Sun className="w-4 h-4 text-amber-500" />
+                    <Sun className="w-4 h-4" />
                   ) : (
-                    <Moon className="w-4 h-4 text-slate-700" />
+                    <Moon className="w-4 h-4" />
                   )}
                 </button>
                 <button
                   type="button"
                   onClick={toggleFontSize}
-                  className={`w-10 h-9 flex items-center justify-center border rounded-lg text-xs font-black cursor-pointer transition-colors ${
+                  style={{ borderRadius: '0px' }}
+                  className={`w-10 h-9 flex items-center justify-center border border-black text-xs font-mono font-bold cursor-pointer transition-colors duration-100 ${
                     isLargeFont
-                      ? 'bg-slate-900 text-white border-slate-900'
-                      : 'bg-white border-slate-200 text-slate-800 hover:bg-slate-100'
+                      ? 'bg-black text-white'
+                      : 'bg-white text-black hover:bg-black hover:text-white'
                   }`}
-                  title={isLargeFont ? 'Thu nhỏ cỡ chữ' : 'Phóng to cỡ chữ'}
+                  title={isLargeFont ? 'Reduce font size' : 'Increase font size'}
                 >
-                  <span className="font-mono text-xs font-bold">{isLargeFont ? 'A+' : 'A'}</span>
+                  <span>{isLargeFont ? 'A+' : 'A'}</span>
                 </button>
               </div>
 
               {isLoggedIn ? (
                 <div className="flex items-center justify-between pt-1">
-                  <div className="text-xs">
-                    <span className="font-bold text-slate-900 block truncate max-w-[170px]">{user.name}</span>
-                    <span className="text-[10px] text-slate-500 block truncate max-w-[170px]">{user.email}</span>
+                  <div className="text-xs font-mono">
+                    <span className="font-bold text-black block truncate max-w-[170px]">{user.name}</span>
+                    <span className="text-[10px] text-neutral-500 block truncate max-w-[170px]">{user.email}</span>
                   </div>
                   <button
                     type="button"
@@ -2195,9 +2180,9 @@ export const Header: React.FC<HeaderProps> = ({
                       logout();
                       setIsMenuDrawerOpen(false);
                     }}
-                    className="text-xs font-bold text-red-600 hover:underline bg-transparent border-0 cursor-pointer p-1"
+                    className="text-xs font-mono font-bold text-black underline hover:opacity-60 bg-transparent border-0 cursor-pointer p-1"
                   >
-                    Đăng xuất
+                    Logout
                   </button>
                 </div>
               ) : (
@@ -2207,7 +2192,8 @@ export const Header: React.FC<HeaderProps> = ({
                     setIsMenuDrawerOpen(false);
                     setIsAuthModalOpen(true);
                   }}
-                  className="w-full py-2.5 bg-black text-white text-xs font-black uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 cursor-pointer hover:bg-neutral-800 border-0"
+                  style={{ borderRadius: '0px' }}
+                  className="w-full py-2.5 bg-black text-white text-xs font-mono font-bold uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer hover:bg-white hover:text-black border-2 border-black transition-colors duration-100"
                 >
                   <User className="w-4 h-4" />
                   <span>Sign In / Account</span>
@@ -2219,33 +2205,37 @@ export const Header: React.FC<HeaderProps> = ({
       )}
 
       {/* ========================================================================= */}
-      {/* DEDICATED SEARCH MODAL (Thiết kế cao cấp, hiện đại, chuẩn Mobile & Desktop) */}
+      {/* DEDICATED SEARCH MODAL (Minimalist Monochrome - 0px sharp, pure black & white) */}
       {/* ========================================================================= */}
       {isSearchModalOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-start items-center p-0 sm:p-4">
-          {/* Smooth backdrop blur */}
+        <div className="fixed inset-0 z-50 flex flex-col justify-start items-center p-0 sm:p-6">
+          {/* Smooth backdrop */}
           <div
-            className="fixed inset-0 bg-black/65 backdrop-blur-md transition-opacity duration-300"
+            className="fixed inset-0 bg-black/60 transition-opacity duration-100"
             onClick={() => setIsSearchModalOpen(false)}
           />
 
-          {/* Modal Card - rounded bottom on mobile, rounded-2xl on desktop */}
-          <div className="relative w-full max-w-[680px] bg-white rounded-b-3xl sm:rounded-2xl shadow-2xl z-10 overflow-hidden border-b sm:border border-slate-200 animate-in slide-in-from-top-5 duration-200">
+          {/* Modal Card - 0px sharp, 2px solid black border, zero shadows */}
+          <div
+            style={{ borderRadius: '0px' }}
+            className="relative w-full max-w-[680px] bg-white rounded-none shadow-none z-10 overflow-hidden border-2 border-black mt-8"
+          >
             {/* Top Bar with Brand / Header */}
-            <div className="px-5 pt-4 pb-3 flex items-center justify-between border-b border-slate-100 bg-slate-50/70">
+            <div className="px-6 py-4 flex items-center justify-between border-b-2 border-black bg-white">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
-                <span className="text-xs font-black uppercase tracking-wider text-slate-900">
-                  Search &amp; Explore
+                <span className="w-2.5 h-2.5 bg-black" />
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-black">
+                  SEARCH &amp; EXPLORE
                 </span>
-                <span className="hidden xs:inline-block text-[10px] font-bold text-slate-400 bg-white border border-slate-200 px-2 py-0.5 rounded-full">
-                  Fandom Explorer
+                <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 border border-black px-2 py-0.5 ml-2">
+                  FANDOM ARCHIVE
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setIsSearchModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-700 hover:text-black cursor-pointer transition-colors shadow-2xs"
+                style={{ borderRadius: '0px' }}
+                className="w-8 h-8 bg-white hover:bg-black hover:text-white border border-black flex items-center justify-center text-black cursor-pointer transition-colors duration-100"
                 title="Close search"
               >
                 <X className="w-4 h-4" />
@@ -2253,8 +2243,8 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Main Form Area */}
-            <div className="p-4 sm:p-6">
-              {/* Modern Rounded Capsule Search Bar */}
+            <div className="p-6">
+              {/* Sharp Monochrome Search Bar */}
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -2266,19 +2256,18 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <div
                   style={{
-                    borderRadius: '9999px',
+                    borderRadius: '0px',
                     backgroundColor: '#ffffff',
-                    border: '1.5px solid #000000',
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+                    border: '2px solid #000000',
                   }}
-                  className="w-full flex items-center pl-4 pr-1.5 py-1.5 transition-all"
+                  className="w-full flex items-center pl-4 pr-1.5 py-1.5"
                 >
-                  <Search className="w-5 h-5 text-slate-500 shrink-0" />
+                  <Search className="w-5 h-5 text-black shrink-0" />
 
                   <input
                     type="text"
                     autoFocus
-                    placeholder="Search albums, artists, manga, gear (NewJeans, BTS...)"
+                    placeholder="Search artist, album drops, tours (Playfair, BTS, NewJeans...)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{
@@ -2286,8 +2275,9 @@ export const Header: React.FC<HeaderProps> = ({
                       outline: 'none',
                       backgroundColor: 'transparent',
                       color: '#000000',
+                      fontFamily: 'var(--font-source-serif), serif',
                     }}
-                    className="flex-1 min-w-0 px-3 py-2 text-sm sm:text-base font-semibold placeholder:text-slate-400 placeholder:font-normal"
+                    className="flex-1 min-w-0 px-3 py-2 text-base font-normal placeholder:text-neutral-400 placeholder:italic"
                   />
 
                   {/* Clear Button */}
@@ -2295,24 +2285,25 @@ export const Header: React.FC<HeaderProps> = ({
                     <button
                       type="button"
                       onClick={() => setSearchQuery('')}
-                      className="w-7 h-7 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center cursor-pointer border-0 shrink-0 mr-1.5 transition-colors"
+                      style={{ borderRadius: '0px' }}
+                      className="w-7 h-7 bg-white hover:bg-black hover:text-white border border-black text-black flex items-center justify-center cursor-pointer shrink-0 mr-2 transition-colors duration-100"
                       title="Clear text"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
                   )}
 
-                  {/* Submit Action Pill Button */}
+                  {/* Submit Action Sharp Button */}
                   <button
                     type="submit"
                     style={{
-                      borderRadius: '9999px',
+                      borderRadius: '0px',
                       backgroundColor: '#000000',
                       color: '#ffffff',
                     }}
-                    className="hover:bg-neutral-800 text-xs font-black uppercase tracking-wider px-4 sm:px-5 py-2.5 flex items-center gap-1.5 cursor-pointer border-0 shrink-0 shadow-xs active:scale-95 transition-all"
+                    className="hover:bg-white hover:text-black border-2 border-black text-xs font-mono font-bold uppercase tracking-widest px-5 py-2.5 flex items-center gap-2 cursor-pointer shrink-0 transition-colors duration-100"
                   >
-                    <span>Search</span>
+                    <span>SEARCH</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -2320,9 +2311,12 @@ export const Header: React.FC<HeaderProps> = ({
 
               {/* Real-time search status indicator if user is typing */}
               {searchQuery.trim() ? (
-                <div className="flex items-center justify-between px-3.5 py-2.5 mb-6 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-semibold">
+                <div
+                  style={{ borderRadius: '0px' }}
+                  className="flex items-center justify-between px-4 py-2.5 mb-6 bg-neutral-100 border border-black text-xs font-mono text-black"
+                >
                   <span>
-                    Filtering results: <strong>"{searchQuery}"</strong>
+                    FILTER: <strong>"{searchQuery}"</strong>
                   </span>
                   <button
                     type="button"
@@ -2331,20 +2325,20 @@ export const Header: React.FC<HeaderProps> = ({
                       const albumsEl = document.getElementById('albums');
                       if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="underline text-black font-bold cursor-pointer bg-transparent border-0"
+                    className="underline text-black font-bold uppercase cursor-pointer bg-transparent border-0"
                   >
-                    View results →
+                    VIEW RESULTS →
                   </button>
                 </div>
               ) : null}
 
               {/* Trending Keywords / Top Searches */}
               <div className="mb-6">
-                <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-slate-500 mb-3 px-1">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <div className="flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-widest text-neutral-500 mb-3 px-1">
+                  <Sparkles className="w-3.5 h-3.5 text-black" />
                   <span>TRENDING KEYWORDS &amp; POPULAR SEARCHES</span>
                 </div>
-                <div className="flex flex-wrap gap-2 sm:gap-2.5">
+                <div className="flex flex-wrap gap-2">
                   {[
                     { label: 'BTS', hot: true },
                     { label: 'NewJeans', hot: true },
@@ -2365,15 +2359,12 @@ export const Header: React.FC<HeaderProps> = ({
                         if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
                       }}
                       style={{
-                        borderRadius: '9999px',
+                        borderRadius: '0px',
                       }}
-                      className="group flex items-center gap-1.5 px-3.5 py-1.5 bg-white hover:bg-black text-slate-700 hover:text-white border border-slate-200 hover:border-black text-xs font-bold cursor-pointer transition-all shadow-2xs active:scale-95"
+                      className="group flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-black text-black hover:text-white border border-black text-xs font-mono font-medium cursor-pointer transition-colors duration-100"
                     >
-                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-black ${item.hot
-                        ? 'bg-rose-100 text-rose-600 group-hover:bg-white group-hover:text-black'
-                        : 'bg-slate-100 text-slate-500 group-hover:bg-white/20 group-hover:text-white'
-                        }`}>
-                        {idx + 1}
+                      <span className="font-mono text-[10px] font-bold">
+                        0{idx + 1}
                       </span>
                       <span>{item.label}</span>
                     </button>
@@ -2382,11 +2373,11 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
 
               {/* Quick Categories Navigation */}
-              <div className="pt-4 border-t border-slate-100">
-                <div className="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-3 px-1">
-                  DANH MỤC NỔI BẬT
+              <div className="pt-4 border-t border-black">
+                <div className="font-mono text-[11px] font-bold uppercase tracking-widest text-neutral-500 mb-3 px-1">
+                  FEATURED CATEGORIES
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <button
                     type="button"
                     onClick={() => {
@@ -2395,11 +2386,11 @@ export const Header: React.FC<HeaderProps> = ({
                       const albumsEl = document.getElementById('albums');
                       if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    style={{ borderRadius: '10px' }}
-                    className="p-2.5 text-left bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 border border-slate-200/80 cursor-pointer transition-colors flex items-center gap-2"
+                    style={{ borderRadius: '0px' }}
+                    className="p-3 text-left bg-white hover:bg-black hover:text-white text-xs font-mono font-bold text-black border border-black cursor-pointer transition-colors duration-100 flex items-center gap-2 group"
                   >
-                    <Disc className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                    <span>CD &amp; LP Albums</span>
+                    <Disc className="w-3.5 h-3.5 shrink-0" />
+                    <span>CD &amp; LP</span>
                   </button>
                   <button
                     type="button"
@@ -2409,11 +2400,11 @@ export const Header: React.FC<HeaderProps> = ({
                       const albumsEl = document.getElementById('albums');
                       if (albumsEl) albumsEl.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    style={{ borderRadius: '10px' }}
-                    className="p-2.5 text-left bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 border border-slate-200/80 cursor-pointer transition-colors flex items-center gap-2"
+                    style={{ borderRadius: '0px' }}
+                    className="p-3 text-left bg-white hover:bg-black hover:text-white text-xs font-mono font-bold text-black border border-black cursor-pointer transition-colors duration-100 flex items-center gap-2 group"
                   >
-                    <Gift className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                    <span>Limited Editions</span>
+                    <Gift className="w-3.5 h-3.5 shrink-0" />
+                    <span>Limited</span>
                   </button>
                   <button
                     type="button"
@@ -2422,11 +2413,11 @@ export const Header: React.FC<HeaderProps> = ({
                       const artistsEl = document.getElementById('artists');
                       if (artistsEl) artistsEl.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    style={{ borderRadius: '8px' }}
-                    className="p-2.5 text-left bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 border border-slate-200/80 cursor-pointer transition-colors flex items-center gap-2"
+                    style={{ borderRadius: '0px' }}
+                    className="p-3 text-left bg-white hover:bg-black hover:text-white text-xs font-mono font-bold text-black border border-black cursor-pointer transition-colors duration-100 flex items-center gap-2 group"
                   >
-                    <Users className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                    <span>Idol Profiles</span>
+                    <Users className="w-3.5 h-3.5 shrink-0" />
+                    <span>Artists</span>
                   </button>
                   <button
                     type="button"
@@ -2435,11 +2426,11 @@ export const Header: React.FC<HeaderProps> = ({
                       const toursEl = document.getElementById('tours');
                       if (toursEl) toursEl.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    style={{ borderRadius: '10px' }}
-                    className="p-2.5 text-left bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 border border-slate-200/80 cursor-pointer transition-colors flex items-center gap-2"
+                    style={{ borderRadius: '0px' }}
+                    className="p-3 text-left bg-white hover:bg-black hover:text-white text-xs font-mono font-bold text-black border border-black cursor-pointer transition-colors duration-100 flex items-center gap-2 group"
                   >
-                    <Calendar className="w-3.5 h-3.5 text-rose-600 shrink-0" />
-                    <span>World Tour</span>
+                    <Calendar className="w-3.5 h-3.5 shrink-0" />
+                    <span>Tour</span>
                   </button>
                 </div>
               </div>

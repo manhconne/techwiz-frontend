@@ -54,7 +54,7 @@ export const mockArtists: Artist[] = [
     category: 'K-Pop',
     fandomName: 'BLINK',
     debutYear: 2016,
-    members: ['Jisoo', 'Jennie', 'Rosé', 'Lisa'],
+    members: ['Jisoo', 'Jennie', 'Rose', 'Lisa'],
     image: 'https://upload.wikimedia.org/wikipedia/commons/1/18/20240809_Blackpink_Pink_Carpet_09.png',
     bannerImage: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Blackpink_Born_Pink_Tour_Hanoi_01.jpg',
     bio: 'Global supergroup that set historic stadium attendance records with two unforgettable BORN PINK World Tour nights at My Dinh National Stadium.',

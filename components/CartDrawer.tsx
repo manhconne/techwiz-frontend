@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useCartWishlist } from '../context/CartWishlistContext';
-import { X, Trash2, Plus, Minus, ShoppingBag, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Trash2, Plus, Minus, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 
 export const CartDrawer: React.FC = () => {
   const { 
@@ -21,8 +21,7 @@ export const CartDrawer: React.FC = () => {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
   const [customerName, setCustomerName] = useState('Alex Rivers');
-  const [customerAddress, setCustomerAddress] = useState('123 K-Pop Boulevard, District 1');
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'momo' | 'vnpay'>('card');
+  const [customerAddress, setCustomerAddress] = useState('fan@fanhubplus.com');
 
   if (!isCartOpen) return null;
 
@@ -33,133 +32,143 @@ export const CartDrawer: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div className="fixed inset-0 z-50 overflow-hidden font-mono">
       <div 
         onClick={() => setIsCartOpen(false)}
-        className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity" 
+        className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity" 
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between border-l border-slate-200">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-8">
+        <div 
+          style={{ borderRadius: '0px' }}
+          className="w-screen max-w-md bg-[#fdfbf7] shadow-[10px_0px_0px_#000] flex flex-col justify-between border-l-4 border-black"
+        >
           
-          {/* Header */}
-          <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+          {/* Header Bar */}
+          <div className="px-5 py-3.5 border-b-3 border-black flex items-center justify-between bg-[#ffd60a] select-none">
             <div className="flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-sky-600" />
-              <h2 className="text-base font-bold text-slate-800">
-                Shopping Cart
+              <span className="w-2.5 h-2.5 bg-[#ff2e93] border border-black" />
+              <h2 className="text-sm font-black text-black uppercase tracking-wider">
+                ★ FANDOM SHOWCASE BAG
               </h2>
-              <span 
-                className="text-xs font-bold px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c' }}
-              >
-                {cartCount}
+              <span className="text-[11px] font-black px-2 py-0.5 bg-[#ff2e93] text-white border border-black shadow-[1px_1px_0px_#000]">
+                {cartCount} ITEMS
               </span>
             </div>
             <button
               onClick={() => setIsCartOpen(false)}
-              className="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer"
+              style={{ borderRadius: '0px' }}
+              className="px-2 py-0.5 bg-white text-black hover:bg-[#ff2e93] hover:text-white border-2 border-black text-xs font-black cursor-pointer shadow-[1px_1px_0px_#000] transition-colors"
               type="button"
             >
-              <X className="w-5 h-5" />
+              [✕]
             </button>
           </div>
 
           {/* Cart Items List */}
-          <div className="p-6 overflow-y-auto flex-1 divide-y divide-slate-100">
+          <div className="p-5 overflow-y-auto flex-1 divide-y-2 divide-black/20">
             {orderComplete ? (
-              <div className="text-center py-12 space-y-4">
+              <div className="text-center py-10 space-y-4">
                 <div 
-                  className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto"
-                  style={{ width: '56px', height: '56px', borderRadius: '50%' }}
+                  style={{ borderRadius: '0px' }}
+                  className="w-14 h-14 bg-[#ccff00] text-black border-2 border-black shadow-[4px_4px_0px_#000] flex items-center justify-center mx-auto"
                 >
-                  <CheckCircle2 className="w-8 h-8" />
+                  <CheckCircle2 className="w-8 h-8 text-black" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900">Order Placed Successfully!</h3>
-                <p className="text-xs text-slate-600 leading-relaxed max-w-xs mx-auto">
+                <h3 className="text-base font-black uppercase text-black">
+                  ★ PRE-ORDER RESERVED SUCCESSFULLY! ★
+                </h3>
+                <p className="text-xs font-sans font-semibold text-neutral-700 leading-relaxed max-w-xs mx-auto">
                   Thank you for supporting your favorite idols! Your album count has been officially reported to Hanteo and Circle Charts.
                 </p>
                 <div 
-                  className="p-3 border text-xs"
-                  style={{ backgroundColor: '#fafafa', borderColor: '#d4d4d4', color: '#1c1c1c', borderRadius: '8px' }}
+                  style={{ borderRadius: '0px' }}
+                  className="p-3 bg-[#ffd60a] border-2 border-black text-xs font-black text-black shadow-[3px_3px_0px_#000]"
                 >
-                  ✨ Tracking Order ID: <strong>HANTEO-2026-KR-8839</strong>
+                  ⚡ TRACKING ID: <strong>HANTEO-2026-KR-8839</strong>
                 </div>
                 <button
                   onClick={() => {
                     setOrderComplete(false);
                     setIsCartOpen(false);
                   }}
-                  className="px-6 py-2 text-white text-xs font-bold cursor-pointer"
-                  style={{ backgroundColor: '#000000', borderRadius: '8px' }}
+                  style={{ borderRadius: '0px' }}
+                  className="mt-3 px-6 py-2.5 bg-[#ff2e93] text-white text-xs font-black uppercase cursor-pointer border-2 border-black shadow-[3px_3px_0px_#000] hover:bg-[#e11d48]"
                   type="button"
                 >
-                  Close
+                  [CONTINUE BROWSING]
                 </button>
               </div>
             ) : isCheckingOut ? (
               <form onSubmit={handleCheckoutSubmit} className="space-y-4">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                  <h3 className="text-xs font-bold text-slate-800 uppercase">Đăng Ký Giữ Chỗ Showcase (Pre-Order)</h3>
+                <div className="flex items-center justify-between pb-2 border-b-2 border-black">
+                  <h3 className="text-xs font-black text-black uppercase">
+                    ★ SHOWCASE PRE-ORDER &amp; ALERT REGISTRATION
+                  </h3>
                   <button
                     type="button"
                     onClick={() => setIsCheckingOut(false)}
-                    className="text-xs font-semibold hover:underline"
-                    style={{ color: '#000000' }}
+                    className="text-xs font-black text-[#ff2e93] hover:underline cursor-pointer"
                   >
-                    ← Quay lại danh sách
+                    ← BACK
                   </button>
                 </div>
 
                 {/* Important Showcase Disclaimer Badge */}
-                <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl text-[11px] text-amber-900 font-medium leading-relaxed">
-                  <strong className="font-bold block text-amber-950 mb-0.5">Lưu Ý Hệ Thống Showcase &amp; Lịch Phát Hành:</strong>
-                  Trang web hoạt động dưới mô hình <em>Trưng bày vật phẩm Fandom &amp; Lịch phát hành</em>. <strong>Không áp dụng thanh toán giao dịch ngân hàng / thu tiền trực tuyến</strong>. Việc gửi thông tin giúp bạn giữ chỗ và nhận thông báo ưu tiên khi sản phẩm mở bán chính thức.
+                <div 
+                  style={{ borderRadius: '0px' }}
+                  className="p-3 bg-[#ecfeff] border-2 border-black text-[11px] text-black font-sans font-medium leading-relaxed shadow-[2px_2px_0px_#000]"
+                >
+                  <strong className="font-black block uppercase font-mono text-black mb-1">
+                    ⚡ SYSTEM NOTICE &amp; RELEASE SCHEDULE:
+                  </strong>
+                  This platform operates as an Official Fandom Showcase &amp; Drop Schedule discovery catalog. Direct monetary transactions are not processed online. Submitting your details registers an alert and reserves priority notification when official releases drop.
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-600 block mb-1">Tên Người Hâm Mộ (Fan Name) *</label>
+                  <label className="text-xs font-black text-black block mb-1">FAN NAME *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Mai Anh (Bunnies VIP)"
+                    placeholder="e.g. Alex (Bunnies VIP)"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 focus:outline-none"
-                    style={{ borderRadius: '8px' }}
+                    style={{ borderRadius: '0px' }}
+                    className="w-full text-xs p-2.5 bg-white border-2 border-black focus:outline-none focus:border-[#ff2e93]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-600 block mb-1">Email Nhận Thông Báo Mở Bán *</label>
+                  <label className="text-xs font-black text-black block mb-1">NOTIFICATION EMAIL *</label>
                   <input
                     type="email"
                     required
                     placeholder="fan@example.com"
                     value={customerAddress}
                     onChange={(e) => setCustomerAddress(e.target.value)}
-                    className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 focus:outline-none"
-                    style={{ borderRadius: '8px' }}
+                    style={{ borderRadius: '0px' }}
+                    className="w-full text-xs p-2.5 bg-white border-2 border-black focus:outline-none focus:border-[#ff2e93]"
                   />
                 </div>
 
-                <div className="pt-2 text-xs text-slate-500 flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                  <span>Xác nhận thông tin chính ngạch • Không thu phí</span>
+                <div className="pt-2 text-xs text-black font-bold flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-[#10b981]" />
+                  <span>Verified Official Channel • No Transaction Fee</span>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 text-white text-xs font-black uppercase tracking-wider shadow-md cursor-pointer mt-4 hover:bg-slate-800 transition-colors"
-                  style={{ backgroundColor: '#000000', borderRadius: '8px' }}
+                  style={{ borderRadius: '0px' }}
+                  className="w-full py-3 text-white text-xs font-black uppercase tracking-wider shadow-[3px_3px_0px_#000] cursor-pointer mt-4 bg-[#ff2e93] hover:bg-[#e11d48] active:translate-y-0.5 border-2 border-black transition-all"
                 >
-                  Xác Nhận Giữ Chỗ &amp; Nhận Thông Báo (Miễn Phí)
+                  [CONFIRM RESERVATION &amp; RECEIVE ALERTS]
                 </button>
               </form>
             ) : cart.length === 0 ? (
-              <div className="text-center py-16 text-slate-400 space-y-3">
-                <ShoppingBag className="w-12 h-12 mx-auto stroke-1" />
-                <p className="text-xs">Your shopping cart is empty.</p>
+              <div className="text-center py-16 text-neutral-500 space-y-3 font-mono">
+                <div className="text-4xl">🛍️</div>
+                <p className="text-xs font-bold uppercase">YOUR SHOWCASE BAG IS EMPTY.</p>
+                <p className="text-[11px] text-neutral-400">Add albums or collector boxsets from the catalog above!</p>
               </div>
             ) : (
               cart.map((item, idx) => {
@@ -173,18 +182,18 @@ export const CartDrawer: React.FC = () => {
                     <img
                       src={item.album.coverImage}
                       alt={item.album.title}
-                      className="object-cover border border-slate-200 shrink-0"
-                      style={{ width: '64px', height: '64px', borderRadius: '8px' }}
+                      style={{ borderRadius: '0px', width: '68px', height: '68px' }}
+                      className="object-cover border-2 border-black shrink-0 shadow-[2px_2px_0px_#000]"
                     />
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-1">
-                        <h4 className="text-xs font-bold text-slate-900 truncate">
+                        <h4 className="text-xs font-black text-black truncate uppercase font-sans">
                           {item.album.title}
                         </h4>
                         <button
                           onClick={() => removeFromCart(item.album.id, item.selectedVersion)}
-                          className="text-slate-400 hover:text-red-500 transition-colors p-0.5 cursor-pointer"
+                          className="text-neutral-500 hover:text-[#ff2e93] transition-colors p-0.5 cursor-pointer"
                           title="Remove item"
                           type="button"
                         >
@@ -192,30 +201,30 @@ export const CartDrawer: React.FC = () => {
                         </button>
                       </div>
 
-                      <p className="text-[11px] font-semibold" style={{ color: '#000000' }}>{item.album.artist}</p>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
-                        Version: <span className="font-medium text-slate-700">{item.selectedVersion}</span>
+                      <p className="text-[11px] font-bold text-black">{item.album.artist}</p>
+                      <p className="text-[10px] text-neutral-600 mt-0.5">
+                        VER: <span className="font-bold text-black uppercase bg-[#ffd60a] px-1 border border-black">{item.selectedVersion}</span>
                       </p>
 
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs font-extrabold text-slate-900">
+                        <span className="text-xs font-black text-[#ff2e93]">
                           {formatPrice(unitPriceUSD * item.quantity, unitPriceVND * item.quantity)}
                         </span>
 
-                        <div className="flex items-center border border-slate-200 bg-slate-50" style={{ borderRadius: '8px' }}>
+                        <div className="flex items-center border-2 border-black bg-white shadow-[2px_2px_0px_#000]">
                           <button
                             onClick={() => updateQuantity(item.album.id, item.selectedVersion, -1)}
-                            className="px-2 py-0.5 text-slate-600 hover:bg-slate-200 transition-colors"
+                            className="px-2 py-0.5 text-black hover:bg-[#ffd60a] transition-colors font-bold cursor-pointer"
                             type="button"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
-                          <span className="px-2 text-xs font-bold text-slate-800">
+                          <span className="px-2 text-xs font-black text-black">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateQuantity(item.album.id, item.selectedVersion, 1)}
-                            className="px-2 py-0.5 text-slate-600 hover:bg-slate-200 transition-colors"
+                            className="px-2 py-0.5 text-black hover:bg-[#ffd60a] transition-colors font-bold cursor-pointer"
                             type="button"
                           >
                             <Plus className="w-3 h-3" />
@@ -231,31 +240,31 @@ export const CartDrawer: React.FC = () => {
 
           {/* Footer Subtotal & Checkout Button */}
           {!orderComplete && !isCheckingOut && cart.length > 0 && (
-            <div className="p-6 border-t border-slate-200 bg-slate-50 space-y-3">
-              <div className="flex items-center justify-between text-xs text-slate-600">
-                <span>Subtotal</span>
-                <span className="font-semibold text-slate-900">
+            <div className="p-5 border-t-3 border-black bg-white space-y-2.5">
+              <div className="flex items-center justify-between text-xs font-bold text-neutral-600">
+                <span>SUBTOTAL:</span>
+                <span className="font-black text-black">
                   {formatPrice(cartTotalUSD, cartTotalVND)}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-600">
-                <span>Shipping</span>
-                <span className="font-bold text-emerald-600">Free Worldwide</span>
+              <div className="flex items-center justify-between text-xs font-bold text-neutral-600">
+                <span>DISPATCH:</span>
+                <span className="font-black text-black bg-[#ccff00] px-1 border border-black">FREE WORLDWIDE</span>
               </div>
-              <div className="flex items-center justify-between text-sm font-extrabold text-slate-900 pt-2 border-t border-slate-200">
-                <span>Total</span>
-                <span className="text-base" style={{ color: '#000000' }}>
+              <div className="flex items-center justify-between text-sm font-black text-black pt-2 border-t-2 border-black">
+                <span>TOTAL ESTIMATE:</span>
+                <span className="text-base text-[#ff2e93]">
                   {formatPrice(cartTotalUSD, cartTotalVND)}
                 </span>
               </div>
 
               <button
                 onClick={() => setIsCheckingOut(true)}
-                className="w-full text-white text-xs py-3 mt-2 flex items-center justify-center gap-1.5 cursor-pointer font-bold uppercase tracking-wider"
-                style={{ backgroundColor: '#000000', borderRadius: '8px' }}
+                style={{ borderRadius: '0px' }}
+                className="w-full text-white text-xs py-3 mt-2 flex items-center justify-center gap-2 cursor-pointer font-black uppercase tracking-wider bg-[#ff2e93] hover:bg-[#e11d48] border-2 border-black shadow-[3px_3px_0px_#000] active:translate-y-0.5 transition-all"
                 type="button"
               >
-                <span>Đăng Ký Giữ Chỗ / Pre-Order Showcase</span>
+                <span>[REGISTER PRE-ORDER ALERT / RESERVE SLOT]</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -266,3 +275,4 @@ export const CartDrawer: React.FC = () => {
     </div>
   );
 };
+

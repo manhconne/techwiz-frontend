@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Fira+Code:wght@400;600;700&family=Montserrat:wght@600;700;800;900&family=Oswald:wght@600;700&family=Outfit:wght@400;500;600;700;800;900&family=Permanent+Marker&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Press+Start+2P&family=Quicksand:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Fira+Code:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap');
 @import './domain-themes.css';
 @import './fandom-styles.css';
 
@@ -6,56 +6,102 @@
 @source "../components";
 @source "../app";
 
+@theme {
+  --font-serif: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  --font-display: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  --font-heading: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  --font-body: var(--font-source-serif), 'Source Serif 4', Georgia, serif;
+  --font-sans: var(--font-source-serif), 'Source Serif 4', Georgia, serif;
+  --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  --font-syne: var(--font-playfair), 'Playfair Display', serif;
+  --font-outfit: var(--font-source-serif), 'Source Serif 4', serif;
+
+  --ease-instant: cubic-bezier(0, 0, 1, 1);
+}
+
 :root {
   font-size: 16px;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --radius-lg: 16px;
-  --radius-full: 9999px;
 
-  /* Bright & Light Aesthetic Colors - Sky Blue Theme */
-  --bg-body: #f8fafc;
-  --bg-card: #ffffff;
-  --bg-elevated: #ffffff;
-  --bg-subtle: #fafafa;
-  --bg-glass: rgba(255, 255, 255, 0.96);
+  /* Minimalist Monochrome: STRICT 0px BORDER RADIUS EVERYWHERE */
+  --radius-xs: 0px !important;
+  --radius-sm: 0px !important;
+  --radius: 0px !important;
+  --radius-lg: 0px !important;
+  --radius-xl: 0px !important;
+  --radius-full: 0px !important;
 
-  /* Borders & Dividers */
-  --border-color: #e2e8f0;
-  --border-light: #f1f5f9;
-  --border-focus: #000000;
+  /* Zero Shadows - Pure Flat Discipline */
+  --shadow-sm: none !important;
+  --shadow-md: none !important;
+  --shadow-lg: none !important;
+  --shadow-xl: none !important;
+  --shadow-2xl: none !important;
+  --shadow-sky: none !important;
 
-  /* Typography Colors */
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  --text-light: #94a3b8;
+  /* Standardized Stacking Context (Z-Index Scale) */
+  --z-negative: -1;
+  --z-normal: 1;
+  --z-elevated: 10;
+  --z-sticky: 30;
+  --z-header: 40;
+  --z-backdrop: 45;
+  --z-drawer: 50;
+  --z-modal: 60;
+  --z-popover: 70;
+  --z-tooltip: 80;
+  --z-toast: 90;
 
-  /* Sky Blue Brand Colors - Solid, NO Gradients */
-  --color-primary: #000000;        /* Sky Blue 600 */
-  --color-primary-hover: #1c1c1c;  /* Sky Blue 700 */
-  --color-primary-light: #fafafa;  /* Sky Blue 50 */
-  --color-primary-badge: #f4f4f5;  /* Sky Blue 100 */
-  --color-primary-border: #d4d4d4; /* Sky Blue 200 */
+  /* Vibrant Y2K Pop Palette */
+  --background: #fdfbf7;
+  --foreground: #000000;
+  --muted: #fef08a;
+  --muted-foreground: #475569;
+  --accent: #ff2e93;
+  --accent-foreground: #ffffff;
+  --border: #000000;
+  --border-light: #e2e8f0;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --ring: #ff2e93;
 
-  --color-secondary: #0f172a;      /* Navy Slate 900 */
-  --color-secondary-hover: #1e293b;
-  --color-secondary-light: #f8fafc;
+  /* Y2K Neo-Brutalist Hard Drop Shadows */
+  --shadow-y2k: 4px 4px 0px #000000;
+  --shadow-y2k-sm: 2px 2px 0px #000000;
+  --shadow-y2k-lg: 6px 6px 0px #000000;
+  --shadow-y2k-pink: 4px 4px 0px #ff2e93;
+  --shadow-y2k-cyan: 4px 4px 0px #00f0ff;
+  --shadow-y2k-yellow: 4px 4px 0px #ffd60a;
 
-  --color-accent: #333333;
-  --color-gold: #f59e0b;
+  /* Vibrant Y2K Spectrum Colors */
+  --y2k-pink: #ff2e93;
+  --y2k-pink-light: #fdf2f8;
+  --y2k-cyan: #00f0ff;
+  --y2k-cyan-light: #ecfeff;
+  --y2k-yellow: #ffd60a;
+  --y2k-yellow-light: #fefce8;
+  --y2k-lime: #a3e635;
+  --y2k-lime-light: #f7fee7;
+  --y2k-purple: #c084fc;
+  --y2k-purple-light: #faf5ff;
+  --y2k-orange: #fb923c;
+  --y2k-orange-light: #fff7ed;
+
+  /* Brand Colors */
+  --color-primary: #ff2e93;
+  --color-primary-hover: #e11d48;
+  --color-primary-light: #fdf2f8;
+  --color-secondary: #00f0ff;
+  --color-accent: #ffd60a;
+  --color-gold: #ffd60a;
   --color-success: #10b981;
   --color-danger: #ef4444;
 
-  /* Soft Ambient Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 14px -2px rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08);
-  --shadow-sky: 0 8px 20px -3px rgba(0, 0, 0, 0.18);
+  --focus-ring: 0 0 0 3px #ff2e93;
 
-  /* Transitions */
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Instant Transitions (100ms or none) */
+  --transition-fast: 0.1s ease;
+  --transition-normal: 0.1s ease;
+  --transition-smooth: 0.1s ease;
 }
 
 /* Base reset */
@@ -84,31 +130,390 @@ html.font-accessible-large input {
 }
 
 body {
-  background-color: var(--bg-body);
-  color: var(--text-primary);
-  line-height: 1.55;
+  font-family: var(--font-body), 'Source Serif 4', Georgia, serif;
+  background-color: #ffffff;
+  color: #000000;
+  line-height: 1.625;
+  letter-spacing: normal;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
 }
 
+/* =========================================================================
+   MINIMALIST MONOCHROME TYPOGRAPHY (Playfair Display Serif & JetBrains Mono)
+   ========================================================================= */
+
+h1, h2, h3, h4, h5, h6,
+.font-heading,
+.font-display {
+  font-family: var(--font-serif), 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  color: #000000;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
 a {
   color: inherit;
   text-decoration: none;
+  transition: opacity 0.1s ease;
 }
 
-button {
-  font-family: inherit;
+/* Sharp Rectangular Buttons - 0px radius, instant inversion */
+button, .btn, .btn-primary, .btn-secondary, .header-allmd-btn {
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
   cursor: pointer;
-  border: none;
-  background: none;
+  border-radius: 0px !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all 0.1s ease;
 }
 
 input, select, textarea {
-  font-family: inherit;
-  font-size: 14px;
+  font-family: var(--font-body), 'Source Serif 4', Georgia, serif;
+  font-size: 15px;
+  border-radius: 0px !important;
+}
+
+/* Minimalist Monochrome Utilities */
+.border-hairline { border: 1px solid #e5e5e5; }
+.border-thin { border: 1px solid #000000; }
+.border-medium { border: 2px solid #000000; }
+.border-thick { border: 4px solid #000000; }
+.border-ultra { border: 8px solid #000000; }
+
+.btn-monochrome-primary {
+  background-color: #000000;
+  color: #ffffff;
+  border: 2px solid #000000;
+  padding: 12px 28px;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-radius: 0px !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.1s ease;
+}
+
+.btn-monochrome-primary:hover {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #000000;
+}
+
+.btn-monochrome-outline {
+  background-color: transparent;
+  color: #000000;
+  border: 2px solid #000000;
+  padding: 12px 28px;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-radius: 0px !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.1s ease;
+}
+
+.btn-monochrome-outline:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.mono-label {
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+}
+
+.archetype-haute-display em,
+.archetype-haute-display .editorial-italic,
+.editorial-italic {
+  font-family: var(--font-haute-display), 'Cormorant Garamond', 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.archetype-haute-body,
+.font-haute-body {
+  font-family: var(--font-haute-body), 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1.6;
+  letter-spacing: normal;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* Archetype 2: "Modernist Avant-Garde" (Studio Sáng tạo, Thiết kế Kiến trúc, Kỹ thuật số Mới) */
+.archetype-avantgarde-display,
+.font-avantgarde-display {
+  font-family: var(--font-avantgarde-display), 'Syne', 'Outfit', sans-serif;
+  font-size: clamp(2.5rem, 4.5vw, 4.5rem); /* 40px - 72px */
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.archetype-avantgarde-mono,
+.font-avantgarde-mono {
+  font-family: var(--font-avantgarde-mono), 'JetBrains Mono', 'Space Grotesk', monospace;
+  font-size: 0.8125rem; /* 13px */
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Archetype 3: "Tactile Organic Craft" (Nghệ thuật Bản địa, Vẽ tay & Cảm xúc) */
+.archetype-tactile-accent,
+.font-tactile-accent {
+  font-family: var(--font-tactile-accent), 'Caveat', cursive;
+  font-weight: 600;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  display: inline-block;
+  transform: rotate(-2deg);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.archetype-tactile-accent:hover {
+  transform: rotate(0deg) scale(1.05);
+}
+
+.tactile-amber {
+  color: #d97706;
+}
+
+.tactile-indigo {
+  color: #4338ca;
+}
+
+.tactile-crimson {
+  color: #be123c;
+}
+
+/* Motion Curves & Keyframes */
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-25deg);
+  }
+}
+
+.animate-shimmer-sweep {
+  animation: shimmer-sweep 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* Custom Neo-Tactile Asymmetric Shape & Mechanical Click */
+.rounded-tactile {
+  border-radius: 14px 4px 16px 6px;
+}
+
+.shadow-tactile {
+  box-shadow: 3px 3px 0px 0px rgba(24, 24, 27, 1);
+}
+
+.shadow-tactile-hover {
+  box-shadow: 4px 4px 0px 0px rgba(24, 24, 27, 1);
+}
+
+/* Focus Visible WCAG 2.1 AA Standard */
+.artistic-focus-ring:focus-visible {
+  outline: none;
+  ring: 2px;
+  ring-offset: 2px;
+  ring-color: #09090b;
+}
+
+/* =========================================================================
+   2026 TREND DESIGN SYSTEM: BUTTONS, FORM CONTROLS & GLASS SURFACES
+   ========================================================================= */
+
+/* Button Base (Pillar 4: Component Craftsmanship) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans), 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  letter-spacing: 0.01em;
+  border-radius: 9999px;
+  padding: 0.625rem 1.35rem;
+  min-height: 42px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.15);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Primary Button: Obsidian Glow with Subtle Top Reflection */
+.btn-primary {
+  background: #0f172a;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+.btn-primary:hover {
+  background: #1e293b;
+  box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.25);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Secondary Button: Soft Frosted Slate */
+.btn-secondary {
+  background-color: #ffffff;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border-radius: 9999px;
+}
+.btn-secondary:hover {
+  background-color: #f8fafc;
+  color: #000000 !important;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+/* Accent Glow Button: Electric Gradient */
+.btn-accent {
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+.btn-accent:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Outline / Glass Button */
+.btn-outline {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  color: #334155 !important;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.btn-outline:hover {
+  background-color: #ffffff;
+  color: #0f172a !important;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+/* Size Modifiers */
+.btn-sm {
+  padding: 0.375rem 0.875rem;
+  font-size: 0.75rem;
+  border-radius: 0.625rem;
+}
+.btn-lg {
+  padding: 0.75rem 1.625rem;
+  font-size: 0.95rem;
+  border-radius: 1rem;
+}
+.btn-pill {
+  border-radius: 9999px;
+}
+
+/* Modern Form Input Controls */
+.input-modern {
+  width: 100%;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #0f172a;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.875rem;
+  padding: 0.625rem 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+.input-modern::placeholder {
+  color: #94a3b8;
+}
+.input-modern:hover {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+}
+.input-modern:focus {
+  outline: none;
+  background-color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08), inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+/* Glass Card 2026 */
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  border-radius: 1.5rem;
 }
 
 img {
@@ -201,19 +606,40 @@ img {
 .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
 .py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
 .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
-.py-14 { padding-top: 3.5rem; padding-bottom: 3.5rem; }
 .py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+.py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+.py-24 { padding-top: 6rem; padding-bottom: 6rem; }
+.py-28 { padding-top: 7rem; padding-bottom: 7rem; }
+.py-32 { padding-top: 8rem; padding-bottom: 8rem; }
+.py-36 { padding-top: 9rem; padding-bottom: 9rem; }
 
 .pt-2 { padding-top: 0.5rem; }
 .pt-3 { padding-top: 0.75rem; }
 .pt-4 { padding-top: 1rem; }
 .pt-6 { padding-top: 1.5rem; }
 .pt-8 { padding-top: 2rem; }
+.pt-10 { padding-top: 2.5rem; }
+.pt-12 { padding-top: 3rem; }
 .pt-14 { padding-top: 3.5rem; }
+.pt-16 { padding-top: 4rem; }
+.pt-20 { padding-top: 5rem; }
+.pt-24 { padding-top: 6rem; }
+.pt-28 { padding-top: 7rem; }
+.pt-32 { padding-top: 8rem; }
+.pt-36 { padding-top: 9rem; }
+
 .pb-2 { padding-bottom: 0.5rem; }
 .pb-3 { padding-bottom: 0.75rem; }
 .pb-8 { padding-bottom: 2rem; }
 .pb-10 { padding-bottom: 2.5rem; }
+.pb-12 { padding-bottom: 3rem; }
+.pb-14 { padding-bottom: 3.5rem; }
+.pb-16 { padding-bottom: 4rem; }
+.pb-20 { padding-bottom: 5rem; }
+.pb-24 { padding-bottom: 6rem; }
+.pb-28 { padding-bottom: 7rem; }
+.pb-32 { padding-bottom: 8rem; }
+.pb-36 { padding-bottom: 9rem; }
 
 .mb-1 { margin-bottom: 0.25rem; }
 .mb-2 { margin-bottom: 0.5rem; }
@@ -222,6 +648,13 @@ img {
 .mb-6 { margin-bottom: 1.5rem; }
 .mb-8 { margin-bottom: 2rem; }
 .mb-10 { margin-bottom: 2.5rem; }
+.mb-12 { margin-bottom: 3rem; }
+.mb-14 { margin-bottom: 3.5rem; }
+.mb-16 { margin-bottom: 4rem; }
+.mb-20 { margin-bottom: 5rem; }
+.mb-24 { margin-bottom: 6rem; }
+.mb-28 { margin-bottom: 7rem; }
+
 .mt-0\.5 { margin-top: 0.125rem; }
 .mt-1 { margin-top: 0.25rem; }
 .mt-1\.5 { margin-top: 0.375rem; }
@@ -230,6 +663,14 @@ img {
 .mt-4 { margin-top: 1rem; }
 .mt-5 { margin-top: 1.25rem; }
 .mt-6 { margin-top: 1.5rem; }
+.mt-8 { margin-top: 2rem; }
+.mt-10 { margin-top: 2.5rem; }
+.mt-12 { margin-top: 3rem; }
+.mt-14 { margin-top: 3.5rem; }
+.mt-16 { margin-top: 4rem; }
+.mt-20 { margin-top: 5rem; }
+.mt-24 { margin-top: 6rem; }
+.mt-28 { margin-top: 7rem; }
 .ml-auto { margin-left: auto; }
 
 /* Grid System */
@@ -246,6 +687,15 @@ img {
   .sm\:block { display: block !important; }
   .sm\:hidden { display: none !important; }
   .sm\:text-5xl { font-size: 2.75rem !important; }
+  .sm\:pt-16 { padding-top: 4rem !important; }
+  .sm\:pt-20 { padding-top: 5rem !important; }
+  .sm\:pt-24 { padding-top: 6rem !important; }
+  .sm\:pt-28 { padding-top: 7rem !important; }
+  .sm\:pb-16 { padding-bottom: 4rem !important; }
+  .sm\:pb-20 { padding-bottom: 5rem !important; }
+  .sm\:pb-24 { padding-bottom: 6rem !important; }
+  .sm\:pb-28 { padding-bottom: 7rem !important; }
+  .sm\:pb-36 { padding-bottom: 9rem !important; }
 }
 
 @media (min-width: 768px) {
@@ -258,6 +708,8 @@ img {
   .md\:flex { display: flex !important; }
   .md\:flex-row { flex-direction: row !important; }
   .md\:items-end { align-items: flex-end !important; }
+  .md\:py-20 { padding-top: 5rem !important; padding-bottom: 5rem !important; }
+  .md\:py-28 { padding-top: 7rem !important; padding-bottom: 7rem !important; }
 }
 
 @media (min-width: 1024px) {
@@ -1042,4 +1494,218 @@ button:focus-visible {
     transform: translateY(-160px) scale(1.5);
   }
 }
+
+/* ========================================================================= */
+/* Y2K RETRO-FUTURISTIC / CYBER BRUTALIST ARCHIVE UTILITIES                  */
+/* ========================================================================= */
+
+@keyframes y2kMarquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-y2k-ticker {
+  display: flex;
+  width: max-content;
+  animation: y2kMarquee 28s linear infinite;
+}
+
+.animate-y2k-ticker:hover {
+  animation-play-state: paused;
+}
+
+/* Y2K System Window Frame Header */
+.y2k-window-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #000000;
+  padding: 4px 10px;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* Y2K Architectural Dot Matrix Grid Pattern (Ultra Subtle Monochrome) */
+.y2k-matrix-grid {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}
+
+.dark .y2k-matrix-grid {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+
+/* Y2K Corner Bracket Accents */
+.y2k-corner-box {
+  position: relative;
+}
+
+.y2k-corner-box::before,
+.y2k-corner-box::after {
+  content: '+';
+  position: absolute;
+  font-family: var(--font-mono), monospace;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.y2k-corner-box::before {
+  top: 4px;
+  left: 6px;
+}
+
+.y2k-corner-box::after {
+  bottom: 4px;
+  right: 6px;
+}
+
+/* ========================================================================= */
+/* VIBRANT Y2K POP NEO-BRUTALIST STYLING                                     */
+/* ========================================================================= */
+
+.card-y2k {
+  border: 2.5px solid #000000;
+  box-shadow: 4px 4px 0px #000000;
+  transition: transform 0.15s cubic-bezier(0, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.card-y2k:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #000000;
+}
+
+.card-y2k-pink {
+  background-color: #fff0f7;
+  border: 2.5px solid #000000;
+  box-shadow: 4px 4px 0px #ff2e93;
+}
+
+.card-y2k-cyan {
+  background-color: #f0fdff;
+  border: 2.5px solid #000000;
+  box-shadow: 4px 4px 0px #00f0ff;
+}
+
+.card-y2k-yellow {
+  background-color: #fefce8;
+  border: 2.5px solid #000000;
+  box-shadow: 4px 4px 0px #ffd60a;
+}
+
+/* Y2K Interactive Buttons with Pop Colors & Hard Shadows */
+.btn-y2k-pink {
+  background-color: #ff2e93;
+  color: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  font-family: var(--font-mono), monospace;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.btn-y2k-pink:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+  background-color: #ff007f;
+}
+
+.btn-y2k-pink:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+.btn-y2k-cyan {
+  background-color: #00f0ff;
+  color: #000000;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  font-family: var(--font-mono), monospace;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.btn-y2k-cyan:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+  background-color: #38bdf8;
+}
+
+.btn-y2k-yellow {
+  background-color: #ffd60a;
+  color: #000000;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  font-family: var(--font-mono), monospace;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.btn-y2k-yellow:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+  background-color: #fde047;
+}
+
+.btn-y2k-lime {
+  background-color: #ccff00;
+  color: #000000;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  font-family: var(--font-mono), monospace;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.btn-y2k-purple {
+  background-color: #c084fc;
+  color: #000000;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  font-family: var(--font-mono), monospace;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+/* Y2K Badges */
+.badge-y2k {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1.5px solid #000000;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+
 

@@ -1,22 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  Heart, 
-  MessageCircle, 
-  Share2, 
-  MoreHorizontal, 
-  Image as ImageIcon, 
-  Flame, 
-  Sparkles, 
-  Users, 
-  MessageSquare, 
-  Send, 
-  Check, 
-  Smile, 
-  TrendingUp,
-  Tag
-} from 'lucide-react';
 
 interface Post {
   id: number;
@@ -29,7 +13,8 @@ interface Post {
   comments: number;
   tag: string;
   fandomBadge: string;
-  fandomColor: string;
+  badgeBg: string;
+  badgeText: string;
   categories: string[];
   isLiked?: boolean;
 }
@@ -40,13 +25,14 @@ const initialPosts: Post[] = [
     user: 'Bunnies_01',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
     time: '2 hours ago',
-    content: 'Just received my Get Up album! The holo photocards are stunning ✨🐰',
+    content: 'Just received my Get Up album! The holographic photo cards and typography are stunning. Check out this shimmer reflection!',
     image: 'https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&q=80&w=800',
     likes: 342,
     comments: 45,
     tag: '#NewJeans',
-    fandomBadge: 'Bunnies Verified',
-    fandomColor: '#3b82f6',
+    fandomBadge: '★ BUNNIES VERIFIED',
+    badgeBg: 'bg-[#ff2e93]',
+    badgeText: 'text-white',
     categories: ['Trending', 'Fan Art', 'Following'],
   },
   {
@@ -54,13 +40,14 @@ const initialPosts: Post[] = [
     user: 'Blink_Forever',
     avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80',
     time: '5 hours ago',
-    content: 'Who else is ready for the world tour? I already secured my VIP tickets! 🖤💗',
+    content: 'Who else is ready for the world tour? I already secured my VIP stadium admission pass for the Hanoi stadium soundcheck!',
     image: null,
     likes: 890,
     comments: 120,
     tag: '#BLACKPINK',
-    fandomBadge: 'BLINK VIP Passholder',
-    fandomColor: '#f43f5e',
+    fandomBadge: '✦ BLINK VIP PASSHOLDER',
+    badgeBg: 'bg-[#ffd60a]',
+    badgeText: 'text-black',
     categories: ['Trending', 'Discussions', 'Following'],
   },
   {
@@ -68,13 +55,14 @@ const initialPosts: Post[] = [
     user: 'Stay_Max',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
     time: '1 day ago',
-    content: 'My fanart for the 5-STAR era! Took me 15 hours to draw this. Hope you guys like it! 🌟',
+    content: 'My fanart for the 5-STAR era! Took 15 hours of architectural line drafting and neon cyber shading. Hope you guys like it.',
     image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=800',
     likes: 1205,
     comments: 88,
     tag: '#StrayKids',
-    fandomBadge: 'STAY Verified Artist',
-    fandomColor: '#ef4444',
+    fandomBadge: '⚡ STAY ARTIST',
+    badgeBg: 'bg-[#00f0ff]',
+    badgeText: 'text-black',
     categories: ['Trending', 'Fan Art'],
   },
   {
@@ -82,13 +70,14 @@ const initialPosts: Post[] = [
     user: 'Army_007',
     avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=150&q=80',
     time: '2 days ago',
-    content: "Stream PROOF! Let's break the record today. We are almost at the goal! 🔥💜",
+    content: "Stream PROOF! Let's break the streaming record today. We are almost at the global chart goal for the certified milestone.",
     image: null,
     likes: 5430,
     comments: 320,
     tag: '#BTS',
-    fandomBadge: 'ARMY Global Lead',
-    fandomColor: '#a855f7',
+    fandomBadge: '✪ ARMY GLOBAL LEAD',
+    badgeBg: 'bg-[#c084fc]',
+    badgeText: 'text-black',
     categories: ['Trending', 'Discussions', 'Following'],
   }
 ];
@@ -102,10 +91,10 @@ export const FanCommunityFeed: React.FC = () => {
   const [copiedPostId, setCopiedPostId] = useState<number | null>(null);
 
   const tabs = [
-    { id: 'Trending', label: 'Trending', count: posts.filter(p => p.categories.includes('Trending')).length },
-    { id: 'Following', label: 'Following', count: posts.filter(p => p.categories.includes('Following')).length },
-    { id: 'Fan Art', label: 'Fan Art', count: posts.filter(p => p.categories.includes('Fan Art')).length },
-    { id: 'Discussions', label: 'Discussions', count: posts.filter(p => p.categories.includes('Discussions')).length },
+    { id: 'Trending', label: '★ Trending', count: posts.filter(p => p.categories.includes('Trending')).length, color: 'bg-[#ff2e93]' },
+    { id: 'Following', label: '✦ Following', count: posts.filter(p => p.categories.includes('Following')).length, color: 'bg-[#00f0ff]' },
+    { id: 'Fan Art', label: '⚡ Fan Art', count: posts.filter(p => p.categories.includes('Fan Art')).length, color: 'bg-[#ffd60a]' },
+    { id: 'Discussions', label: '✪ Discussions', count: posts.filter(p => p.categories.includes('Discussions')).length, color: 'bg-[#ccff00]' },
   ];
 
   const filteredPosts = posts.filter(post => {
@@ -146,8 +135,9 @@ export const FanCommunityFeed: React.FC = () => {
       likes: 1,
       comments: 0,
       tag: selectedTag,
-      fandomBadge: 'Verified Fan Member',
-      fandomColor: '#10b981',
+      fandomBadge: '★ YOU [VIP MEMBER]',
+      badgeBg: 'bg-[#ff2e93]',
+      badgeText: 'text-white',
       categories: ['Trending', 'Following', attachImage ? 'Fan Art' : 'Discussions'],
       isLiked: true,
     };
@@ -161,124 +151,49 @@ export const FanCommunityFeed: React.FC = () => {
     <section 
       id="community" 
       style={{
-        backgroundColor: 'transparent',
-        color: '#0f172a',
-        scrollMarginTop: '110px',
+        paddingTop: '80px',
+        paddingBottom: '96px',
       }}
-      className="py-16 md:py-24 lg:py-28 w-full border-t border-slate-200/60"
+      className="w-full py-20 md:py-28 bg-[#fdfbf7] text-black border-b-4 border-black relative"
     >
-      <div 
-        className="max-w-[1440px] mx-auto px-4 sm:px-8"
-      >
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8">
         
-        {/* ==================== 1. Editorial Header ==================== */}
-        <div style={{ marginBottom: '40px' }}>
-          
-          {/* Top Eyebrow Row */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '22px',
-              gap: '16px',
-              flexWrap: 'wrap',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '20px', height: '2px', backgroundColor: '#000000', display: 'inline-block', borderRadius: '2px' }} />
-              <span 
-                style={{ 
-                  color: '#94a3b8',
-                  fontSize: '10px',
-                  fontFamily: 'monospace',
-                  letterSpacing: '0.22em',
-                  fontWeight: 800,
-                  textTransform: 'uppercase',
-                }}
-              >
-                Community Hub
+        {/* ==================== 1. Vibrant Y2K Header ==================== */}
+        <div style={{ marginBottom: '48px' }} className="mb-12 sm:mb-16">
+          {/* Eyebrow */}
+          <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 bg-[#ff2e93] border border-black animate-pulse" />
+              <span className="font-mono text-xs font-black uppercase tracking-widest text-[#ff2e93] bg-[#fdf2f8] px-2.5 py-1 border border-black shadow-[2px_2px_0px_#000]">
+                SECTION 07 // GLOBAL COMMUNITY LORE &amp; FANDOM WIRE
               </span>
             </div>
 
-            <div 
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '4px 10px',
-                backgroundColor: '#f8fafc',
-                border: '1px solid #e2e8f0',
-                fontSize: '10px',
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                color: '#0f172a',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-              }}
-            >
-              <span 
-                style={{
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: '50%',
-                  backgroundColor: '#10b981',
-                  boxShadow: '0 0 8px rgba(16,185,129,0.8)',
-                  display: 'inline-block',
-                }}
-              />
-              <span>14.8K Global Fans Active</span>
+            <div className="font-mono text-xs bg-[#00f0ff] text-black border-2 border-black px-3.5 py-1.5 uppercase font-black shadow-[3px_3px_0px_#000] flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-ping" />
+              <span>14.8K GLOBAL FANS ACTIVE NOW</span>
             </div>
           </div>
 
-          {/* Heading Row: Playfair Serif + Tabs */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'space-between',
-              paddingBottom: '26px',
-              borderBottom: '1px solid #f1f5f9',
-              gap: '24px',
-              flexWrap: 'wrap',
-            }}
-          >
+          {/* Heading Row */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between pb-8 border-b-4 border-black gap-6">
             <div>
-              <h2 
-                style={{
-                  fontFamily: "'Playfair Display', Georgia, serif",
-                  fontSize: 'clamp(28px, 3.2vw, 44px)',
-                  lineHeight: 1.15,
-                  fontWeight: 800,
-                  color: '#0f172a',
-                  letterSpacing: '-0.02em',
-                  margin: 0,
-                  textTransform: 'uppercase',
-                }}
-              >
-                FAN FEED{' '}
-                <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic', textTransform: 'none' }}>
-                  & Fandom Archive
+              <div className="inline-block bg-[#ffd60a] border-2 border-black px-3 py-1 font-mono text-xs font-black uppercase tracking-wider mb-3 shadow-[2px_2px_0px_#000]">
+                ✦ 24/7 FANDOM BUZZ &amp; FAN ART DISPATCH
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-black leading-tight tracking-tight">
+                Fan Community &amp;{' '}
+                <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
+                  Lore Wire
                 </em>
               </h2>
-              <p 
-                style={{
-                  fontSize: '13px',
-                  color: '#64748b',
-                  margin: '8px 0 0 0',
-                  fontWeight: 300,
-                  lineHeight: 1.6,
-                  maxWidth: '700px',
-                }}
-              >
-                Connect, share fan art, discuss theories, and flex your collections with fans worldwide.
+              <p className="font-sans font-semibold text-xs sm:text-sm text-neutral-700 max-w-xl mt-3 leading-relaxed">
+                Connect, share high-res fan art, analyze comeback theories, and exchange verified tour experiences with fandom members worldwide.
               </p>
             </div>
 
-            {/* Filter Tabs - Editorial Underline Style */}
-            <div 
-              className="flex items-center gap-4 sm:gap-5 overflow-x-auto scrollbar-none max-w-full pb-1"
-            >
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none font-mono text-xs">
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.id;
                 return (
@@ -286,34 +201,16 @@ export const FanCommunityFeed: React.FC = () => {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     type="button"
-                    style={{
-                      padding: '0 0 8px 0',
-                      fontSize: '11px',
-                      fontWeight: isActive ? 800 : 600,
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
-                      color: isActive ? '#0f172a' : '#94a3b8',
-                      background: 'none',
-                      border: 'none',
-                      borderBottom: isActive ? '2px solid #0f172a' : '2px solid transparent',
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      transition: 'all 0.2s ease',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                    }}
+                    style={{ borderRadius: '0px' }}
+                    className={`px-4 py-2.5 font-black uppercase tracking-wider cursor-pointer transition-all border-2 border-black ${
+                      isActive 
+                        ? `${tab.color} text-black shadow-[4px_4px_0px_#000000] -translate-y-0.5` 
+                        : 'bg-white text-black shadow-[2px_2px_0px_#000000] hover:bg-[#fff9db] hover:shadow-[3px_3px_0px_#000000]'
+                    }`}
                   >
                     <span>{tab.label}</span>
-                    <span 
-                      style={{ 
-                        fontSize: '10px', 
-                        fontFamily: 'monospace',
-                        color: isActive ? '#000000' : '#cbd5e1',
-                        fontWeight: 700 
-                      }}
-                    >
-                      ({tab.count})
+                    <span className="ml-2 bg-black text-white px-1.5 py-0.5 text-[10px] font-mono">
+                      {tab.count}
                     </span>
                   </button>
                 );
@@ -324,52 +221,28 @@ export const FanCommunityFeed: React.FC = () => {
 
         {/* ==================== 2. Interactive Post Composer ==================== */}
         <div 
-          style={{
-            maxWidth: '880px',
-            margin: '0 auto 48px auto',
-            backgroundColor: '#ffffff',
-            border: '1.5px solid #000000',
-            boxShadow: '0 4px 14px rgba(0,0,0,0.04)',
-            overflow: 'hidden',
-          }}
+          style={{ borderRadius: '0px', marginTop: '48px', marginBottom: '48px' }}
+          className="max-w-4xl mx-auto mt-10 sm:mt-14 mb-12 sm:mb-16 bg-white border-3 border-black overflow-hidden font-mono text-xs shadow-[6px_6px_0px_#000000]"
         >
-          {/* Composer Header Bar */}
-          <div 
-            style={{
-              padding: '12px 20px',
-              backgroundColor: '#f8fafc',
-              borderBottom: '1px solid #e2e8f0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Sparkles style={{ width: '13px', height: '13px', color: '#000000' }} />
-              <span style={{ fontSize: '10px', fontFamily: 'monospace', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                CREATE FAN DISPATCH
-              </span>
-            </div>
+          {/* Header Bar */}
+          <div className="p-3.5 border-b-2 border-black bg-[#ffd60a] flex items-center justify-between flex-wrap gap-2">
+            <span className="font-black uppercase tracking-widest text-black flex items-center gap-2">
+              <span className="text-base">⚡</span> DISPATCH TO GLOBAL FANDOM WIRE
+            </span>
             
             {/* Tag Selection Chips */}
-            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none max-w-[200px] sm:max-w-none">
+            <div className="flex items-center gap-1.5 flex-wrap">
               {['#NewJeans', '#BLACKPINK', '#StrayKids', '#BTS', '#aespa'].map(tag => (
                 <button
                   key={tag}
                   type="button"
                   onClick={() => setSelectedTag(tag)}
-                  style={{
-                    fontSize: '9px',
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    padding: '3px 9px',
-                    border: '1px solid',
-                    borderColor: selectedTag === tag ? '#000000' : '#e2e8f0',
-                    backgroundColor: selectedTag === tag ? '#000000' : '#ffffff',
-                    color: selectedTag === tag ? '#ffffff' : '#64748b',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                  }}
+                  style={{ borderRadius: '0px' }}
+                  className={`px-2.5 py-1 text-[11px] font-black uppercase cursor-pointer border-2 border-black transition-all ${
+                    selectedTag === tag 
+                      ? 'bg-[#ff2e93] text-white shadow-[2px_2px_0px_#000] -translate-y-0.5' 
+                      : 'bg-white text-black hover:bg-[#ecfeff]'
+                  }`}
                 >
                   {tag}
                 </button>
@@ -378,65 +251,41 @@ export const FanCommunityFeed: React.FC = () => {
           </div>
 
           {/* Composer Body */}
-          <form onSubmit={handleCreatePost} style={{ padding: '20px 24px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
+          <form onSubmit={handleCreatePost} className="p-6 bg-white">
+            <div className="flex items-start gap-4">
               <div 
-                style={{
-                  width: '42px',
-                  height: '42px',
-                  border: '1.5px solid #000000',
-                  overflow: 'hidden',
-                  flexShrink: 0,
-                  backgroundColor: '#0f172a',
-                }}
+                style={{ borderRadius: '0px' }}
+                className="w-12 h-12 border-2 border-black overflow-hidden shrink-0 bg-[#ecfeff] shadow-[2px_2px_0px_#000]"
               >
                 <img 
                   src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" 
                   alt="You" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  className="w-full h-full object-cover"
                 />
               </div>
 
-              <div style={{ flex: 1 }}>
+              <div className="flex-1">
                 <textarea 
                   value={newPostText}
                   onChange={(e) => setNewPostText(e.target.value)}
-                  placeholder="Share your thoughts, fan art, or collections..."
-                  rows={2}
-                  style={{
-                    width: '100%',
-                    backgroundColor: 'transparent',
-                    border: 'none',
-                    outline: 'none',
-                    fontSize: '13px',
-                    color: '#0f172a',
-                    fontFamily: 'inherit',
-                    resize: 'none',
-                    lineHeight: 1.6,
-                  }}
+                  placeholder="COMPOSE LOG OR THEORETICAL ANALYSIS (DROP YOUR FAN THEORIES HERE)..."
+                  rows={3}
+                  style={{ borderRadius: '0px' }}
+                  className="w-full bg-[#fdfbf7] p-3 border-2 border-black outline-none text-xs font-mono uppercase resize-none leading-relaxed focus:bg-white focus:border-[#ff2e93] transition-colors"
                 />
 
                 {attachImage && (
                   <div 
-                    style={{
-                      marginTop: '8px',
-                      padding: '8px',
-                      backgroundColor: '#f8fafc',
-                      border: '1px dashed #cbd5e1',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      fontSize: '11px',
-                      color: '#475569',
-                    }}
+                    style={{ borderRadius: '0px' }}
+                    className="mt-2 p-2.5 bg-[#ecfeff] border-2 border-black flex items-center justify-between text-[11px] font-bold"
                   >
-                    <span style={{ fontFamily: 'monospace' }}>📸 Sample Fan Art Attached (Y2K Concert Poster)</span>
+                    <span className="text-black">★ IMAGE ATTACHED // Y2K CONCERT ARTIFACT LOADED</span>
                     <button 
                       type="button" 
                       onClick={() => setAttachImage(false)}
-                      style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontWeight: 700 }}
+                      className="font-black text-[#ff2e93] underline hover:no-underline cursor-pointer"
                     >
-                      Remove
+                      [REMOVE ✕]
                     </button>
                   </div>
                 )}
@@ -444,152 +293,71 @@ export const FanCommunityFeed: React.FC = () => {
             </div>
 
             {/* Composer Footer Actions */}
-            <div 
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingTop: '12px',
-                marginTop: '8px',
-                borderTop: '1px solid #f1f5f9',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="flex items-center justify-between pt-4 mt-4 border-t-2 border-black font-mono">
+              <div className="flex items-center gap-3">
                 <button 
                   type="button"
                   onClick={() => setAttachImage(!attachImage)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                    padding: '6px 12px',
-                    backgroundColor: attachImage ? '#0f172a' : '#f8fafc',
-                    color: attachImage ? '#ffffff' : '#64748b',
-                    border: '1px solid #e2e8f0',
-                    fontSize: '11px',
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                  }}
-                  title="Attach artwork or photo"
+                  style={{ borderRadius: '0px' }}
+                  className="px-3.5 py-2 bg-[#00f0ff] hover:bg-[#38bdf8] text-black border-2 border-black font-black uppercase tracking-wider text-[11px] cursor-pointer shadow-[2px_2px_0px_#000] active:translate-y-0.5"
                 >
-                  <ImageIcon size={14} />
-                  <span>{attachImage ? 'Image Attached' : 'Attach Photo'}</span>
+                  {attachImage ? '★ PHOTO ATTACHED' : '+ ATTACH PHOTO'}
                 </button>
-                <span style={{ fontSize: '10px', color: '#94a3b8', fontFamily: 'monospace' }}>
-                  {newPostText.length}/280
+                <span className="text-neutral-600 font-bold text-[11px]">
+                  {newPostText.length}/280 CHARS
                 </span>
               </div>
 
               <button 
                 type="submit"
                 disabled={!newPostText.trim()}
-                style={{
-                  height: '36px',
-                  padding: '0 20px',
-                  backgroundColor: newPostText.trim() ? '#000000' : '#e2e8f0',
-                  color: newPostText.trim() ? '#ffffff' : '#94a3b8',
-                  border: '1.5px solid',
-                  borderColor: newPostText.trim() ? '#000000' : '#cbd5e1',
-                  fontSize: '11px',
-                  fontWeight: 800,
-                  fontFamily: 'monospace',
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
-                  cursor: newPostText.trim() ? 'pointer' : 'not-allowed',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  transition: 'all 0.2s ease',
-                }}
-                className={newPostText.trim() ? "hover:bg-neutral-800" : ""}
+                style={{ borderRadius: '0px' }}
+                className="px-6 py-2.5 bg-[#ff2e93] text-white hover:bg-[#e11d48] disabled:opacity-40 border-2 border-black text-xs font-black uppercase tracking-widest cursor-pointer shadow-[3px_3px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition-all"
               >
-                <Send size={12} />
-                <span>Post</span>
+                [DISPATCH TO FEED →]
               </button>
             </div>
           </form>
         </div>
 
-        {/* ==================== 3. Feed Grid ==================== */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto">
+        {/* ==================== 3. Feed Grid (Vibrant Y2K Cards) ==================== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {filteredPosts.map((post) => {
             const hasImage = Boolean(post.image);
 
             return (
               <div 
                 key={post.id}
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1.5px solid #e2e8f0',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  transition: 'all 0.25s ease',
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
-                className="hover:border-black hover:shadow-lg group"
+                style={{ borderRadius: '0px' }}
+                className="bg-white border-3 border-black flex flex-col justify-between shadow-[5px_5px_0px_#000000] hover:shadow-[7px_7px_0px_#ff2e93] hover:-translate-y-1 transition-all duration-200"
               >
                 {/* Card Top Header */}
-                <div style={{ padding: '22px 24px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
                       <div 
-                        style={{
-                          width: '42px',
-                          height: '42px',
-                          border: '1.5px solid #000000',
-                          backgroundColor: '#0f172a',
-                          overflow: 'hidden',
-                          flexShrink: 0,
-                        }}
+                        style={{ borderRadius: '0px' }}
+                        className="w-12 h-12 border-2 border-black bg-[#ffd60a] overflow-hidden shrink-0 shadow-[2px_2px_0px_#000]"
                       >
                         <img 
                           src={post.avatar} 
                           alt={post.user} 
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                          className="w-full h-full object-cover" 
                         />
                       </div>
                       <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ fontWeight: 800, fontSize: '13px', color: '#0f172a' }}>
+                        <div className="flex items-center gap-2 font-mono">
+                          <span className="font-black text-sm text-black">
                             {post.user}
                           </span>
-                          <span 
-                            style={{ 
-                              width: '14px', 
-                              height: '14px', 
-                              backgroundColor: '#000000', 
-                              color: '#ffffff', 
-                              borderRadius: '50%', 
-                              display: 'inline-flex', 
-                              alignItems: 'center', 
-                              justifyContent: 'center', 
-                              fontSize: '8px', 
-                              fontWeight: 900 
-                            }}
-                            title="Verified Member"
-                          >
-                            ✓
+                          <span className="bg-[#ccff00] text-black border border-black font-black text-[9px] px-1.5 py-0.2 shadow-[1px_1px_0px_#000]">
+                            VERIFIED
                           </span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
-                          <span style={{ fontSize: '10px', color: '#94a3b8', fontFamily: 'monospace' }}>
-                            {post.time}
-                          </span>
-                          <span style={{ fontSize: '10px', color: '#cbd5e1' }}>•</span>
-                          <span 
-                            style={{ 
-                              fontSize: '9px', 
-                              fontFamily: 'monospace', 
-                              fontWeight: 700, 
-                              color: post.fandomColor,
-                              textTransform: 'uppercase',
-                              letterSpacing: '0.06em' 
-                            }}
-                          >
+                        <div className="flex items-center gap-2 font-mono text-[10px] text-neutral-600 mt-1">
+                          <span>{post.time}</span>
+                          <span>•</span>
+                          <span className={`${post.badgeBg} ${post.badgeText} border border-black px-1.5 py-0.2 font-black uppercase text-[9px] shadow-[1px_1px_0px_#000]`}>
                             {post.fandomBadge}
                           </span>
                         </div>
@@ -599,187 +367,66 @@ export const FanCommunityFeed: React.FC = () => {
                     <button 
                       type="button"
                       onClick={() => handleShare(post.id)}
-                      style={{ 
-                        background: 'none', 
-                        border: 'none', 
-                        color: copiedPostId === post.id ? '#10b981' : '#94a3b8', 
-                        cursor: 'pointer',
-                        padding: '4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        fontSize: '10px',
-                        fontFamily: 'monospace',
-                      }}
-                      title="Share link"
-                      className="hover:text-black transition-colors"
+                      style={{ borderRadius: '0px' }}
+                      className="px-2.5 py-1 border-2 border-black bg-[#ecfeff] hover:bg-[#00f0ff] font-mono text-[10px] font-black uppercase cursor-pointer shadow-[2px_2px_0px_#000] transition-colors"
                     >
-                      {copiedPostId === post.id ? (
-                        <>
-                          <Check size={14} />
-                          <span>Copied</span>
-                        </>
-                      ) : (
-                        <MoreHorizontal size={18} />
-                      )}
+                      {copiedPostId === post.id ? '★ COPIED' : 'SHARE'}
                     </button>
                   </div>
 
                   {/* Post Content */}
-                  <div 
-                    style={{
-                      borderLeft: !hasImage ? `3px solid ${post.fandomColor}` : 'none',
-                      paddingLeft: !hasImage ? '12px' : '0',
-                      backgroundColor: !hasImage ? '#f8fafc' : 'transparent',
-                      padding: !hasImage ? '12px 14px' : '0',
-                      marginBottom: '14px',
-                    }}
-                  >
-                    <p 
-                      style={{ 
-                        fontSize: !hasImage ? '14px' : '13px', 
-                        color: '#1e293b', 
-                        lineHeight: 1.6, 
-                        margin: 0,
-                        fontStyle: !hasImage ? 'italic' : 'normal',
-                        fontFamily: !hasImage ? "'Playfair Display', Georgia, serif" : 'inherit',
-                      }}
-                    >
-                      {post.content}
+                  <div className="mb-4">
+                    <p className={`font-sans font-medium text-sm leading-relaxed text-black bg-[#fdfbf7] p-3 border-l-4 border-[#ff2e93]`}>
+                      &ldquo;{post.content}&rdquo;
                     </p>
                   </div>
 
-                  {/* Post Image Preview */}
+                  {/* Post Image Preview - FULL VIVID COLOR */}
                   {post.image && (
                     <div 
-                      style={{
-                        position: 'relative',
-                        width: '100%',
-                        height: '240px',
-                        border: '1px solid #e2e8f0',
-                        backgroundColor: '#0f172a',
-                        overflow: 'hidden',
-                        marginBottom: '4px',
-                      }}
+                      style={{ borderRadius: '0px' }}
+                      className="relative w-full h-64 border-2 border-black overflow-hidden bg-neutral-100 shadow-[3px_3px_0px_#000]"
                     >
                       <img 
                         src={post.image} 
                         alt="Fan Content" 
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          transition: 'transform 0.5s ease',
-                        }}
-                        className="group-hover:scale-102"
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
+                      <div className="absolute top-2 left-2 bg-black text-[#ffd60a] border border-black font-mono text-[9px] font-black px-2 py-0.5 uppercase shadow-[1px_1px_0px_#000]">
+                        ★ ORIGINAL FANWORK
+                      </div>
                     </div>
                   )}
                 </div>
 
                 {/* Card Bottom Meta & Interactive Stats */}
-                <div 
-                  style={{
-                    padding: '14px 24px',
-                    backgroundColor: '#fafafa',
-                    borderTop: '1px solid #f1f5f9',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    {/* Interactive Like Button */}
+                <div className="p-4 px-6 border-t-2 border-black bg-[#fff9db] flex items-center justify-between font-mono text-xs flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
                     <button 
                       type="button"
                       onClick={() => handleLike(post.id)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: '11px',
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        color: post.isLiked ? '#ef4444' : '#64748b',
-                        transition: 'all 0.15s ease',
-                        padding: '4px 6px',
-                        borderRadius: '4px',
-                      }}
-                      className="hover:bg-rose-50"
+                      style={{ borderRadius: '0px' }}
+                      className={`px-3 py-1.5 border-2 border-black font-black uppercase tracking-wider text-[11px] cursor-pointer shadow-[2px_2px_0px_#000] transition-all active:translate-y-0.5 ${
+                        post.isLiked 
+                          ? 'bg-[#ff2e93] text-white' 
+                          : 'bg-white text-black hover:bg-[#ffd60a]'
+                      }`}
                     >
-                      <Heart 
-                        size={15} 
-                        style={{ 
-                          fill: post.isLiked ? '#ef4444' : 'none', 
-                          color: post.isLiked ? '#ef4444' : '#64748b' 
-                        }} 
-                      />
-                      <span>{post.likes}</span>
+                      {post.isLiked ? `★ UPVOTED // ${post.likes}` : `♥ UPVOTE // ${post.likes}`}
                     </button>
 
-                    {/* Comments Button */}
                     <button 
                       type="button"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: '11px',
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        color: '#64748b',
-                        padding: '4px 6px',
-                        borderRadius: '4px',
-                      }}
-                      className="hover:bg-slate-100"
+                      style={{ borderRadius: '0px' }}
+                      className="px-3 py-1.5 border-2 border-black bg-white hover:bg-[#00f0ff] font-black uppercase tracking-wider text-[11px] cursor-pointer shadow-[2px_2px_0px_#000] active:translate-y-0.5 transition-colors"
                     >
-                      <MessageCircle size={15} />
-                      <span>{post.comments}</span>
-                    </button>
-
-                    {/* Share Button */}
-                    <button 
-                      type="button"
-                      onClick={() => handleShare(post.id)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: '11px',
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        color: '#64748b',
-                        padding: '4px 6px',
-                        borderRadius: '4px',
-                      }}
-                      className="hover:bg-slate-100"
-                    >
-                      <Share2 size={14} />
+                      💬 DISCUSS // {post.comments}
                     </button>
                   </div>
 
-                  {/* Fandom Tag Pill */}
                   <span 
-                    style={{
-                      fontSize: '10px',
-                      fontFamily: 'monospace',
-                      fontWeight: 800,
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      backgroundColor: '#ffffff',
-                      color: '#0f172a',
-                      padding: '3px 8px',
-                      border: '1px solid #000000',
-                    }}
+                    style={{ borderRadius: '0px' }}
+                    className="border-2 border-black px-2.5 py-1 text-[11px] font-black uppercase tracking-wider bg-[#00f0ff] text-black shadow-[2px_2px_0px_#000]"
                   >
                     {post.tag}
                   </span>
@@ -794,3 +441,4 @@ export const FanCommunityFeed: React.FC = () => {
     </section>
   );
 };
+

@@ -74,7 +74,7 @@ export default function B2bPage() {
         <div className="bg-slate-50 border-b border-slate-200">
           <Breadcrumbs
             items={[
-              { label: 'B2B Phân Phối & Đặt Số Lượng Lớn (Wholesale & Fan Club)', isActive: true }
+              { label: 'B2B Distribution & Bulk Orders (Wholesale & Fan Club)', isActive: true }
             ]}
           />
         </div>

@@ -40,7 +40,7 @@ export default function CdDvdBookPage() {
         <div className="bg-slate-50 border-b border-slate-200">
           <Breadcrumbs
             items={[
-              { label: 'CD / DVD & Sách (Physical Media)', isActive: true }
+              { label: 'CD / DVD & Books (Physical Media)', isActive: true }
             ]}
           />
         </div>

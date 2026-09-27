@@ -106,8 +106,8 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                 />
                 <button
                   onClick={() => playTrack(album)}
-                  className="absolute bottom-3 left-3 px-3 py-1.5 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
-                  style={{ backgroundColor: 'rgba(15, 23, 42, 0.85)', borderRadius: '8px' }}
+                  className="absolute bottom-3 left-3 px-4 py-2 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md rounded-full backdrop-blur-md hover:bg-slate-900 active:scale-95 transition-all"
+                  style={{ backgroundColor: 'rgba(15, 23, 42, 0.88)' }}
                   type="button"
                 >
                   <Play className="w-3.5 h-3.5 fill-current text-sky-400" />
@@ -283,8 +283,8 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
                       addToCart(album, selectedVersion, quantity);
                       onClose();
                     }}
-                    className="flex-1 text-xs sm:text-sm py-2.5 text-white font-bold flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-                    style={{ backgroundColor: '#000000', borderRadius: '8px' }}
+                    className="flex-1 text-xs sm:text-sm py-3 text-white font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md rounded-full hover:bg-slate-800 active:scale-98 transition-all"
+                    style={{ backgroundColor: '#0f172a' }}
                     type="button"
                   >
                     <ShoppingCart className="w-4 h-4" />
@@ -298,14 +298,13 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
 
           {/* Modal Tabs Navigation */}
           <div className="border-t border-slate-200 pt-6">
-            <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+            <div className="flex items-center gap-2 border-b border-slate-200 pb-3 flex-wrap">
               <button
                 onClick={() => setActiveTab('details')}
-                className="px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-bold transition-all cursor-pointer rounded-full active:scale-95"
                 style={{
-                  backgroundColor: activeTab === 'details' ? '#f4f4f5' : 'transparent',
-                  color: activeTab === 'details' ? '#1c1c1c' : '#475569',
-                  borderRadius: '8px',
+                  backgroundColor: activeTab === 'details' ? '#0f172a' : '#f1f5f9',
+                  color: activeTab === 'details' ? '#ffffff' : '#475569',
                 }}
                 type="button"
               >
@@ -313,11 +312,10 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
               </button>
               <button
                 onClick={() => setActiveTab('tracks')}
-                className="px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-bold transition-all cursor-pointer rounded-full active:scale-95"
                 style={{
-                  backgroundColor: activeTab === 'tracks' ? '#f4f4f5' : 'transparent',
-                  color: activeTab === 'tracks' ? '#1c1c1c' : '#475569',
-                  borderRadius: '8px',
+                  backgroundColor: activeTab === 'tracks' ? '#0f172a' : '#f1f5f9',
+                  color: activeTab === 'tracks' ? '#ffffff' : '#475569',
                 }}
                 type="button"
               >
@@ -325,11 +323,10 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
               </button>
               <button
                 onClick={() => setActiveTab('photocards')}
-                className="px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-bold transition-all cursor-pointer rounded-full active:scale-95"
                 style={{
-                  backgroundColor: activeTab === 'photocards' ? '#f4f4f5' : 'transparent',
-                  color: activeTab === 'photocards' ? '#1c1c1c' : '#475569',
-                  borderRadius: '8px',
+                  backgroundColor: activeTab === 'photocards' ? '#0f172a' : '#f1f5f9',
+                  color: activeTab === 'photocards' ? '#ffffff' : '#475569',
                 }}
                 type="button"
               >
@@ -337,11 +334,10 @@ export const AlbumDetailModal: React.FC<AlbumDetailModalProps> = ({ album, onClo
               </button>
               <button
                 onClick={() => setActiveTab('reviews')}
-                className="px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-bold transition-all cursor-pointer rounded-full active:scale-95"
                 style={{
-                  backgroundColor: activeTab === 'reviews' ? '#f4f4f5' : 'transparent',
-                  color: activeTab === 'reviews' ? '#1c1c1c' : '#475569',
-                  borderRadius: '8px',
+                  backgroundColor: activeTab === 'reviews' ? '#0f172a' : '#f1f5f9',
+                  color: activeTab === 'reviews' ? '#ffffff' : '#475569',
                 }}
                 type="button"
               >

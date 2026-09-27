@@ -270,7 +270,7 @@ export default function MdPage() {
         <div className="bg-slate-50 border-b border-slate-200">
           <Breadcrumbs
             items={[
-              { label: 'Vật Phẩm & Quà Tặng (Official MD & Merch)', isActive: true }
+              { label: 'Official Merch & Collectibles (MD & Merch)', isActive: true }
             ]}
           />
         </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Map, Disc, Users, Calendar, ShieldCheck } from 'lucide-react';
+import { Users, Disc, Calendar, ShieldCheck } from 'lucide-react';
 
 interface SiteLink {
   label: string;
@@ -12,6 +12,9 @@ interface SiteLink {
 
 interface SiteCategory {
   category: string;
+  code: string;
+  accentColor: string;
+  iconBg: string;
   icon: React.ReactNode;
   links: SiteLink[];
 }
@@ -19,47 +22,60 @@ interface SiteCategory {
 interface SitemapSectionProps {
   onOpenAdmin: () => void;
   onOpenFeedback: () => void;
+  onOpenWishlist?: () => void;
 }
 
-export const SitemapSection: React.FC<SitemapSectionProps> = ({ onOpenAdmin, onOpenFeedback }) => {
+export const SitemapSection: React.FC<SitemapSectionProps> = ({ onOpenAdmin, onOpenFeedback, onOpenWishlist }) => {
   const siteStructure: SiteCategory[] = [
     {
-      category: 'Discovery & Catalog',
-      icon: <Disc className="w-4 h-4 text-sky-600" />,
+      category: 'Fandom Universe & Profiles',
+      code: '★ 01 UNIVERSE',
+      accentColor: 'bg-[#ff2e93]',
+      iconBg: 'bg-[#fdf2f8]',
+      icon: <Users className="w-4 h-4 text-[#ff2e93]" />,
       links: [
-        { label: 'Latest Comeback Drops', href: '#albums' },
-        { label: 'Full Albums & Mini EPs', href: '#albums' },
-        { label: 'Limited Editions & Kits', href: '#albums' },
-        { label: 'Official Lightsticks & Merch', href: '#albums' },
+        { label: 'Idol & Character Profiles', href: '#artists' },
+        { label: 'Debut History & Agency Lore', href: '#artists' },
+        { label: 'Official Fandom Fanclubs', href: '#artists' },
+        { label: 'Character Dossiers & Gallery', href: '#artists' },
+      ],
+    },
+    {
+      category: 'Discovery & Album Drops',
+      code: '✦ 02 DROPS',
+      accentColor: 'bg-[#00f0ff]',
+      iconBg: 'bg-[#ecfeff]',
+      icon: <Disc className="w-4 h-4 text-cyan-600" />,
+      links: [
+        { label: 'Fandom Content Explorer', href: '#albums' },
+        { label: 'Official Albums & Merchandise', href: '#albums' },
+        { label: 'Limited Editions & Boxsets', href: '#albums' },
         { label: 'Audio Teaser Previews', href: '#albums' },
       ],
     },
     {
-      category: 'Fandom Universe',
-      icon: <Users className="w-4 h-4 text-sky-600" />,
+      category: 'Multimedia & Radar Drops',
+      code: '⚡ 03 MEDIA',
+      accentColor: 'bg-[#ffd60a]',
+      iconBg: 'bg-[#fefce8]',
+      icon: <Calendar className="w-4 h-4 text-amber-600" />,
       links: [
-        { label: 'Idol Group Profiles', href: '#artists' },
-        { label: 'Debut History & Agency Info', href: '#artists' },
-        { label: 'Official Fandom Fanclubs', href: '#artists' },
-        { label: 'Group Discography Filter', href: '#artists' },
+        { label: 'Multimedia Streaming Center', href: '#multimedia' },
+        { label: 'Trailers, Podcasts & OSTs', href: '#multimedia' },
+        { label: 'Upcoming Drops & Pre-Orders', href: '#upcoming-releases' },
+        { label: 'Fan Submitted Articles & News', href: '#upcoming-releases' },
       ],
     },
     {
-      category: 'World Tour & Events',
-      icon: <Calendar className="w-4 h-4 text-sky-600" />,
+      category: 'Tour, Community & Tools',
+      code: '✪ 04 UTILITIES',
+      accentColor: 'bg-[#ccff00]',
+      iconBg: 'bg-[#f7fee7]',
+      icon: <ShieldCheck className="w-4 h-4 text-emerald-600" />,
       links: [
-        { label: 'Global Concert Schedules', href: '#tours' },
-        { label: 'Vietnam Stadium Stops (Hanoi/HCMC)', href: '#tours' },
-        { label: 'Ticket Availability & Presale', href: '#tours' },
-        { label: 'Venue GPS & Stadium Info', href: '/event#location-events' },
-      ],
-    },
-    {
-      category: 'Fan Hub Services & SRS',
-      icon: <ShieldCheck className="w-4 h-4 text-sky-600" />,
-      links: [
-        { label: 'Fandom AI Assistant (K-Bot)', href: '#', isAction: true },
-        { label: 'Collector Wishlist & Notes', href: '#', isAction: true },
+        { label: 'World Tour & Stadium Arenas', href: '#tours' },
+        { label: 'Fan Community Social Feed', href: '#community' },
+        { label: 'Collector Wishlist & Notes', href: '#', onClick: onOpenWishlist },
         { label: 'Admin Control Panel Preview', href: '#', onClick: onOpenAdmin },
         { label: 'Feedback & Bug Submission', href: '#', onClick: onOpenFeedback },
       ],
@@ -67,73 +83,102 @@ export const SitemapSection: React.FC<SitemapSectionProps> = ({ onOpenAdmin, onO
   ];
 
   return (
-    <section id="sitemap" className="py-14 px-4 lg:px-8 bg-white border-t border-slate-200">
-      <div className="max-w-7xl mx-auto">
+    <section 
+      id="sitemap" 
+      style={{
+        paddingTop: '80px',
+        paddingBottom: '96px',
+      }}
+      className="py-16 px-4 lg:px-8 bg-[#fdfbf7] border-b-4 border-black"
+    >
+      <div className="max-w-[1440px] mx-auto">
         
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <div 
-            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider mb-2 px-3 py-1"
-            style={{ backgroundColor: '#f4f4f5', color: '#1c1c1c', borderRadius: '8px' }}
-          >
-            <Map className="w-3.5 h-3.5 text-sky-600" />
-            <span>SRS Section 1.9 Architecture</span>
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2 text-xs font-mono font-black uppercase tracking-wider mb-3 px-3.5 py-1.5 bg-[#ffd60a] text-black border-2 border-black shadow-[3px_3px_0px_#000]">
+            <span>★ SRS SPECIFICATION // SECTION 1.9 SITEMAP &amp; DIRECTORY ✦</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Complete Website Architecture & Sitemap
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-sans font-black text-black uppercase tracking-tight">
+            Complete Website Architecture &amp;{' '}
+            <span className="text-[#ff2e93] underline decoration-4 decoration-black">
+              Directory
+            </span>
           </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            Explore all functional modules, catalog directories, and fandom portals.
+          <p className="font-sans font-semibold text-xs sm:text-sm text-neutral-700 mt-2">
+            Explore all functional modules, catalog directories, Lossless soundstage consoles, and interactive fan hubs.
           </p>
         </div>
 
-        {/* Tree Map Grid */}
+        {/* 4-Column Vibrant Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {siteStructure.map((cat, idx) => {
             return (
               <div
                 key={idx}
-                className="p-5 bg-slate-50 border border-slate-200 hover:border-sky-300 transition-colors"
-                style={{ borderRadius: '8px' }}
+                style={{ borderRadius: '0px' }}
+                className="bg-white border-3 border-black shadow-[5px_5px_0px_#000000] hover:shadow-[7px_7px_0px_#000000] hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
               >
-                <div className="flex items-center gap-2 mb-4 pb-2 border-b border-slate-200">
-                  {cat.icon}
-                  <h3 className="text-xs font-extrabold text-slate-800 uppercase tracking-wide">
-                    {cat.category}
-                  </h3>
+                {/* Top Banner Accent */}
+                <div>
+                  <div className={`${cat.accentColor} px-4 py-2 border-b-2 border-black flex items-center justify-between`}>
+                    <span className="font-mono text-[10px] font-black uppercase tracking-widest text-black">
+                      {cat.code}
+                    </span>
+                    <span className="w-2 h-2 rounded-full bg-black" />
+                  </div>
+
+                  <div className="p-5">
+                    <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-black">
+                      <div className={`w-7 h-7 ${cat.iconBg} border border-black flex items-center justify-center shrink-0`}>
+                        {cat.icon}
+                      </div>
+                      <h3 className="font-mono text-xs font-black text-black uppercase tracking-wider">
+                        {cat.category}
+                      </h3>
+                    </div>
+
+                    <ul className="space-y-3 text-xs font-mono" style={{ listStyle: 'none', padding: 0 }}>
+                      {cat.links.map((link, lIdx) => {
+                        if (link.onClick) {
+                          return (
+                            <li key={lIdx}>
+                              <button
+                                onClick={link.onClick}
+                                className="w-full text-left font-bold text-black hover:text-[#ff2e93] transition-colors flex items-center justify-between p-1.5 hover:bg-[#fff9db] border border-transparent hover:border-black cursor-pointer group"
+                                type="button"
+                              >
+                                <span className="group-hover:translate-x-1 transition-transform">
+                                  {link.label}
+                                </span>
+                                <span className="bg-[#ffd60a] text-black font-black text-[10px] px-1 border border-black shadow-[1px_1px_0px_#000]">
+                                  MODAL
+                                </span>
+                              </button>
+                            </li>
+                          );
+                        }
+
+                        return (
+                          <li key={lIdx}>
+                            <a
+                              href={link.href}
+                              className="font-medium text-neutral-800 hover:text-black hover:font-bold transition-all flex items-center gap-2 p-1.5 hover:bg-[#ecfeff] border border-transparent hover:border-black group"
+                            >
+                              <span className="text-[#ff2e93] font-black group-hover:translate-x-1 transition-transform">→</span>
+                              <span>{link.label}</span>
+                            </a>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
                 </div>
 
-                <ul className="space-y-2.5 text-xs" style={{ listStyle: 'none', padding: 0 }}>
-                  {cat.links.map((link, lIdx) => {
-                    if (link.onClick) {
-                      return (
-                        <li key={lIdx} style={{ marginBottom: '0.5rem' }}>
-                          <button
-                            onClick={link.onClick}
-                            className="hover:underline font-semibold transition-colors flex items-center gap-1.5 text-left cursor-pointer"
-                            style={{ color: '#000000' }}
-                            type="button"
-                          >
-                            <span style={{ color: '#000000', fontWeight: 'bold' }}>→</span>
-                            <span>{link.label}</span>
-                          </button>
-                        </li>
-                      );
-                    }
-
-                    return (
-                      <li key={lIdx} style={{ marginBottom: '0.5rem' }}>
-                        <a
-                          href={link.href}
-                          className="text-slate-600 hover:text-sky-600 transition-colors flex items-center gap-1.5"
-                        >
-                          <span className="text-slate-400">↳</span>
-                          <span>{link.label}</span>
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ul>
+                {/* Footer status bar for each category */}
+                <div className="px-5 py-2.5 border-t border-black bg-neutral-50 font-mono text-[10px] text-neutral-600 flex items-center justify-between">
+                  <span>STATUS: SYNCED</span>
+                  <span className="font-bold text-black">[OK]</span>
+                </div>
               </div>
             );
           })}
@@ -143,3 +188,4 @@ export const SitemapSection: React.FC<SitemapSectionProps> = ({ onOpenAdmin, onO
     </section>
   );
 };
+

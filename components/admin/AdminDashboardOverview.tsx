@@ -132,10 +132,10 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
 
   // Regional Sales
   const regions = [
-    { region: language === 'vi' ? 'Việt Nam' : 'Vietnam', percent: 45, color: '#ef4444' },
-    { region: language === 'vi' ? 'Mỹ & Toàn cầu' : 'US & Global', percent: 25, color: '#3b82f6' },
-    { region: language === 'vi' ? 'Hàn Quốc' : 'South Korea', percent: 18, color: '#10b981' },
-    { region: language === 'vi' ? 'Nhật Bản' : 'Japan', percent: 12, color: '#f59e0b' },
+    { region: 'Vietnam', percent: 45, color: '#ef4444' },
+    { region: 'US & Global', percent: 25, color: '#3b82f6' },
+    { region: 'South Korea', percent: 18, color: '#10b981' },
+    { region: 'Japan', percent: 12, color: '#f59e0b' },
   ];
 
   const handleDeleteAlbum = (id: string) => {

@@ -66,7 +66,7 @@ export default function Map({ userLocation, events, onMarkerClick }: MapProps) {
       
       {userLocation && (
         <Marker position={[userLocation.lat, userLocation.lng]} icon={userIcon}>
-          <Popup>Vị trí của bạn</Popup>
+          <Popup>Your Location</Popup>
         </Marker>
       )}
 
@@ -83,7 +83,7 @@ export default function Map({ userLocation, events, onMarkerClick }: MapProps) {
             <div className="text-sm font-bold">{ev.title}</div>
             <div className="text-xs">{ev.venue}</div>
             <div className="text-xs text-blue-600 font-bold mt-1 cursor-pointer" onClick={() => onMarkerClick && onMarkerClick(ev)}>
-              Xem chi tiết
+              View Details
             </div>
           </Popup>
         </Marker>

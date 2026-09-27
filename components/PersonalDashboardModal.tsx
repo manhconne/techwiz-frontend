@@ -3,28 +3,18 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { 
-  User, 
   X, 
   Heart, 
   Bookmark, 
   Clock, 
   Sparkles, 
-  ShieldCheck, 
   Camera, 
   Edit3, 
   Check, 
   LogOut, 
-  ExternalLink,
-  Flame,
-  Star,
-  Calendar,
-  Disc,
-  Radio,
-  Share2,
-  Tv,
-  Bell
+  ExternalLink
 } from 'lucide-react';
-import { useAuth, UserActivity } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useCartWishlist } from '../context/CartWishlistContext';
 
 interface PersonalDashboardModalProps {
@@ -42,20 +32,20 @@ const AVATAR_PRESETS = [
 ];
 
 const ALL_FANDOM_OPTIONS = [
-  { id: 'bunnies', name: 'Bunnies (NewJeans)', tag: 'K-Pop', color: '#38bdf8' },
-  { id: 'blink', name: 'BLINK (BLACKPINK)', tag: 'K-Pop', color: '#f43f5e' },
-  { id: 'army', name: 'A.R.M.Y (BTS)', tag: 'K-Pop', color: '#a855f7' },
-  { id: 'carat', name: 'CARAT (SEVENTEEN)', tag: 'K-Pop', color: '#fb923c' },
-  { id: 'stay', name: 'STAY (Stray Kids)', tag: 'K-Pop', color: '#eab308' },
-  { id: 'my', name: 'MY (aespa)', tag: 'K-Pop', color: '#6366f1' },
-  { id: 'dive', name: 'DIVE (IVE)', tag: 'K-Pop', color: '#ec4899' },
+  { id: 'bunnies', name: 'Bunnies (NewJeans)', tag: 'K-Pop', color: '#ff2e93' },
+  { id: 'blink', name: 'BLINK (BLACKPINK)', tag: 'K-Pop', color: '#ffd60a' },
+  { id: 'army', name: 'A.R.M.Y (BTS)', tag: 'K-Pop', color: '#c084fc' },
+  { id: 'carat', name: 'CARAT (SEVENTEEN)', tag: 'K-Pop', color: '#00f0ff' },
+  { id: 'stay', name: 'STAY (Stray Kids)', tag: 'K-Pop', color: '#ccff00' },
+  { id: 'my', name: 'MY (aespa)', tag: 'K-Pop', color: '#818cf8' },
+  { id: 'dive', name: 'DIVE (IVE)', tag: 'K-Pop', color: '#ff6b4a' },
   { id: 'vpop', name: 'FC Anh Trai Say Hi', tag: 'V-Pop', color: '#10b981' },
   { id: 'anime', name: 'Demon Slayer & Anime Otaku', tag: 'Anime', color: '#ef4444' },
-  { id: 'gaming', name: 'T1 & League of Legends', tag: 'Gaming', color: '#06b6d4' },
+  { id: 'gaming', name: 'T1 & League of Legends', tag: 'Gaming', color: '#00f0ff' },
 ];
 
 export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ isOpen, onClose }) => {
-  const { user, isLoggedIn, logout, updateProfile, toggleFavoriteFandom, activities } = useAuth();
+  const { user, logout, updateProfile, toggleFavoriteFandom, activities } = useAuth();
   const { wishlist } = useCartWishlist();
 
   const [activeTab, setActiveTab] = useState<'overview' | 'fandoms' | 'activities' | 'bookmarks' | 'profile'>('overview');
@@ -64,15 +54,15 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
   const [editName, setEditName] = useState(user.name);
   const [selectedAvatar, setSelectedAvatar] = useState(user.avatar);
   const [customAvatarUrl, setCustomAvatarUrl] = useState('');
-  const [editBio, setEditBio] = useState('Yêu âm nhạc, mê săn photocard và cháy hết mình cùng concert thần tượng!');
+  const [editBio, setEditBio] = useState('Music lover, photocard collector, and passionate concert enthusiast!');
   const [saveToast, setSaveToast] = useState(false);
 
   // Personalized Greeting calculation
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
-    if (hour < 12) return { text: 'Chào buổi sáng', sub: 'Chúc bạn một ngày tràn đầy năng lượng cùng âm nhạc!' };
-    if (hour < 18) return { text: 'Chào buổi chiều', sub: 'Cùng khám phá những sự kiện và sản phẩm comeback mới nhất!' };
-    return { text: 'Chào buổi tối', sub: 'Thư giãn cùng podcast và bản nhạc yêu thích sau một ngày dài!' };
+    if (hour < 12) return { text: 'Good morning', sub: 'Wishing you a high-energy day filled with great music!' };
+    if (hour < 18) return { text: 'Good afternoon', sub: 'Explore the latest events, albums, and comeback drops!' };
+    return { text: 'Good evening', sub: 'Unwind with your favorite podcasts, tracks, and live stages after a long day!' };
   }, []);
 
   if (!isOpen) return null;
@@ -89,21 +79,23 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-mono">
       <div 
-        className="bg-white max-w-4xl w-full rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] animate-in fade-in zoom-in-95 duration-200"
+        style={{ borderRadius: '0px' }}
+        className="bg-white max-w-4xl w-full shadow-[10px_10px_0px_#000000] border-3 border-black overflow-hidden flex flex-col max-h-[92vh]"
       >
         
         {/* ========================================================= */}
         {/* 1. DASHBOARD HEADER & PERSONAL GREETING                   */}
         {/* ========================================================= */}
-        <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white p-6 relative">
+        <div className="bg-[#ffd60a] text-black p-6 relative border-b-3 border-black select-none">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-            title="Đóng Dashboard"
+            style={{ borderRadius: '0px' }}
+            className="absolute top-4 right-4 px-2.5 py-1 bg-white text-black hover:bg-[#ff2e93] hover:text-white border-2 border-black text-xs font-black cursor-pointer shadow-[1px_1px_0px_#000] transition-colors"
+            title="Close Dashboard"
           >
-            <X className="w-5 h-5" />
+            [✕]
           </button>
 
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
@@ -112,37 +104,39 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border-3 border-amber-400 shadow-xl"
+                style={{ borderRadius: '0px' }}
+                className="w-20 h-20 sm:w-24 sm:h-24 object-cover border-3 border-black shadow-[4px_4px_0px_#000]"
               />
               <button
                 onClick={() => setActiveTab('profile')}
-                className="absolute -bottom-1.5 -right-1.5 p-1.5 rounded-lg bg-amber-400 text-slate-950 hover:scale-110 transition-transform shadow-md"
-                title="Thay đổi ảnh đại diện"
+                style={{ borderRadius: '0px' }}
+                className="absolute -bottom-2 -right-2 p-1.5 bg-[#00f0ff] text-black border-2 border-black hover:scale-110 transition-transform shadow-[2px_2px_0px_#000] cursor-pointer"
+                title="Change avatar"
               >
                 <Camera className="w-3.5 h-3.5" />
               </button>
             </div>
 
             {/* User Info & Personalized Greeting */}
-            <div className="text-center sm:text-left flex-1 space-y-1">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[11px] font-black uppercase tracking-wider">
-                <Sparkles className="w-3 h-3 text-amber-400" />
-                <span>{user.role === 'admin' ? 'CHỦ NHIỆM HỆ THỐNG (ADMIN)' : 'FANDOM ELITE VIP MEMBER'}</span>
+            <div className="text-center sm:text-left flex-1 space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-[#ff2e93] text-white border-2 border-black text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
+                <Sparkles className="w-3 h-3 text-white" />
+                <span>{user.role === 'admin' ? 'SYSTEM ADMINISTRATOR (ADMIN)' : '★ FANDOM ELITE VIP MEMBER ✦'}</span>
               </div>
 
-              <h2 className="text-xl sm:text-2xl font-black text-white">
+              <h2 className="text-xl sm:text-2xl font-black text-black uppercase font-sans">
                 {greeting.text}, {user.name}! 🌟
               </h2>
-              <p className="text-xs text-slate-300 font-normal">
+              <p className="text-xs text-neutral-800 font-medium">
                 {greeting.sub}
               </p>
 
-              <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-slate-400 font-medium">
-                <span>Email: <strong className="text-slate-200">{user.email}</strong></span>
+              <div className="pt-1 flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs text-neutral-800 font-bold">
+                <span>EMAIL: <strong className="text-black bg-white px-1 border border-black">{user.email}</strong></span>
                 <span>•</span>
-                <span>Thành viên từ: <strong className="text-slate-200">{user.memberSince || '2024'}</strong></span>
+                <span>SINCE: <strong className="text-black">{user.memberSince || '2024'}</strong></span>
                 <span>•</span>
-                <span className="text-amber-400 font-bold">Cấp độ: Diamond Stan ⭐</span>
+                <span className="bg-[#ccff00] text-black px-1.5 py-0.2 border border-black font-black">DIAMOND STAN ⭐</span>
               </div>
             </div>
           </div>
@@ -151,31 +145,30 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         {/* ========================================================= */}
         {/* 2. NAVIGATION TABS BAR                                    */}
         {/* ========================================================= */}
-        <div className="px-6 border-b border-slate-200 bg-slate-50 flex items-center gap-2 overflow-x-auto scrollbar-none">
+        <div className="px-6 border-b-2 border-black bg-[#ecfeff] flex items-center gap-2 overflow-x-auto scrollbar-none py-2">
           {[
-            { id: 'overview', label: 'Tổng Quan', icon: Sparkles },
-            { id: 'fandoms', label: 'Fandom Yêu Thích', icon: Heart, count: user.favoriteFandoms.length },
-            { id: 'activities', label: 'Hoạt Động Gần Đây', icon: Clock, count: activities.length },
-            { id: 'bookmarks', label: 'Đã Bookmark', icon: Bookmark, count: wishlist.length },
-            { id: 'profile', label: 'Hồ Sơ & Cài Đặt', icon: Edit3 },
+            { id: 'overview', label: 'OVERVIEW', icon: Sparkles },
+            { id: 'fandoms', label: 'FAVORITE FANDOMS', icon: Heart, count: user.favoriteFandoms.length },
+            { id: 'activities', label: 'RECENT ACTIVITY', icon: Clock, count: activities.length },
+            { id: 'bookmarks', label: 'BOOKMARKS', icon: Bookmark, count: wishlist.length },
+            { id: 'profile', label: 'PROFILE & SETTINGS', icon: Edit3 },
           ].map((tab) => {
             const isActive = activeTab === tab.id;
-            const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 py-3 px-3 text-xs font-bold border-b-2 transition-all whitespace-nowrap ${
+                style={{ borderRadius: '0px' }}
+                className={`flex items-center gap-2 py-2 px-3 text-xs font-black uppercase border-2 transition-all whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? 'border-slate-950 text-slate-950 font-black'
-                    : 'border-transparent text-slate-500 hover:text-slate-900'
+                    ? 'bg-[#ff2e93] text-white border-black shadow-[3px_3px_0px_#000] -translate-y-0.5'
+                    : 'bg-white text-black border-black hover:bg-[#fff9db] shadow-[1px_1px_0px_#000]'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-amber-500' : 'text-slate-400'}`} />
                 <span>{tab.label}</span>
                 {tab.count !== undefined && (
-                  <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono ${
-                    isActive ? 'bg-slate-950 text-white' : 'bg-slate-200 text-slate-600'
+                  <span className={`px-1.5 py-0.2 text-[10px] font-mono border border-black ${
+                    isActive ? 'bg-[#ffd60a] text-black' : 'bg-[#ecfeff] text-black'
                   }`}>
                     {tab.count}
                   </span>
@@ -187,55 +180,58 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
 
         {/* Toast alert */}
         {saveToast && (
-          <div className="mx-6 mt-4 p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-xl text-xs font-bold flex items-center gap-2">
-            <Check className="w-4 h-4 text-emerald-600" />
-            <span>Thông tin hồ sơ và sở thích fandom của bạn đã được cập nhật thành công!</span>
+          <div 
+            style={{ borderRadius: '0px' }}
+            className="mx-6 mt-4 p-3 bg-[#ccff00] border-2 border-black text-black text-xs font-black flex items-center gap-2 shadow-[3px_3px_0px_#000]"
+          >
+            <Check className="w-4 h-4 text-black" />
+            <span>★ YOUR PROFILE HAS BEEN SUCCESSFULLY SYNCHRONIZED!</span>
           </div>
         )}
 
         {/* ========================================================= */}
         {/* 3. TAB CONTENT VIEWS                                      */}
         {/* ========================================================= */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
+        <div className="p-6 overflow-y-auto flex-1 space-y-6 bg-[#fdfbf7]">
           
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {/* Quick Stat Tiles */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
-                  <span className="text-[11px] font-black text-slate-500 uppercase">Fandom Theo Dõi</span>
-                  <div className="text-2xl font-black text-slate-900 mt-1">{user.favoriteFandoms.length}</div>
-                  <span className="text-[10px] text-amber-600 font-semibold">Cộng đồng chính thức</span>
+                <div style={{ borderRadius: '0px' }} className="p-4 bg-white border-2 border-black text-center shadow-[4px_4px_0px_#000]">
+                  <span className="text-[10px] font-black text-neutral-600 uppercase">Fandoms Followed</span>
+                  <div className="text-2xl font-black text-black mt-1">{user.favoriteFandoms.length}</div>
+                  <span className="text-[10px] text-[#ff2e93] font-bold">Official communities</span>
                 </div>
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
-                  <span className="text-[11px] font-black text-slate-500 uppercase">Vật Phẩm Đã Lưu</span>
-                  <div className="text-2xl font-black text-slate-900 mt-1">{wishlist.length}</div>
-                  <span className="text-[10px] text-sky-600 font-semibold">Trong danh sách ước</span>
+                <div style={{ borderRadius: '0px' }} className="p-4 bg-white border-2 border-black text-center shadow-[4px_4px_0px_#000]">
+                  <span className="text-[10px] font-black text-neutral-600 uppercase">Saved Items</span>
+                  <div className="text-2xl font-black text-black mt-1">{wishlist.length}</div>
+                  <span className="text-[10px] text-cyan-600 font-bold">In your wishlist</span>
                 </div>
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
-                  <span className="text-[11px] font-black text-slate-500 uppercase">Lịch Sử Tương Tác</span>
-                  <div className="text-2xl font-black text-slate-900 mt-1">{activities.length}</div>
-                  <span className="text-[10px] text-emerald-600 font-semibold">Đánh giá & phát sóng</span>
+                <div style={{ borderRadius: '0px' }} className="p-4 bg-white border-2 border-black text-center shadow-[4px_4px_0px_#000]">
+                  <span className="text-[10px] font-black text-neutral-600 uppercase">Interaction History</span>
+                  <div className="text-2xl font-black text-black mt-1">{activities.length}</div>
+                  <span className="text-[10px] text-emerald-600 font-bold">Reviews &amp; streams</span>
                 </div>
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
-                  <span className="text-[11px] font-black text-slate-500 uppercase">Điểm Cống Hiến</span>
-                  <div className="text-2xl font-black text-purple-600 mt-1">2,450</div>
-                  <span className="text-[10px] text-purple-600 font-semibold">Hạng Kim Cương ⭐</span>
+                <div style={{ borderRadius: '0px' }} className="p-4 bg-white border-2 border-black text-center shadow-[4px_4px_0px_#000]">
+                  <span className="text-[10px] font-black text-neutral-600 uppercase">Contribution Points</span>
+                  <div className="text-2xl font-black text-black mt-1">2,450</div>
+                  <span className="text-[10px] bg-[#ffd60a] px-1 border border-black font-black">Diamond Tier ⭐</span>
                 </div>
               </div>
 
               {/* Fandom Highlight Row */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-black uppercase text-slate-800 tracking-wider flex items-center gap-1.5">
-                    <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> Fandom Của Bạn
+                  <h4 className="text-xs font-black uppercase text-black tracking-wider flex items-center gap-1.5">
+                    <Heart className="w-3.5 h-3.5 text-[#ff2e93] fill-[#ff2e93]" /> Your Fandoms
                   </h4>
                   <button
                     onClick={() => setActiveTab('fandoms')}
-                    className="text-xs font-bold text-amber-600 hover:text-amber-700"
+                    className="text-xs font-black text-[#ff2e93] hover:underline cursor-pointer"
                   >
-                    Quản lý (+ Thêm fandom)
+                    [MANAGE // + ADD FANDOM]
                   </button>
                 </div>
 
@@ -243,9 +239,10 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   {user.favoriteFandoms.map((fandom, idx) => (
                     <span
                       key={idx}
-                      className="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-800 border border-rose-200 text-xs font-bold flex items-center gap-1.5 shadow-xs"
+                      style={{ borderRadius: '0px' }}
+                      className="px-3 py-1.5 bg-[#fdf2f8] text-[#ff2e93] border-2 border-black text-xs font-black flex items-center gap-1.5 shadow-[2px_2px_0px_#000]"
                     >
-                      <Heart className="w-3 h-3 fill-rose-500 text-rose-500" />
+                      <Heart className="w-3 h-3 fill-[#ff2e93] text-[#ff2e93]" />
                       {fandom}
                     </span>
                   ))}
@@ -255,14 +252,14 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
               {/* Recent Activity Snapshot */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-black uppercase text-slate-800 tracking-wider flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-slate-500" /> Hoạt Động Gần Đây Nhất
+                  <h4 className="text-xs font-black uppercase text-black tracking-wider flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-neutral-600" /> Recent Activity
                   </h4>
                   <button
                     onClick={() => setActiveTab('activities')}
-                    className="text-xs font-bold text-amber-600 hover:text-amber-700"
+                    className="text-xs font-black text-[#ff2e93] hover:underline cursor-pointer"
                   >
-                    Xem toàn bộ ({activities.length})
+                    [VIEW ALL ({activities.length})]
                   </button>
                 </div>
 
@@ -270,13 +267,14 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   {activities.slice(0, 3).map((act) => (
                     <div
                       key={act.id}
-                      className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs"
+                      style={{ borderRadius: '0px' }}
+                      className="p-3 bg-white border-2 border-black flex items-center justify-between text-xs shadow-[2px_2px_0px_#000]"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="w-2 h-2 rounded-full bg-amber-400" />
-                        <span className="font-semibold text-slate-800">{act.title}</span>
+                        <span className="w-2.5 h-2.5 bg-[#ff2e93] border border-black" />
+                        <span className="font-bold text-black">{act.title}</span>
                       </div>
-                      <span className="text-[11px] text-slate-400 font-mono whitespace-nowrap ml-2">
+                      <span className="text-[11px] text-neutral-600 font-mono whitespace-nowrap ml-2">
                         {act.timestamp}
                       </span>
                     </div>
@@ -291,9 +289,9 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
           {activeTab === 'fandoms' && (
             <div className="space-y-4">
               <div>
-                <h4 className="text-sm font-black text-slate-900">Chọn Fandom Yêu Thích Của Bạn</h4>
-                <p className="text-xs text-slate-500">
-                  Nhấp vào các fandom để bật hoặc tắt theo dõi. Bảng tin, sản phẩm gợi ý và giao diện sẽ tự động ưu tiên nội dung thuộc fandom bạn yêu mến.
+                <h4 className="text-sm font-black text-black uppercase">CHOOSE YOUR FAVORITE FANDOMS</h4>
+                <p className="text-xs text-neutral-600 font-medium">
+                  Click on fandoms to toggle following. Your newsfeed, recommendations, and interface will prioritize content from fandoms you follow.
                 </p>
               </div>
 
@@ -304,32 +302,34 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                     <div
                       key={item.id}
                       onClick={() => toggleFavoriteFandom(item.name)}
-                      className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                      style={{ borderRadius: '0px' }}
+                      className={`p-3.5 border-2 border-black transition-all cursor-pointer flex items-center justify-between ${
                         isFollowed
-                          ? 'bg-rose-50/70 border-rose-300 ring-1 ring-rose-300 shadow-sm'
-                          : 'bg-white border-slate-200 hover:bg-slate-50'
+                          ? 'bg-[#ecfeff] shadow-[3px_3px_0px_#000] -translate-y-0.5'
+                          : 'bg-white hover:bg-[#fff9db] shadow-[1px_1px_0px_#000]'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-3.5 h-3.5 rounded-full flex-shrink-0"
+                          className="w-4 h-4 border border-black flex-shrink-0"
                           style={{ backgroundColor: item.color }}
                         />
                         <div>
-                          <h5 className="text-xs font-bold text-slate-900">{item.name}</h5>
-                          <span className="text-[10px] text-slate-500 font-semibold">{item.tag}</span>
+                          <h5 className="text-xs font-black text-black">{item.name}</h5>
+                          <span className="text-[10px] text-neutral-600 font-bold">{item.tag}</span>
                         </div>
                       </div>
 
                       <button
                         type="button"
-                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
+                        style={{ borderRadius: '0px' }}
+                        className={`px-3 py-1 text-xs font-black border-2 border-black uppercase transition-colors ${
                           isFollowed
-                            ? 'bg-rose-600 text-white'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            ? 'bg-[#ff2e93] text-white shadow-[1px_1px_0px_#000]'
+                            : 'bg-white text-black hover:bg-[#ffd60a]'
                         }`}
                       >
-                        {isFollowed ? 'Đang Theo Dõi ✓' : '+ Theo Dõi'}
+                        {isFollowed ? '✓ FOLLOWING' : '+ FOLLOW'}
                       </button>
                     </div>
                   );
@@ -342,28 +342,32 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
           {activeTab === 'activities' && (
             <div className="space-y-4">
               <div>
-                <h4 className="text-sm font-black text-slate-900">Lịch Sử Hoạt Động Của Bạn</h4>
-                <p className="text-xs text-slate-500">
-                  Toàn bộ các hành động tương tác: đánh giá trailer, lưu sự kiện concert, thêm vào playlist và phản hồi cộng đồng.
+                <h4 className="text-sm font-black text-black uppercase">YOUR ACTIVITY HISTORY</h4>
+                <p className="text-xs text-neutral-600 font-medium">
+                  Complete record of your interactions: trailer reviews, saved concert events, playlist additions, and community feedback.
                 </p>
               </div>
 
-              <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
+              <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-1 before:bg-black">
                 {activities.map((act) => (
                   <div key={act.id} className="relative group">
-                    <span className="absolute -left-6 top-1.5 w-3 h-3 rounded-full bg-amber-400 border-2 border-white ring-2 ring-amber-400/30" />
-                    <div className="p-3.5 rounded-xl bg-white border border-slate-200 hover:border-slate-300 transition-colors shadow-xs flex items-center justify-between">
+                    <span className="absolute -left-6 top-1.5 w-3.5 h-3.5 bg-[#ffd60a] border-2 border-black shadow-[1px_1px_0px_#000]" />
+                    <div 
+                      style={{ borderRadius: '0px' }}
+                      className="p-3.5 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-between"
+                    >
                       <div>
-                        <p className="text-xs font-bold text-slate-800">{act.title}</p>
-                        <span className="text-[10px] text-slate-400 font-mono mt-0.5 inline-block">{act.timestamp}</span>
+                        <p className="text-xs font-bold text-black">{act.title}</p>
+                        <span className="text-[10px] text-neutral-500 font-mono mt-0.5 inline-block">{act.timestamp}</span>
                       </div>
                       {act.link && (
                         <Link
                           href={act.link}
                           onClick={onClose}
-                          className="text-[11px] font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1"
+                          style={{ borderRadius: '0px' }}
+                          className="text-[11px] font-black text-black bg-[#ffd60a] px-2 py-0.5 border border-black hover:bg-[#ff2e93] hover:text-white flex items-center gap-1 shadow-[1px_1px_0px_#000]"
                         >
-                          <span>Mở</span>
+                          <span>OPEN</span>
                           <ExternalLink className="w-3 h-3" />
                         </Link>
                       )}
@@ -378,31 +382,36 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
           {activeTab === 'bookmarks' && (
             <div className="space-y-4">
               <div>
-                <h4 className="text-sm font-black text-slate-900">Danh Sách Vật Phẩm & Nội Dung Đã Lưu</h4>
-                <p className="text-xs text-slate-500">
-                  Các album, photobook, lightstick và nội dung bạn đã bấm lưu để theo dõi hoặc chuẩn bị đặt trước.
+                <h4 className="text-sm font-black text-black uppercase">SAVED ITEMS &amp; MEDIA</h4>
+                <p className="text-xs text-neutral-600 font-medium">
+                  Albums, photobooks, lightsticks, and media you have saved to track or prepare for pre-order.
                 </p>
               </div>
 
               {wishlist.length === 0 ? (
-                <div className="py-12 text-center bg-slate-50 rounded-xl border border-slate-200 p-6 space-y-2">
-                  <Bookmark className="w-8 h-8 text-slate-300 mx-auto" />
-                  <p className="text-xs font-bold text-slate-700">Chưa có vật phẩm nào được lưu</p>
-                  <p className="text-[11px] text-slate-500">Hãy nhấn biểu tượng trái tim hoặc nút bookmark trên các sản phẩm và trailer để lưu vào đây.</p>
+                <div style={{ borderRadius: '0px' }} className="py-12 text-center bg-white border-2 border-black p-6 space-y-2 shadow-[3px_3px_0px_#000]">
+                  <Bookmark className="w-8 h-8 text-neutral-400 mx-auto" />
+                  <p className="text-xs font-bold text-black uppercase">NO SAVED ITEMS YET</p>
+                  <p className="text-[11px] text-neutral-500">Click the bookmark button on products and trailers to save them here.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {wishlist.map((item) => (
-                    <div key={item.album.id} className="p-3 rounded-xl border border-slate-200 flex items-center gap-3 bg-white hover:border-slate-300">
+                    <div 
+                      key={item.album.id} 
+                      style={{ borderRadius: '0px' }}
+                      className="p-3 border-2 border-black flex items-center gap-3 bg-white shadow-[3px_3px_0px_#000]"
+                    >
                       <img
                         src={item.album.coverImage}
                         alt={item.album.title}
-                        className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+                        style={{ borderRadius: '0px', width: '56px', height: '56px' }}
+                        className="object-cover border border-black shrink-0"
                       />
                       <div className="flex-1 min-w-0">
-                        <span className="text-[10px] font-bold text-amber-600 block">{item.album.artist}</span>
-                        <h5 className="text-xs font-black text-slate-900 truncate">{item.album.title}</h5>
-                        <span className="text-[11px] font-mono font-bold text-slate-700 mt-0.5 block">
+                        <span className="text-[10px] font-black text-[#ff2e93] block uppercase">{item.album.artist}</span>
+                        <h5 className="text-xs font-bold text-black truncate uppercase font-sans">{item.album.title}</h5>
+                        <span className="text-[11px] font-mono font-black text-black mt-0.5 block">
                           ${item.album.priceUSD} USD
                         </span>
                       </div>
@@ -417,27 +426,28 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
           {activeTab === 'profile' && (
             <form onSubmit={handleSaveProfile} className="space-y-5">
               <div>
-                <h4 className="text-sm font-black text-slate-900">Quản Lý Hồ Sơ Cá Nhân</h4>
-                <p className="text-xs text-slate-500">
-                  Cập nhật tên hiển thị, hình đại diện và tiểu sử fandom của bạn.
+                <h4 className="text-sm font-black text-black uppercase">MANAGE PERSONAL PROFILE</h4>
+                <p className="text-xs text-neutral-600 font-medium">
+                  Update your display name, avatar, and fandom motto.
                 </p>
               </div>
 
               {/* Name */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700">Tên Hiển Thị Fandom:</label>
+                <label className="text-xs font-black uppercase text-black">FANDOM DISPLAY NAME:</label>
                 <input
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900"
+                  style={{ borderRadius: '0px' }}
+                  className="w-full px-3 py-2 border-2 border-black text-xs bg-white focus:outline-none focus:border-[#ff2e93]"
                   required
                 />
               </div>
 
               {/* Avatar Preset Selection */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-700">Chọn Ảnh Đại Diện Nhanh:</label>
+                <label className="text-xs font-black uppercase text-black">QUICK AVATAR SELECTION:</label>
                 <div className="flex flex-wrap gap-2.5">
                   {AVATAR_PRESETS.map((url, idx) => (
                     <img
@@ -448,57 +458,62 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                         setSelectedAvatar(url);
                         setCustomAvatarUrl('');
                       }}
-                      className={`w-12 h-12 rounded-xl object-cover cursor-pointer transition-all ${
+                      style={{ borderRadius: '0px' }}
+                      className={`w-12 h-12 object-cover cursor-pointer transition-all border-2 ${
                         selectedAvatar === url && !customAvatarUrl
-                          ? 'border-2 border-amber-500 ring-2 ring-amber-400/40 scale-105'
-                          : 'border border-slate-200 opacity-70 hover:opacity-100'
+                          ? 'border-[#ff2e93] shadow-[3px_3px_0px_#000] scale-105'
+                          : 'border-black opacity-70 hover:opacity-100'
                       }`}
                     />
                   ))}
                 </div>
 
                 <div className="pt-2">
-                  <label className="text-[11px] font-bold text-slate-500">Hoặc dán URL ảnh đại diện tùy chỉnh:</label>
+                  <label className="text-[11px] font-bold text-neutral-600">OR PASTE CUSTOM AVATAR URL:</label>
                   <input
                     type="url"
                     placeholder="https://example.com/avatar.jpg"
                     value={customAvatarUrl}
                     onChange={(e) => setCustomAvatarUrl(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900 mt-1"
+                    style={{ borderRadius: '0px' }}
+                    className="w-full px-3 py-2 border-2 border-black text-xs bg-white focus:outline-none focus:border-[#ff2e93] mt-1"
                   />
                 </div>
               </div>
 
               {/* Bio */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700">Tiểu Sử / Khẩu Hiệu Fandom:</label>
+                <label className="text-xs font-black uppercase text-black">FANDOM BIO / MOTTO:</label>
                 <textarea
                   value={editBio}
                   onChange={(e) => setEditBio(e.target.value)}
                   rows={2}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900"
+                  style={{ borderRadius: '0px' }}
+                  className="w-full px-3 py-2 border-2 border-black text-xs bg-white focus:outline-none focus:border-[#ff2e93]"
                 />
               </div>
 
               {/* Submit Buttons */}
-              <div className="pt-2 flex items-center justify-between border-t border-slate-200">
+              <div className="pt-3 flex items-center justify-between border-t-2 border-black">
                 <button
                   type="button"
                   onClick={() => {
                     logout();
                     onClose();
                   }}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors"
+                  style={{ borderRadius: '0px' }}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-black uppercase text-white bg-[#ef4444] border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer hover:bg-red-700"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span>Đăng Xuất Tài Khoản</span>
+                  <span>SIGN OUT</span>
                 </button>
 
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-black uppercase tracking-wider hover:bg-slate-800 transition-colors shadow-md"
+                  style={{ borderRadius: '0px' }}
+                  className="px-6 py-2.5 bg-[#ff2e93] hover:bg-[#e11d48] text-white text-xs font-black uppercase tracking-wider cursor-pointer border-2 border-black shadow-[3px_3px_0px_#000] active:translate-y-0.5 transition-all"
                 >
-                  Lưu Thay Đổi Hồ Sơ
+                  [SAVE PROFILE CHANGES]
                 </button>
               </div>
 
@@ -511,3 +526,4 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
     </div>
   );
 };
+

@@ -8,18 +8,6 @@ import { filterAlbumsByDomain, filterArtistsByDomain } from '../utils/domainFilt
 import { mockAlbums, mockArtists } from '../data/mockData';
 import { Album } from '../types';
 import { HeroBanner } from './HeroBanner';
-import { 
-  Heart, 
-  ShoppingCart, 
-  Play, 
-  Eye, 
-  Volume2,
-  X,
-  RotateCcw,
-  SlidersHorizontal,
-  ChevronDown,
-  ArrowUpDown
-} from 'lucide-react';
 
 interface AlbumGridProps {
   onSelectAlbum: (album: Album) => void;
@@ -48,8 +36,9 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
   const [activePopularity, setActivePopularity] = useState<string>('all');
   const [activeSort, setActiveSort] = useState<'popular' | 'newest' | 'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc'>('popular');
   const [inStockOnly, setInStockOnly] = useState(false);
+  const [albumLayoutMode, setAlbumLayoutMode] = useState<'bento' | 'masonry' | 'grid'>('bento');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (fandomCategory) {
       if (fandomCategory === 'all') {
         setActiveCategory('all');
@@ -59,7 +48,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
     }
   }, [fandomCategory]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedArtistFilter) {
       setActiveArtist(selectedArtistFilter);
     }
@@ -88,105 +77,96 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
     if (setSelectedArtistFilter) setSelectedArtistFilter('all');
   };
 
-  // 1. First filter by Domain & Subcategory from DomainContext
+  // 1. Filter by Domain & Subcategory
   const domainFilteredAlbums = useMemo(() => {
-    return filterAlbumsByDomain(mockAlbums, currentDomain, activeSubCategory);
+    const byDomain = filterAlbumsByDomain(mockAlbums, currentDomain);
+    if (activeSubCategory === 'all') return byDomain;
+    return byDomain.filter((a) => a.category === activeSubCategory || a.type === activeSubCategory);
   }, [currentDomain, activeSubCategory]);
 
-  const domainFilteredArtists = useMemo(() => {
-    return filterArtistsByDomain(mockArtists, currentDomain, activeSubCategory);
-  }, [currentDomain, activeSubCategory]);
+  // 2. Filter artists for active domain
+  const availableArtists = useMemo(() => {
+    return filterArtistsByDomain(mockArtists, currentDomain);
+  }, [currentDomain]);
 
-  const filteredArtists = useMemo(() => {
-    if (activeCategory === 'all') return domainFilteredArtists;
-    return domainFilteredArtists.filter((artist) => artist.category === activeCategory);
-  }, [activeCategory, domainFilteredArtists]);
-
+  // 3. Multi-dimensional filtering
   const filteredAlbums = useMemo(() => {
     return domainFilteredAlbums.filter((album) => {
       if (activeCategory !== 'all' && album.category !== activeCategory) return false;
       if (activeArtist !== 'all' && album.artistId !== activeArtist) return false;
       if (activeType !== 'all' && album.type !== activeType) return false;
-      if (inStockOnly && album.stock <= 0) return false;
+      if (inStockOnly && (album.stock ?? 0) <= 0) return false;
 
-      // Genre Filter
       if (activeGenre !== 'all') {
-        const text = `${album.title} ${album.description} ${album.category} ${album.type}`.toLowerCase();
-        if (!text.includes(activeGenre.toLowerCase())) return false;
+        const matchesGenre = album.tag?.toLowerCase().includes(activeGenre.toLowerCase()) ||
+                             album.description?.toLowerCase().includes(activeGenre.toLowerCase());
+        if (!matchesGenre) return false;
       }
 
-      // Release Year Filter
       if (activeReleaseYear !== 'all') {
-        const year = new Date(album.releaseDate).getFullYear();
-        if (activeReleaseYear === '2024' && year !== 2024) return false;
-        if (activeReleaseYear === '2023' && year !== 2023) return false;
-        if (activeReleaseYear === '2022' && year !== 2022) return false;
-        if (activeReleaseYear === 'vintage' && year >= 2022) return false;
+        if (activeReleaseYear === 'vintage') {
+          const year = parseInt(album.releaseDate.split('-')[0], 10);
+          if (year > 2021) return false;
+        } else {
+          if (!album.releaseDate.startsWith(activeReleaseYear)) return false;
+        }
       }
 
-      // Popularity Filter
       if (activePopularity !== 'all') {
-        if (activePopularity === 'top90' && album.popularityScore < 90) return false;
-        if (activePopularity === 'highRated' && album.rating < 4.9) return false;
+        if (activePopularity === 'top90' && (album.popularityScore ?? 0) < 90) return false;
+        if (activePopularity === 'highRated' && (album.rating ?? 0) < 4.9) return false;
       }
 
       if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase();
-        const matchesTitle = album.title.toLowerCase().includes(query);
-        const matchesArtist = album.artist.toLowerCase().includes(query);
-        const matchesType = album.type.toLowerCase().includes(query);
-        const matchesCategory = album.category ? album.category.toLowerCase().includes(query) : false;
-        if (!matchesTitle && !matchesArtist && !matchesType && !matchesCategory) return false;
+        const q = searchQuery.toLowerCase();
+        const inTitle = album.title.toLowerCase().includes(q);
+        const inArtist = album.artist.toLowerCase().includes(q);
+        const inTag = album.tag?.toLowerCase().includes(q);
+        if (!inTitle && !inArtist && !inTag) return false;
       }
 
       return true;
     }).sort((a, b) => {
-      if (activeSort === 'popular') return b.popularityScore - a.popularityScore;
-      if (activeSort === 'newest') return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
-      if (activeSort === 'alpha-asc') return a.title.localeCompare(b.title);
-      if (activeSort === 'alpha-desc') return b.title.localeCompare(a.title);
-      if (activeSort === 'price-asc') return a.priceUSD - b.priceUSD;
-      if (activeSort === 'price-desc') return b.priceUSD - a.priceUSD;
-      return 0;
+      switch (activeSort) {
+        case 'popular': return (b.popularityScore ?? 0) - (a.popularityScore ?? 0);
+        case 'newest': return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+        case 'alpha-asc': return a.title.localeCompare(b.title);
+        case 'alpha-desc': return b.title.localeCompare(a.title);
+        case 'price-asc': return a.priceUSD - b.priceUSD;
+        case 'price-desc': return b.priceUSD - a.priceUSD;
+        default: return 0;
+      }
     });
-  }, [domainFilteredAlbums, activeCategory, activeArtist, activeType, activeGenre, activeReleaseYear, activePopularity, activeSort, inStockOnly, searchQuery]);
+  }, [
+    domainFilteredAlbums,
+    activeCategory,
+    activeArtist,
+    activeType,
+    activeGenre,
+    activeReleaseYear,
+    activePopularity,
+    activeSort,
+    inStockOnly,
+    searchQuery,
+  ]);
 
-  const hasActiveFilters = activeArtist !== 'all' || activeType !== 'all' || inStockOnly || activeCategory !== 'all' || activeSubCategory !== 'all';
-  const selectedArtistObj = mockArtists.find((a) => a.id === activeArtist);
+  const activeCategoryTitle = useMemo(() => {
+    if (activeCategory === 'all') return 'Archive Catalog';
+    return `${activeCategory} Archive`;
+  }, [activeCategory]);
 
-  const currentSubCatObj = activeConfig.subCategories.find((s) => s.id === activeSubCategory);
-  const activeCategoryTitle = activeSubCategory === 'all' 
-    ? (activeConfig.id === 'classic' ? 'All Products' : activeConfig.name)
-    : (currentSubCatObj?.name || activeConfig.name);
+  const hasActiveFilters =
+    activeCategory !== 'all' ||
+    activeArtist !== 'all' ||
+    activeType !== 'all' ||
+    activeGenre !== 'all' ||
+    activeReleaseYear !== 'all' ||
+    activePopularity !== 'all' ||
+    inStockOnly;
 
-  // Compute domain-specific visual theme class
-  const themeClass = (() => {
-    const isKpop =
-      fandomCategory === 'K-Pop' ||
-      activeCategory === 'K-Pop' ||
-      currentDomain === 'fandom' ||
-      activeSubCategory === 'kpop' ||
-      activeSubCategory === 'kpop_fandom' ||
-      (currentDomain === 'classic' && activeSubCategory === 'kpop');
-    const isAnime =
-      fandomCategory === 'Anime' ||
-      activeCategory === 'Anime' ||
-      activeSubCategory === 'anime' ||
-      activeSubCategory === 'anime_fandom' ||
-      activeSubCategory === 'ghibli' ||
-      activeSubCategory === 'vocaloid' ||
-      (currentDomain === 'art' && (activeSubCategory === 'ghibli' || activeSubCategory === 'all'));
-    if (isKpop) return 'theme-kpop';
-    if (isAnime) return 'theme-anime';
-    return '';
-  })();
-
-  // Custom artist dropdown state
   const [artistDropdownOpen, setArtistDropdownOpen] = useState(false);
-  const artistDropdownRef = useRef<HTMLDivElement>(null);
-
-  // Custom sort dropdown state
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const artistDropdownRef = useRef<HTMLDivElement>(null);
   const sortDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -203,67 +183,43 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
   }, []);
 
   const sortLabels: Record<string, string> = {
-    popular: 'Phổ biến nhất (Hot)',
-    newest: 'Mới nhất (Newest)',
-    'alpha-asc': 'Bảng chữ cái (A → Z)',
-    'alpha-desc': 'Bảng chữ cái (Z → A)',
-    'price-asc': 'Giá: Thấp → Cao',
-    'price-desc': 'Giá: Cao → Thấp',
+    popular: 'Most Popular',
+    newest: 'Newest Drops',
+    'alpha-asc': 'Alphabetical (A → Z)',
+    'alpha-desc': 'Alphabetical (Z → A)',
+    'price-asc': 'Price: Low → High',
+    'price-desc': 'Price: High → Low',
   };
 
   return (
-    <section 
-      id="albums" 
+    <section
+      id="albums"
       style={{
-        backgroundColor: (themeClass === 'theme-anime' || themeClass === 'theme-kpop' || fandomCategory === 'K-Pop') ? 'transparent' : '#ffffff',
-        color: '#0f172a',
-        // Inject CSS variables for card elements
-        '--grid-card-bg': '#ffffff',
-        '--grid-card-border': (themeClass === 'theme-kpop' || fandomCategory === 'K-Pop') ? 'rgba(226, 232, 240, 0.9)' : (themeClass === 'theme-anime' ? 'rgba(63,81,181,0.14)' : '#e2e8f0'),
-        '--grid-text-primary': '#0f172a',
-        '--grid-text-sub': '#475569',
-        '--grid-text-muted': (themeClass === 'theme-kpop' || fandomCategory === 'K-Pop') ? '#64748b' : (themeClass === 'theme-anime' ? '#5c6bc0' : '#94a3b8'),
-        '--grid-accent': themeClass === 'theme-anime' ? '#ff5722' : (themeClass === 'theme-kpop' || fandomCategory === 'K-Pop') ? '#2563eb' : '#000000',
-        '--grid-section-bg': (themeClass === 'theme-anime' || themeClass === 'theme-kpop' || fandomCategory === 'K-Pop') ? 'transparent' : '#ffffff',
-      } as React.CSSProperties}
-      className={`py-16 md:py-24 lg:py-28 w-full domain-section ${themeClass}`}
+        paddingTop: '80px',
+        paddingBottom: '96px',
+      }}
+      className="w-full bg-[#fdfbf7] text-black border-b-4 border-black relative"
     >
       <div 
-        className="max-w-[1440px] mx-auto px-4 sm:px-8"
+        style={{ paddingBottom: '32px' }}
+        className="max-w-[1440px] mx-auto px-4 sm:px-8 pb-12 sm:pb-16"
       >
 
-        {/* ==================== 1. Premium Section Header ==================== */}
+        {/* ==================== 1. EDITORIAL SECTION HEADER ==================== */}
         <div>
-          {/* Top Row: Eyebrow + Categories */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '28px',
-              gap: '24px',
-              flexWrap: 'wrap',
-            }}
-          >
-            {/* Eyebrow label */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="domain-eyebrow-bar" style={{ width: '20px', height: '2px', backgroundColor: '#000', display: 'inline-block', borderRadius: '2px' }} />
-              <span
-                className="domain-eyebrow-text"
-                style={{
-                  fontSize: '10px',
-                  fontWeight: 800,
-                  letterSpacing: '0.22em',
-                  textTransform: 'uppercase',
-                  color: '#94a3b8',
-                }}
-              >
-                Official Store · Certified Charts
+          {/* Top Row: Eyebrow + Subcategories */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-[#ff2e93] border-2 border-black" />
+              <div className="w-12 h-[3px] bg-[#00f0ff]" />
+              <div className="w-3 h-3 bg-[#ffd60a] border-2 border-black" />
+              <span className="font-mono text-xs font-black uppercase tracking-widest text-neutral-800 ml-2">
+                SECTION 02 // ARCHIVE CATALOG &amp; CERTIFIED DROPS
               </span>
             </div>
 
-            {/* Universe Sub-Category Tabs — right-aligned, underline style */}
-            <div className="flex items-center gap-4 sm:gap-5 overflow-x-auto scrollbar-none max-w-full pb-1">
+            {/* Sub-Category Tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none max-w-full pb-1 font-mono text-xs">
               {activeConfig.subCategories.map((sub) => {
                 const isActive = activeSubCategory === sub.id;
                 return (
@@ -271,22 +227,12 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     key={sub.id}
                     onClick={() => selectSubCategory(sub.id)}
                     type="button"
-                    className={`domain-subcategory-tab${isActive ? ' active' : ''}`}
-                    style={{
-                      padding: '0 0 10px 0',
-                      fontSize: '11px',
-                      fontWeight: isActive ? 800 : 600,
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      color: isActive ? '#0f172a' : '#94a3b8',
-                      background: 'none',
-                      border: 'none',
-                      borderBottom: isActive ? '2px solid #0f172a' : '2px solid transparent',
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      transition: 'all 0.2s ease',
-                      fontFamily: activeConfig.fontFamily,
-                    }}
+                    style={{ borderRadius: '0px' }}
+                    className={`px-3.5 py-1.5 font-black uppercase tracking-wider cursor-pointer transition-all border-2 border-black ${
+                      isActive 
+                        ? 'bg-[#ff2e93] text-white shadow-[3px_3px_0px_#000] -translate-y-0.5' 
+                        : 'bg-white text-black shadow-[2px_2px_0px_#000] hover:bg-[#fff9db] hover:shadow-[3px_3px_0px_#000]'
+                    }`}
                   >
                     {sub.name}
                   </button>
@@ -295,83 +241,68 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
             </div>
           </div>
 
-          {/* Section Title */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'space-between',
-              paddingBottom: '28px',
-              borderBottom: '1px solid #f1f5f9',
-              gap: '16px',
-              flexWrap: 'wrap',
-            }}
-          >
-            <h2
-              className="domain-section-title"
-              style={{
-                fontFamily: activeConfig.fontFamily,
-                fontSize: 'clamp(28px, 3.2vw, 48px)',
-                lineHeight: 1.1,
-                fontWeight: 800,
-                color: '#0f172a',
-                letterSpacing: '-0.025em',
-                margin: 0,
-              }}
-            >
-              {activeCategoryTitle}{' '}
-              <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic', fontFamily: 'serif' }}>
-                Collection
-              </em>
-            </h2>
+          {/* Section Title Row */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between pb-8 border-b-4 border-black gap-6">
+            <div>
+              <div className="inline-block bg-[#ffd60a] border-2 border-black px-3 py-1 font-mono text-xs font-black uppercase tracking-wider mb-3 shadow-[2px_2px_0px_#000]">
+                ✦ HANTEO &amp; CIRCLE CHART CERTIFIED COPIES
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-black leading-tight tracking-tight">
+                {activeCategoryTitle} &amp;{' '}
+                <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
+                  Album Drops
+                </em>
+              </h2>
+              <p className="font-sans font-semibold text-xs sm:text-sm text-neutral-700 max-w-xl mt-3 leading-relaxed">
+                Explore official first-press publications, limited photobook editions, signed packaging, and lossless audio teaser preview tracks.
+              </p>
+            </div>
 
-            {/* Result count */}
-            <span
-              className="domain-result-count"
-              style={{
-                fontSize: '13px',
-                color: '#94a3b8',
-                fontWeight: 600,
-                flexShrink: 0,
-                paddingBottom: '6px',
-              }}
-            >
-              <strong style={{ color: '#0f172a', fontWeight: 800, fontSize: '18px' }}>
-                {filteredAlbums.length}
-              </strong>{' '}
-              albums
-            </span>
+            {/* Result count badge */}
+            <div className="font-mono text-xs bg-[#00f0ff] text-black border-2 border-black px-4 py-2 uppercase font-black shadow-[3px_3px_0px_#000] flex items-center gap-2 self-start md:self-end">
+              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-ping" />
+              <span>{filteredAlbums.length} ALBUMS AVAILABLE</span>
+            </div>
           </div>
         </div>
 
-        {/* ==================== 1.5. Dynamic Category Spotlight Banner (NewJeans, BTS, Anime, Gaming, Art) ==================== */}
-        <div className="mt-8 mb-14 md:mb-16">
+        {/* Dynamic Category Spotlight Banner */}
+        <div style={{ marginTop: '36px', marginBottom: '40px' }}>
           <HeroBanner embedded />
         </div>
 
-        {/* ==================== 2. Premium Filter Toolbar (Completely Unboxed / No Outer Button Wrapper) ==================== */}
-        <div
-          className="domain-filter-bar flex items-center justify-between gap-4 flex-wrap w-full mb-10 md:mb-12"
-          style={{
-            background: 'transparent',
-            border: 'none',
-            boxShadow: 'none',
-            padding: 0,
-          }}
+        {/* ==================== 2. FILTER & VIEW CONTROL STATION (Organized & Separated) ==================== */}
+        <div 
+          style={{ borderRadius: '0px', marginTop: '36px', marginBottom: '40px' }}
+          className="w-full bg-white border-3 border-black p-5 sm:p-6 shadow-[6px_6px_0px_#000000] flex flex-col gap-4 font-mono text-xs"
         >
-          {/* Left: Format Segments + Artist + In Stock */}
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap max-w-full">
+          {/* Header Bar */}
+          <div className="flex items-center justify-between pb-3 border-b-2 border-black">
+            <span className="font-black uppercase tracking-wider text-black flex items-center gap-2">
+              <span className="text-base text-[#ff2e93]">★</span> MULTI-DIMENSIONAL CATALOG FILTER STATION
+            </span>
+            {hasActiveFilters && (
+              <button
+                onClick={handleResetFilters}
+                type="button"
+                style={{ borderRadius: '0px' }}
+                className="px-2.5 py-1 bg-[#ff2e93] text-white hover:bg-black font-black uppercase tracking-wider text-[11px] cursor-pointer border-2 border-black shadow-[2px_2px_0px_#000] transition-colors"
+              >
+                [× RESET ALL]
+              </button>
+            )}
+          </div>
 
+          {/* Left: Format Segments + Selects + In Stock */}
+          <div className="flex items-center gap-2.5 flex-wrap max-w-full pb-3 border-b-2 border-neutral-200">
             {/* Segmented Format Control */}
-            <div
-              className="flex items-center bg-white border border-slate-200 rounded-lg sm:rounded-xl p-1 gap-0.5 overflow-x-auto scrollbar-none max-w-full"
-            >
+            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none max-w-full">
               {[
-                { value: 'all', label: 'All' },
-                { value: 'Full Album', label: 'LP/CD' },
-                { value: 'Mini Album', label: 'Mini EP' },
-                { value: 'Limited Kit', label: 'Limited' },
-                { value: 'OST & Vinyl', label: 'Vinyl' },
+                { value: 'all', label: '★ ALL' },
+                { value: 'Full Album', label: 'LP / CD' },
+                { value: 'Mini Album', label: 'MINI EP' },
+                { value: 'Limited Kit', label: 'LIMITED' },
+                { value: 'OST & Vinyl', label: 'VINYL' },
               ].map((fmt) => {
                 const isActive = activeType === fmt.value;
                 return (
@@ -379,20 +310,12 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     key={fmt.value}
                     type="button"
                     onClick={() => setActiveType(fmt.value)}
-                    style={{
-                      padding: '5px 12px',
-                      fontSize: '11px',
-                      fontWeight: 700,
-                      letterSpacing: '0.03em',
-                      borderRadius: '7px',
-                      cursor: 'pointer',
-                      transition: 'all 0.18s ease',
-                      border: 'none',
-                      backgroundColor: isActive ? '#0f172a' : 'transparent',
-                      color: isActive ? '#ffffff' : '#64748b',
-                      boxShadow: isActive ? '0 1px 4px rgba(0,0,0,0.18)' : 'none',
-                      whiteSpace: 'nowrap',
-                    }}
+                    style={{ borderRadius: '0px' }}
+                    className={`px-3 py-1.5 font-black uppercase tracking-wider cursor-pointer transition-all border-2 border-black ${
+                      isActive 
+                        ? 'bg-[#00f0ff] text-black shadow-[2px_2px_0px_#000] -translate-y-0.5' 
+                        : 'bg-white text-black shadow-[1px_1px_0px_#000] hover:bg-[#ecfeff]'
+                    }`}
                   >
                     {fmt.label}
                   </button>
@@ -400,513 +323,596 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
               })}
             </div>
 
-            {/* Separator */}
-            <div style={{ width: '1px', height: '24px', backgroundColor: '#e2e8f0', margin: '0 4px' }} />
-
-            {/* Artist Custom Dropdown */}
-            <div ref={artistDropdownRef} style={{ position: 'relative' }}>
-              {/* Trigger Button */}
+            {/* Artist Dropdown */}
+            <div ref={artistDropdownRef} className="relative">
               <button
                 type="button"
                 onClick={() => setArtistDropdownOpen(!artistDropdownOpen)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '6px 12px',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  letterSpacing: '0.03em',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  border: activeArtist !== 'all' ? '1.5px solid #0f172a' : '1px solid #e2e8f0',
-                  backgroundColor: activeArtist !== 'all' ? '#0f172a' : '#ffffff',
-                  color: activeArtist !== 'all' ? '#ffffff' : '#64748b',
-                  outline: 'none',
-                  transition: 'all 0.15s ease',
-                  whiteSpace: 'nowrap',
-                }}
+                style={{ borderRadius: '0px' }}
+                className="flex items-center gap-2 px-3 py-2 bg-white text-black border-2 border-black font-black uppercase tracking-wider cursor-pointer hover:bg-[#fff9db] shadow-[2px_2px_0px_#000] transition-colors"
               >
-                <span>{activeArtist !== 'all' ? selectedArtistObj?.name : 'Artist'}</span>
-                <ChevronDown size={11} style={{ opacity: 0.6, transform: artistDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }} />
+                <span>
+                  {activeArtist === 'all' 
+                    ? 'ALL ARTISTS' 
+                    : availableArtists.find(a => a.id === activeArtist)?.name || 'ARTIST'}
+                </span>
+                <span className="text-[10px]">▼</span>
               </button>
 
-              {/* Dropdown Panel — ALL MD style */}
               {artistDropdownOpen && (
                 <>
-                  {/* Backdrop */}
-                  <div
-                    style={{ position: 'fixed', inset: 0, zIndex: 40, backgroundColor: 'transparent' }}
-                    onClick={() => setArtistDropdownOpen(false)}
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      top: '100%',
-                      marginTop: '8px',
-                      minWidth: '200px',
-                      maxHeight: '320px',
-                      overflowY: 'auto',
-                      backgroundColor: '#ffffff',
-                      border: '1.5px solid #000000',
-                      borderRadius: '0px',
-                      padding: '18px 20px',
-                      boxShadow: '0 16px 36px rgba(0,0,0,0.15)',
-                      zIndex: 50,
-                    }}
+                  <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setArtistDropdownOpen(false)} />
+                  <div 
+                    style={{ borderRadius: '0px' }}
+                    className="absolute left-0 top-full mt-1 w-64 bg-white border-2 border-black p-3 z-50 max-h-72 overflow-y-auto space-y-1 font-mono shadow-[4px_4px_0px_#000]"
                   >
-                    {/* Caret */}
-                    <div style={{ position: 'absolute', top: '-8px', left: '30px', width: 0, height: 0, borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderBottom: '8px solid #000000', zIndex: 51 }} />
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      {/* All Artists */}
+                    <button
+                      type="button"
+                      onClick={() => { handleArtistChange('all'); setArtistDropdownOpen(false); }}
+                      className="w-full text-left p-1.5 text-xs font-black uppercase hover:bg-[#ffd60a] hover:text-black cursor-pointer transition-colors"
+                    >
+                      ALL ARTISTS
+                    </button>
+                    {availableArtists.map((artist) => (
                       <button
+                        key={artist.id}
                         type="button"
-                        onClick={() => { handleArtistChange('all'); setArtistDropdownOpen(false); }}
-                        style={{
-                          textAlign: 'left',
-                          fontWeight: activeArtist === 'all' ? 900 : 800,
-                          fontSize: '13px',
-                          color: activeArtist === 'all' ? '#000000' : '#000000',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.03em',
-                          background: 'none',
-                          border: 'none',
-                          padding: '2px 0',
-                          cursor: 'pointer',
-                          transition: 'color 0.15s ease',
-                          display: 'block',
-                          width: '100%',
-                          textDecoration: activeArtist === 'all' ? 'underline' : 'none',
-                          textDecorationThickness: '2px',
-                        }}
-                        className="hover:text-slate-500"
+                        onClick={() => { handleArtistChange(artist.id); setArtistDropdownOpen(false); }}
+                        className={`w-full text-left p-1.5 text-xs uppercase cursor-pointer transition-colors ${
+                          activeArtist === artist.id ? 'bg-[#ff2e93] text-white font-black' : 'hover:bg-[#ffd60a] hover:text-black font-bold'
+                        }`}
                       >
-                        All Artists
+                        {artist.name}
                       </button>
-
-                      {filteredArtists.map((artist) => {
-                        const isSelected = activeArtist === artist.id;
-                        return (
-                          <button
-                            key={artist.id}
-                            type="button"
-                            onClick={() => { handleArtistChange(artist.id); setArtistDropdownOpen(false); }}
-                            style={{
-                              textAlign: 'left',
-                              fontWeight: isSelected ? 900 : 800,
-                              fontSize: '13px',
-                              color: '#000000',
-                              textTransform: 'uppercase',
-                              letterSpacing: '0.03em',
-                              background: 'none',
-                              border: 'none',
-                              padding: '2px 0',
-                              cursor: 'pointer',
-                              transition: 'color 0.15s ease',
-                              display: 'block',
-                              width: '100%',
-                              textDecoration: isSelected ? 'underline' : 'none',
-                              textDecorationThickness: '2px',
-                            }}
-                            className="hover:text-slate-500"
-                          >
-                            {artist.name}
-                          </button>
-                        );
-                      })}
-                    </div>
+                    ))}
                   </div>
                 </>
               )}
             </div>
 
-            {/* Genre Multi-level Filter */}
+            {/* Genre Filter */}
             <select
               value={activeGenre}
               onChange={(e) => setActiveGenre(e.target.value)}
-              className="text-[11px] font-bold py-1.5 px-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer"
-              title="Lọc theo Thể loại âm nhạc (Genre)"
+              style={{ borderRadius: '0px' }}
+              className="py-2 px-3 border-2 border-black bg-white text-black font-black uppercase tracking-wider focus:outline-none cursor-pointer shadow-[2px_2px_0px_#000] hover:bg-[#fff9db]"
             >
-              <option value="all">Tất cả Thể Loại (Genre)</option>
-              <option value="pop">Pop & Dance</option>
-              <option value="hip-hop">Hip-Hop & Rap</option>
-              <option value="ballad">Ballad & R&B</option>
-              <option value="ost">OST & Soundtrack</option>
-              <option value="rock">Rock & Band</option>
-              <option value="cyberpunk">Cyberpunk / EDM</option>
+              <option value="all">ALL GENRES</option>
+              <option value="pop">POP &amp; DANCE</option>
+              <option value="hip-hop">HIP-HOP</option>
+              <option value="ballad">BALLAD</option>
+              <option value="ost">OST</option>
+              <option value="rock">ROCK</option>
+              <option value="cyberpunk">ELECTRONIC</option>
             </select>
 
             {/* Release Year Filter */}
             <select
               value={activeReleaseYear}
               onChange={(e) => setActiveReleaseYear(e.target.value)}
-              className="text-[11px] font-bold py-1.5 px-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer"
-              title="Lọc theo Năm phát hành"
+              style={{ borderRadius: '0px' }}
+              className="py-2 px-3 border-2 border-black bg-white text-black font-black uppercase tracking-wider focus:outline-none cursor-pointer shadow-[2px_2px_0px_#000] hover:bg-[#fff9db]"
             >
-              <option value="all">Năm Phát Hành (Tất cả)</option>
-              <option value="2024">2024 (Mới nhất)</option>
+              <option value="all">YEAR: ALL</option>
+              <option value="2024">2024 (LATEST)</option>
               <option value="2023">2023</option>
               <option value="2022">2022</option>
-              <option value="vintage">2021 trở về trước</option>
-            </select>
-
-            {/* Popularity Filter */}
-            <select
-              value={activePopularity}
-              onChange={(e) => setActivePopularity(e.target.value)}
-              className="text-[11px] font-bold py-1.5 px-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer"
-              title="Lọc theo Độ phổ biến"
-            >
-              <option value="all">Độ Phổ Biến (Tất cả)</option>
-              <option value="top90">🔥 Siêu Hot (Score 90+)</option>
-              <option value="highRated">⭐ Đánh giá cao nhất (4.9★+)</option>
+              <option value="vintage">2021 &amp; OLDER</option>
             </select>
 
             {/* In Stock Toggle */}
             <button
               type="button"
               onClick={() => setInStockOnly(!inStockOnly)}
-              style={{
-                padding: '6px 12px',
-                fontSize: '11px',
-                fontWeight: 700,
-                letterSpacing: '0.03em',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                border: inStockOnly ? '1.5px solid #15803d' : '1px solid #e2e8f0',
-                backgroundColor: inStockOnly ? '#15803d' : '#ffffff',
-                color: inStockOnly ? '#ffffff' : '#64748b',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
+              style={{ borderRadius: '0px' }}
+              className={`px-3 py-2 border-2 border-black font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all ${
+                inStockOnly 
+                  ? 'bg-[#10b981] text-white shadow-[2px_2px_0px_#000]' 
+                  : 'bg-white text-black shadow-[1px_1px_0px_#000] hover:bg-neutral-100'
+              }`}
             >
-              <span
-                style={{
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: '50%',
-                  backgroundColor: inStockOnly ? '#bbf7d0' : '#cbd5e1',
-                  display: 'inline-block',
-                  flexShrink: 0,
-                }}
-              />
-              In Stock
+              <span className={`w-2 h-2 ${inStockOnly ? 'bg-white' : 'bg-black'}`} />
+              <span>IN STOCK</span>
             </button>
-
-            {/* Reset */}
-            {hasActiveFilters && (
-              <button
-                onClick={handleResetFilters}
-                type="button"
-                style={{
-                  padding: '6px 10px',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  border: '1px solid #fecaca',
-                  backgroundColor: 'transparent',
-                  color: '#ef4444',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <X size={10} />
-                Clear
-              </button>
-            )}
           </div>
 
-          {/* Right: Sort */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-            {/* Sort — ALL MD style custom dropdown */}
-            <div ref={sortDropdownRef} style={{ position: 'relative' }}>
-              {/* Trigger */}
-              <button
-                type="button"
-                onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '6px 12px',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  letterSpacing: '0.03em',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  border: '1px solid #e2e8f0',
-                  backgroundColor: '#ffffff',
-                  color: '#334155',
-                  outline: 'none',
-                  transition: 'all 0.15s ease',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <span>{sortLabels[activeSort]}</span>
-                <ChevronDown size={11} style={{ opacity: 0.6, transform: sortDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }} />
-              </button>
-
-              {/* Sort Panel — ALL MD style */}
-              {sortDropdownOpen && (
-                <>
-                  <div
-                    style={{ position: 'fixed', inset: 0, zIndex: 40, backgroundColor: 'transparent' }}
-                    onClick={() => setSortDropdownOpen(false)}
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      top: '100%',
-                      marginTop: '8px',
-                      minWidth: '160px',
-                      backgroundColor: '#ffffff',
-                      border: '1.5px solid #000000',
-                      borderRadius: '0px',
-                      padding: '18px 20px',
-                      boxShadow: '0 16px 36px rgba(0,0,0,0.15)',
-                      zIndex: 50,
-                    }}
+          {/* Bottom Row: Layout Switcher & Sort */}
+          <div className="flex items-center justify-between gap-4 flex-wrap w-full font-mono text-xs pt-1">
+            {/* Layout Mode Switcher */}
+            <div className="flex items-center gap-2">
+              <span className="font-black text-[11px] text-neutral-600 uppercase tracking-wider">
+                LAYOUT VIEW:
+              </span>
+              <div className="flex items-center border-2 border-black p-0.5 bg-white gap-0.5 shadow-[2px_2px_0px_#000]">
+                {(['bento', 'masonry', 'grid'] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => setAlbumLayoutMode(mode)}
+                    style={{ borderRadius: '0px' }}
+                    className={`px-3 py-1 font-black uppercase tracking-wider cursor-pointer transition-colors ${
+                      albumLayoutMode === mode ? 'bg-[#ffd60a] text-black' : 'bg-white text-black hover:bg-neutral-100'
+                    }`}
                   >
-                    {/* Caret */}
-                    <div style={{ position: 'absolute', top: '-8px', right: '24px', width: 0, height: 0, borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderBottom: '8px solid #000000', zIndex: 51 }} />
+                    <span>{mode.toUpperCase()}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      {(['popular', 'newest', 'alpha-asc', 'alpha-desc', 'price-asc', 'price-desc'] as const).map((val) => (
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2">
+              <span className="font-black text-[11px] text-neutral-600 uppercase tracking-wider">
+                SORT BY:
+              </span>
+              <div ref={sortDropdownRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+                  style={{ borderRadius: '0px' }}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-white text-black border-2 border-black font-black uppercase tracking-wider cursor-pointer hover:bg-[#fff9db] shadow-[2px_2px_0px_#000] transition-colors"
+                >
+                  <span>{sortLabels[activeSort]}</span>
+                  <span className="text-[10px]">▼</span>
+                </button>
+
+                {sortDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setSortDropdownOpen(false)} />
+                    <div 
+                      style={{ borderRadius: '0px' }}
+                      className="absolute right-0 top-full mt-1 w-52 bg-white border-2 border-black p-2 z-50 space-y-1 font-mono text-xs shadow-[4px_4px_0px_#000]"
+                    >
+                      {Object.entries(sortLabels).map(([key, label]) => (
                         <button
-                          key={val}
+                          key={key}
                           type="button"
-                          onClick={() => { setActiveSort(val); setSortDropdownOpen(false); }}
-                          style={{
-                            textAlign: 'left',
-                            fontWeight: activeSort === val ? 900 : 800,
-                            fontSize: '13px',
-                            color: '#000000',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.03em',
-                            background: 'none',
-                            border: 'none',
-                            padding: '2px 0',
-                            cursor: 'pointer',
-                            transition: 'color 0.15s ease',
-                            display: 'block',
-                            width: '100%',
-                            textDecoration: activeSort === val ? 'underline' : 'none',
-                            textDecorationThickness: '2px',
-                          }}
-                          className="hover:text-slate-500"
+                          onClick={() => { setActiveSort(key as any); setSortDropdownOpen(false); }}
+                          className={`w-full text-left p-2 uppercase cursor-pointer transition-colors ${
+                            activeSort === key ? 'bg-[#ff2e93] text-white font-black' : 'hover:bg-[#ffd60a] hover:text-black font-bold'
+                          }`}
                         >
-                          {sortLabels[val]}
+                          {label}
                         </button>
                       ))}
                     </div>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
+        {/* ==================== 3. PRODUCT SHOWCASE (Bento / Masonry / Grid) ==================== */}
+        {albumLayoutMode === 'bento' && filteredAlbums.length > 0 ? (
+          /* ASYMMETRICAL BENTO GRID LAYOUT (Strict 0px, Minimalist Monochrome) */
+          <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+            {/* Item 0: Major Bento Spotlight Hero */}
+            {filteredAlbums[0] && (() => {
+              const album = filteredAlbums[0];
+              const isFav = isWishlisted(album.id);
 
-
-        {/* ==================== 3. Active Filters Indicator Pill Row ==================== */}
-        {(activeArtist !== 'all' || activeType !== 'all') && (
-          <div className="flex items-center gap-2 mb-6 flex-wrap">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Active Filters:</span>
-            {activeArtist !== 'all' && (
-              <span className="bg-black text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-                <span>{selectedArtistObj?.name || activeArtist}</span>
-                <button 
-                  onClick={() => handleArtistChange('all')}
-                  className="hover:text-slate-300 cursor-pointer"
-                  type="button"
+              return (
+                <div
+                  key={album.id}
+                  onClick={() => onSelectAlbum(album)}
+                  style={{ borderRadius: '0px' }}
+                  className="col-span-1 sm:col-span-2 lg:col-span-2 bg-white border-2 border-black p-5 sm:p-6 flex flex-col justify-between cursor-pointer group relative shadow-[5px_5px_0px_#000000] hover:shadow-[7px_7px_0px_#ff2e93] hover:-translate-y-0.5 transition-all duration-100 min-w-0 overflow-hidden"
                 >
-                  <X size={12} />
-                </button>
-              </span>
-            )}
-            {activeType !== 'all' && (
-              <span className="bg-slate-800 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-                <span>{activeType}</span>
-                <button 
-                  onClick={() => setActiveType('all')}
-                  className="hover:text-slate-300 cursor-pointer"
-                  type="button"
-                >
-                  <X size={12} />
-                </button>
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* ==================== 4. Product Showcase Grid (2 Columns on Mobile, 4 on Desktop) ==================== */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mt-8">
-          {filteredAlbums.map((album) => {
-            const isFav = isWishlisted(album.id);
-            const isCurrentPlaying = isPlaying && currentAlbum?.id === album.id;
-
-            return (
-              <div
-                key={album.id}
-                onClick={() => onSelectAlbum(album)}
-                className="domain-card group bg-white rounded-xl sm:rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 md:p-6 flex flex-col justify-between hover:shadow-xl hover:border-black hover:-translate-y-1.5 transition-all duration-300 cursor-pointer"
-              >
-                {/* 1. Cover Artwork Container */}
-                <div>
-                  <div className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-slate-100 mb-3 sm:mb-4 shadow-xs">
-                    {/* Full Color Album Art with Gentle Hover Zoom */}
-                    <img
-                      src={album.coverImage}
-                      alt={album.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                      loading="lazy"
-                    />
-
-                    {/* Top-Left Tag Pill Badge */}
-                    <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10">
-                      <span className="bg-black/85 backdrop-blur-xs text-white text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-2 sm:px-2.5 py-0.5 sm:py-1 rounded sm:rounded-md shadow-xs">
-                        {album.tag || 'Official'}
-                      </span>
-                    </div>
-
-                    {/* Top-Right Wishlist Heart Button */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleWishlist(album);
-                      }}
-                      className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-sm flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
-                      title="Add to Wishlist"
-                      type="button"
+                  <div className="min-w-0">
+                    {/* Top: Album Cover Hero Banner */}
+                    <div 
+                      style={{ borderRadius: '0px' }}
+                      className="relative w-full aspect-video sm:aspect-[16/10] overflow-hidden bg-neutral-100 mb-4 border-2 border-black shadow-[3px_3px_0px_#000000]"
                     >
-                      <Heart size={13} className={isFav ? 'fill-red-500 text-red-500' : ''} />
-                    </button>
-
-                    {/* Audio Playing Pill */}
-                    {isCurrentPlaying && (
-                      <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 bg-black text-white px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-wider flex items-center gap-1 shadow-lg">
-                        <Volume2 size={10} className="animate-pulse" />
-                        <span>Playing</span>
+                      <img
+                        src={album.coverImage}
+                        alt={album.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
+                      />
+                      <div className="absolute top-2 left-2 z-10">
+                        <span 
+                          style={{ borderRadius: '0px' }}
+                          className="bg-[#ff2e93] text-white text-[9px] font-mono font-black uppercase tracking-widest px-2.5 py-1 border-2 border-black shadow-[2px_2px_0px_#000000]"
+                        >
+                          ★ SPOTLIGHT // #01
+                        </span>
                       </div>
-                    )}
 
-                    {/* Hover Action Overlay: Quick Play Teaser & Details */}
-                    <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 sm:gap-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleWishlist(album);
+                        }}
+                        style={{ borderRadius: '0px' }}
+                        className="absolute top-2 right-2 z-10 px-2 py-1 bg-[#00f0ff] hover:bg-[#38bdf8] text-black border-2 border-black font-mono text-[10px] font-black transition-all cursor-pointer shadow-[2px_2px_0px_#000000]"
+                        title="Add to Wishlist"
+                        type="button"
+                      >
+                        {isFav ? '[SAVED]' : '[SAVE]'}
+                      </button>
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           playTrack(album);
                         }}
-                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white hover:bg-black text-black hover:text-white flex items-center justify-center shadow-lg transition-colors cursor-pointer"
-                        title="Listen to Preview"
+                        style={{ borderRadius: '0px' }}
+                        className="absolute bottom-2 right-2 z-10 px-3 py-1.5 bg-[#ffd60a] hover:bg-[#fde047] text-black border-2 border-black font-mono text-[10px] font-black tracking-wider transition-all cursor-pointer shadow-[2px_2px_0px_#000000]"
+                        title="Play Preview"
                         type="button"
                       >
-                        <Play size={13} style={{ fill: isCurrentPlaying ? '#ffffff' : 'currentColor' }} />
+                        [▶ PLAY]
                       </button>
+                    </div>
+
+                    {/* Metadata & Title */}
+                    <div className="flex items-center gap-2 text-xs font-mono font-black uppercase tracking-widest text-[#ff2e93] mb-1.5 truncate">
+                      <span>{album.artist}</span>
+                      <span>//</span>
+                      <span>{album.type}</span>
+                      <span>//</span>
+                      <span className="text-neutral-600">{album.releaseDate.split('-')[0]}</span>
+                    </div>
+
+                    <h4 className="font-sans text-xl sm:text-2xl font-black uppercase text-black line-clamp-2 leading-tight mb-2">
+                      {album.title}
+                    </h4>
+
+                    <p className="font-sans font-medium text-xs sm:text-sm text-neutral-700 line-clamp-2 leading-relaxed mb-4">
+                      {album.description || 'Authentic First-Press publication including complete photobook and limited collectible photocards.'}
+                    </p>
+                  </div>
+
+                  {/* Price & CTA Button */}
+                  <div className="pt-3 border-t-2 border-black flex items-center justify-between gap-3 font-mono mt-auto">
+                    <div>
+                      <div className="text-xl font-black text-black tracking-tight">
+                        {formatPrice(album.priceUSD, album.priceVND)}
+                      </div>
+                      <span className="text-[10px] text-[#ff2e93] font-black uppercase tracking-widest block">
+                        ★ HANTEO CERTIFIED
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(album, album.versions[0]?.name);
+                      }}
+                      style={{ borderRadius: '0px' }}
+                      className="px-6 py-3 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-xs font-black uppercase tracking-widest transition-all duration-100 cursor-pointer shadow-[3px_3px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                      type="button"
+                    >
+                      [+ PRE-ORDER]
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Remaining Bento Cards (Vibrant Y2K Pop, Rich Metadata, Zero Dead Space) */}
+            {filteredAlbums.slice(1).map((album) => {
+              const isFav = isWishlisted(album.id);
+
+              return (
+                <div
+                  key={album.id}
+                  onClick={() => onSelectAlbum(album)}
+                  style={{ borderRadius: '0px' }}
+                  className="group bg-white border-2 border-black p-4 sm:p-5 flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] hover:-translate-y-1 transition-all duration-100 cursor-pointer"
+                >
+                  <div className="flex-1 flex flex-col">
+                    {/* Album Cover Container */}
+                    <div 
+                      style={{ borderRadius: '0px' }}
+                      className="relative w-full aspect-square overflow-hidden bg-neutral-100 mb-3 border-2 border-black shadow-[2px_2px_0px_#000]"
+                    >
+                      <img
+                        src={album.coverImage}
+                        alt={album.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
+                        loading="lazy"
+                      />
+                      <div className="absolute top-2 left-2 z-10">
+                        <span 
+                          style={{ borderRadius: '0px' }}
+                          className="bg-[#ffd60a] text-black text-[9px] font-mono font-black uppercase tracking-widest px-2 py-0.5 border border-black shadow-[1px_1px_0px_#000]"
+                        >
+                          {album.tag || 'Official'}
+                        </span>
+                      </div>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          onSelectAlbum(album);
+                          toggleWishlist(album);
                         }}
-                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white hover:bg-black text-black hover:text-white flex items-center justify-center shadow-lg transition-colors cursor-pointer"
-                        title="View Details"
+                        style={{ borderRadius: '0px' }}
+                        className="absolute top-2 right-2 z-10 px-2 py-0.5 bg-[#00f0ff] hover:bg-[#38bdf8] text-black border border-black font-mono text-[9px] font-black transition-all cursor-pointer shadow-[1px_1px_0px_#000]"
+                        title="Add to Wishlist"
                         type="button"
                       >
-                        <Eye size={13} />
+                        {isFav ? '[SAVED]' : '[SAVE]'}
                       </button>
                     </div>
+
+                    {/* Artist & Year */}
+                    <div className="flex items-center justify-between mb-1 font-mono text-neutral-500">
+                      <span className="text-[10px] font-black uppercase tracking-widest truncate max-w-[70%] text-[#ff2e93]">
+                        {album.artist}
+                      </span>
+                      <span className="text-[10px] font-bold text-neutral-600">{album.releaseDate.split('-')[0]}</span>
+                    </div>
+
+                    {/* Album Title */}
+                    <h4 className="font-sans text-base sm:text-lg font-black uppercase leading-snug line-clamp-1 mb-1 text-black">
+                      {album.title}
+                    </h4>
+
+                    {/* Primary Inclusions */}
+                    <div className="font-mono text-xs font-bold text-neutral-600 line-clamp-1 mb-2">
+                      {album.type} • {album.inclusions?.[0] || 'Official Publication'}
+                    </div>
+
+                    {/* Rich Specification Panel: Eliminates empty gap */}
+                    <div className="bg-[#ecfeff] border-2 border-black p-2.5 my-2 space-y-1 font-mono text-[10px] shadow-[1px_1px_0px_#000]">
+                      <div className="flex items-center justify-between text-neutral-700">
+                        <span className="font-black text-[#ff2e93]">INCLUDES:</span>
+                        <span className="text-black font-bold truncate max-w-[125px]">
+                          {album.inclusions?.[1] || album.inclusions?.[0] || 'CD + Photobook'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-neutral-700">
+                        <span className="font-black text-[#ff2e93]">EDITION:</span>
+                        <span className="text-[#ff2e93] font-black uppercase">FIRST-PRESS</span>
+                      </div>
+                      <div className="flex items-center justify-between text-neutral-700">
+                        <span className="font-black text-[#ff2e93]">RATING:</span>
+                        <span className="text-black font-bold">★ {album.rating ? album.rating.toFixed(1) : '4.9'} ({album.reviewCount || 120})</span>
+                      </div>
+                    </div>
+
+                    {/* Stock Status Badges */}
+                    <div className="flex items-center gap-1.5 flex-wrap my-1 font-mono text-[9px]">
+                      <span className="px-1.5 py-0.5 bg-[#ecfeff] text-[#0284c7] border border-[#0284c7] font-black">
+                        {(album.stock ?? 0) > 0 ? `IN STOCK (${album.stock})` : 'BACKORDER'}
+                      </span>
+                      <span className="px-1.5 py-0.5 bg-[#fefce8] text-[#ca8a04] border border-[#ca8a04] font-black">
+                        HANTEO CERTIFIED
+                      </span>
+                    </div>
+
+                    {/* Description Summary */}
+                    <p className="font-sans font-medium text-[11px] text-neutral-600 leading-snug line-clamp-2 mt-1 mb-2">
+                      {album.description || 'Authentic collector publication with complete photobook and limited photocards.'}
+                    </p>
                   </div>
 
-                  {/* 2. Metadata Section */}
-                  <div className="flex items-center justify-between mb-1 sm:mb-1.5">
-                    <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 truncate max-w-[70%]">
+                  {/* Price & CTA Button */}
+                  <div className="flex items-center justify-between mt-auto pt-3 border-t-2 border-black gap-2 font-mono">
+                    <div>
+                      <div className="text-base font-black tracking-tight truncate text-black">
+                        {formatPrice(album.priceUSD, album.priceVND)}
+                      </div>
+                      <span className="text-[9px] text-[#10b981] font-bold block uppercase tracking-wider">
+                        READY TO SHIP
+                      </span>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(album, album.versions[0]?.name);
+                      }}
+                      style={{ borderRadius: '0px' }}
+                      className="px-3.5 py-2 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer shrink-0 shadow-[2px_2px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                      type="button"
+                      title="Pre-Order"
+                    >
+                      [+ BAG]
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : albumLayoutMode === 'masonry' ? (
+          /* MASONRY WATERFALL LAYOUT */
+          <div className="mt-8 sm:mt-12 columns-2 sm:columns-3 lg:columns-4 gap-6 space-y-6">
+            {filteredAlbums.map((album, idx) => {
+              const isFav = isWishlisted(album.id);
+              const aspectClass = idx % 3 === 0 ? 'aspect-[3/4]' : idx % 3 === 1 ? 'aspect-square' : 'aspect-[4/5]';
+
+              return (
+                <div
+                  key={album.id}
+                  onClick={() => onSelectAlbum(album)}
+                  style={{ borderRadius: '0px' }}
+                  className="break-inside-avoid bg-white border-2 border-black p-5 flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
+                >
+                  <div 
+                    style={{ borderRadius: '0px' }}
+                    className={`relative w-full ${aspectClass} overflow-hidden bg-neutral-100 mb-3 border-2 border-black shadow-[2px_2px_0px_#000]`}
+                  >
+                    <img
+                      src={album.coverImage}
+                      alt={album.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
+                      loading="lazy"
+                    />
+                    <div className="absolute top-2 left-2 z-10">
+                      <span 
+                        style={{ borderRadius: '0px' }}
+                        className="bg-[#ffd60a] text-black text-[9px] font-mono font-black uppercase tracking-widest px-2 py-0.5 border border-black shadow-[1px_1px_0px_#000]"
+                      >
+                        {album.tag || 'Official'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="font-mono text-[10px] font-black uppercase tracking-widest text-[#ff2e93] block">
                       {album.artist}
                     </span>
-                    <span className="text-[8px] sm:text-[10px] text-slate-400 font-semibold shrink-0">
-                      {album.releaseDate.split('-')[0]}
-                    </span>
+                    <h4 className="font-sans text-base font-black line-clamp-1 mt-0.5 text-black">
+                      {album.title}
+                    </h4>
                   </div>
 
-                  {/* Album Title */}
-                  <h4 
-                    style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-                    className="text-xs sm:text-base font-bold text-slate-900 group-hover:text-black line-clamp-1 leading-snug mb-1"
-                    title={album.title}
-                  >
-                    {album.title}
-                  </h4>
-
-                  {/* Format & Highlights Tag */}
-                  <div className="text-[10px] sm:text-xs text-slate-500 mb-1.5 line-clamp-1">
-                    {album.type} • {album.inclusions?.[0] || 'Sealed Official Copy'}
-                  </div>
-                </div>
-
-                {/* 3. Bottom Row: Price & Pre-Order Button */}
-                <div className="flex items-center justify-between mt-3.5 sm:mt-5 pt-3 sm:pt-4 border-t border-slate-100 gap-2">
-                  <div className="min-w-0">
-                    <div className="text-xs sm:text-base font-black text-slate-900 tracking-tight truncate">
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t-2 border-black font-mono">
+                    <span className="text-sm font-black text-black">
                       {formatPrice(album.priceUSD, album.priceVND)}
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(album, album.versions[0]?.name);
+                      }}
+                      style={{ borderRadius: '0px' }}
+                      className="px-3 py-1 border-2 border-black bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black font-mono text-xs font-black cursor-pointer shadow-[2px_2px_0px_#000] transition-colors"
+                      type="button"
+                    >
+                      [+ BAG]
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          /* STANDARD CARD GRID LAYOUT */
+          <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredAlbums.map((album) => {
+              const isFav = isWishlisted(album.id);
+
+              return (
+                <div
+                  key={album.id}
+                  onClick={() => onSelectAlbum(album)}
+                  style={{ borderRadius: '0px' }}
+                  className="group bg-white border-2 border-black p-4 sm:p-5 flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                >
+                  <div className="flex-1 flex flex-col">
+                    <div 
+                      style={{ borderRadius: '0px' }}
+                      className="relative w-full aspect-square overflow-hidden bg-neutral-100 mb-3 border-2 border-black shadow-[2px_2px_0px_#000]"
+                    >
+                      <img
+                        src={album.coverImage}
+                        alt={album.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
+                        loading="lazy"
+                      />
+                      <div className="absolute top-2 left-2 z-10">
+                        <span 
+                          style={{ borderRadius: '0px' }}
+                          className="bg-[#ffd60a] text-black text-[9px] font-mono font-black uppercase tracking-widest px-2 py-0.5 border border-black shadow-[1px_1px_0px_#000]"
+                        >
+                          {album.tag || 'Official'}
+                        </span>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleWishlist(album);
+                        }}
+                        style={{ borderRadius: '0px' }}
+                        className="absolute top-2 right-2 z-10 px-2 py-0.5 bg-[#ecfeff] hover:bg-[#00f0ff] text-black border-2 border-black font-mono text-[9px] font-black shadow-[1px_1px_0px_#000] transition-colors cursor-pointer"
+                        title="Add to Wishlist"
+                        type="button"
+                      >
+                        {isFav ? '★ SAVED' : '♥ SAVE'}
+                      </button>
                     </div>
-                    {album.stock <= 0 ? (
-                      <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-wider text-red-600 block">
-                        Sold Out
+
+                    <div className="flex items-center justify-between mb-1 font-mono text-neutral-600">
+                      <span className="text-[10px] font-black uppercase tracking-widest truncate max-w-[70%] text-[#ff2e93]">
+                        {album.artist}
                       </span>
-                    ) : (
-                      <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-wider text-emerald-600 block">
-                        100% Certified
+                      <span className="text-[10px] font-bold text-neutral-600">{album.releaseDate.split('-')[0]}</span>
+                    </div>
+
+                    <h4 className="font-sans text-base font-black uppercase leading-snug line-clamp-1 mb-1 text-black">
+                      {album.title}
+                    </h4>
+                    <div className="font-mono text-xs font-bold text-neutral-600 mb-2 line-clamp-1">
+                      {album.type} • {album.inclusions?.[0] || 'Sealed Official Copy'}
+                    </div>
+
+                    {/* Rich Specification Panel */}
+                    <div className="bg-[#ecfeff] border-2 border-black p-2.5 my-2 space-y-1 font-mono text-[10px] shadow-[1px_1px_0px_#000]">
+                      <div className="flex items-center justify-between text-neutral-700">
+                        <span className="font-black text-[#ff2e93]">INCLUDES:</span>
+                        <span className="text-black font-bold truncate max-w-[125px]">
+                          {album.inclusions?.[1] || album.inclusions?.[0] || 'CD + Photobook'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-neutral-700">
+                        <span className="font-black text-[#ff2e93]">EDITION:</span>
+                        <span className="text-[#ff2e93] font-black uppercase">FIRST-PRESS</span>
+                      </div>
+                      <div className="flex items-center justify-between text-neutral-700">
+                        <span className="font-black text-[#ff2e93]">RATING:</span>
+                        <span className="text-black font-bold">★ {album.rating ? album.rating.toFixed(1) : '4.9'} ({album.reviewCount || 120})</span>
+                      </div>
+                    </div>
+
+                    {/* Stock Status Badges */}
+                    <div className="flex items-center gap-1.5 flex-wrap my-1 font-mono text-[9px]">
+                      <span className="px-1.5 py-0.5 bg-[#ecfeff] text-[#0284c7] border border-[#0284c7] font-black">
+                        {(album.stock ?? 0) > 0 ? `IN STOCK (${album.stock})` : 'BACKORDER'}
                       </span>
-                    )}
+                      <span className="px-1.5 py-0.5 bg-[#fefce8] text-[#ca8a04] border border-[#ca8a04] font-black">
+                        HANTEO CERTIFIED
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Direct Action Button on Card */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addToCart(album, album.versions[0]?.name);
-                    }}
-                    disabled={album.stock <= 0}
-                    style={{ color: '#ffffff' }}
-                    className="domain-card-btn-primary bg-black hover:bg-slate-800 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full flex items-center gap-1.5 transition-all disabled:opacity-40 cursor-pointer shadow-xs shrink-0"
-                    type="button"
-                  >
-                    <ShoppingCart size={12} style={{ color: '#ffffff' }} />
-                    <span style={{ color: '#ffffff' }} className="hidden min-[420px]:inline">Pre-Order</span>
-                    <span style={{ color: '#ffffff' }} className="min-[420px]:hidden">+</span>
-                  </button>
+                  <div className="flex items-center justify-between mt-auto pt-3 border-t-2 border-black gap-2 font-mono">
+                    <div>
+                      <div className="text-base font-black tracking-tight truncate text-black">
+                        {formatPrice(album.priceUSD, album.priceVND)}
+                      </div>
+                      <span className="text-[9px] text-[#10b981] font-bold block uppercase tracking-wider">
+                        READY TO SHIP
+                      </span>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(album, album.versions[0]?.name);
+                      }}
+                      style={{ borderRadius: '0px' }}
+                      className="px-3.5 py-2 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000] transition-colors cursor-pointer shrink-0"
+                      type="button"
+                    >
+                      [+ PRE-ORDER]
+                    </button>
+                  </div>
                 </div>
-
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* Empty State */}
         {filteredAlbums.length === 0 && (
-          <div className="text-center py-20 px-6 bg-slate-50 border border-dashed border-slate-200 rounded-2xl mt-8">
-            <p 
-              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-              className="text-2xl font-bold text-slate-800 italic mb-2"
-            >
-              No albums match this filter.
+          <div 
+            style={{ borderRadius: '0px' }}
+            className="text-center py-20 px-6 bg-white border-3 border-black shadow-[6px_6px_0px_#000] mt-8"
+          >
+            <p className="font-sans text-2xl font-black text-black mb-2 uppercase">
+              NO ALBUMS MATCH THIS FILTER.
             </p>
-            <p className="text-xs text-slate-500 mb-6">
-              Try resetting your category or artist filter.
+            <p className="font-mono text-xs text-neutral-600 uppercase tracking-widest mb-6">
+              Try resetting your category or artist parameters.
             </p>
             <button
               onClick={handleResetFilters}
-              className="bg-black hover:opacity-90 text-white text-xs font-bold uppercase tracking-widest px-6 py-2.5 rounded-full cursor-pointer"
+              style={{ borderRadius: '0px' }}
+              className="bg-[#ff2e93] hover:bg-[#e11d48] text-white border-2 border-black text-xs font-mono font-black uppercase tracking-widest px-8 py-3.5 cursor-pointer shadow-[3px_3px_0px_#000] transition-all"
               type="button"
             >
-              Reset All Filters
+              [RESET ALL FILTERS]
             </button>
           </div>
         )}

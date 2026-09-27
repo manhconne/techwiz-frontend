@@ -1,25 +1,7 @@
 'use client';
-
 import React, { useState, useMemo } from 'react';
 import { mockArtists } from '../data/mockData';
 import { Artist } from '../types';
-import { 
-  Sparkles, 
-  Disc, 
-  BookOpen, 
-  Users, 
-  Award, 
-  Film, 
-  Gift, 
-  ExternalLink, 
-  X, 
-  Search, 
-  ChevronRight, 
-  Music, 
-  Boxes,
-  Compass,
-  CheckCircle2
-} from 'lucide-react';
 
 interface CharacterDetail {
   name: string;
@@ -134,7 +116,7 @@ const UNIVERSE_DOSSIERS: Record<string, UniverseDossier> = {
     characters: [
       { name: 'Jisoo', role: 'Lead Vocalist & Visual', personality: 'Witty 4D humor, serene mental fortitude, graceful leader vibe', appearance: 'Classic Korean royal beauty, refined haute couture dresses, deep voice', backstory: 'Global ambassador for Dior and Cartier; celebrated for her warm timbre and solo hit "Flower".' },
       { name: 'Jennie', role: 'Main Rapper & Lead Vocal', personality: 'Trendsetter, dual charismatic badass on-stage / sweet cat off-stage', appearance: 'Cat-eyed visual, Chanel tweed silhouettes, bold modern streetwear', backstory: 'Trained for 6 years; broke global records with "SOLO" and "You & Me"; founder of OA (ODDATELIER).' },
-      { name: 'Rosé', role: 'Main Vocalist & Lead Dancer', personality: 'Golden acoustic sensibility, indie-rock spirit, artistic romantic', appearance: 'Platinum blonde locks, Saint Laurent rocker-chic tailoring, slim frame', backstory: 'New Zealand-raised songstress whose unique vocal tone anchors BLACKPINK\'s signature bridges.' },
+      { name: 'Rose', role: 'Main Vocalist & Lead Dancer', personality: 'Golden acoustic sensibility, indie-rock spirit, artistic romantic', appearance: 'Platinum blonde locks, Saint Laurent rocker-chic tailoring, slim frame', backstory: 'New Zealand-raised songstress whose unique vocal tone anchors BLACKPINK\'s signature bridges.' },
       { name: 'Lisa', role: 'Main Dancer & Lead Rapper', personality: 'Stage commander, infectious giggly energy, perfectionist dancer', appearance: 'Iconic bangs, model proportions, dazzling metallic stage pieces', backstory: 'Thai dancing prodigy who earned global acclaim; founder of LLOUD and MTV VMA Best K-Pop winner.' }
     ],
     catalog: {
@@ -946,7 +928,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
 
   const categories = [
     { id: 'all', label: 'All Universes', count: mockArtists.length },
-    { id: 'v-pop', label: 'V-Pop (Việt Nam)', count: mockArtists.filter(a => a.category === 'V-Pop').length },
+    { id: 'v-pop', label: 'V-Pop (Vietnam)', count: mockArtists.filter(a => a.category === 'V-Pop').length },
     { id: 'k-pop', label: 'K-Pop', count: mockArtists.filter(a => a.category === 'K-Pop').length },
     { id: 'anime', label: 'Anime', count: mockArtists.filter(a => a.category === 'Anime').length },
     { id: 'movie', label: 'Cinema', count: mockArtists.filter(a => a.category === 'Movie').length },
@@ -1107,18 +1089,10 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
           >
             <div className="flex-1 max-w-2xl">
               <h2
-                style={{
-                  fontFamily: activeConfig.fontFamily,
-                  fontSize: 'clamp(28px, 3.2vw, 48px)',
-                  lineHeight: 1.15,
-                  fontWeight: 800,
-                  color: '#0f172a',
-                  letterSpacing: '-0.025em',
-                  margin: 0,
-                }}
+                className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-tight tracking-tight text-black m-0"
               >
                 Fandom Universes{' '}
-                <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic', fontFamily: 'serif' }}>
+                <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
                   &amp; Character Dossiers
                 </em>
               </h2>
@@ -1139,34 +1113,26 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
             {/* Compact Right-Aligned Search Box & Counter */}
             <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
               <div 
-                className="relative w-full sm:w-72 h-[42px] border border-slate-200/90 bg-white rounded-full flex items-center shadow-xs focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition-all"
+                className="relative w-full sm:w-72 h-[40px] border border-black bg-white flex items-center"
+                style={{ borderRadius: '0px' }}
               >
-                <Search 
-                  style={{ 
-                    position: 'absolute', 
-                    left: '14px', 
-                    width: '15px', 
-                    height: '15px', 
-                    color: '#64748b',
-                    pointerEvents: 'none' 
-                  }} 
-                />
+                <span className="font-mono text-xs font-bold pl-3 text-neutral-400 select-none">[//]</span>
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search idol, character, studio..."
+                  placeholder="SEARCH // ARTIST, UNIVERSE..."
                   style={{
                     width: '100%',
                     height: '100%',
                     border: 'none',
                     outline: 'none',
-                    padding: '0 32px 0 38px',
-                    fontSize: '12px',
-                    fontFamily: 'inherit',
+                    padding: '0 30px 0 10px',
+                    fontSize: '11px',
+                    fontFamily: "var(--font-mono), monospace",
                     backgroundColor: 'transparent',
-                    color: '#0f172a',
-                    fontWeight: 600,
+                    color: '#000000',
+                    fontWeight: 700,
                   }}
                 />
                 {searchQuery && (
@@ -1175,18 +1141,18 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                     type="button"
                     style={{
                       position: 'absolute',
-                      right: '12px',
+                      right: '8px',
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
-                      color: '#94a3b8',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      color: '#000000',
+                      fontFamily: 'monospace',
+                      fontSize: '12px',
+                      fontWeight: 800,
                     }}
                     aria-label="Clear search"
                   >
-                    <X style={{ width: '14px', height: '14px' }} />
+                    [×]
                   </button>
                 )}
               </div>
@@ -1194,22 +1160,22 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
               {/* Counter Badge */}
               <div 
                 style={{
-                  height: '42px',
+                  height: '40px',
                   padding: '0 16px',
-                  backgroundColor: '#0f172a',
+                  backgroundColor: '#000000',
                   color: '#ffffff',
                   display: 'flex',
                   alignItems: 'center',
                   fontSize: '11px',
                   fontFamily: 'monospace',
                   fontWeight: 800,
-                  letterSpacing: '0.08em',
-                  borderRadius: '9999px',
-                  boxShadow: '0 2px 8px rgba(15,23,42,0.15)',
+                  letterSpacing: '0.1em',
+                  borderRadius: '0px',
                   whiteSpace: 'nowrap',
+                  border: '1px solid #000000',
                 }}
               >
-                {filteredArtists.length} UNIVERSES
+                {filteredArtists.length} DOSSIERS
               </div>
             </div>
 
@@ -1222,34 +1188,38 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
             style={{
               padding: '60px 20px',
               textAlign: 'center',
-              border: '1.5px dashed #cbd5e1',
-              backgroundColor: '#fafafa',
+              border: '2px solid #000000',
+              backgroundColor: '#ffffff',
               margin: '20px 0',
+              borderRadius: '0px',
             }}
           >
-            <BookOpen style={{ width: '32px', height: '32px', margin: '0 auto 12px', color: '#94a3b8' }} />
-            <h4 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '18px', fontWeight: 700, margin: '0 0 6px' }}>
+            <div className="font-mono text-xs font-bold uppercase tracking-widest text-neutral-400 mb-2">
+              [ARCHIVE EMPTY // NO MATCH]
+            </div>
+            <h4 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '20px', fontWeight: 700, margin: '0 0 6px' }}>
               No Universes Found
             </h4>
-            <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 16px' }}>
+            <p style={{ fontSize: '12px', color: '#737373', margin: '0 0 16px', fontFamily: 'monospace' }}>
               We could not find any artists or characters matching "{searchQuery}".
             </p>
             <button
               onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
               type="button"
               style={{
-                padding: '8px 16px',
-                backgroundColor: '#000',
-                color: '#fff',
+                padding: '10px 20px',
+                backgroundColor: '#000000',
+                color: '#ffffff',
                 fontSize: '11px',
                 fontWeight: 800,
                 textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                border: '1.5px solid #000',
+                letterSpacing: '0.12em',
+                border: '1.5px solid #000000',
                 cursor: 'pointer',
+                borderRadius: '0px',
               }}
             >
-              Reset Filters
+              Reset Filters [×]
             </button>
           </div>
         ) : (
@@ -1263,16 +1233,14 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                   key={artist.id}
                   style={{
                     backgroundColor: '#ffffff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '16px',
+                    border: '2px solid #000000',
+                    borderRadius: '0px',
                     overflow: 'hidden',
-                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)',
                   }}
-                  className="hover:border-blue-400 hover:shadow-xl hover:-translate-y-1.5 group"
+                  className="group hover:border-black transition-all"
                 >
                   
                   {/* Card Banner Image & Integrated Avatar */}
@@ -1280,8 +1248,8 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                     style={{
                       position: 'relative',
                       width: '100%',
-                      height: '205px',
-                      backgroundColor: '#0f172a',
+                      height: '220px',
+                      backgroundColor: '#000000',
                       overflow: 'hidden',
                     }}
                   >
@@ -1292,22 +1260,22 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         width: '100%',
                         height: '100%',
                         objectFit: 'cover',
-                        opacity: 0.85,
-                        transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                        opacity: 0.95,
+                        transition: 'transform 0.5s ease',
                       }}
-                      className="group-hover:scale-105"
+                      className="group-hover:scale-105 contrast-105"
                     />
                     
-                    {/* Rich Dark Gradient Overlay */}
+                    {/* Y2K Pop Gradient Overlay */}
                     <div 
                       style={{
                         position: 'absolute',
                         inset: 0,
-                        background: 'linear-gradient(180deg, rgba(15,23,42,0.4) 0%, rgba(15,23,42,0.2) 40%, rgba(15,23,42,0.92) 100%)',
+                        background: 'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.9) 100%)',
                       }} 
                     />
 
-                    {/* Top Badges (Polished & Modern) */}
+                    {/* Top Badges (Vibrant Y2K Pop Badges) */}
                     <div 
                       style={{
                         position: 'absolute',
@@ -1323,31 +1291,34 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                       <span 
                         style={{
                           fontSize: '10px',
-                          fontWeight: 700,
+                          fontFamily: "var(--font-mono), monospace",
+                          fontWeight: 800,
                           textTransform: 'uppercase',
                           letterSpacing: '0.12em',
                           padding: '4px 10px',
-                          backgroundColor: 'rgba(0,0,0,0.7)',
-                          backdropFilter: 'blur(8px)',
+                          backgroundColor: '#ff2e93',
                           color: '#ffffff',
-                          borderRadius: '9999px',
-                          border: '1px solid rgba(255,255,255,0.2)',
+                          borderRadius: '0px',
+                          border: '2px solid #000000',
+                          boxShadow: '2px 2px 0px #000000',
                         }}
                       >
-                        {artist.category}
+                        ★ [{artist.category}]
                       </span>
                       <span 
                         style={{
                           fontSize: '10px',
-                          fontWeight: 700,
+                          fontFamily: "var(--font-mono), monospace",
+                          fontWeight: 800,
                           padding: '4px 10px',
-                          backgroundColor: 'rgba(255,255,255,0.95)',
-                          color: '#0f172a',
-                          borderRadius: '9999px',
-                          boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                          backgroundColor: '#ffd60a',
+                          color: '#000000',
+                          borderRadius: '0px',
+                          border: '2px solid #000000',
+                          boxShadow: '2px 2px 0px #000000',
                         }}
                       >
-                        {artist.totalAlbums} Releases
+                        {artist.totalAlbums} RELEASES
                       </span>
                     </div>
 
@@ -1368,12 +1339,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         style={{
                           width: '56px',
                           height: '56px',
-                          border: '2.5px solid #ffffff',
-                          borderRadius: '14px',
-                          backgroundColor: '#000',
+                          border: '2px solid #000000',
+                          borderRadius: '0px',
+                          backgroundColor: '#ffd60a',
                           overflow: 'hidden',
                           flexShrink: 0,
-                          boxShadow: '0 4px 14px rgba(0,0,0,0.35)',
+                          boxShadow: '3px 3px 0px #ff2e93',
                         }}
                       >
                         <img
@@ -1385,28 +1356,28 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                       <div style={{ overflow: 'hidden' }}>
                         <h3 
                           style={{
-                            fontFamily: "'Playfair Display', Georgia, serif",
-                            fontSize: '19px',
-                            fontWeight: 800,
+                            fontFamily: "var(--font-serif), 'Playfair Display', Georgia, serif",
+                            fontSize: '20px',
+                            fontWeight: 700,
                             color: '#ffffff',
                             margin: 0,
-                            letterSpacing: '-0.01em',
+                            letterSpacing: '-0.02em',
                             display: 'flex',
                             alignItems: 'baseline',
                             gap: '6px',
-                            textShadow: '0 2px 8px rgba(0,0,0,0.6)',
+                            textShadow: '2px 2px 0px #000000',
                           }}
                         >
                           <span className="truncate">{artist.name}</span>
-                          <span style={{ fontSize: '11px', fontFamily: 'sans-serif', color: '#cbd5e1', fontWeight: 400 }}>
+                          <span style={{ fontSize: '11px', fontFamily: "var(--font-mono), monospace", color: '#ffd60a', fontWeight: 700 }}>
                             ({artist.koreanName})
                           </span>
                         </h3>
                         <p 
                           style={{
                             fontSize: '10px',
-                            fontFamily: 'monospace',
-                            color: '#94a3b8',
+                            fontFamily: 'var(--font-mono), monospace',
+                            color: '#e5e5e5',
                             margin: '2px 0 0 0',
                             textTransform: 'uppercase',
                             letterSpacing: '0.12em',
@@ -1424,184 +1395,142 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                   {/* Card Body */}
                   <div style={{ padding: '24px 26px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <div>
-                      {/* Fandom & Palette Info Row */}
+                      {/* Fandom Info Row */}
                       <div 
                         style={{
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          paddingBottom: '14px',
-                          borderBottom: '1px solid #f1f5f9',
-                          fontSize: '12px',
+                          paddingBottom: '12px',
+                          borderBottom: '2px solid #000000',
+                          fontSize: '11px',
+                          fontFamily: "var(--font-mono), monospace",
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ fontSize: '10px', fontFamily: 'monospace', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase' }}>
-                            FANDOM:
+                          <span style={{ color: '#ff2e93', fontWeight: 800, textTransform: 'uppercase' }}>
+                            FANDOM //
                           </span>
-                          <span style={{ fontWeight: 800, color: '#0f172a' }}>
+                          <span style={{ fontWeight: 900, color: '#000000' }}>
                             {artist.fandomName}
                           </span>
                         </div>
-                        {dossier && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            {dossier.fanExperience.officialColors.map((c, i) => (
-                              <span 
-                                key={i} 
-                                style={{
-                                  width: '10px',
-                                  height: '10px',
-                                  borderRadius: '50%',
-                                  backgroundColor: c.hex,
-                                  border: '1px solid #cbd5e1',
-                                  display: 'inline-block',
-                                }} 
-                                title={`${c.name} (${c.hex})`}
-                              />
-                            ))}
-                          </div>
-                        )}
+                        <span style={{ color: '#000000', fontWeight: 800, letterSpacing: '0.08em', backgroundColor: '#ecfeff', padding: '2px 6px', border: '1px solid #000000' }}>
+                          ★ VERIFIED FANCLUB
+                        </span>
                       </div>
 
                       {/* Editorial Concept Quote */}
                       <div 
                         style={{
-                          borderLeft: `3px solid ${dossier?.accentColor || '#2563eb'}`,
-                          backgroundColor: '#f8fafc',
-                          padding: '12px 16px',
+                          borderLeft: '4px solid #ff2e93',
+                          backgroundColor: '#fefce8',
+                          padding: '12px 14px',
                           margin: '16px 0',
-                          borderRadius: '0 10px 10px 0',
-                          fontSize: '11.5px',
+                          fontSize: '12px',
                           fontStyle: 'italic',
-                          fontFamily: "'Playfair Display', Georgia, serif",
-                          color: '#334155',
-                          lineHeight: 1.55,
+                          fontFamily: "var(--font-serif), 'Playfair Display', Georgia, serif",
+                          color: '#000000',
+                          lineHeight: 1.5,
+                          border: '1px solid #000000',
+                          borderLeftWidth: '4px',
                         }}
                       >
                         "{dossier?.universeLore.concept || artist.bio}"
                       </div>
 
-                      {/* 3-Tab Segment Switcher (Polished Pill Segment Control) */}
+                      {/* 3-Tab Segment Switcher (Vibrant Colors) */}
                       <div 
                         style={{
                           display: 'grid',
                           gridTemplateColumns: 'repeat(3, 1fr)',
-                          backgroundColor: '#f1f5f9',
-                          padding: '3px',
-                          borderRadius: '12px',
+                          backgroundColor: '#ffffff',
+                          padding: '0px',
+                          border: '2px solid #000000',
                           margin: '16px 0',
-                          gap: '3px',
+                          gap: '0px',
                         }}
                       >
-                        <button
-                          type="button"
-                          onClick={() => setCardTab(artist.id, 'lore')}
-                          style={{
-                            padding: '7px 4px',
-                            cursor: 'pointer',
-                            border: 'none',
-                            borderRadius: '9px',
-                            backgroundColor: currentTab === 'lore' ? '#ffffff' : 'transparent',
-                            color: currentTab === 'lore' ? '#0f172a' : '#64748b',
-                            fontWeight: currentTab === 'lore' ? 800 : 600,
-                            fontSize: '10.5px',
-                            letterSpacing: '0.04em',
-                            textTransform: 'uppercase',
-                            boxShadow: currentTab === 'lore' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
-                            transition: 'all 0.15s ease',
-                          }}
-                        >
-                          1. Lore
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setCardTab(artist.id, 'catalog')}
-                          style={{
-                            padding: '7px 4px',
-                            cursor: 'pointer',
-                            border: 'none',
-                            borderRadius: '9px',
-                            backgroundColor: currentTab === 'catalog' ? '#ffffff' : 'transparent',
-                            color: currentTab === 'catalog' ? '#0f172a' : '#64748b',
-                            fontWeight: currentTab === 'catalog' ? 800 : 600,
-                            fontSize: '10.5px',
-                            letterSpacing: '0.04em',
-                            textTransform: 'uppercase',
-                            boxShadow: currentTab === 'catalog' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
-                            transition: 'all 0.15s ease',
-                          }}
-                        >
-                          2. Catalog
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setCardTab(artist.id, 'fan')}
-                          style={{
-                            padding: '7px 4px',
-                            cursor: 'pointer',
-                            border: 'none',
-                            borderRadius: '9px',
-                            backgroundColor: currentTab === 'fan' ? '#ffffff' : 'transparent',
-                            color: currentTab === 'fan' ? '#0f172a' : '#64748b',
-                            fontWeight: currentTab === 'fan' ? 800 : 600,
-                            fontSize: '10.5px',
-                            letterSpacing: '0.04em',
-                            textTransform: 'uppercase',
-                            boxShadow: currentTab === 'fan' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
-                            transition: 'all 0.15s ease',
-                          }}
-                        >
-                          3. Fan Perks
-                        </button>
+                        {(['lore', 'catalog', 'fan'] as const).map((tId, tIdx) => {
+                          const isTActive = currentTab === tId;
+                          const labels = ['01 LORE', '02 CATALOG', '03 PERKS'];
+                          
+                          let activeBg = '#ffd60a';
+                          let activeColor = '#000000';
+                          if (tId === 'catalog') {
+                            activeBg = '#00f0ff';
+                            activeColor = '#000000';
+                          } else if (tId === 'fan') {
+                            activeBg = '#ff2e93';
+                            activeColor = '#ffffff';
+                          }
+
+                          return (
+                            <button
+                              key={tId}
+                              type="button"
+                              onClick={() => setCardTab(artist.id, tId)}
+                              style={{
+                                padding: '8px 4px',
+                                cursor: 'pointer',
+                                border: 'none',
+                                borderRight: tIdx < 2 ? '2px solid #000000' : 'none',
+                                borderRadius: '0px',
+                                backgroundColor: isTActive ? activeBg : '#ffffff',
+                                color: isTActive ? activeColor : '#000000',
+                                fontWeight: 800,
+                                fontSize: '10px',
+                                fontFamily: "var(--font-mono), monospace",
+                                letterSpacing: '0.08em',
+                                textTransform: 'uppercase',
+                                transition: 'all 0.1s ease',
+                              }}
+                            >
+                              {labels[tIdx]}
+                            </button>
+                          );
+                        })}
                       </div>
 
                       {/* Tab 1 Content: Lore & Roles */}
                       {currentTab === 'lore' && (
-                        <div style={{ minHeight: '148px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ minHeight: '135px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                           <div>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#0f172a', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <BookOpen style={{ width: '13px', height: '13px', color: '#000' }} />
-                              <span style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                                {dossier?.universeLore.title || 'Canonical Lore'}
-                              </span>
+                            <div style={{ fontSize: '11px', fontWeight: 800, fontFamily: "var(--font-mono), monospace", color: '#000000', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                              KEY CHARACTERS // ROLES:
                             </div>
-                            <p style={{ fontSize: '11px', color: '#64748b', lineHeight: 1.5, margin: 0 }} className="line-clamp-2">
-                              {dossier?.universeLore.synopsis || artist.bio}
-                            </p>
-                          </div>
-
-                          <div style={{ marginTop: '10px' }}>
-                            <span style={{ fontSize: '9px', fontFamily: 'monospace', textTransform: 'uppercase', color: '#94a3b8', fontWeight: 800, display: 'block', marginBottom: '6px' }}>
-                              KEY FIGURES & ROLES:
-                            </span>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-                              {artist.members.slice(0, 4).map((m, idx) => (
-                                <span
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                              {(dossier?.characters || artist.members.map(m => ({ name: m, role: 'Member' }))).slice(0, 4).map((char, idx) => (
+                                <span 
                                   key={idx}
                                   style={{
-                                    fontSize: '10.5px',
-                                    fontFamily: 'inherit',
-                                    padding: '3px 8px',
-                                    fontWeight: 600,
-                                    borderRadius: '6px',
+                                    fontSize: '10px',
+                                    fontFamily: "var(--font-mono), monospace",
+                                    padding: '3px 7px',
+                                    backgroundColor: idx % 2 === 0 ? '#fdf2f8' : '#ecfeff',
+                                    color: '#000000',
+                                    border: '1.5px solid #000000',
+                                    fontWeight: 800,
+                                    borderRadius: '0px',
                                   }}
-                                  className="bg-slate-100 text-slate-800 border border-slate-200"
                                 >
-                                  {m}
+                                  {char.name}
                                 </span>
                               ))}
-                              {artist.members.length > 4 && (
+                              {artist.members && artist.members.length > 4 && (
                                 <span 
                                   style={{
-                                    fontSize: '10.5px',
-                                    fontFamily: 'inherit',
+                                    fontSize: '10px',
+                                    fontFamily: "var(--font-mono), monospace",
                                     padding: '3px 7px',
-                                    fontWeight: 700,
-                                    borderRadius: '6px',
+                                    border: '1.5px solid #000000',
+                                    backgroundColor: '#ffd60a',
+                                    color: '#000000',
+                                    fontWeight: 800,
+                                    borderRadius: '0px',
                                   }}
-                                  className="bg-slate-200 text-slate-700"
                                 >
-                                  +{artist.members.length - 4} more
+                                  +{artist.members.length - 4} MORE
                                 </span>
                               )}
                             </div>
@@ -1611,21 +1540,16 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
 
                       {/* Tab 2 Content: Catalog & Boxsets */}
                       {currentTab === 'catalog' && (
-                        <div style={{ minHeight: '148px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ minHeight: '135px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                           <div>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#0f172a', marginBottom: '6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                              <span style={{ fontFamily: "'Playfair Display', Georgia, serif", display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                <Boxes style={{ width: '13px', height: '13px', color: '#000' }} /> Official Catalog
-                              </span>
-                              <span style={{ fontSize: '9px', fontFamily: 'monospace', backgroundColor: '#f1f5f9', color: '#0f172a', padding: '1px 7px', borderRadius: '4px', border: '1px solid #cbd5e1', fontWeight: 700 }}>
-                                GENUINE
-                              </span>
+                            <div style={{ fontSize: '11px', fontWeight: 800, fontFamily: "var(--font-mono), monospace", color: '#000000', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                              OFFICIAL CATALOG DROPS:
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {dossier?.catalog.officialMerch.slice(0, 2).map((item, idx) => (
-                                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#334155' }}>
-                                  <span style={{ width: '4px', height: '4px', backgroundColor: '#2563eb', borderRadius: '50%', display: 'inline-block' }} />
-                                  <span className="truncate">{item}</span>
+                                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontFamily: "var(--font-mono), monospace", color: '#000000' }}>
+                                  <span className="font-bold text-[#ff2e93]">0{idx + 1} //</span>
+                                  <span className="truncate font-semibold">{item}</span>
                                 </div>
                               ))}
                             </div>
@@ -1634,17 +1558,18 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           {dossier?.catalog.themedBundle && (
                             <div 
                               style={{
-                                padding: '8px 12px',
-                                backgroundColor: '#f8fafc',
-                                border: '1px dashed #cbd5e1',
-                                borderRadius: '8px',
+                                padding: '8px 10px',
+                                backgroundColor: '#ecfeff',
+                                color: '#000000',
+                                border: '1.5px solid #000000',
+                                borderRadius: '0px',
                                 marginTop: '8px',
                               }}
                             >
-                              <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
-                                COLLECTOR BOXSET:
+                              <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#ff2e93', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
+                                ★ COLLECTOR BOXSET:
                               </span>
-                              <span style={{ fontSize: '11px', fontWeight: 700, color: '#0f172a' }} className="truncate block">
+                              <span style={{ fontSize: '11px', fontWeight: 800, color: '#000000', fontFamily: 'monospace' }} className="truncate block">
                                 {dossier.catalog.themedBundle.title}
                               </span>
                             </div>
@@ -1654,35 +1579,30 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
 
                       {/* Tab 3 Content: Fan Perks & POB */}
                       {currentTab === 'fan' && (
-                        <div style={{ minHeight: '148px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ minHeight: '135px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                           <div>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#0f172a', marginBottom: '6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                              <span style={{ fontFamily: "'Playfair Display', Georgia, serif", display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                <Award style={{ width: '13px', height: '13px', color: '#000' }} /> Milestone Record
-                              </span>
-                              <span style={{ fontSize: '9px', fontFamily: 'monospace', backgroundColor: '#ecfdf5', color: '#065f46', padding: '1px 7px', borderRadius: '4px', border: '1px solid #a7f3d0', fontWeight: 700 }}>
-                                VERIFIED
-                              </span>
+                            <div style={{ fontSize: '11px', fontWeight: 800, fontFamily: "var(--font-mono), monospace", color: '#000000', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                              MILESTONE RECORD:
                             </div>
-                            <p style={{ fontSize: '11px', color: '#475569', lineHeight: 1.4, margin: 0 }} className="line-clamp-2">
+                            <p style={{ fontSize: '11px', fontFamily: "var(--font-mono), monospace", color: '#000000', lineHeight: 1.4, margin: 0 }} className="line-clamp-2">
                               {dossier?.fanExperience.highlights[0] || 'Historical album records and global tours.'}
                             </p>
                           </div>
 
                           <div 
                             style={{
-                              backgroundColor: '#fffbeb',
-                              border: '1px solid #fde68a',
-                              borderRadius: '8px',
-                              padding: '8px 12px',
+                              backgroundColor: '#fdf2f8',
+                              border: '1.5px solid #000000',
+                              borderRadius: '0px',
+                              padding: '8px 10px',
                               marginTop: '8px',
                             }}
                           >
-                            <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#92400e', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
+                            <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#ff2e93', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
                               PRE-ORDER BENEFIT (POB):
                             </span>
-                            <span style={{ fontSize: '11px', fontWeight: 700, color: '#78350f' }} className="truncate block">
-                              🎁 {dossier?.fanExperience.preOrderBenefits[0] || 'Exclusive Holo Card Set'}
+                            <span style={{ fontSize: '11px', fontWeight: 800, color: '#000000', fontFamily: 'monospace' }} className="truncate block">
+                              ★ {dossier?.fanExperience.preOrderBenefits[0] || 'Exclusive Holo Card Set'}
                             </span>
                           </div>
                         </div>
@@ -1690,12 +1610,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
 
                     </div>
 
-                    {/* Dual Action Buttons (Sleek & Polished) */}
+                    {/* Dual Action Buttons (Vibrant Y2K Pop Buttons) */}
                     <div 
                       style={{
                         marginTop: '20px',
                         paddingTop: '16px',
-                        borderTop: '1px solid #f1f5f9',
+                        borderTop: '2px solid #000000',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '8px',
@@ -1710,25 +1630,24 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         style={{
                           width: '100%',
                           height: '40px',
-                          backgroundColor: '#ffffff',
-                          color: '#0f172a',
-                          border: '1.5px solid #e2e8f0',
-                          borderRadius: '12px',
+                          backgroundColor: '#ff2e93',
+                          color: '#ffffff',
+                          border: '2px solid #000000',
+                          borderRadius: '0px',
                           fontSize: '11px',
-                          fontWeight: 700,
-                          letterSpacing: '0.06em',
+                          fontFamily: "var(--font-mono), monospace",
+                          fontWeight: 900,
+                          letterSpacing: '0.08em',
                           textTransform: 'uppercase',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          gap: '8px',
                           cursor: 'pointer',
-                          transition: 'all 0.2s ease',
+                          boxShadow: '3px 3px 0px #000000',
                         }}
-                        className="hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50/40"
+                        className="hover:bg-[#ff007f] transition-all duration-100 hover:translate-x-[-1px] hover:translate-y-[-1px]"
                       >
-                        <BookOpen style={{ width: '13px', height: '13px' }} />
-                        <span>Open Complete Dossier</span>
+                        <span>[VIEW DOSSIER ARCHIVE →]</span>
                       </button>
 
                       <button
@@ -1737,29 +1656,26 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         style={{
                           width: '100%',
                           height: '40px',
-                          background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
-                          color: '#ffffff',
-                          border: 'none',
-                          borderRadius: '12px',
+                          backgroundColor: '#ffd60a',
+                          color: '#000000',
+                          border: '2px solid #000000',
+                          borderRadius: '0px',
                           fontSize: '11px',
-                          fontWeight: 700,
-                          letterSpacing: '0.06em',
+                          fontFamily: "var(--font-mono), monospace",
+                          fontWeight: 900,
+                          letterSpacing: '0.08em',
                           textTransform: 'uppercase',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          gap: '8px',
                           cursor: 'pointer',
-                          boxShadow: '0 4px 14px rgba(37,99,235,0.3)',
-                          transition: 'all 0.2s ease',
+                          boxShadow: '3px 3px 0px #000000',
                         }}
-                        className="hover:shadow-[0_6px_20px_rgba(37,99,235,0.45)] hover:-translate-y-0.5"
+                        className="hover:bg-[#fde047] transition-all duration-100 hover:translate-x-[-1px] hover:translate-y-[-1px]"
                       >
-                        <Disc style={{ width: '13px', height: '13px' }} />
-                        <span>Explore Discography ({artist.totalAlbums})</span>
+                        <span>[EXPLORE RELEASES ({artist.totalAlbums}) ↓]</span>
                       </button>
                     </div>
-
                   </div>
                 </div>
               );
@@ -1842,8 +1758,9 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                     cursor: 'pointer',
                   }}
                   aria-label="Close dossier"
+                  className="font-mono text-sm font-bold"
                 >
-                  <X style={{ width: '16px', height: '16px' }} />
+                  [×]
                 </button>
 
                 {/* Banner Content */}
@@ -1936,10 +1853,10 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
+                      borderRadius: '0px',
                     }}
                   >
-                    <Disc style={{ width: '13px', height: '13px' }} />
-                    <span>View All Albums</span>
+                    <span>[VIEW ALL ALBUMS ↓]</span>
                   </button>
                 </div>
               </div>
@@ -2157,14 +2074,14 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         {activeDossierData.catalog.themedBundle.description}
                       </p>
 
-                      <div style={{ backgroundColor: '#ffffff', padding: '12px', border: '1px solid #e2e8f0' }}>
-                        <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+                      <div style={{ backgroundColor: '#ffffff', padding: '12px', border: '1px solid #000000' }}>
+                        <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#737373', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
                           BUNDLE CONTENTS:
                         </span>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {activeDossierData.catalog.themedBundle.items.map((item, idx) => (
-                            <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#1e293b' }}>
-                              <Gift style={{ width: '13px', height: '13px', color: '#000', flexShrink: 0 }} />
+                            <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#000000', fontFamily: 'monospace' }}>
+                              <span style={{ fontWeight: 800 }}>0{idx + 1} //</span>
                               <span>{item}</span>
                             </div>
                           ))}
@@ -2174,13 +2091,13 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
 
                     {/* Official Music & Merch Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      <div style={{ padding: '16px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
+                      <div style={{ padding: '16px', border: '1px solid #000000', backgroundColor: '#ffffff' }}>
                         <h5 style={{ fontSize: '11px', fontWeight: 800, fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <Music style={{ width: '13px', height: '13px' }} /> Featured Albums & Vinyls
+                          [AUDIO // FEATURED ALBUMS & VINYLS]
                         </h5>
                         <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                           {activeDossierData.catalog.featuredMusic.map((m, i) => (
-                            <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#334155', paddingBottom: '6px', borderBottom: '1px solid #f1f5f9' }}>
+                            <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#000000', paddingBottom: '6px', borderBottom: '1px solid #f5f5f5', fontFamily: 'monospace' }}>
                               <span style={{ width: '4px', height: '4px', backgroundColor: '#000', flexShrink: 0 }} />
                               <span>{m}</span>
                             </li>
@@ -2188,13 +2105,13 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         </ul>
                       </div>
 
-                      <div style={{ padding: '16px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
+                      <div style={{ padding: '16px', border: '1px solid #000000', backgroundColor: '#ffffff' }}>
                         <h5 style={{ fontSize: '11px', fontWeight: 800, fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <Boxes style={{ width: '13px', height: '13px' }} /> Official Goods & Figures
+                          [GOODS // OFFICIAL MERCH & FIGURES]
                         </h5>
                         <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                           {activeDossierData.catalog.officialMerch.map((g, i) => (
-                            <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#334155', paddingBottom: '6px', borderBottom: '1px solid #f1f5f9' }}>
+                            <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#000000', paddingBottom: '6px', borderBottom: '1px solid #f5f5f5', fontFamily: 'monospace' }}>
                               <span style={{ width: '4px', height: '4px', backgroundColor: '#000', flexShrink: 0 }} />
                               <span>{g}</span>
                             </li>
@@ -2213,7 +2130,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                     <div 
                       style={{
                         padding: '16px',
-                        border: '1px solid #e2e8f0',
+                        border: '1px solid #000000',
                         backgroundColor: '#ffffff',
                         display: 'flex',
                         flexDirection: 'row',
@@ -2226,7 +2143,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         style={{
                           width: '180px',
                           height: '96px',
-                          backgroundColor: '#0f172a',
+                          backgroundColor: '#000000',
                           color: '#ffffff',
                           display: 'flex',
                           flexDirection: 'column',
@@ -2237,22 +2154,22 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           padding: '8px',
                         }}
                       >
-                        <Film style={{ width: '22px', height: '22px', marginBottom: '4px' }} />
-                        <span style={{ fontSize: '9px', fontFamily: 'monospace', textTransform: 'uppercase', color: '#94a3b8' }}>
+                        <span className="font-mono text-xs font-bold uppercase tracking-widest text-neutral-400 mb-1">[FILM TEASER]</span>
+                        <span style={{ fontSize: '9px', fontFamily: 'monospace', textTransform: 'uppercase', color: '#a3a3a3' }}>
                           {activeDossierData.fanExperience.mediaTeaser.type}
                         </span>
-                        <span style={{ fontSize: '11px', fontFamily: 'monospace', color: '#34d399', fontWeight: 800 }}>
+                        <span style={{ fontSize: '11px', fontFamily: 'monospace', color: '#ffffff', fontWeight: 800 }}>
                           {activeDossierData.fanExperience.mediaTeaser.duration}
                         </span>
                       </div>
                       <div>
-                        <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
+                        <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#737373', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
                           SPOTLIGHT TEASER
                         </span>
-                        <h5 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '15px', fontWeight: 800, margin: '0 0 4px 0', color: '#0f172a' }}>
+                        <h5 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '16px', fontWeight: 800, margin: '0 0 4px 0', color: '#000000' }}>
                           {activeDossierData.fanExperience.mediaTeaser.title}
                         </h5>
-                        <p style={{ fontSize: '12px', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                        <p style={{ fontSize: '12px', color: '#525252', margin: 0, lineHeight: 1.5 }}>
                           {activeDossierData.fanExperience.mediaTeaser.description}
                         </p>
                       </div>
@@ -2260,8 +2177,8 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
 
                     {/* Fandom Colors & Fanchant */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div style={{ padding: '16px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
-                        <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+                      <div style={{ padding: '16px', border: '1px solid #000000', backgroundColor: '#ffffff' }}>
+                        <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#737373', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
                           OFFICIAL FANDOM COLOR PALETTE
                         </span>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -2272,32 +2189,32 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                                   style={{
                                     width: '14px',
                                     height: '14px',
-                                    borderRadius: '50%',
+                                    borderRadius: '0px',
                                     backgroundColor: color.hex,
-                                    border: '1px solid #cbd5e1',
+                                    border: '1px solid #000000',
                                     display: 'inline-block',
                                   }} 
                                 />
-                                <span style={{ fontWeight: 700, color: '#0f172a' }}>{color.name}</span>
+                                <span style={{ fontWeight: 700, color: '#000000', fontFamily: 'monospace' }}>{color.name}</span>
                               </div>
-                              <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#64748b' }}>{color.hex}</span>
+                              <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#737373' }}>{color.hex}</span>
                             </div>
                           ))}
                         </div>
                       </div>
 
-                      <div style={{ padding: '16px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
-                        <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+                      <div style={{ padding: '16px', border: '1px solid #000000', backgroundColor: '#ffffff' }}>
+                        <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#737373', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
                           CANONICAL FANCHANT MOTTO
                         </span>
                         <p 
                           style={{
                             fontSize: '12px',
                             fontFamily: 'monospace',
-                            backgroundColor: '#f8fafc',
+                            backgroundColor: '#f5f5f5',
                             padding: '10px 12px',
-                            border: '1px solid #e2e8f0',
-                            color: '#1e293b',
+                            border: '1px solid #000000',
+                            color: '#000000',
                             lineHeight: 1.5,
                             margin: 0,
                             fontStyle: 'italic',
@@ -2312,11 +2229,11 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                     <div 
                       style={{
                         padding: '16px',
-                        border: '1.5px solid #f59e0b',
-                        backgroundColor: '#fffbeb',
+                        border: '1.5px solid #000000',
+                        backgroundColor: '#f5f5f5',
                       }}
                     >
-                      <span style={{ fontSize: '10px', fontFamily: 'monospace', color: '#92400e', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '10px', fontFamily: 'monospace', color: '#000000', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
                         PRE-ORDER BENEFITS (POB) & EXCLUSIVE EARLY-BUYER PERKS:
                       </span>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -2326,16 +2243,17 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                             style={{
                               padding: '8px 10px',
                               backgroundColor: '#ffffff',
-                              border: '1px solid #fde68a',
+                              border: '1px solid #000000',
                               fontSize: '11px',
-                              fontWeight: 600,
-                              color: '#78350f',
+                              fontFamily: 'monospace',
+                              fontWeight: 700,
+                              color: '#000000',
                               display: 'flex',
                               alignItems: 'center',
                               gap: '6px',
                             }}
                           >
-                            <Gift style={{ width: '13px', height: '13px', color: '#b45309', flexShrink: 0 }} />
+                            <span className="font-bold">★</span>
                             <span>{pob}</span>
                           </div>
                         ))}
@@ -2344,7 +2262,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
 
                     {/* Community Links */}
                     <div>
-                      <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#737373', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
                         OFFICIAL COMMUNITY & GLOBAL FAN HUBS
                       </span>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -2359,18 +2277,18 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                               alignItems: 'center',
                               gap: '6px',
                               padding: '6px 12px',
-                              backgroundColor: '#f1f5f9',
-                              border: '1px solid #cbd5e1',
+                              backgroundColor: '#ffffff',
+                              border: '1px solid #000000',
                               fontSize: '11px',
                               fontFamily: 'monospace',
-                              color: '#0f172a',
+                              color: '#000000',
                               textDecoration: 'none',
-                              fontWeight: 600,
+                              fontWeight: 700,
                             }}
                             className="hover:bg-black hover:text-white transition-colors"
                           >
                             <span>{ch.name} ({ch.platform})</span>
-                            <ExternalLink style={{ width: '11px', height: '11px' }} />
+                            <span className="font-mono">↗</span>
                           </a>
                         ))}
                       </div>

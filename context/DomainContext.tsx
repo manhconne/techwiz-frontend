@@ -26,8 +26,8 @@ export const DOMAIN_THEMES: DomainThemeConfig[] = [
   {
     id: 'music',
     name: 'Music & Audio',
-    fontFamily: "'Montserrat', sans-serif",
-    fontDisplayName: 'Montserrat Bold',
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontDisplayName: 'Plus Jakarta Sans',
     tagline: 'Modern Audio & Sound Hub.',
     iconType: 'music',
     vibeText: 'Synthwave & Electronic Beats',
@@ -58,11 +58,11 @@ export const DOMAIN_THEMES: DomainThemeConfig[] = [
   {
     id: 'art',
     name: 'Art & Fashion',
-    fontFamily: "'Playfair Display', Georgia, serif",
-    fontDisplayName: 'Playfair Serif',
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontDisplayName: 'Plus Jakarta Sans',
     tagline: 'Design, Fine Art & High Fashion.',
     iconType: 'art',
-    vibeText: 'Editorial High Fashion Serif',
+    vibeText: 'Editorial High Fashion Design',
     subCategories: [
       { id: 'all', name: 'All Art & Fashion' },
       { id: 'ghibli', name: 'Studio Ghibli & Classical' },
@@ -74,8 +74,8 @@ export const DOMAIN_THEMES: DomainThemeConfig[] = [
   {
     id: 'sports',
     name: 'Sports & Fitness',
-    fontFamily: "'Oswald', sans-serif",
-    fontDisplayName: 'Oswald Dynamic',
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontDisplayName: 'Plus Jakarta Sans',
     tagline: 'High Energy Sports & Fitness Motion.',
     iconType: 'sports',
     vibeText: 'High Energy Athletic Motion',
@@ -90,8 +90,8 @@ export const DOMAIN_THEMES: DomainThemeConfig[] = [
   {
     id: 'fandom',
     name: 'K-Pop & Anime Fandom',
-    fontFamily: "'Quicksand', sans-serif",
-    fontDisplayName: 'Quicksand Rounded',
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontDisplayName: 'Plus Jakarta Sans',
     tagline: 'K-Pop Idol & Anime Universe.',
     iconType: 'fandom',
     vibeText: 'Pastel Idol Dreamland',

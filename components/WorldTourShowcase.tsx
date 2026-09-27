@@ -2,20 +2,6 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { 
-  Calendar, 
-  MapPin, 
-  Ticket, 
-  ArrowRight, 
-  ShieldCheck, 
-  Sparkles, 
-  Radio, 
-  ExternalLink,
-  Flame,
-  Award,
-  Layers,
-  ChevronRight
-} from 'lucide-react';
 import { mockTourEvents } from '../data/mockData';
 import { useCartWishlist } from '../context/CartWishlistContext';
 import { TourEvent } from '../types';
@@ -24,7 +10,7 @@ interface WorldTourShowcaseProps {
   onSelectEvent?: (event: TourEvent) => void;
 }
 
-export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = ({ onSelectEvent }) => {
+export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = () => {
   const { formatPrice } = useCartWishlist();
   const [activeCity, setActiveCity] = useState<string>('all');
 
@@ -41,48 +27,47 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = ({ onSelectEv
   }, [activeCity]);
 
   const cities = [
-    { id: 'all', label: 'All Arenas' },
-    { id: 'hanoi', label: 'Hanoi (My Dinh)' },
-    { id: 'london', label: 'London (Wembley)' },
-    { id: 'tokyo', label: 'Tokyo (Dome)' },
+    { id: 'all', label: 'ALL ARENAS' },
+    { id: 'hanoi', label: 'HANOI (MY DINH)' },
+    { id: 'london', label: 'LONDON (WEMBLEY)' },
+    { id: 'tokyo', label: 'TOKYO (DOME)' },
   ];
 
   return (
     <section 
       id="tours"
-      className="w-full py-16 md:py-24 bg-slate-50/70 border-t border-b border-slate-200/80 relative overflow-hidden transition-colors duration-500"
+      style={{
+        paddingTop: '80px',
+        paddingBottom: '96px',
+      }}
+      className="w-full py-20 md:py-28 bg-white text-black border-b-4 border-black relative"
     >
-      {/* Subtle ambient background glow */}
-      <div 
-        className="absolute top-0 left-1/3 w-[500px] h-[500px] rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(37, 99, 235, 0.05) 0%, transparent 70%)',
-          filter: 'blur(60px)',
-        }}
-      />
-
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 relative z-10">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between pb-8 mb-10 border-b border-slate-200/90 gap-6 flex-wrap">
+        <div className="flex flex-col md:flex-row md:items-end justify-between pb-8 mb-12 border-b-2 border-black gap-6">
           <div>
-            {/* Eyebrow badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[10.5px] font-mono font-bold uppercase tracking-wider mb-3 shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-              <span>STADIUM TOUR CALENDAR · LIVE STAGE ACCESS</span>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-2.5 h-2.5 bg-black" />
+              <span className="font-mono text-xs font-bold uppercase tracking-widest text-neutral-600">
+                SECTION 06 // GLOBAL LIVE STAGES &amp; ARENA CALENDAR
+              </span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight uppercase text-slate-900 font-sans m-0">
-              World Tour &amp; Stadium Arenas
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-black leading-tight tracking-tight">
+              World Tour &amp;{' '}
+              <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
+                Stadium Arenas
+              </em>
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-xl font-normal leading-relaxed">
-              Official live concert passes, soundcheck priority access, and anti-scalp encrypted tickets guaranteed direct from global partner networks.
+            <p className="font-serif text-xs sm:text-sm text-neutral-600 mt-2 max-w-xl leading-relaxed">
+              Official stadium tour passes, soundcheck priority access, and anti-scalp encrypted tickets guaranteed direct from global partner networks.
             </p>
           </div>
 
-          {/* City filter tabs & View All Button */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-1.5 p-1 rounded-full bg-white border border-slate-200/90 shadow-2xs">
+          {/* City filter tabs & View All Button (Vibrant Y2K Pop) */}
+          <div className="flex items-center gap-3 flex-wrap font-mono text-xs">
+            <div className="flex items-center border-2 border-black p-0.5 shadow-[2px_2px_0px_#000000] bg-white">
               {cities.map((c) => {
                 const isActive = activeCity === c.id;
                 return (
@@ -90,16 +75,14 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = ({ onSelectEv
                     key={c.id}
                     onClick={() => setActiveCity(c.id)}
                     type="button"
-                    style={{
-                      color: isActive ? '#ffffff' : '#475569',
-                      backgroundColor: isActive ? '#0f172a' : 'transparent',
-                    }}
-                    className={`px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded-full transition-all cursor-pointer ${
+                    style={{ borderRadius: '0px' }}
+                    className={`px-3.5 py-2 font-black uppercase tracking-wider cursor-pointer transition-all duration-100 ${
                       isActive 
-                        ? 'shadow-xs' 
-                        : 'hover:text-slate-900 hover:bg-slate-100'
+                        ? 'bg-[#ff2e93] text-white shadow-[2px_2px_0px_#000]' 
+                        : 'bg-white text-black hover:bg-[#fefce8]'
                     }`}
                   >
+                    {isActive && <span>★ </span>}
                     {c.label}
                   </button>
                 );
@@ -107,128 +90,125 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = ({ onSelectEv
             </div>
 
             <Link
-              href="/event#location-events"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold uppercase tracking-wider transition-all shadow-2xs group cursor-pointer"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping" />
-              <span>Sự Kiện Gần Bạn (GPS)</span>
-            </Link>
-
-            <Link
               href="/event"
-              style={{
-                backgroundColor: '#000000',
-                color: '#ffffff',
-              }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full hover:bg-slate-800 text-xs font-bold uppercase tracking-wider transition-all shadow-sm group cursor-pointer"
+              style={{ borderRadius: '0px' }}
+              className="px-5 py-2.5 bg-[#ffd60a] text-black hover:bg-[#ff2e93] hover:text-white border-2 border-black font-black uppercase tracking-widest transition-all duration-100 shadow-[3px_3px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
             >
-              <span style={{ color: '#ffffff' }}>Full Tour Schedule</span>
-              <ArrowRight size={13} style={{ color: '#ffffff' }} className="group-hover:translate-x-0.5 transition-transform" />
+              [FULL TOUR SCHEDULE →]
             </Link>
           </div>
         </div>
 
-        {/* 3-Card Stadium Tour Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        {/* 3-Card Stadium Tour Grid (Vibrant Y2K Pop Cards) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {featuredTours.map((tour) => {
             return (
               <div
                 key={tour.id}
-                className="group relative rounded-2xl overflow-hidden bg-white border border-slate-200/90 shadow-sm hover:border-blue-500/50 hover:shadow-[0_20px_45px_-8px_rgba(37,99,235,0.14)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
+                style={{ borderRadius: '0px' }}
+                className="group bg-white border-2 border-black flex flex-col justify-between shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ff2e93] hover:-translate-y-1 transition-all duration-100"
               >
                 {/* Image Container with Badges */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
-                  <img
-                    src={tour.coverImage}
-                    alt={tour.tourTitle}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/25" />
+                <div>
+                  <div 
+                    style={{ borderRadius: '0px' }}
+                    className="relative aspect-[16/10] overflow-hidden bg-neutral-100 border-b-2 border-black"
+                  >
+                    <img
+                      src={tour.coverImage}
+                      alt={tour.tourTitle}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
+                      loading="lazy"
+                    />
 
-                  {/* Top-Left Category Badge */}
-                  <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-[10px] font-mono font-bold uppercase tracking-wider text-white shadow-xs">
-                    <Sparkles size={11} className="text-amber-400" />
-                    <span>{tour.badgeText || tour.category}</span>
-                  </div>
-
-                  {/* Top-Right Status Badge */}
-                  <div className="absolute top-3 right-3 z-10 px-2.5 py-0.5 rounded-md bg-emerald-600 text-white text-[9px] font-mono font-black uppercase tracking-wider shadow-sm">
-                    {tour.status === 'Sold Out' ? 'VIP ALLOCATION' : tour.status}
-                  </div>
-
-                  {/* Floating Venue Pin */}
-                  <div className="absolute bottom-3 left-3 right-3 z-10 flex items-center justify-between text-xs text-white font-medium">
-                    <span className="inline-flex items-center gap-1.5 text-white font-bold truncate max-w-[70%]">
-                      <MapPin size={13} className="text-blue-400 shrink-0" />
-                      <span className="truncate">{tour.venue}</span>
-                    </span>
-                    <span className="font-mono text-[11px] text-slate-300 shrink-0">
-                      {tour.city}, {tour.country}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Card Content Body */}
-                <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    {/* Date and Time Line */}
-                    <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 font-semibold mb-2">
-                      <span className="flex items-center gap-1.5 text-amber-600 font-bold">
-                        <Calendar size={12} />
-                        <span>{tour.date} · {tour.time}</span>
+                    {/* Top-Left Category Badge */}
+                    <div className="absolute top-3 left-3 z-10 font-mono">
+                      <span 
+                        style={{ borderRadius: '0px' }}
+                        className="px-2.5 py-1 bg-[#ff2e93] text-white border-2 border-black text-[10px] font-black uppercase tracking-widest shadow-[2px_2px_0px_#000]"
+                      >
+                        ★ {tour.badgeText || tour.category}
                       </span>
-                      <span className="text-slate-400">100% Guaranteed</span>
+                    </div>
+
+                    {/* Top-Right Status Badge */}
+                    <div className="absolute top-3 right-3 z-10 font-mono">
+                      <span 
+                        style={{ borderRadius: '0px' }}
+                        className="px-2.5 py-1 bg-[#ffd60a] text-black border-2 border-black text-[9px] font-black uppercase tracking-widest shadow-[2px_2px_0px_#000]"
+                      >
+                        {tour.status === 'Sold Out' ? 'VIP ALLOCATION' : tour.status}
+                      </span>
+                    </div>
+
+                    {/* Bottom Venue Pin */}
+                    <div className="absolute bottom-2 left-2 right-2 z-10 flex items-center justify-between font-mono text-[10px] bg-[#00f0ff] text-black px-2.5 py-1 border-2 border-black font-black shadow-[2px_2px_0px_#000]">
+                      <span className="truncate max-w-[65%]">
+                        LOC // {tour.venue}
+                      </span>
+                      <span className="uppercase">
+                        {tour.city}, {tour.country}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card Content Body */}
+                  <div className="p-6">
+                    {/* Date and Time Line */}
+                    <div className="flex items-center justify-between font-mono text-xs mb-2">
+                      <span className="font-black uppercase tracking-wider text-[#ff2e93]">
+                        DATE // {tour.date} · {tour.time}
+                      </span>
+                      <span className="bg-[#fefce8] border border-black px-1.5 py-0.5 font-bold text-black text-[10px]">
+                        [GUARANTEED]
+                      </span>
                     </div>
 
                     {/* Tour Title */}
-                    <h3 className="text-base sm:text-lg font-black text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug mb-2.5">
+                    <h3 className="font-serif text-xl sm:text-2xl font-bold leading-snug line-clamp-2 mb-2 text-black">
                       {tour.tourName}
                     </h3>
 
                     {/* Artist and Description */}
-                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-4">
+                    <p className="font-serif text-xs text-neutral-600 line-clamp-2 leading-relaxed mb-4">
                       {tour.description}
                     </p>
 
                     {/* Perks preview chips */}
                     {tour.perks && tour.perks.length > 0 && (
-                      <div className="flex items-center gap-1.5 flex-wrap mb-4">
+                      <div className="flex items-center gap-1.5 flex-wrap font-mono text-[10px]">
                         {tour.perks.slice(0, 2).map((perk, pIdx) => (
                           <span
                             key={pIdx}
-                            className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 truncate max-w-[190px]"
+                            style={{ borderRadius: '0px' }}
+                            className="px-2 py-0.5 border border-black bg-[#ecfeff] text-black font-black uppercase truncate max-w-[200px]"
                           >
-                            ✓ {perk}
+                            // {perk}
                           </span>
                         ))}
                       </div>
                     )}
                   </div>
+                </div>
 
-                  {/* Card Bottom Pricing & Action */}
-                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3 mt-2">
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-mono block uppercase font-bold tracking-wider">
-                        Ticket Price From
-                      </span>
-                      <div className="text-base sm:text-lg font-black text-slate-950">
-                        {formatPrice(tour.ticketPriceFromUSD, tour.ticketPriceFromVND)}
-                      </div>
+                {/* Card Bottom Pricing & Action */}
+                <div className="p-6 pt-4 border-t-2 border-black flex items-center justify-between gap-3 font-mono">
+                  <div>
+                    <span className="text-[10px] text-neutral-500 block uppercase font-bold tracking-wider">
+                      PASS FROM
+                    </span>
+                    <div className="text-lg font-black tracking-tight text-black">
+                      {formatPrice(tour.ticketPriceFromUSD, tour.ticketPriceFromVND)}
                     </div>
-
-                    <Link
-                      href="/event"
-                      style={{
-                        backgroundColor: '#000000',
-                        color: '#ffffff',
-                      }}
-                      className="px-4 py-2.5 rounded-xl hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs hover:shadow-md cursor-pointer shrink-0"
-                    >
-                      <Ticket size={13} style={{ color: '#ffffff' }} />
-                      <span style={{ color: '#ffffff' }}>Book Pass</span>
-                    </Link>
                   </div>
+
+                  <Link
+                    href="/event"
+                    style={{ borderRadius: '0px' }}
+                    className="px-5 py-2.5 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black border-2 border-black text-xs font-black uppercase tracking-widest transition-all shadow-[2px_2px_0px_#000000] hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                  >
+                    [BOOK PASS →]
+                  </Link>
                 </div>
 
               </div>
@@ -236,48 +216,30 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = ({ onSelectEv
           })}
         </div>
 
-        {/* Bottom Guarantee Banner */}
-        <div className="mt-12 p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left">
-          <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-200/80">
-              <ShieldCheck size={22} />
-            </div>
-            <div>
-              <div className="text-xs font-black text-slate-900 uppercase tracking-wider">
-                Anti-Scalper Security
-              </div>
-              <div className="text-[11.5px] text-slate-500 mt-0.5">
-                Encrypted identity barcode directly bound to your Weverse / Global ID
-              </div>
-            </div>
+        {/* Bottom Guarantee Banner (Vibrant Y2K Pop 3-Column Protocol) */}
+        <div 
+          style={{ borderRadius: '0px', marginTop: '48px' }}
+          className="mt-12 sm:mt-16 p-8 border-2 border-black bg-[#ecfeff] grid grid-cols-1 md:grid-cols-3 gap-8 text-black font-mono text-xs shadow-[5px_5px_0px_#000000]"
+        >
+          <div className="space-y-1.5">
+            <span className="font-black text-sm block text-[#ff2e93]">01 // ANTI-SCALPER PROTOCOL</span>
+            <p className="text-neutral-700 text-[11px] leading-relaxed font-semibold">
+              Encrypted biometric barcode directly bound to verified Global Pass ID to eliminate speculative resale.
+            </p>
           </div>
 
-          <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-200/80">
-              <Radio size={22} />
-            </div>
-            <div>
-              <div className="text-xs font-black text-slate-900 uppercase tracking-wider">
-                Soundcheck Priority
-              </div>
-              <div className="text-[11.5px] text-slate-500 mt-0.5">
-                Early arena admission &amp; soundcheck pass for verified club members
-              </div>
-            </div>
+          <div className="space-y-1.5 border-t md:border-t-0 md:border-l-2 border-black pt-4 md:pt-0 md:pl-8">
+            <span className="font-black text-sm block text-[#ff2e93]">02 // SOUNDCHECK ALLOCATION</span>
+            <p className="text-neutral-700 text-[11px] leading-relaxed font-semibold">
+              First-entry priority into arena staging areas with official soundcheck rehearsing laminate pass.
+            </p>
           </div>
 
-          <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200/80">
-              <Sparkles size={22} />
-            </div>
-            <div>
-              <div className="text-xs font-black text-slate-900 uppercase tracking-wider">
-                Wireless Sync Gates
-              </div>
-              <div className="text-[11.5px] text-slate-500 mt-0.5">
-                Bluetooth pairing desk at venue gates for synchronized stadium lightsticks
-              </div>
-            </div>
+          <div className="space-y-1.5 border-t md:border-t-0 md:border-l-2 border-black pt-4 md:pt-0 md:pl-8">
+            <span className="font-black text-sm block text-[#ff2e93]">03 // OFFICIAL HAN/CIRCLE COUNT</span>
+            <p className="text-neutral-700 text-[11px] leading-relaxed font-semibold">
+              Live concert box packages counted 100% directly towards verified Hanteo and Circle Music Charts.
+            </p>
           </div>
         </div>
 

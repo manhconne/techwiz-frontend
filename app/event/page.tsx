@@ -56,7 +56,7 @@ export default function EventPage() {
         {/* Breadcrumbs Navigation */}
         <Breadcrumbs 
           items={[
-            { label: 'Sự Kiện & Lịch Lưu Diễn (Event & GPS Calendar)', isActive: true }
+            { label: 'Events & Tour Dates (Event & GPS Calendar)', isActive: true }
           ]} 
         />
 

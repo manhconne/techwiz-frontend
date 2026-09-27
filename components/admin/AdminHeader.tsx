@@ -50,10 +50,10 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             style={{ borderRadius: '8px' }}
             className="admin-hide-on-mobile hidden md:flex items-center gap-2 px-3.5 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-sky-400 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 border border-slate-200 dark:border-slate-700 transition-all shadow-2xs"
             target='_blank'
-            title={language === 'vi' ? 'Quay lại cửa hàng chính' : 'Back to Store'}
+            title="Back to Store"
           >
             <Store className="w-4 h-4 text-indigo-600 dark:text-sky-400" />
-            <span>{language === 'vi' ? 'Quay lại Trang Khách' : 'Back to Store'}</span>
+            <span>Back to Store</span>
           </Link>
 
           {/* Dual Segmented Language Switcher [ EN | VI ] */}
@@ -93,7 +93,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                   ? 'bg-indigo-600 text-white shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
-              title="Tiếng Việt"
+              title="Vietnamese"
             >
               <img
                 src="https://flagcdn.com/w40/vn.png"
@@ -146,7 +146,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                     className="w-full flex items-center gap-2 px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-left cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
-                    <span>{language === 'vi' ? 'Đăng xuất' : 'Sign Out'}</span>
+                    <span>Sign Out</span>
                   </button>
                 </div>
               </>

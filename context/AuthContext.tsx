@@ -35,10 +35,10 @@ const defaultGuestUser: UserProfile = {
 };
 
 const initialActivities: UserActivity[] = [
-  { id: 'act-1', title: 'Đã đánh giá 5★ trailer NewJeans "Supernatural" Comeback MV', type: 'media', timestamp: '10 phút trước', link: '/multimedia' },
-  { id: 'act-2', title: 'Đã lưu sự kiện SEVENTEEN World Tour [RIGHT HERE] vào lịch', type: 'event', timestamp: '1 giờ trước', link: '/event' },
-  { id: 'act-3', title: 'Đã thêm aespa "Whiplash" Mini Album vào danh sách yêu thích', type: 'bookmark', timestamp: 'Hôm qua', link: '/#albums' },
-  { id: 'act-4', title: 'Đã tham gia cộng đồng Bunnies (NewJeans Official Fandom)', type: 'fandom', timestamp: '3 ngày trước', link: '/#artists' },
+  { id: 'act-1', title: 'Rated 5★ on NewJeans "Supernatural" Comeback MV trailer', type: 'media', timestamp: '10 mins ago', link: '/multimedia' },
+  { id: 'act-2', title: 'Saved SEVENTEEN World Tour [RIGHT HERE] to calendar', type: 'event', timestamp: '1 hour ago', link: '/event' },
+  { id: 'act-3', title: 'Added aespa "Whiplash" Mini Album to wishlist', type: 'bookmark', timestamp: 'Yesterday', link: '/#albums' },
+  { id: 'act-4', title: 'Joined Bunnies community (NewJeans Official Fandom)', type: 'fandom', timestamp: '3 days ago', link: '/#artists' },
 ];
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -118,7 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoggedIn(true);
     localStorage.setItem('kpop_user', JSON.stringify(newUser));
 
-    addActivity('Đăng nhập thành công vào hệ thống Fan Hub Universe', 'fandom');
+    addActivity('Signed in successfully to Fan Hub Universe', 'fandom');
   };
 
   const logout = () => {
@@ -137,7 +137,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('kpop_user', JSON.stringify(updated));
       return updated;
     });
-    addActivity('Đã cập nhật thông tin hồ sơ và sở thích fandom', 'fandom');
+    addActivity('Updated profile information and fandom preferences', 'fandom');
   };
 
   const toggleFavoriteFandom = (fandom: string) => {
@@ -150,7 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('kpop_user', JSON.stringify(nextUser));
       return nextUser;
     });
-    addActivity(`Đã ${user.favoriteFandoms.includes(fandom) ? 'bỏ theo dõi' : 'theo dõi fandom'} ${fandom}`, 'fandom');
+    addActivity(`${user.favoriteFandoms.includes(fandom) ? 'Unfollowed' : 'Followed fandom'} ${fandom}`, 'fandom');
   };
 
   const addActivity = (title: string, type: UserActivity['type'], link?: string) => {
@@ -158,7 +158,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: `act-${Date.now()}`,
       title,
       type,
-      timestamp: 'Vừa xong',
+      timestamp: 'Just now',
       link,
     };
     setActivities((prev) => {
@@ -175,27 +175,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return {
       success: true,
       token,
-      message: `Mã xác thực đặt lại mật khẩu đã được gửi tới email ${email}. (Mã thử nghiệm mô phỏng: ${token})`,
+      message: `Password reset verification code has been sent to ${email}. (Simulation demo token: ${token})`,
     };
   };
 
   const resetPasswordWithToken = (email: string, token: string, newPass: string) => {
     const stored = localStorage.getItem(`pwd_reset_${email}`);
     if (!stored) {
-      return { success: false, message: 'Yêu cầu đặt lại mật khẩu không tồn tại hoặc đã hết hạn.' };
+      return { success: false, message: 'Password reset request does not exist or has expired.' };
     }
     try {
       const parsed = JSON.parse(stored);
       if (parsed.token !== token.trim().toUpperCase()) {
-        return { success: false, message: 'Mã xác thực token không chính xác. Vui lòng kiểm tra lại.' };
+        return { success: false, message: 'Invalid verification token. Please double check.' };
       }
       if (Date.now() > parsed.expires) {
-        return { success: false, message: 'Mã xác thực đã hết hạn (quá 15 phút).' };
+        return { success: false, message: 'Verification code has expired (exceeded 15 minutes).' };
       }
       localStorage.removeItem(`pwd_reset_${email}`);
-      return { success: true, message: 'Mật khẩu của bạn đã được cập nhật thành công! Hãy đăng nhập lại.' };
+      return { success: true, message: 'Your password has been successfully updated! Please sign in again.' };
     } catch {
-      return { success: false, message: 'Lỗi xử lý xác thực.' };
+      return { success: false, message: 'Authentication verification error.' };
     }
   };
 

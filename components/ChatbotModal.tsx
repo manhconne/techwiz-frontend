@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatMessage } from '../types';
-import { Bot, Send, X, Disc, Trash2, Sparkles, HelpCircle, Film, MapPin, ExternalLink } from 'lucide-react';
 
 interface ChatbotModalProps {
   onFilterArtist: (artistId: string) => void;
@@ -18,7 +17,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
     {
       id: 'msg-0',
       sender: 'bot',
-      text: 'Xin chào Fandom Stan! 💖 Tôi là Trợ Lý AI của Fan Hub Universe. Bạn cần tìm kiếm vé concert, xem trailer 4K, nghe podcast hay kiểm tra album bản quyền nào hôm nay?',
+      text: 'SYSTEM // FANHUB AI CONSOLE V2.0 READY.\nHello Fandom Stan. I am your AI System Assistant. What stadium concert tickets, 4K trailers, lossless audio tracks, or verified releases can I assist you with today?',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ];
@@ -61,17 +60,17 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
     const q = userQuery.toLowerCase();
 
     // 1. Multimedia Center & Trailer & Rating
-    if (q.includes('trailer') || q.includes('multimedia') || q.includes('podcast') || q.includes('đánh giá') || q.includes('rating') || q.includes('soundtrack')) {
+    if (q.includes('trailer') || q.includes('multimedia') || q.includes('podcast') || q.includes('review') || q.includes('rating') || q.includes('soundtrack')) {
       return {
-        reply: 'Trung Tâm Đa Phương Tiện (Multimedia Center) đã sẵn sàng! Bạn có thể xem trailer 4K, video show thực tế, nghe podcast radio đĩa than xoay tròn, và tham gia chấm điểm 5 sao hoặc Thumbs up/down ngay tại khu vực Multimedia.',
+        reply: 'SYSTEM // MULTIMEDIA BROADCAST ACTIVE:\nStream 4K trailers, backstage videos, 24-bit lossless audio tracks, and participate in community ratings at the Cinematheque & Sound Lab.',
         action: { type: 'view_album', payload: 'multimedia' },
       };
     }
 
     // 2. Location-Aware GPS & Meetup Map
-    if (q.includes('vị trí') || q.includes('gps') || q.includes('bản đồ') || q.includes('gần đây') || q.includes('meetup') || q.includes('cafe')) {
+    if (q.includes('location') || q.includes('gps') || q.includes('map') || q.includes('nearby') || q.includes('meetup') || q.includes('cafe')) {
       return {
-        reply: 'Tính năng Radar Sự Kiện GPS tự động quét tọa độ hiện tại của bạn để tìm kiếm các buổi cup sleeve cafe, trade photocard và concert trong bán kính 10km - 100km! Bạn có thể xem ngay tại trang Sự Kiện & Lịch Lưu Diễn.',
+        reply: 'SYSTEM // EVENT RADAR GPS:\nAutomatically discovering cup sleeves, photocard trading sessions, and live arena concerts in your local area.',
         action: { type: 'view_album', payload: 'event' },
       };
     }
@@ -79,7 +78,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
     // 3. NewJeans
     if (q.includes('newjeans') || q.includes('bunnies') || q.includes('supernatural') || q.includes('how sweet')) {
       return {
-        reply: 'NewJeans đang gây bão với MV 4K "Supernatural" (kết hợp Pharrell Williams) và EP "Get Up" phiên bản Bunny Beach Bag! Bạn có muốn tôi lọc ngay sản phẩm NewJeans trên trang chủ không?',
+        reply: 'SYSTEM // ARTIST NEWJEANS:\n"Supernatural" 4K single and "Get Up" EP First Press available. Would you like to filter NewJeans on the catalog grid?',
         action: { type: 'filter_artist', payload: 'newjeans' },
       };
     }
@@ -87,43 +86,43 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
     // 4. BLACKPINK
     if (q.includes('blackpink') || q.includes('blink') || q.includes('born pink')) {
       return {
-        reply: 'BLACKPINK sở hữu album "BORN PINK" bản Limited Edition và Lightstick Hammer Bong Ver.2 chính hãng. Đêm diễn concert sân vận động Mỹ Đình cũng đã được ghi nhận trong lịch trình Fandom!',
+        reply: 'SYSTEM // ARTIST BLACKPINK:\n"BORN PINK" Limited Boxset and Stadium World Tour schedule are synced into the system.',
         action: { type: 'filter_artist', payload: 'blackpink' },
       };
     }
 
     // 5. Concert Tickets
-    if (q.includes('vé') || q.includes('ticket') || q.includes('concert') || q.includes('tour')) {
+    if (q.includes('ticket') || q.includes('pass') || q.includes('concert') || q.includes('tour')) {
       return {
-        reply: 'Lịch World Tour toàn cầu bao gồm SEVENTEEN [RIGHT HERE], BLACKPINK Encore, và concert Anh Trai Say Hi đã mở đăng ký giữ chỗ và link mua vé chính thức. Bạn hãy truy cập mục Event nhé!',
+        reply: 'SYSTEM // WORLD TOUR STADIUM SCHEDULE:\nSEVENTEEN, BLACKPINK Encore, and Say Hi All-Stars stage pass reservations and ticketing links are live.',
         action: { type: 'view_album', payload: 'event' },
       };
     }
 
     // 6. Fan-Submitted Articles
-    if (q.includes('gửi bài') || q.includes('bài viết') || q.includes('đăng bài') || q.includes('cộng đồng')) {
+    if (q.includes('submit') || q.includes('article') || q.includes('post') || q.includes('community')) {
       return {
-        reply: 'Bạn có thể tự do gửi bài viết, cảm nhận concert, review album tại mục "Trending Articles & Release Schedule" bằng cách bấm nút "✍️ Gửi Bài Viết". Bài viết sẽ được Admin duyệt và đăng tải công khai!',
+        reply: 'SYSTEM // SUBMIT FANDOM DISPATCH:\nYou can submit reviews or lore analysis by clicking "[+ SUBMIT POST]" in the Fandom Community section.',
       };
     }
 
     // 7. Photocards authenticity
-    if (q.includes('photocard') || q.includes('card') || q.includes('bo góc') || q.includes('auth')) {
+    if (q.includes('photocard') || q.includes('card') || q.includes('pob') || q.includes('auth')) {
       return {
-        reply: '100% Album và vật phẩm trên Fan Hub Universe là hàng nguyên seal chính hãng nhập khẩu trực tiếp từ Seoul, đầy đủ quà tặng đặt trước (POB) và thẻ bo góc holographic được tính điểm trực tiếp vào bảng xếp hạng Hanteo & Circle Chart!',
+        reply: 'SYSTEM // OFFICIAL AUTHENTICITY:\n100% factory-sealed official imports with original Pre-Order Benefits (POB), counting towards Hanteo & Circle Charts.',
       };
     }
 
     // 8. Showcase / Cart
-    if (q.includes('cart') || q.includes('mua') || q.includes('thanh toán') || q.includes('giỏ hàng')) {
+    if (q.includes('cart') || q.includes('buy') || q.includes('checkout') || q.includes('bag') || q.includes('pre-order')) {
       return {
-        reply: 'Hệ thống giỏ hàng hoạt động dưới mô hình Đăng Ký Giữ Chỗ Showcase (Pre-Order Reservation Alert). Hoàn toàn không thu phí trực tuyến nhằm đảm bảo quyền lợi trưng bày văn hóa fandom!',
+        reply: 'SYSTEM // SHOWCASE PRE-ORDER ALERT:\nThis platform operates under non-commercial Showcase Discovery standards. Register alerts for official drop notifications.',
         action: { type: 'open_cart', payload: '' },
       };
     }
 
     return {
-      reply: `Cảm ơn bạn đã hỏi về "${userQuery}"! Fan Hub Universe cung cấp hệ sinh thái toàn diện: Trailer 4K, bản đồ GPS sự kiện, podcast đĩa than, và kho album chính hãng. Hãy chọn một trong các câu hỏi gợi ý bên dưới hoặc hỏi thêm bất cứ điều gì nhé!`,
+      reply: `SYSTEM ACKNOWLEDGED: "${userQuery}".\nFan Hub Plus supports multi-fandom queries (K-Pop, Anime, Gaming, Cinema, Cosplay). You can select a quick prompt below.`,
     };
   };
 
@@ -152,129 +151,130 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
       const botMsg: ChatMessage = {
         id: `msg-${Date.now() + 1}`,
         sender: 'bot',
-        text: data.reply || "Xin lỗi, đã có lỗi xảy ra từ máy chủ FanHub AI.",
+        text: data.reply || generateBotReply(text).reply,
+        suggestedAction: generateBotReply(text).action,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, botMsg]);
     } catch (error) {
-      const errorMsg: ChatMessage = {
+      const botReply = generateBotReply(text);
+      const botMsg: ChatMessage = {
         id: `msg-${Date.now() + 1}`,
         sender: 'bot',
-        text: "Hệ thống AI đang bảo trì hoặc mất kết nối mạng. Bạn vui lòng thử lại sau nhé!",
+        text: botReply.reply,
+        suggestedAction: botReply.action,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
-      setMessages((prev) => [...prev, errorMsg]);
+      setMessages((prev) => [...prev, botMsg]);
     }
   };
 
   const promptSuggestions = [
-    '🎬 Xem trailer 4K & đánh giá rating ở đâu?',
-    '📍 Tìm sự kiện meetup gần tôi (Bản đồ GPS)?',
-    '🎟️ Lịch concert SEVENTEEN & BTS sắp tới?',
-    '✍️ Cách gửi bài viết chia sẻ fandom?',
-    '💿 Thẻ bo góc photocards có chuẩn auth không?',
-    '🌟 Gợi ý album NewJeans "Get Up"',
+    'TRAILER 4K & RATING',
+    'GPS EVENT RADAR',
+    'STADIUM TOUR DATES',
+    'SUBMIT FANDOM POST',
+    'AUTHENTICITY VERIFY',
+    'ALBUM NEWJEANS GET UP',
   ];
 
   return (
     <>
-      {/* Floating Action Trigger Button */}
+      {/* Floating Action Trigger Button (Vibrant Y2K Cyber Terminal Badge) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 p-3.5 text-white rounded-full shadow-2xl hover:scale-105 transition-all cursor-pointer flex items-center gap-2 group bg-slate-900 border border-slate-700"
-        title="Mở Trợ Lý AI Fandom Assistant"
+        style={{ borderRadius: '0px' }}
+        className="fixed bottom-6 right-6 z-40 px-4 py-3 bg-[#ff2e93] text-white hover:bg-[#e11d48] border-3 border-black font-mono text-xs font-black uppercase tracking-widest cursor-pointer transition-all duration-100 flex items-center gap-2.5 shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#ffd60a] hover:-translate-y-0.5 active:translate-y-0.5"
+        title="Launch AI Fandom Assistant"
         type="button"
       >
-        <Bot className="w-6 h-6 text-amber-400 animate-bounce" />
-        <span className="hidden sm:inline text-xs font-black pr-1 tracking-wide">Fandom AI</span>
-        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-white animate-pulse" />
+        <span className="w-2.5 h-2.5 bg-[#ffd60a] border border-black animate-ping" />
+        <span>★ AI BOT // FANDOM OS ✦</span>
       </button>
 
-      {/* Chat Window Modal */}
+      {/* Chat Window Modal (Y2K Retro OS Window) */}
       {isOpen && (
         <div 
-          className="fixed bottom-20 right-4 sm:right-6 z-50 w-[94vw] sm:w-[420px] max-h-[580px] h-[540px] bg-white shadow-2xl border border-slate-300 rounded-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+          style={{ borderRadius: '0px' }}
+          className="fixed bottom-24 right-4 sm:right-6 z-50 w-[94vw] sm:w-[450px] max-h-[620px] h-[560px] bg-white text-black border-3 border-black flex flex-col overflow-hidden shadow-[8px_8px_0px_#000000] font-mono text-xs"
         >
-          {/* Header */}
-          <div className="bg-slate-950 text-white px-4 py-3.5 flex items-center justify-between border-b border-slate-800">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-black">
-                <Bot className="w-5 h-5 text-slate-950" />
-              </div>
-              <div>
-                <h3 className="text-xs font-black tracking-tight flex items-center gap-1.5">
-                  <span>Trợ Lý Ảo Fan Hub AI</span>
-                  <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 text-[9px] font-mono border border-emerald-500/30">
-                    24/7 LIVE
-                  </span>
-                </h3>
-                <p className="text-[10px] text-slate-400">Giải đáp FAQ, gợi ý sự kiện &amp; nội dung thông minh</p>
-              </div>
+          {/* Y2K Window Bar Header */}
+          <div className="bg-[#ffd60a] text-black px-4 py-2.5 flex items-center justify-between border-b-3 border-black select-none">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 bg-[#ff2e93] border border-black" />
+              <span className="font-black tracking-widest text-[11px] uppercase">
+                SYS.AI // FANDOM_OPERATOR_V2.0
+              </span>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <button
                 onClick={handleClearHistory}
-                className="text-slate-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
-                title="Xóa lịch sử trò chuyện"
+                className="bg-white hover:bg-[#ecfeff] text-black px-2 py-0.5 border border-black text-[10px] font-black uppercase shadow-[1px_1px_0px_#000] cursor-pointer"
+                title="Purge chat log"
                 type="button"
               >
-                <Trash2 className="w-4 h-4" />
+                [PURGE]
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
-                title="Đóng cửa sổ"
+                className="bg-[#ff2e93] text-white hover:bg-[#e11d48] px-2 py-0.5 border-2 border-black text-[10px] font-black cursor-pointer shadow-[1px_1px_0px_#000]"
+                title="Close Window"
                 type="button"
               >
-                <X className="w-4 h-4" />
+                [✕]
               </button>
             </div>
           </div>
 
           {/* Quick FAQ Chips Bar */}
-          <div className="p-2.5 bg-slate-50 border-b border-slate-200 flex gap-1.5 overflow-x-auto scrollbar-none text-[11px]">
+          <div className="p-2.5 bg-[#ecfeff] border-b-2 border-black flex gap-1.5 overflow-x-auto scrollbar-none text-[10px]">
             {promptSuggestions.map((prompt, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSend(prompt)}
-                className="whitespace-nowrap px-3 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-full font-bold transition-all shadow-2xs cursor-pointer flex-shrink-0"
+                style={{ borderRadius: '0px' }}
+                className="whitespace-nowrap px-2.5 py-1 bg-white hover:bg-[#ffd60a] text-black border-2 border-black font-black uppercase transition-colors cursor-pointer shrink-0 shadow-[1px_1px_0px_#000]"
                 type="button"
               >
-                {prompt}
+                ★ {prompt}
               </button>
             ))}
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3.5 bg-slate-50/80">
+          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#fdfbf7] text-xs">
             {messages.map((msg) => (
               <div
                 key={msg.id}
                 className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
               >
                 <div
-                  className={`max-w-[88%] p-3.5 rounded-2xl text-xs leading-relaxed shadow-xs ${
+                  style={{ borderRadius: '0px' }}
+                  className={`max-w-[90%] p-3.5 border-2 border-black shadow-[3px_3px_0px_#000000] ${
                     msg.sender === 'user'
-                      ? 'bg-slate-900 text-white rounded-br-none'
-                      : 'bg-white text-slate-800 border border-slate-200/90 rounded-bl-none'
+                      ? 'bg-[#00f0ff] text-black'
+                      : 'bg-white text-black'
                   }`}
                 >
-                  <p className="font-medium whitespace-pre-wrap">{msg.text}</p>
+                  <div className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-1 flex items-center gap-1">
+                    <span>{msg.sender === 'user' ? '⚡ USER_PROMPT' : '✪ SYSTEM_TELETYPE'}</span>
+                  </div>
+                  <p className="whitespace-pre-wrap leading-relaxed font-mono font-medium">{msg.text}</p>
 
                   {/* Contextual Action Button */}
                   {msg.suggestedAction && (
-                    <div className="mt-2.5 pt-2 border-t border-slate-100 flex flex-wrap gap-2">
+                    <div className="mt-3 pt-2.5 border-t-2 border-black flex flex-wrap gap-2">
                       {msg.suggestedAction.type === 'filter_artist' && (
                         <button
                           onClick={() => {
                             onFilterArtist(msg.suggestedAction!.payload);
                             setIsOpen(false);
                           }}
-                          className="px-3 py-1.5 rounded-xl bg-amber-400 text-slate-950 font-black text-[11px] uppercase tracking-wider flex items-center gap-1.5 hover:bg-amber-300 shadow-xs"
+                          style={{ borderRadius: '0px' }}
+                          className="px-3 py-1.5 bg-[#ff2e93] text-white hover:bg-[#e11d48] border-2 border-black font-black text-[10px] uppercase tracking-wider cursor-pointer shadow-[2px_2px_0px_#000]"
                         >
-                          <Disc className="w-3.5 h-3.5" />
-                          <span>Lọc Album {msg.suggestedAction.payload.toUpperCase()}</span>
+                          ★ LOCATE // {msg.suggestedAction.payload.toUpperCase()}
                         </button>
                       )}
 
@@ -284,41 +284,38 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
                             onOpenCart();
                             setIsOpen(false);
                           }}
-                          className="px-3 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-[11px] flex items-center gap-1.5 hover:bg-slate-800"
+                          style={{ borderRadius: '0px' }}
+                          className="px-3 py-1.5 bg-[#ffd60a] text-black hover:bg-[#fde047] border-2 border-black font-black text-[10px] uppercase tracking-wider cursor-pointer shadow-[2px_2px_0px_#000]"
                         >
-                          <span>Mở Danh Sách Giữ Chỗ</span>
+                          ★ OPEN SHOWCASE BAG
                         </button>
                       )}
 
                       {msg.suggestedAction.payload === 'multimedia' && (
                         <a
-                          href="/multimedia"
+                          href="#multimedia"
                           onClick={() => setIsOpen(false)}
-                          className="px-3 py-1.5 rounded-xl bg-rose-600 text-white font-black text-[11px] uppercase tracking-wider flex items-center gap-1.5 hover:bg-rose-500 shadow-xs"
+                          style={{ borderRadius: '0px' }}
+                          className="px-3 py-1.5 bg-[#ccff00] text-black hover:bg-[#bef264] border-2 border-black font-black text-[10px] uppercase tracking-wider cursor-pointer inline-block shadow-[2px_2px_0px_#000]"
                         >
-                          <Film className="w-3.5 h-3.5" />
-                          <span>Đến Multimedia Center</span>
+                          ★ LAUNCH CINEMATHEQUE
                         </a>
                       )}
 
                       {msg.suggestedAction.payload === 'event' && (
                         <a
-                          href="/event#location-events"
+                          href="/event"
                           onClick={() => setIsOpen(false)}
-                          className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-black text-[11px] uppercase tracking-wider flex items-center gap-1.5 hover:bg-emerald-500 shadow-xs"
+                          style={{ borderRadius: '0px' }}
+                          className="px-3 py-1.5 bg-[#00f0ff] text-black hover:bg-[#38bdf8] border-2 border-black font-black text-[10px] uppercase tracking-wider cursor-pointer inline-block shadow-[2px_2px_0px_#000]"
                         >
-                          <MapPin className="w-3.5 h-3.5" />
-                          <span>Mở Bản Đồ Sự Kiện GPS</span>
+                          ★ ACCESS STADIUM CALENDAR
                         </a>
                       )}
                     </div>
                   )}
 
-                  <span
-                    className={`block text-[10px] mt-1 font-mono ${
-                      msg.sender === 'user' ? 'text-slate-400 text-right' : 'text-slate-400'
-                    }`}
-                  >
+                  <span className="block text-[9px] mt-1.5 font-mono text-neutral-600 font-bold text-right">
                     {msg.timestamp}
                   </span>
                 </div>
@@ -333,22 +330,23 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
               e.preventDefault();
               handleSend();
             }}
-            className="p-3 bg-white border-t border-slate-200 flex items-center gap-2"
+            className="p-3 bg-white border-t-3 border-black flex items-center gap-2"
           >
             <input
               type="text"
-              placeholder="Nhập câu hỏi (MV, vé concert, photocard, GPS)..."
+              placeholder="ENTER SYSTEM QUERY..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900 bg-slate-50"
+              style={{ borderRadius: '0px' }}
+              className="flex-1 px-3 py-2 border-2 border-black text-xs font-mono uppercase bg-[#fdfbf7] focus:outline-none focus:bg-white focus:border-[#ff2e93]"
             />
             <button
               type="submit"
               disabled={!input.trim()}
-              className="p-2.5 rounded-xl bg-slate-900 text-white disabled:opacity-40 hover:bg-slate-800 transition-colors shadow-sm"
-              title="Gửi câu hỏi"
+              style={{ borderRadius: '0px' }}
+              className="px-4 py-2 bg-[#ff2e93] text-white font-black uppercase tracking-wider disabled:opacity-40 hover:bg-[#e11d48] transition-colors cursor-pointer border-2 border-black shadow-[2px_2px_0px_#000] active:translate-y-0.5"
             >
-              <Send className="w-4 h-4" />
+              [SEND →]
             </button>
           </form>
         </div>
