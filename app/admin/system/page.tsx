@@ -151,15 +151,15 @@ export default function SystemMonitorPage() {
                 <div className="flex flex-col gap-3 w-full md:w-auto z-10">
                   <div className={`px-5 py-3 rounded-xl border-2 flex items-center justify-between gap-4 transition-all duration-300 ${sysStatus?.hotspot === 'event-service' ? 'bg-rose-950 border-rose-500' : 'bg-slate-950 border-slate-800'}`}>
                     <span className="text-sm font-bold text-white">Event Service</span>
-                    {sysStatus?.hotspot === 'event-service' && <span className="text-xs bg-rose-500 text-white px-2 py-0.5 rounded font-mono animate-pulse">ðŸ”¥ HOTSPOT</span>}
+                    {sysStatus?.hotspot === 'event-service' && <span className="text-xs bg-rose-500 text-white px-2 py-0.5 rounded font-mono animate-pulse">HOTSPOT</span>}
                   </div>
                   <div className={`px-5 py-3 rounded-xl border-2 flex items-center justify-between gap-4 transition-all duration-300 ${sysStatus?.hotspot === 'booking-service' ? 'bg-amber-950 border-amber-500' : 'bg-slate-950 border-slate-800'}`}>
                     <span className="text-sm font-bold text-white">Booking Service</span>
-                    {sysStatus?.hotspot === 'booking-service' && <span className="text-xs bg-amber-500 text-white px-2 py-0.5 rounded font-mono animate-pulse">ðŸ”¥ HOTSPOT</span>}
+                    {sysStatus?.hotspot === 'booking-service' && <span className="text-xs bg-amber-500 text-white px-2 py-0.5 rounded font-mono animate-pulse">HOTSPOT</span>}
                   </div>
                   <div className={`px-5 py-3 rounded-xl border-2 flex items-center justify-between gap-4 transition-all duration-300 ${sysStatus?.hotspot === 'payment-service' ? 'bg-emerald-950 border-emerald-500' : 'bg-slate-950 border-slate-800'}`}>
                     <span className="text-sm font-bold text-white">Payment Service</span>
-                    {sysStatus?.hotspot === 'payment-service' && <span className="text-xs bg-emerald-500 text-white px-2 py-0.5 rounded font-mono animate-pulse">ðŸ”¥ HOTSPOT</span>}
+                    {sysStatus?.hotspot === 'payment-service' && <span className="text-xs bg-emerald-500 text-white px-2 py-0.5 rounded font-mono animate-pulse">HOTSPOT</span>}
                   </div>
                 </div>
               </div>
