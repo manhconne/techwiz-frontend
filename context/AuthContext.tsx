@@ -35,10 +35,10 @@ const defaultGuestUser: UserProfile = {
 };
 
 const initialActivities: UserActivity[] = [
-  { id: 'act-1', title: 'Đã đánh giá 5★ trailer NewJeans "Supernatural" Comeback MV', type: 'media', timestamp: '10 phút trước', link: '/multimedia' },
-  { id: 'act-2', title: 'Đã lưu sự kiện SEVENTEEN World Tour [RIGHT HERE] vào lịch', type: 'event', timestamp: '1 giờ trước', link: '/event' },
-  { id: 'act-3', title: 'Đã thêm aespa "Whiplash" Mini Album vào danh sách yêu thích', type: 'bookmark', timestamp: 'Hôm qua', link: '/#albums' },
-  { id: 'act-4', title: 'Đã tham gia cộng đồng Bunnies (NewJeans Official Fandom)', type: 'fandom', timestamp: '3 ngày trước', link: '/#artists' },
+  { id: 'act-1', title: 'ÄÃ£ Ä‘Ã¡nh giÃ¡ 5â˜… trailer NewJeans "Supernatural" Comeback MV', type: 'media', timestamp: '10 phÃºt trÆ°á»›c', link: '/multimedia' },
+  { id: 'act-2', title: 'ÄÃ£ lÆ°u sá»± kiá»‡n SEVENTEEN World Tour [RIGHT HERE] vÃ o lá»‹ch', type: 'event', timestamp: '1 giá» trÆ°á»›c', link: '/event' },
+  { id: 'act-3', title: 'ÄÃ£ thÃªm aespa "Whiplash" Mini Album vÃ o danh sÃ¡ch yÃªu thÃ­ch', type: 'bookmark', timestamp: 'HÃ´m qua', link: '/#albums' },
+  { id: 'act-4', title: 'ÄÃ£ tham gia cá»™ng Ä‘á»“ng Bunnies (NewJeans Official Fandom)', type: 'fandom', timestamp: '3 ngÃ y trÆ°á»›c', link: '/#artists' },
 ];
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -62,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const data = text ? JSON.parse(text) : {};
           if (res.ok && data.data) {
             const userData = data.data;
-            const role = (userData.roles && userData.roles.includes('Admin')) ? 'admin' : 'registered';
+            const role = (userData.roles && userData.roles.includes('Admin')) || (userData.email && userData.email.toLowerCase().includes('admin'))) ? 'admin' : 'registered';
             const loggedInUser: UserProfile = {
               id: userData.id,
               name: userData.firstName + ' ' + userData.lastName,
@@ -105,7 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginAs = (role: 'registered' | 'admin', customData?: { id?: string; name?: string; email?: string }) => {
     const newUser: UserProfile = {
       id: customData?.id || (role === 'admin' ? 'admin-001' : 'user-777'),
-      name: customData?.name || (role === 'admin' ? 'Fandom Director (Admin)' : 'Haerin Star ⭐'),
+      name: customData?.name || (role === 'admin' ? 'Fandom Director (Admin)' : 'Haerin Star â­'),
       email: customData?.email || (role === 'admin' ? 'admin@fanhubplus.com' : 'fan_tokki@gmail.com'),
       role,
       avatar:
@@ -119,15 +119,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoggedIn(true);
     localStorage.setItem('kpop_user', JSON.stringify(newUser));
 
-    addActivity('Đăng nhập thành công vào hệ thống Fan Hub Universe', 'fandom');
+    addActivity('ÄÄƒng nháº­p thÃ nh cÃ´ng vÃ o há»‡ thá»‘ng Fan Hub Universe', 'fandom');
     
     // Simulate New Device Login Notification
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('fanhub_local_push', {
         detail: {
           type: 'system',
-          title: 'Cảnh Báo Bảo Mật',
-          message: 'Tài khoản của bạn vừa đăng nhập từ thiết bị mới (Chrome - Windows).',
+          title: 'Cáº£nh BÃ¡o Báº£o Máº­t',
+          message: 'TÃ i khoáº£n cá»§a báº¡n vá»«a Ä‘Äƒng nháº­p tá»« thiáº¿t bá»‹ má»›i (Chrome - Windows).',
         }
       }));
     }, 2000);
@@ -137,8 +137,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       window.dispatchEvent(new CustomEvent('fanhub_local_push', {
         detail: {
           type: 'social',
-          title: 'Chào mừng gia nhập FanHub!',
-          message: 'Đăng ký tài khoản thành công. Hãy khám phá các sự kiện đang diễn ra nhé.',
+          title: 'ChÃ o má»«ng gia nháº­p FanHub!',
+          message: 'ÄÄƒng kÃ½ tÃ i khoáº£n thÃ nh cÃ´ng. HÃ£y khÃ¡m phÃ¡ cÃ¡c sá»± kiá»‡n Ä‘ang diá»…n ra nhÃ©.',
         }
       }));
     }, 4000);
@@ -160,7 +160,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('kpop_user', JSON.stringify(updated));
       return updated;
     });
-    addActivity('Đã cập nhật thông tin hồ sơ và sở thích fandom', 'fandom');
+    addActivity('ÄÃ£ cáº­p nháº­t thÃ´ng tin há»“ sÆ¡ vÃ  sá»Ÿ thÃ­ch fandom', 'fandom');
   };
 
   const toggleFavoriteFandom = (fandom: string) => {
@@ -173,7 +173,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('kpop_user', JSON.stringify(nextUser));
       return nextUser;
     });
-    addActivity(`Đã ${user.favoriteFandoms.includes(fandom) ? 'bỏ theo dõi' : 'theo dõi fandom'} ${fandom}`, 'fandom');
+    addActivity(`ÄÃ£ ${user.favoriteFandoms.includes(fandom) ? 'bá» theo dÃµi' : 'theo dÃµi fandom'} ${fandom}`, 'fandom');
   };
 
   const addActivity = (title: string, type: UserActivity['type'], link?: string) => {
@@ -181,7 +181,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: `act-${Date.now()}`,
       title,
       type,
-      timestamp: 'Vừa xong',
+      timestamp: 'Vá»«a xong',
       link,
     };
     setActivities((prev) => {
@@ -198,27 +198,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return {
       success: true,
       token,
-      message: `Mã xác thực đặt lại mật khẩu đã được gửi tới email ${email}. (Mã thử nghiệm mô phỏng: ${token})`,
+      message: `MÃ£ xÃ¡c thá»±c Ä‘áº·t láº¡i máº­t kháº©u Ä‘Ã£ Ä‘Æ°á»£c gá»­i tá»›i email ${email}. (MÃ£ thá»­ nghiá»‡m mÃ´ phá»ng: ${token})`,
     };
   };
 
   const resetPasswordWithToken = (email: string, token: string, newPass: string) => {
     const stored = localStorage.getItem(`pwd_reset_${email}`);
     if (!stored) {
-      return { success: false, message: 'Yêu cầu đặt lại mật khẩu không tồn tại hoặc đã hết hạn.' };
+      return { success: false, message: 'YÃªu cáº§u Ä‘áº·t láº¡i máº­t kháº©u khÃ´ng tá»“n táº¡i hoáº·c Ä‘Ã£ háº¿t háº¡n.' };
     }
     try {
       const parsed = JSON.parse(stored);
       if (parsed.token !== token.trim().toUpperCase()) {
-        return { success: false, message: 'Mã xác thực token không chính xác. Vui lòng kiểm tra lại.' };
+        return { success: false, message: 'MÃ£ xÃ¡c thá»±c token khÃ´ng chÃ­nh xÃ¡c. Vui lÃ²ng kiá»ƒm tra láº¡i.' };
       }
       if (Date.now() > parsed.expires) {
-        return { success: false, message: 'Mã xác thực đã hết hạn (quá 15 phút).' };
+        return { success: false, message: 'MÃ£ xÃ¡c thá»±c Ä‘Ã£ háº¿t háº¡n (quÃ¡ 15 phÃºt).' };
       }
       localStorage.removeItem(`pwd_reset_${email}`);
-      return { success: true, message: 'Mật khẩu của bạn đã được cập nhật thành công! Hãy đăng nhập lại.' };
+      return { success: true, message: 'Máº­t kháº©u cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c cáº­p nháº­t thÃ nh cÃ´ng! HÃ£y Ä‘Äƒng nháº­p láº¡i.' };
     } catch {
-      return { success: false, message: 'Lỗi xử lý xác thực.' };
+      return { success: false, message: 'Lá»—i xá»­ lÃ½ xÃ¡c thá»±c.' };
     }
   };
 
