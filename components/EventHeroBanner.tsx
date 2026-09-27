@@ -46,9 +46,47 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
   const isGaming = currentCategory === 'Gaming';
   const isAnime = currentCategory === 'Anime';
   const isComics = currentCategory === 'Comics';
+  const isCinema = currentCategory === 'Movies';
+  const isTvShows = currentCategory === 'TV Shows';
 
   // 5 Masterpiece Graphic Banners - Minimalist Monochrome with Oversized Typography
   const BANNER_SLIDES: GraphicBannerSlide[] = [
+    {
+      id: 'slide-tvshows-y2k',
+      category: 'TV Shows',
+      categoryLabel: 'TV Shows & K-Drama Vault',
+      heroWord: 'BINGE',
+      title: 'TV SHOWS & K-DRAMA VAULT // Y2K BINGE EDITION',
+      subtitle: 'Certified television masterworks, exclusive holographic photocard inclusions, full screenplay monographs & deluxe 2LP soundtrack gatefolds.',
+      tag: '★ BINGE NIGHT // TV SERIES',
+      image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&auto=format&fit=crop&q=85',
+      badge: '★ Y2K BINGE DROP',
+      dateText: 'SEASON 2026 BROADCAST',
+      locationText: 'Seoul, Hawkins & Zaun',
+      priceText: 'From $24.99',
+      ctaText: 'Explore TV Releases',
+      secondaryCtaText: 'View Binge Catalog',
+      targetAnchor: 'tv-catalog',
+      eventRefId: 'tv-y2k-drop',
+    },
+    {
+      id: 'slide-cinema-swiss',
+      category: 'Movies',
+      categoryLabel: '70mm Cinema & Auteur Archive',
+      heroWord: 'CINEMA',
+      title: '70MM RESTORATION ARCHIVE • Auteur Retrospectives & 4K Masters',
+      subtitle: 'Objective optical clarity, pristine photogram fidelity & director-supervised collector monographs for Denis Villeneuve, Christopher Nolan & Wong Kar-wai.',
+      tag: '01. SWISS ARCHIVE // 70MM MASTER',
+      image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&auto=format&fit=crop&q=85',
+      badge: '70MM RESTORATION',
+      dateText: 'CRAFT SELECTION 2026',
+      locationText: 'Zurich Cinémathèque & BFI Southbank',
+      priceText: 'From $29.99',
+      ctaText: 'Browse 70mm Catalog',
+      secondaryCtaText: 'Explore Auteur Atelier',
+      targetAnchor: 'cinema-catalog',
+      eventRefId: 'cinema-swiss-drop',
+    },
     {
       id: 'slide-stadium-live',
       category: 'all',
@@ -193,6 +231,16 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
   // Filter slides by active category if selected, otherwise show all
   const filteredSlides = useMemo(() => {
     if (currentCategory === 'all') return BANNER_SLIDES;
+    if (currentCategory === 'TV Shows') {
+      const tvSlide = BANNER_SLIDES.find(s => s.category === 'TV Shows');
+      const otherSlides = BANNER_SLIDES.filter(s => s.category !== 'TV Shows');
+      return tvSlide ? [tvSlide, ...otherSlides] : BANNER_SLIDES;
+    }
+    if (currentCategory === 'Movies') {
+      const cinemaSlide = BANNER_SLIDES.find(s => s.category === 'Movies');
+      const otherSlides = BANNER_SLIDES.filter(s => s.category !== 'Movies');
+      return cinemaSlide ? [cinemaSlide, ...otherSlides] : BANNER_SLIDES;
+    }
     if (currentCategory === 'Gaming') {
       const gamingSlide = BANNER_SLIDES.find(s => s.category === 'Gaming');
       const otherSlides = BANNER_SLIDES.filter(s => s.category !== 'Gaming');
@@ -314,7 +362,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             <div className="flex items-center gap-3 flex-wrap font-mono">
               <span
                 style={{ borderRadius: isAnime || isComics ? '8px' : '0px' }}
-                className={`inline-flex items-center gap-2 px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : isAnime ? 'bg-[#a3e635] text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : isComics ? 'bg-[#ef4444] text-white border-2 border-black shadow-[3px_3px_0px_#000000]' : 'bg-[#ff2e93] text-white border-2 border-black shadow-[3px_3px_0px_#000000]'} text-[11px] font-black uppercase tracking-widest`}
+                className={`inline-flex items-center gap-2 px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : isCinema ? 'bg-[#FF3000] text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : isComics ? 'bg-[#ef4444] text-white border-2 border-black shadow-[3px_3px_0px_#000000]' : 'bg-[#ff2e93] text-white border-2 border-black shadow-[3px_3px_0px_#000000]'} text-[11px] font-black uppercase tracking-widest`}
               >
                 <span>★</span>
                 <span>{currentSlide.tag}</span>
@@ -322,7 +370,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
 
               <span
                 style={{ borderRadius: isAnime || isComics ? '8px' : '0px' }}
-                className={`text-[11px] font-bold tracking-wider ${isGaming ? 'bg-white text-black border-2 border-black shadow-none' : isAnime ? 'bg-[#ecfccb] text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : isComics ? 'bg-[#fef08a] text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : 'bg-[#00f0ff] text-black border-2 border-black shadow-[3px_3px_0px_#000000]'} flex items-center gap-1.5 px-3 py-1.5`}
+                className={`text-[11px] font-bold tracking-wider ${isGaming ? 'bg-white text-black border-2 border-black shadow-none' : isCinema ? 'bg-white text-black border-2 border-black shadow-none' : isAnime ? 'bg-[#ecfccb] text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : isComics ? 'bg-[#fef08a] text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : 'bg-[#00f0ff] text-black border-2 border-black shadow-[3px_3px_0px_#000000]'} flex items-center gap-1.5 px-3 py-1.5`}
               >
                 <span className="text-black font-black font-mono">LOC //</span>
                 <span>{currentSlide.locationText}</span>
@@ -331,7 +379,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               {currentSlide.priceText && (
                 <span
                   style={{ borderRadius: isAnime || isComics ? '8px' : '0px' }}
-                  className={`text-[11px] font-black px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : isAnime || isComics ? 'bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : 'bg-[#ffd60a] text-black border-2 border-black shadow-[3px_3px_0px_#000000]'} tracking-widest uppercase`}
+                  className={`text-[11px] font-black px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : isCinema ? 'bg-[#F2F2F2] text-black border-2 border-black shadow-none' : isAnime || isComics ? 'bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : 'bg-[#ffd60a] text-black border-2 border-black shadow-[3px_3px_0px_#000000]'} tracking-widest uppercase`}
                 >
                   {currentSlide.priceText}
                 </span>
@@ -341,14 +389,14 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             {/* Oversized Headline */}
             <div className="space-y-1">
               <div
-                style={{ fontFamily: isComics ? "'Bangers', cursive, sans-serif" : isAnime ? "'Kalam', cursive, sans-serif" : undefined }}
-                className={`text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter uppercase leading-none select-none ${isComics ? 'text-[#ef4444] opacity-40 drop-shadow-[3px_3px_0px_#000]' : isAnime ? 'text-[#a3e635] opacity-40 drop-shadow-[3px_3px_0px_#000]' : isGaming ? 'font-serif text-white/60 opacity-60' : 'font-serif text-[#ffd60a] opacity-40 drop-shadow-[2px_2px_0px_#000]'}`}
+                style={{ fontFamily: isComics ? "'Bangers', cursive, sans-serif" : isAnime ? "'Kalam', cursive, sans-serif" : isCinema ? "'Inter', sans-serif" : undefined }}
+                className={`text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter uppercase leading-none select-none ${isComics ? 'text-[#ef4444] opacity-40 drop-shadow-[3px_3px_0px_#000]' : isAnime ? 'text-[#a3e635] opacity-40 drop-shadow-[3px_3px_0px_#000]' : isCinema ? 'font-black text-white/30 tracking-tighter' : isGaming ? 'font-serif text-white/60 opacity-60' : 'font-serif text-[#ffd60a] opacity-40 drop-shadow-[2px_2px_0px_#000]'}`}
               >
                 {currentSlide.heroWord}
               </div>
               <h1
-                style={{ fontFamily: isComics ? "'Bangers', cursive, sans-serif" : isAnime ? "'Kalam', cursive, sans-serif" : undefined }}
-                className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight -mt-4 sm:-mt-6 drop-shadow-[2px_2px_0px_#000] ${isAnime || isComics ? 'font-black tracking-tight text-white' : 'font-serif font-normal italic tracking-tight text-white'}`}
+                style={{ fontFamily: isComics ? "'Bangers', cursive, sans-serif" : isAnime ? "'Kalam', cursive, sans-serif" : isCinema ? "'Inter', sans-serif" : undefined }}
+                className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight -mt-4 sm:-mt-6 drop-shadow-[2px_2px_0px_#000] ${isAnime || isComics ? 'font-black tracking-tight text-white' : isCinema ? 'font-black tracking-tight uppercase text-white' : 'font-serif font-normal italic tracking-tight text-white'}`}
               >
                 {currentSlide.title}
               </h1>
@@ -358,19 +406,19 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             <div className="flex items-center gap-2 max-w-md my-1">
               <div
                 style={{ borderRadius: isAnime || isComics ? '3px' : '0px' }}
-                className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : isAnime ? 'bg-[#a3e635]' : isComics ? 'bg-[#ef4444]' : 'bg-[#ff2e93]'}`}
+                className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : isCinema ? 'bg-[#FF3000]' : isAnime ? 'bg-[#a3e635]' : isComics ? 'bg-[#ef4444]' : 'bg-[#ff2e93]'}`}
               />
-              <div className={`flex-1 h-[2px] ${isGaming ? 'bg-white' : isAnime ? 'bg-[#84cc16]' : isComics ? 'bg-[#facc15]' : 'bg-[#00f0ff]'}`} />
+              <div className={`flex-1 h-[2px] ${isGaming ? 'bg-white' : isCinema ? 'bg-[#FF3000]' : isAnime ? 'bg-[#84cc16]' : isComics ? 'bg-[#facc15]' : 'bg-[#00f0ff]'}`} />
               <div
                 style={{ borderRadius: isAnime || isComics ? '3px' : '0px' }}
-                className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : isAnime ? 'bg-white' : isComics ? 'bg-[#38bdf8]' : 'bg-[#ffd60a]'}`}
+                className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : isCinema ? 'bg-black' : isAnime ? 'bg-white' : isComics ? 'bg-[#38bdf8]' : 'bg-[#ffd60a]'}`}
               />
             </div>
 
             {/* Subtitle */}
             <p
-              style={{ fontFamily: isAnime || isComics ? "'Patrick Hand', cursive, sans-serif" : undefined }}
-              className={`text-sm sm:text-base leading-relaxed max-w-xl line-clamp-2 drop-shadow-[1px_1px_0px_#000] ${isAnime || isComics ? 'text-neutral-100 font-bold text-base sm:text-lg' : 'font-serif text-neutral-200 font-normal'}`}
+              style={{ fontFamily: isAnime || isComics ? "'Patrick Hand', cursive, sans-serif" : isCinema ? "'Inter', sans-serif" : undefined }}
+              className={`text-sm sm:text-base leading-relaxed max-w-xl line-clamp-2 drop-shadow-[1px_1px_0px_#000] ${isAnime || isComics ? 'text-neutral-100 font-bold text-base sm:text-lg' : isCinema ? 'text-neutral-200 font-medium text-sm sm:text-base' : 'font-serif text-neutral-200 font-normal'}`}
             >
               {currentSlide.subtitle}
             </p>
@@ -380,7 +428,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               <button
                 type="button"
                 onClick={handleMainCta}
-                className={`px-8 sm:px-12 py-3.5 sm:py-4 min-w-[200px] sm:min-w-[240px] justify-center ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black border-2 border-white shadow-none' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] border-2 border-black shadow-[4px_4px_0px_#000000]' : isComics ? 'bg-[#ef4444] text-white hover:bg-[#dc2626] border-2 border-black shadow-[4px_4px_0px_#000000]' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] hover:translate-y-[-2px]`}
+                className={`px-8 sm:px-12 py-3.5 sm:py-4 min-w-[200px] sm:min-w-[240px] justify-center ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black border-2 border-white shadow-none' : isCinema ? 'bg-[#FF3000] text-white hover:bg-black border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] border-2 border-black shadow-[4px_4px_0px_#000000]' : isComics ? 'bg-[#ef4444] text-white hover:bg-[#dc2626] border-2 border-black shadow-[4px_4px_0px_#000000]' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] hover:translate-y-[-2px]`}
                 style={{ borderRadius: isAnime || isComics ? '12px' : '0px', fontFamily: isAnime || isComics ? "'Patrick Hand', cursive, sans-serif" : undefined, fontSize: isAnime || isComics ? '16px' : undefined }}
               >
                 <span>{currentSlide.ctaText}</span>
@@ -390,7 +438,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               <button
                 type="button"
                 onClick={() => handleScrollToTarget(currentSlide.targetAnchor || 'albums')}
-                className={`px-10 sm:px-14 py-3.5 sm:py-4 min-w-[240px] sm:min-w-[280px] justify-center ${isGaming ? 'bg-white text-black hover:bg-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-white text-black hover:bg-[#ecfccb] border-2 border-black shadow-[4px_4px_0px_#000000]' : isComics ? 'bg-[#fef08a] text-black hover:bg-white border-2 border-black shadow-[4px_4px_0px_#000000]' : 'bg-[#00f0ff] text-black hover:bg-[#38bdf8] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] hover:translate-y-[-2px]`}
+                className={`px-10 sm:px-14 py-3.5 sm:py-4 min-w-[240px] sm:min-w-[280px] justify-center ${isGaming ? 'bg-white text-black hover:bg-black hover:text-white border-2 border-black shadow-none' : isCinema ? 'bg-white text-black hover:bg-[#F2F2F2] border-2 border-black shadow-none' : isAnime ? 'bg-white text-black hover:bg-[#ecfccb] border-2 border-black shadow-[4px_4px_0px_#000000]' : isComics ? 'bg-[#fef08a] text-black hover:bg-white border-2 border-black shadow-[4px_4px_0px_#000000]' : 'bg-[#00f0ff] text-black hover:bg-[#38bdf8] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] hover:translate-y-[-2px]`}
                 style={{ borderRadius: isAnime || isComics ? '12px' : '0px', fontFamily: isAnime || isComics ? "'Patrick Hand', cursive, sans-serif" : undefined, fontSize: isAnime || isComics ? '16px' : undefined }}
               >
                 <span>{currentSlide.secondaryCtaText}</span>
@@ -406,7 +454,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             e.stopPropagation();
             handlePrev();
           }}
-          className={`absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] hover:bg-[#84cc16] text-black border-2 border-black shadow-[3px_3px_0px_#000]' : isComics ? 'bg-[#ef4444] hover:bg-[#fef08a] text-white hover:text-black border-2 border-black shadow-[3px_3px_0px_#000]' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-all duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
+          className={`absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] text-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] hover:bg-[#84cc16] text-black border-2 border-black shadow-[3px_3px_0px_#000]' : isComics ? 'bg-[#ef4444] hover:bg-[#fef08a] text-white hover:text-black border-2 border-black shadow-[3px_3px_0px_#000]' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-all duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
           style={{ borderRadius: isAnime || isComics ? '12px' : '0px' }}
           title="Previous Slide"
         >
@@ -419,7 +467,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             e.stopPropagation();
             handleNext();
           }}
-          className={`absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] hover:bg-[#84cc16] text-black border-2 border-black shadow-[3px_3px_0px_#000]' : isComics ? 'bg-[#ef4444] hover:bg-[#fef08a] text-white hover:text-black border-2 border-black shadow-[3px_3px_0px_#000]' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-all duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
+          className={`absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] text-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] hover:bg-[#84cc16] text-black border-2 border-black shadow-[3px_3px_0px_#000]' : isComics ? 'bg-[#ef4444] hover:bg-[#fef08a] text-white hover:text-black border-2 border-black shadow-[3px_3px_0px_#000]' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-all duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
           style={{ borderRadius: isAnime || isComics ? '12px' : '0px' }}
           title="Next Slide"
         >
@@ -429,9 +477,9 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
         {/* Bottom Right Slide Counter & Square Indicator Box */}
         <div
           style={{ borderRadius: isAnime || isComics ? '10px' : '0px' }}
-          className={`absolute right-6 sm:right-12 bottom-8 sm:bottom-12 z-30 flex items-center gap-3 bg-white px-4 py-2 border-2 border-black ${isGaming ? 'shadow-none' : isAnime ? 'shadow-[3px_3px_0px_#84cc16]' : isComics ? 'shadow-[3px_3px_0px_#ef4444]' : 'shadow-[3px_3px_0px_#000]'} text-xs font-mono text-black font-bold`}
+          className={`absolute right-6 sm:right-12 bottom-8 sm:bottom-12 z-30 flex items-center gap-3 bg-white px-4 py-2 border-2 border-black ${isGaming || isCinema ? 'shadow-none' : isAnime ? 'shadow-[3px_3px_0px_#84cc16]' : isComics ? 'shadow-[3px_3px_0px_#ef4444]' : 'shadow-[3px_3px_0px_#000]'} text-xs font-mono text-black font-bold`}
         >
-          <span className={`font-black text-sm ${isGaming ? 'text-black' : isAnime ? 'text-[#65a30d]' : isComics ? 'text-[#ef4444]' : 'text-[#ff2e93]'}`}>0{activeIndex + 1}</span>
+          <span className={`font-black text-sm ${isGaming ? 'text-black' : isCinema ? 'text-[#FF3000]' : isAnime ? 'text-[#65a30d]' : isComics ? 'text-[#ef4444]' : 'text-[#ff2e93]'}`}>0{activeIndex + 1}</span>
           <span className="text-neutral-400">/</span>
           <span className="text-neutral-700">0{filteredSlides.length}</span>
 
@@ -444,8 +492,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
                   setActiveIndex(idx);
                 }}
                 className={`w-3 h-3 transition-colors duration-100 cursor-pointer border border-black ${idx === activeIndex
-                  ? (isGaming ? 'bg-black' : isAnime ? 'bg-[#a3e635]' : isComics ? 'bg-[#ef4444]' : 'bg-[#ff2e93]')
-                  : (isGaming ? 'bg-neutral-200 hover:bg-black' : isAnime ? 'bg-neutral-200 hover:bg-[#a3e635]' : isComics ? 'bg-neutral-200 hover:bg-[#ef4444]' : 'bg-neutral-200 hover:bg-[#ffd60a]')
+                  ? (isGaming ? 'bg-black' : isCinema ? 'bg-[#FF3000]' : isAnime ? 'bg-[#a3e635]' : isComics ? 'bg-[#ef4444]' : 'bg-[#ff2e93]')
+                  : (isGaming ? 'bg-neutral-200 hover:bg-black' : isCinema ? 'bg-neutral-200 hover:bg-black' : isAnime ? 'bg-neutral-200 hover:bg-[#a3e635]' : isComics ? 'bg-neutral-200 hover:bg-[#ef4444]' : 'bg-neutral-200 hover:bg-[#ffd60a]')
                   }`}
                 style={{ borderRadius: isAnime || isComics ? '3px' : '0px' }}
                 title={`Slide ${idx + 1}`}
@@ -459,7 +507,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               e.stopPropagation();
               setIsPaused(!isPaused);
             }}
-            className={`transition-colors ml-2 p-1 cursor-pointer font-mono text-xs font-black ${isGaming ? 'text-black hover:opacity-60' : isAnime ? 'text-black hover:text-[#65a30d]' : isComics ? 'text-black hover:text-[#ef4444]' : 'text-black hover:text-[#ff2e93]'}`}
+            className={`transition-colors ml-2 p-1 cursor-pointer font-mono text-xs font-black ${isGaming ? 'text-black hover:opacity-60' : isCinema ? 'text-black hover:text-[#FF3000]' : isAnime ? 'text-black hover:text-[#65a30d]' : isComics ? 'text-black hover:text-[#ef4444]' : 'text-black hover:text-[#ff2e93]'}`}
             title={isPaused ? 'Resume' : 'Pause'}
           >
             {isPaused ? '▶' : '❚❚'}
@@ -471,7 +519,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       {/* =========================================================================
           2. DEDICATED FANDOM CATEGORY DOCK
       ========================================================================= */}
-      <div className={`w-full ${isGaming ? 'bg-white' : isAnime ? 'bg-[#f7fee7]' : 'bg-[#fdfbf7]'} border-b-4 border-black py-4 px-4 sm:px-8`}>
+      <div className={`w-full ${isGaming ? 'bg-white' : isCinema ? 'bg-[#F2F2F2]' : isAnime ? 'bg-[#f7fee7]' : 'bg-[#fdfbf7]'} border-b-4 border-black py-4 px-4 sm:px-8`}>
         <div className="max-w-[1440px] mx-auto flex items-center justify-center overflow-x-auto scrollbar-none">
           <div className="flex items-center gap-2 flex-wrap justify-center">
             {FANDOM_TABS.map((tab) => {
@@ -485,8 +533,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               else if (tab.id === 'Cosplay') activeBgClass = 'bg-[#D02020] text-white shadow-[4px_4px_0px_#121212]';
               else if (tab.id === 'Anime') activeBgClass = 'bg-[#a3e635] text-black shadow-[4px_4px_0px_#000000]';
               else if (tab.id === 'Comics') activeBgClass = 'bg-[#38bdf8] text-black';
-              else if (tab.id === 'Movies') activeBgClass = 'bg-[#ffd60a] text-black';
-              else if (tab.id === 'TV Shows') activeBgClass = 'bg-[#a3e635] text-black';
+              else if (tab.id === 'Movies') activeBgClass = 'bg-[#FF3000] text-white';
+              else if (tab.id === 'TV Shows') activeBgClass = 'bg-[#ff2e93] text-white';
 
               return (
                 <button
@@ -495,8 +543,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
                   type="button"
                   style={{ borderRadius: isAnime || isComics ? '8px' : '0px' }}
                   className={`px-4 sm:px-5 py-2.5 text-xs font-mono font-black tracking-widest uppercase transition-all duration-100 cursor-pointer flex items-center gap-2 whitespace-nowrap border-2 border-black ${isActive
-                    ? `${activeBgClass} ${isGaming ? 'shadow-none' : 'shadow-[3px_3px_0px_#000000]'}`
-                    : `bg-white text-black hover:bg-neutral-100 ${isGaming ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`
+                    ? `${activeBgClass} ${isGaming || isCinema ? 'shadow-none' : 'shadow-[3px_3px_0px_#000000]'}`
+                    : `bg-white text-black hover:bg-neutral-100 ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`
                     }`}
                 >
                   {isActive && <span>★</span>}

@@ -93,6 +93,7 @@ export const Header: React.FC<HeaderProps> = ({
   const isGaming = fandomCategory === 'Gaming' || fandomThemeKey === 'gaming' || pathname?.startsWith('/gaming');
   const isCosplay = fandomCategory === 'Cosplay' || fandomThemeKey === 'cosplay';
   const isAnime = fandomCategory === 'Anime' || fandomThemeKey === 'anime';
+  const isCinema = fandomCategory === 'Movies' || fandomThemeKey === 'cinema';
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
@@ -215,7 +216,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2.5 sm:gap-4 md:gap-5 shrink-0">
           <button
             onClick={() => setIsMenuDrawerOpen(true)}
-            className={`mobile-menu-btn header-action-btn px-3 py-1.5 ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : isCosplay ? 'bg-[#D02020] text-white hover:bg-[#b01818] shadow-[3px_3px_0px_#121212]' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] shadow-[2px_2px_0px_#000000]' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] shadow-[2px_2px_0px_#000000]'} items-center justify-center cursor-pointer shrink-0 border-2 border-black font-mono text-xs font-black uppercase tracking-widest transition-transform active:scale-95`}
+            className={`mobile-menu-btn header-action-btn px-3 py-1.5 ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : isCinema ? 'bg-[#FF3000] text-white hover:bg-black shadow-none' : isCosplay ? 'bg-[#D02020] text-white hover:bg-[#b01818] shadow-[3px_3px_0px_#121212]' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] shadow-[2px_2px_0px_#000000]' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] shadow-[2px_2px_0px_#000000]'} items-center justify-center cursor-pointer shrink-0 border-2 border-black font-mono text-xs font-black uppercase tracking-widest transition-transform active:scale-95`}
             style={{ borderRadius: '0px' }}
             title="Menu"
             type="button"
@@ -227,7 +228,7 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               src="/logo-dark.png?v=2"
               alt="Fan Hub Plus"
-              className={`header-logo h-8 sm:h-9 md:h-11 w-auto object-contain block transition-all hover:scale-105 ${isGaming ? 'brightness-0' : ''}`}
+              className={`header-logo h-8 sm:h-9 md:h-11 w-auto object-contain block transition-all hover:scale-105 ${isGaming || isCinema ? 'brightness-0' : ''}`}
             />
           </Link>
         </div>
@@ -243,7 +244,7 @@ export const Header: React.FC<HeaderProps> = ({
               alignItems: 'center',
               border: '2px solid #000000',
               backgroundColor: '#ffffff',
-              boxShadow: isGaming ? 'none' : isCosplay ? '4px 4px 0px #121212' : isAnime ? '4px 4px 0px #84cc16' : '3px 3px 0px #000000',
+              boxShadow: isGaming || isCinema ? 'none' : isCosplay ? '4px 4px 0px #121212' : isAnime ? '4px 4px 0px #84cc16' : '3px 3px 0px #000000',
               padding: '6px 12px',
               borderRadius: '0px',
             }}
@@ -254,7 +255,7 @@ export const Header: React.FC<HeaderProps> = ({
                 fontFamily: isCosplay ? "var(--font-outfit), 'Outfit', sans-serif" : "var(--font-jetbrains), var(--font-mono), 'JetBrains Mono', monospace",
                 fontSize: '11px',
                 fontWeight: 900,
-                color: isGaming ? '#000000' : isCosplay ? '#D02020' : isAnime ? '#65a30d' : '#ff2e93',
+                color: isGaming ? '#000000' : isCinema ? '#FF3000' : isCosplay ? '#D02020' : isAnime ? '#65a30d' : '#ff2e93',
                 marginRight: '8px',
                 userSelect: 'none',
               }}
@@ -264,12 +265,12 @@ export const Header: React.FC<HeaderProps> = ({
 
             <input
               type="text"
-              placeholder={isManga ? "MANGA, TANKŌBON, AUTHOR, ARC..." : isCosplay ? "BAUHAUS COSPLAY, ATELIER PROPS, EXPO..." : isAnime ? "SHONEN ANIME, PEDIDO STREETWEAR, OSTS..." : "ARTIST, ALBUM, ARCHIVE..."}
+              placeholder={isManga ? "MANGA, TANKŌBON, AUTHOR, ARC..." : isCinema ? "70MM ARCHIVE, AUTEUR, RESTORATIONS, CRITERION..." : isCosplay ? "BAUHAUS COSPLAY, ATELIER PROPS, EXPO..." : isAnime ? "SHONEN ANIME, PEDIDO STREETWEAR, OSTS..." : "ARTIST, ALBUM, ARCHIVE..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                  const targetEl = document.getElementById(isManga ? 'manga-catalog' : 'albums');
+                  const targetEl = document.getElementById(isManga ? 'manga-catalog' : isCinema ? 'cinema-catalog' : 'albums');
                   if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
@@ -315,7 +316,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Search Button */}
           <button
             onClick={() => setIsSearchModalOpen(true)}
-            className={`mobile-search-btn header-action-btn px-2.5 py-1.5 items-center justify-center text-black border-2 border-black hover:bg-black hover:text-white cursor-pointer bg-white transition-colors duration-100 font-bold ${isGaming ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
+            className={`mobile-search-btn header-action-btn px-2.5 py-1.5 items-center justify-center text-black border-2 border-black hover:bg-black hover:text-white cursor-pointer bg-white transition-colors duration-100 font-bold ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
             title="Search"
             type="button"
@@ -332,7 +333,7 @@ export const Header: React.FC<HeaderProps> = ({
                 setIsAuthModalOpen(true);
               }
             }}
-            className={`header-action-btn px-3 py-1.5 flex items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : 'text-black bg-[#c084fc] hover:bg-[#d8b4fe] shadow-[2px_2px_0px_#000000]'}`}
+            className={`header-action-btn px-3 py-1.5 flex items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#c084fc] hover:bg-[#d8b4fe] shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
             title={isLoggedIn ? `${user.name} - Dashboard` : 'Sign In'}
             type="button"
@@ -347,7 +348,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Shopping Cart Button */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className={`header-action-btn px-3 py-1.5 flex items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : 'text-black bg-[#ffd60a] hover:bg-[#fde047] shadow-[2px_2px_0px_#000000]'}`}
+            className={`header-action-btn px-3 py-1.5 flex items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#ffd60a] hover:bg-[#fde047] shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
             title="Cart"
             type="button"
@@ -358,7 +359,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Wishlist Button */}
           <button
             onClick={() => setIsWishlistOpen(true)}
-            className={`header-action-btn hidden sm:flex px-3 py-1.5 items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : 'text-black bg-[#00f0ff] hover:bg-[#38bdf8] shadow-[2px_2px_0px_#000000]'}`}
+            className={`header-action-btn hidden sm:flex px-3 py-1.5 items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#00f0ff] hover:bg-[#38bdf8] shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
             title="Wishlist"
             type="button"
@@ -371,7 +372,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleLanguage}
             title={language === 'en' ? 'Translate to Vietnamese' : 'Switch to English'}
             type="button"
-            className={`header-lang-btn hidden sm:flex notranslate hover:bg-black hover:text-white items-center px-2.5 py-1 text-xs font-mono font-bold border-2 border-black bg-white text-black h-8 sm:h-9 cursor-pointer transition-colors duration-100 ${isGaming ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
+            className={`header-lang-btn hidden sm:flex notranslate hover:bg-black hover:text-white items-center px-2.5 py-1 text-xs font-mono font-bold border-2 border-black bg-white text-black h-8 sm:h-9 cursor-pointer transition-colors duration-100 ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
           >
             <span>[{language === 'en' ? 'EN' : 'VI'}]</span>
@@ -382,7 +383,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleThemeMode}
             title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             type="button"
-            className={`header-action-btn hidden sm:flex notranslate hover:bg-black hover:text-white px-2.5 py-1 items-center justify-center text-black border-2 border-black bg-white font-bold uppercase cursor-pointer transition-colors duration-100 h-8 sm:h-9 text-[11px] ${isGaming ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
+            className={`header-action-btn hidden sm:flex notranslate hover:bg-black hover:text-white px-2.5 py-1 items-center justify-center text-black border-2 border-black bg-white font-bold uppercase cursor-pointer transition-colors duration-100 h-8 sm:h-9 text-[11px] ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
           >
             {themeMode === 'dark' ? '[LIGHT]' : '[DARK]'}
@@ -393,7 +394,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleFontSize}
             title={isLargeFont ? 'Standard Text Size' : 'Enlarge Text Size (+12.5%)'}
             type="button"
-            className={`header-action-btn hidden sm:flex notranslate w-8 sm:w-9 h-8 sm:h-9 items-center justify-center border-2 border-black font-mono font-bold text-xs cursor-pointer transition-colors duration-100 ${isGaming ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'} ${isLargeFont ? 'bg-black text-white' : 'hover:bg-black hover:text-white text-black bg-white'}`}
+            className={`header-action-btn hidden sm:flex notranslate w-8 sm:w-9 h-8 sm:h-9 items-center justify-center border-2 border-black font-mono font-bold text-xs cursor-pointer transition-colors duration-100 ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'} ${isLargeFont ? 'bg-black text-white' : 'hover:bg-black hover:text-white text-black bg-white'}`}
             style={{ borderRadius: '0px' }}
           >
             <span>{isLargeFont ? 'A+' : 'A'}</span>
@@ -421,7 +422,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
               type="button"
-              className={`header-allmd-btn transition-colors duration-100 ${isGaming ? 'hover:bg-white hover:text-black' : 'hover:opacity-90'}`}
+              className={`header-allmd-btn transition-colors duration-100 ${isGaming ? 'hover:bg-white hover:text-black' : isCinema ? 'hover:bg-black hover:text-white' : 'hover:opacity-90'}`}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -429,7 +430,7 @@ export const Header: React.FC<HeaderProps> = ({
                 gap: '8px',
                 padding: '8px 18px',
                 height: '36px',
-                backgroundColor: isGaming ? '#000000' : isCosplay ? '#D02020' : isAnime ? '#a3e635' : '#ff2e93',
+                backgroundColor: isGaming ? '#000000' : isCinema ? '#FF3000' : isCosplay ? '#D02020' : isAnime ? '#a3e635' : '#ff2e93',
                 color: isAnime ? '#000000' : '#ffffff',
                 fontFamily: "var(--font-jetbrains), var(--font-mono), monospace",
                 fontSize: '11px',
@@ -440,11 +441,11 @@ export const Header: React.FC<HeaderProps> = ({
                 borderRadius: '0px',
                 cursor: 'pointer',
                 flexShrink: 0,
-                boxShadow: isGaming ? 'none' : isAnime ? '3px 3px 0px #000000' : '3px 3px 0px #000000',
+                boxShadow: isGaming || isCinema ? 'none' : '3px 3px 0px #000000',
               }}
             >
               <Menu style={{ width: '15px', height: '15px', flexShrink: 0, strokeWidth: 2.5 }} />
-              <span style={{ whiteSpace: 'nowrap' }}>{isManga ? '★ MANGA MD' : isAnime ? '★ ANIME STREET MD' : '★ ALL MD'}</span>
+              <span style={{ whiteSpace: 'nowrap' }}>{isManga ? '★ MANGA MD' : isCinema ? '★ 70MM CINEMA MD' : isAnime ? '★ ANIME STREET MD' : '★ ALL MD'}</span>
             </button>
 
             {/* Dropdown Menu under [ ≡ ALL MD ] (Strictly 0px, pure monochrome, no shadow) */}

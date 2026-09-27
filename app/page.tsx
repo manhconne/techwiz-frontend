@@ -23,6 +23,8 @@ import { Y2KTickerTape } from '../components/Y2KTickerTape';
 import { MangaHandDrawnView } from '../components/MangaHandDrawnView';
 import { AnimeNeoBrutalView } from '../components/AnimeNeoBrutalView';
 import { ComicsPopArtView } from '../components/ComicsPopArtView';
+import { CinemaSwissView } from '../components/CinemaSwissView';
+import { TvShowsY2KView } from '../components/TvShowsY2KView';
 // import { TestConnection } from '../components/TestConnection';
 import { Album, FandomCategoryKey } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
@@ -54,6 +56,10 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
           setSelectedFandomCategory('Gaming');
         } else if (lower === 'comics') {
           setSelectedFandomCategory('Comics');
+        } else if (lower === 'cinema' || lower === 'movies') {
+          setSelectedFandomCategory('Movies');
+        } else if (lower === 'tv' || lower === 'tv-shows' || lower === 'tvshows' || lower === 'tv shows') {
+          setSelectedFandomCategory('TV Shows');
         }
       }
     }
@@ -137,6 +143,16 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
              DEDICATED COMICS POP-ART HEROIC & BEN-DAY DOT LAYOUT
           ========================================================================= */
           <ComicsPopArtView />
+        ) : selectedFandomCategory === 'Movies' ? (
+          /* =========================================================================
+             DEDICATED SWISS INTERNATIONAL TYPOGRAPHIC CINEMA ARCHIVE
+          ========================================================================= */
+          <CinemaSwissView />
+        ) : selectedFandomCategory === 'TV Shows' ? (
+          /* =========================================================================
+             DEDICATED TV SHOWS Y2K POP SHOWCASE (K-POP AESTHETIC)
+          ========================================================================= */
+          <TvShowsY2KView />
         ) : (
           <>
             {/* Y2K Marquee Ticker 01 */}
