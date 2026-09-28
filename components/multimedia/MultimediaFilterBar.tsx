@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { MediaType, FandomCategory, MediaItem, CATEGORY_ARTISTS_MAP } from '../../data/multimediaData';
-import { Sparkles, Music, Star, Flame, BookOpen, Gamepad2, Zap, Film, Tv, Scissors, Users } from 'lucide-react';
+import { Sparkles, Music, Star, Flame, BookOpen, Gamepad2, Zap, Film, Tv, Scissors, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface MultimediaFilterBarProps {
   selectedFormat: MediaType | 'all';
@@ -56,7 +56,7 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
   ];
 
   // Dynamic Artist / Music Group List based on selected category
-  const activeArtistList = React.useMemo(() => {
+  const activeArtistList = useMemo(() => {
     if (selectedUniverse === 'all') {
       return [
         { label: 'Tất cả Nhóm nhạc & Nghệ sĩ', query: '' },
@@ -77,6 +77,115 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
     ];
   }, [selectedUniverse]);
 
+  // Drag & Scroll State for Category Bar
+  const categoryScrollRef = useRef<HTMLDivElement>(null);
+  const [isCatDragging, setIsCatDragging] = useState(false);
+  const [catStartX, setCatStartX] = useState(0);
+  const [catScrollLeft, setCatScrollLeft] = useState(0);
+  const catMovedRef = useRef(false);
+
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const updateCategoryScrollState = () => {
+    const el = categoryScrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 6);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 6);
+  };
+
+  useEffect(() => {
+    updateCategoryScrollState();
+    const el = categoryScrollRef.current;
+    if (!el) return;
+    el.addEventListener('scroll', updateCategoryScrollState);
+    window.addEventListener('resize', updateCategoryScrollState);
+    return () => {
+      el.removeEventListener('scroll', updateCategoryScrollState);
+      window.removeEventListener('resize', updateCategoryScrollState);
+    };
+  }, []);
+
+  const handleCatMouseDown = (e: React.MouseEvent) => {
+    if (!categoryScrollRef.current) return;
+    setIsCatDragging(true);
+    setCatStartX(e.pageX - categoryScrollRef.current.offsetLeft);
+    setCatScrollLeft(categoryScrollRef.current.scrollLeft);
+    catMovedRef.current = false;
+  };
+
+  const handleCatMouseMove = (e: React.MouseEvent) => {
+    if (!isCatDragging || !categoryScrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - categoryScrollRef.current.offsetLeft;
+    const walk = (x - catStartX) * 1.6;
+    if (Math.abs(walk) > 5) {
+      catMovedRef.current = true;
+    }
+    categoryScrollRef.current.scrollLeft = catScrollLeft - walk;
+  };
+
+  const handleCatMouseUp = () => {
+    setIsCatDragging(false);
+  };
+
+  const handleCatWheel = (e: React.WheelEvent) => {
+    if (categoryScrollRef.current && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      categoryScrollRef.current.scrollLeft += e.deltaY;
+    }
+  };
+
+  const scrollCategoryDir = (dir: 'left' | 'right') => {
+    if (categoryScrollRef.current) {
+      const offset = dir === 'left' ? -280 : 280;
+      categoryScrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+  };
+
+  // Drag & Scroll State for Artist Bar
+  const artistScrollRef = useRef<HTMLDivElement>(null);
+  const [isArtistDragging, setIsArtistDragging] = useState(false);
+  const [artistStartX, setArtistStartX] = useState(0);
+  const [artistScrollLeft, setArtistScrollLeft] = useState(0);
+  const artistMovedRef = useRef(false);
+
+  const handleArtistMouseDown = (e: React.MouseEvent) => {
+    if (!artistScrollRef.current) return;
+    setIsArtistDragging(true);
+    setArtistStartX(e.pageX - artistScrollRef.current.offsetLeft);
+    setArtistScrollLeft(artistScrollRef.current.scrollLeft);
+    artistMovedRef.current = false;
+  };
+
+  const handleArtistMouseMove = (e: React.MouseEvent) => {
+    if (!isArtistDragging || !artistScrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - artistScrollRef.current.offsetLeft;
+    const walk = (x - artistStartX) * 1.6;
+    if (Math.abs(walk) > 5) {
+      artistMovedRef.current = true;
+    }
+    artistScrollRef.current.scrollLeft = artistScrollLeft - walk;
+  };
+
+  const handleArtistMouseUp = () => {
+    setIsArtistDragging(false);
+  };
+
+  const handleArtistWheel = (e: React.WheelEvent) => {
+    if (artistScrollRef.current && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      artistScrollRef.current.scrollLeft += e.deltaY;
+    }
+  };
+
+  // Wheel handler for format tabs
+  const formatScrollRef = useRef<HTMLDivElement>(null);
+  const handleFormatWheel = (e: React.WheelEvent) => {
+    if (formatScrollRef.current && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      formatScrollRef.current.scrollLeft += e.deltaY;
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 sm:gap-8 font-mono text-xs select-none">
 
@@ -96,48 +205,99 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
               </span>
             </h3>
           </div>
-          <span className="text-[11px] text-neutral-500 font-bold hidden sm:inline">
-            Ấn vào danh mục để xem trailer &amp; video tương ứng
-          </span>
-        </div>
 
-        {/* Category Pills Slider */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {universeCategories.map((uni) => {
-            const Icon = uni.icon;
-            const isActive = selectedUniverse === uni.id;
-            const countInCat =
-              uni.id === 'all'
-                ? mediaList.length
-                : mediaList.filter((m) => m.category === uni.id || (uni.id === 'Cinema' && m.category === 'Movies')).length;
-
-            return (
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] text-neutral-500 font-bold hidden sm:inline">
+              Kéo chuột hoặc bấm mũi tên để duyệt toàn bộ danh mục ↔
+            </span>
+            <div className="flex items-center gap-1">
               <button
-                key={uni.id}
                 type="button"
-                onClick={() => {
-                  onSelectUniverse(uni.id);
-                  onSelectArtist('', ''); // reset artist when switching category
-                }}
-                style={{ borderRadius: '0px' }}
-                className={`flex items-center gap-2 px-3.5 py-2 font-mono text-xs font-black uppercase tracking-wider cursor-pointer border-2 transition-all whitespace-nowrap ${
-                  isActive
-                    ? 'bg-[#ff2e93] text-white border-black shadow-[3px_3px_0px_#000000] -translate-y-0.5'
-                    : 'bg-white text-black border-black hover:bg-[#fff9db] dark:bg-[#1e293b] dark:text-[#f8fafc] dark:border-[#334155] dark:hover:bg-[#2a364f] shadow-[2px_2px_0px_#000000]'
+                onClick={() => scrollCategoryDir('left')}
+                disabled={!canScrollLeft}
+                aria-label="Cuộn danh mục sang trái"
+                className={`p-1.5 border-2 border-black transition-all cursor-pointer ${
+                  canScrollLeft
+                    ? 'bg-white hover:bg-[#ffd60a] text-black shadow-[2px_2px_0px_#000000] active:translate-x-0.5'
+                    : 'bg-neutral-200 text-neutral-400 border-neutral-400 opacity-40 cursor-not-allowed'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{uni.label}</span>
-                <span
-                  className={`px-1.5 py-0.2 text-[10px] font-mono border border-black ${
-                    isActive ? 'bg-[#ffd60a] text-black' : 'bg-neutral-100 text-neutral-800'
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollCategoryDir('right')}
+                disabled={!canScrollRight}
+                aria-label="Cuộn danh mục sang phải"
+                className={`p-1.5 border-2 border-black transition-all cursor-pointer ${
+                  canScrollRight
+                    ? 'bg-white hover:bg-[#ffd60a] text-black shadow-[2px_2px_0px_#000000] active:translate-x-0.5'
+                    : 'bg-neutral-200 text-neutral-400 border-neutral-400 opacity-40 cursor-not-allowed'
+                }`}
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Category Pills Slider with Drag-to-Scroll & Navigation Arrows */}
+        <div className="relative flex items-center gap-2">
+          {/* Slider Container */}
+          <div
+            ref={categoryScrollRef}
+            onMouseDown={handleCatMouseDown}
+            onMouseMove={handleCatMouseMove}
+            onMouseUp={handleCatMouseUp}
+            onMouseLeave={handleCatMouseUp}
+            onWheel={handleCatWheel}
+            className={`flex-1 flex items-center gap-2 overflow-x-auto pb-1.5 scroll-smooth select-none cursor-grab active:cursor-grabbing ${
+              isCatDragging ? 'cursor-grabbing select-none' : ''
+            }`}
+            style={{
+              scrollbarWidth: 'thin',
+            }}
+          >
+            {universeCategories.map((uni) => {
+              const Icon = uni.icon;
+              const isActive = selectedUniverse === uni.id;
+              const countInCat =
+                uni.id === 'all'
+                  ? mediaList.length
+                  : mediaList.filter((m) => m.category === uni.id || (uni.id === 'Cinema' && m.category === 'Movies')).length;
+
+              return (
+                <button
+                  key={uni.id}
+                  type="button"
+                  onClick={(e) => {
+                    if (catMovedRef.current) {
+                      e.preventDefault();
+                      return; // Was dragging, ignore click
+                    }
+                    onSelectUniverse(uni.id);
+                    onSelectArtist('', ''); // reset artist when switching category
+                  }}
+                  style={{ borderRadius: '0px' }}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 font-mono text-xs font-black uppercase tracking-wider cursor-pointer border-2 transition-all whitespace-nowrap shrink-0 ${
+                    isActive
+                      ? 'bg-[#ff2e93] text-white border-black shadow-[3px_3px_0px_#000000] -translate-y-0.5'
+                      : 'bg-white text-black border-black hover:bg-[#fff9db] dark:bg-[#1e293b] dark:text-[#f8fafc] dark:border-[#334155] dark:hover:bg-[#2a364f] shadow-[2px_2px_0px_#000000]'
                   }`}
                 >
-                  {countInCat}
-                </span>
-              </button>
-            );
-          })}
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{uni.label}</span>
+                  <span
+                    className={`text-[11px] font-mono font-bold ${
+                      isActive ? 'text-white/80' : 'text-neutral-500 dark:text-neutral-400'
+                    }`}
+                  >
+                    ({countInCat})
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -163,8 +323,18 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
           )}
         </div>
 
-        {/* Artist Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        {/* Artist Pills with Drag and Wheel Support */}
+        <div
+          ref={artistScrollRef}
+          onMouseDown={handleArtistMouseDown}
+          onMouseMove={handleArtistMouseMove}
+          onMouseUp={handleArtistMouseUp}
+          onMouseLeave={handleArtistMouseUp}
+          onWheel={handleArtistWheel}
+          className={`flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none select-none cursor-grab active:cursor-grabbing ${
+            isArtistDragging ? 'cursor-grabbing select-none' : ''
+          }`}
+        >
           {activeArtistList.map((artist) => {
             const isSelected = selectedArtist.toLowerCase() === artist.query.toLowerCase();
             const matchingCount =
@@ -181,19 +351,27 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
               <button
                 key={artist.label}
                 type="button"
-                onClick={() => onSelectArtist(artist.query, artist.label)}
+                onClick={(e) => {
+                  if (artistMovedRef.current) {
+                    e.preventDefault();
+                    return; // Was dragging, ignore click
+                  }
+                  onSelectArtist(artist.query, artist.label);
+                }}
                 style={{ borderRadius: '0px' }}
-                className={`px-3 py-1.5 font-mono text-[11px] font-black uppercase tracking-wider cursor-pointer border-2 transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 font-mono text-[11px] font-black uppercase tracking-wider cursor-pointer border-2 transition-all whitespace-nowrap flex items-center gap-1.5 shrink-0 ${
                   isSelected
                     ? 'bg-black text-[#ccff00] border-black shadow-[2px_2px_0px_#000000] dark:bg-[#ccff00] dark:text-black'
                     : 'bg-white text-black border-black/60 hover:border-black hover:bg-[#fefce8] dark:bg-[#1e293b] dark:text-[#f8fafc] shadow-[1px_1px_0px_#000000]'
                 }`}
               >
                 <span>{artist.label}</span>
-                <span className={`px-1 text-[9px] border border-black ${
-                  isSelected ? 'bg-[#ffd60a] text-black' : 'bg-slate-200 text-slate-800'
-                }`}>
-                  {matchingCount}
+                <span
+                  className={`text-[10px] font-mono font-bold ${
+                    isSelected ? 'text-[#ccff00]/80 dark:text-black/70' : 'text-neutral-500 dark:text-neutral-400'
+                  }`}
+                >
+                  ({matchingCount})
                 </span>
               </button>
             );
@@ -205,7 +383,11 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
       {/* 3. FORMAT TABS BAR (Trailers, Shows, Podcasts, etc.)     */}
       {/* ========================================================= */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-2">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+        <div
+          ref={formatScrollRef}
+          onWheel={handleFormatWheel}
+          className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none select-none"
+        >
           {formatTabs.map((tab) => {
             const isActive = selectedFormat === tab.id;
 
@@ -215,17 +397,19 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
                 type="button"
                 onClick={() => onSelectFormat(tab.id)}
                 style={{ borderRadius: '0px' }}
-                className={`px-3.5 py-2 font-mono text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer border-2 border-black dark:border-[#334155] ${
+                className={`px-3.5 py-2 font-mono text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer border-2 border-black dark:border-[#334155] flex items-center gap-1.5 ${
                   isActive
                     ? 'bg-black text-[#ffd60a] shadow-[2px_2px_0px_#000000] -translate-y-0.5'
                     : 'bg-white text-black hover:bg-[#fefce8] dark:bg-[#1e293b] dark:text-[#f8fafc] shadow-[1px_1px_0px_#000000]'
                 }`}
               >
                 <span>{tab.label}</span>
-                <span className={`ml-1.5 px-1.5 py-0.2 border border-black text-[10px] ${
-                  isActive ? 'bg-[#ffd60a] text-black' : 'bg-neutral-200 text-neutral-800'
-                }`}>
-                  {tab.count}
+                <span
+                  className={`text-[11px] font-mono font-bold ${
+                    isActive ? 'text-[#ffd60a]/80' : 'text-neutral-500 dark:text-neutral-400'
+                  }`}
+                >
+                  ({tab.count})
                 </span>
               </button>
             );
