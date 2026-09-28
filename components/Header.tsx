@@ -2243,6 +2243,8 @@ export const Header: React.FC<HeaderProps> = ({
       <PersonalDashboardModal
         isOpen={isDashboardOpen}
         onClose={() => setIsDashboardOpen(false)}
+        fandomThemeKey={effectiveTheme}
+        fandomCategory={fandomCategory}
       />
 
       {/* ========================================================================= */}

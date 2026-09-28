@@ -55,6 +55,8 @@ import {
 interface PersonalDashboardModalProps {
   isOpen: boolean;
   onClose: () => void;
+  fandomThemeKey?: string;
+  fandomCategory?: string;
 }
 
 export interface FandomOption {
@@ -382,18 +384,21 @@ const PRESET_COLOR_SWATCHES = [
   '#1e293b',
 ];
 
-export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ isOpen, onClose }) => {
+export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
+  isOpen, 
+  onClose,
+  fandomThemeKey,
+  fandomCategory,
+}) => {
   const { user, logout, updateProfile, toggleFavoriteFandom, activities } = useAuth();
   const { wishlist } = useCartWishlist();
 
   const [activeTab, setActiveTab] = useState<'overview' | 'fandoms' | 'activities' | 'bookmarks' | 'profile'>('overview');
 
-  // Dynamic Category Theme Key: switches styles when any category is selected!
+  // Dynamic Category Theme Key: Inherited directly from outside (Header / active category)
   const [activeThemeKey, setActiveThemeKey] = useState<string>(() => {
-    return getActiveFandomTheme() || 'all';
+    return getActiveFandomTheme(fandomThemeKey, fandomCategory) || 'kpop';
   });
-
-  const currentTheme = CATEGORY_THEMES[activeThemeKey] || CATEGORY_THEMES.all;
 
   // Profile edit form
   const [editName, setEditName] = useState(user.name);
@@ -402,21 +407,47 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
   const [editBio, setEditBio] = useState('Music lover, photocard collector, and passionate concert enthusiast!');
   const [saveToast, setSaveToast] = useState<{ message: string } | null>(null);
 
+  // Helper to sanitize any mojibake in user activities
+  const sanitizeActivity = (text: string) => {
+    if (!text) return '';
+    return text
+      .replace(/ÃBÃƒng nhÃ¡ºp thÃ nh cÃ´ng vÃ o hÃ»‡ thÃ»'ng/gi, 'Đăng nhập thành công vào hệ thống')
+      .replace(/ÃBÃƒng nhÃ¡ºp/gi, 'Đăng nhập')
+      .replace(/thÃ nh cÃ´ng/gi, 'thành công')
+      .replace(/vÃ o/gi, 'vào')
+      .replace(/hÃ»‡ thÃ»'ng/gi, 'hệ thống')
+      .replace(/VÃ«Â«a xong|VÃ«.*?a xong/gi, 'Vừa xong');
+  };
+
   // Sync state if user changes
   useEffect(() => {
     setEditName(user.name);
     setSelectedAvatar(user.avatar);
   }, [user]);
 
-  // Synchronize initial theme when modal opens
+  // Synchronize theme with outside active fandom whenever modal opens or props change
   useEffect(() => {
-    if (isOpen) {
-      const liveTheme = getActiveFandomTheme();
+    const syncWithOutside = () => {
+      const liveTheme = getActiveFandomTheme(fandomThemeKey, fandomCategory);
       if (liveTheme && CATEGORY_THEMES[liveTheme]) {
         setActiveThemeKey(liveTheme);
       }
-    }
-  }, [isOpen]);
+    };
+    syncWithOutside();
+
+    const handleCustomChange = (e: any) => {
+      if (e?.detail?.theme && e.detail.theme !== 'all' && CATEGORY_THEMES[e.detail.theme]) {
+        setActiveThemeKey(e.detail.theme);
+      } else {
+        syncWithOutside();
+      }
+    };
+
+    window.addEventListener('fandom-theme-change', handleCustomChange);
+    return () => window.removeEventListener('fandom-theme-change', handleCustomChange);
+  }, [isOpen, fandomThemeKey, fandomCategory]);
+
+  const currentTheme = CATEGORY_THEMES[activeThemeKey] || CATEGORY_THEMES.all;
 
   // Fandom Management State (Categories & Custom Creation)
   const [selectedFandomCategory, setSelectedFandomCategory] = useState<string>('All');
@@ -426,15 +457,6 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
   const [newFandomCategory, setNewFandomCategory] = useState<string>('K-Pop');
   const [newFandomColor, setNewFandomColor] = useState('#ff2e93');
   const [newFandomDesc, setNewFandomDesc] = useState('');
-
-  // When clicking ANY category, adapt the modal style instantly to that category!
-  const handleSelectCategoryTheme = useCallback((categoryOrThemeKey: string) => {
-    const key = getFandomThemeKeyFromCategory(categoryOrThemeKey);
-    const cat = getFandomCategoryFromTheme(key);
-    setActiveThemeKey(key);
-    setSelectedFandomCategory(cat === 'All Fandoms' ? 'All' : cat);
-    persistFandomTheme(key, cat);
-  }, []);
 
   // Load user custom fandoms from localStorage
   const [customFandoms, setCustomFandoms] = useState<FandomOption[]>(() => {
@@ -501,11 +523,8 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
     setIsCreatingFandom(false);
     setSelectedFandomCategory(newFandomCategory);
 
-    // Switch theme to the newly created fandom's category!
-    handleSelectCategoryTheme(newFandomCategory);
-
     setSaveToast({
-      message: `Fandom "${created.name}" created under ${created.tag} and styled in ${newFandomCategory}!`,
+      message: `Fandom "${created.name}" created under ${created.tag}!`,
     });
     setTimeout(() => setSaveToast(null), 3500);
   };
@@ -677,7 +696,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         {/* ========================================================= */}
         {/* 1. DYNAMIC CATEGORY STYLE HEADER & PERSONAL GREETING      */}
         {/* ========================================================= */}
-        <div className={`relative p-6 sm:p-7 overflow-hidden select-none transition-all duration-300 ${currentTheme.headerClass}`}>
+        <div className={`relative p-6 sm:p-8 overflow-hidden select-none transition-all duration-300 ${currentTheme.headerClass}`}>
           {/* Subtle Ambient Glow Effects */}
           <div className={`absolute -right-16 -top-16 w-72 h-72 rounded-full blur-3xl pointer-events-none ${currentTheme.headerGlow1}`} />
           <div className={`absolute left-1/3 -bottom-20 w-80 h-80 rounded-full blur-3xl pointer-events-none ${currentTheme.headerGlow2}`} />
@@ -685,16 +704,16 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 sm:top-5 sm:right-5 w-9 h-9 rounded-full bg-black/20 hover:bg-black/35 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md border border-white/20"
+            className="absolute top-5 right-5 w-9 h-9 rounded-full bg-black/25 hover:bg-black/45 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md border border-white/20"
             title="Close Dashboard"
           >
             <X className="w-5 h-5" />
           </button>
 
-          <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6">
+          <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-7">
             {/* User Avatar with Edit Trigger */}
             <div className="relative group shrink-0">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl ring-4 ring-white/20 shadow-2xl overflow-hidden bg-slate-800">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl ring-4 ring-white/25 shadow-2xl overflow-hidden bg-slate-800">
                 <img
                   src={user.avatar}
                   alt={user.name}
@@ -704,7 +723,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
               <button
                 onClick={() => setActiveTab('profile')}
                 style={{ backgroundColor: currentTheme.accentHex }}
-                className="absolute -bottom-1.5 -right-1.5 p-2 text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-slate-900"
+                className="absolute -bottom-1 -right-1 p-2 text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-slate-900"
                 title="Change avatar"
               >
                 <Camera className="w-3.5 h-3.5" />
@@ -712,8 +731,8 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
             </div>
 
             {/* User Info & Personalized Greeting */}
-            <div className="text-center sm:text-left flex-1 min-w-0 space-y-2">
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <div className="text-center sm:text-left flex-1 min-w-0 space-y-3">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
                 <div
                   className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide backdrop-blur-md transition-all ${currentTheme.roleBadgeClass}`}
                 >
@@ -721,33 +740,33 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   <span>{user.role === 'admin' ? 'SYSTEM ADMINISTRATOR' : currentTheme.roleBadgeText}</span>
                 </div>
 
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-white/10 text-emerald-300 border border-white/10 backdrop-blur-md">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-white/10 text-emerald-300 border border-white/15 backdrop-blur-md">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   <span>ONLINE</span>
                 </div>
               </div>
 
               <div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center justify-center sm:justify-start gap-2">
+                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center justify-center sm:justify-start gap-2 m-0 mb-1">
                   <span>{greeting.text}, {user.name}!</span>
                   <span className="text-amber-400">✨</span>
                 </h2>
-                <p className="text-xs sm:text-sm opacity-85 font-normal mt-0.5 max-w-xl">
+                <p className="text-xs sm:text-sm opacity-80 font-normal m-0 max-w-xl">
                   {greeting.sub}
                 </p>
               </div>
 
               {/* Status Meta Pills */}
-              <div className="pt-1 flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs">
-                <div className="px-3 py-1 rounded-xl bg-black/20 backdrop-blur-md border border-white/15 flex items-center gap-1.5">
+              <div className="pt-1 flex flex-wrap items-center justify-center sm:justify-start gap-2.5 sm:gap-3 text-xs">
+                <div className="px-3.5 py-1.5 rounded-xl bg-black/25 backdrop-blur-md border border-white/15 flex items-center gap-1.5">
                   <span className="opacity-70 font-medium">EMAIL:</span>
                   <span className="font-semibold">{user.email}</span>
                 </div>
-                <div className="px-3 py-1 rounded-xl bg-black/20 backdrop-blur-md border border-white/15 flex items-center gap-1.5">
+                <div className="px-3.5 py-1.5 rounded-xl bg-black/25 backdrop-blur-md border border-white/15 flex items-center gap-1.5">
                   <span className="opacity-70 font-medium">SINCE:</span>
                   <span className="font-semibold">{user.memberSince || '2024'}</span>
                 </div>
-                <div className="px-3 py-1 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-extrabold flex items-center gap-1 shadow-sm">
+                <div className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-extrabold flex items-center gap-1 shadow-sm">
                   <Star className="w-3 h-3 fill-slate-950" />
                   <span>DIAMOND STAN</span>
                 </div>
@@ -757,41 +776,9 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         </div>
 
         {/* ========================================================= */}
-        {/* DYNAMIC CATEGORY THEME SWITCHER BAR                       */}
-        {/* Clicking ANY category immediately applies that style!     */}
-        {/* ========================================================= */}
-        <div className="bg-slate-900/90 border-b border-slate-700/80 px-4 sm:px-6 py-2 flex items-center gap-2 overflow-x-auto scrollbar-none select-none">
-          <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-400 uppercase tracking-wider shrink-0 mr-1">
-            <Palette className="w-3.5 h-3.5" />
-            <span>STYLE:</span>
-          </div>
-
-          {CATEGORY_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const isSelected = activeThemeKey === item.key;
-            return (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => handleSelectCategoryTheme(item.key)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer whitespace-nowrap ${
-                  isSelected
-                    ? 'bg-white text-black shadow-md scale-105 rounded-xl'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg'
-                }`}
-                title={`Switch profile style to ${item.label}`}
-              >
-                <Icon className="w-3 h-3" />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* ========================================================= */}
         {/* 2. NAVIGATION TABS BAR                                    */}
         {/* ========================================================= */}
-        <div className="px-6 py-2.5 bg-slate-100/80 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2 overflow-x-auto scrollbar-none">
+        <div className="px-6 sm:px-8 py-3 bg-slate-100/90 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/60 flex items-center gap-2.5 sm:gap-3 overflow-x-auto scrollbar-none">
           {[
             { id: 'overview', label: 'OVERVIEW', icon: Sparkles },
             { id: 'fandoms', label: 'FAVORITE FANDOMS', icon: Heart, count: user.favoriteFandoms.length },
@@ -805,10 +792,10 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 py-2 px-3.5 text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                className={`flex items-center gap-2 py-2 px-3.5 sm:px-4 text-xs font-bold transition-all whitespace-nowrap cursor-pointer rounded-xl ${
                   isActive
-                    ? `${currentTheme.tabActiveClass} -translate-y-0.5 rounded-xl`
-                    : `${currentTheme.tabInactiveClass} rounded-xl`
+                    ? `${currentTheme.tabActiveClass} shadow-sm`
+                    : `${currentTheme.tabInactiveClass}`
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -831,7 +818,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
 
         {/* Toast alert */}
         {saveToast && (
-          <div className="mx-6 mt-4 p-3.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold rounded-2xl flex items-center gap-2.5 shadow-sm animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="mx-6 sm:mx-8 mt-4 p-3.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold rounded-2xl flex items-center gap-2.5 shadow-sm animate-in fade-in slide-in-from-top-2 duration-200">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>{saveToast.message}</span>
           </div>
@@ -840,82 +827,82 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         {/* ========================================================= */}
         {/* 3. TAB CONTENT VIEWS                                      */}
         {/* ========================================================= */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
+        <div className="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6 sm:space-y-8">
 
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
-            <div className="space-y-6">
-              {/* Quick Stat Tiles styled dynamically */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className={`p-4.5 transition-all group ${currentTheme.cardClass}`}>
+            <div className="space-y-6 sm:space-y-8">
+              {/* Quick Stat Tiles styled dynamically with generous spacing */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5">
+                <div className={`p-5 sm:p-6 transition-all hover:translate-y-[-2px] flex flex-col justify-between min-h-[125px] ${currentTheme.cardClass}`}>
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold opacity-70 uppercase tracking-wider">Fandoms</span>
-                    <div className="w-8 h-8 rounded-xl bg-pink-50 dark:bg-pink-950/50 text-pink-600 dark:text-pink-400 flex items-center justify-center">
+                    <span className="text-[11px] font-bold opacity-75 uppercase tracking-wider">Fandoms</span>
+                    <div className="w-9 h-9 rounded-xl bg-pink-50 dark:bg-pink-950/50 text-pink-600 dark:text-pink-400 flex items-center justify-center">
                       <Heart className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-2xl font-extrabold mt-2">
+                  <div className="text-3xl sm:text-4xl font-black my-2">
                     {user.favoriteFandoms.length}
                   </div>
-                  <span className={`text-xs font-semibold block mt-0.5 ${currentTheme.accentTextClass}`}>
+                  <span className={`text-xs font-semibold block ${currentTheme.accentTextClass}`}>
                     Official communities
                   </span>
                 </div>
 
-                <div className={`p-4.5 transition-all group ${currentTheme.cardClass}`}>
+                <div className={`p-5 sm:p-6 transition-all hover:translate-y-[-2px] flex flex-col justify-between min-h-[125px] ${currentTheme.cardClass}`}>
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold opacity-70 uppercase tracking-wider">Wishlist</span>
-                    <div className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                    <span className="text-[11px] font-bold opacity-75 uppercase tracking-wider">Wishlist</span>
+                    <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                       <Bookmark className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-2xl font-extrabold mt-2">
+                  <div className="text-3xl sm:text-4xl font-black my-2">
                     {wishlist.length}
                   </div>
-                  <span className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold block mt-0.5">
-                    Saved merch & items
+                  <span className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold block">
+                    Saved merch &amp; items
                   </span>
                 </div>
 
-                <div className={`p-4.5 transition-all group ${currentTheme.cardClass}`}>
+                <div className={`p-5 sm:p-6 transition-all hover:translate-y-[-2px] flex flex-col justify-between min-h-[125px] ${currentTheme.cardClass}`}>
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold opacity-70 uppercase tracking-wider">History</span>
-                    <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                    <span className="text-[11px] font-bold opacity-75 uppercase tracking-wider">History</span>
+                    <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                       <Clock className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-2xl font-extrabold mt-2">
+                  <div className="text-3xl sm:text-4xl font-black my-2">
                     {activities.length}
                   </div>
-                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold block mt-0.5">
-                    Reviews & streams
+                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold block">
+                    Reviews &amp; streams
                   </span>
                 </div>
 
-                <div className={`p-4.5 transition-all group ${currentTheme.cardClass}`}>
+                <div className={`p-5 sm:p-6 transition-all hover:translate-y-[-2px] flex flex-col justify-between min-h-[125px] ${currentTheme.cardClass}`}>
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold opacity-70 uppercase tracking-wider">Points</span>
-                    <div className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                    <span className="text-[11px] font-bold opacity-75 uppercase tracking-wider">Points</span>
+                    <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                       <Sparkles className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-2xl font-extrabold mt-2">
+                  <div className="text-3xl sm:text-4xl font-black my-2">
                     2,450
                   </div>
-                  <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold block mt-0.5">
+                  <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold block">
                     Diamond Tier ⭐
                   </span>
                 </div>
               </div>
 
-              {/* Fandom Highlight Row */}
-              <div className={`p-5 space-y-3.5 ${currentTheme.cardClass}`}>
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+              {/* Fandom Highlight Row with generous spacing */}
+              <div className={`p-6 sm:p-7 space-y-4 ${currentTheme.cardClass}`}>
+                <div className="flex items-center justify-between pb-1">
+                  <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider flex items-center gap-2">
                     <Heart className="w-4 h-4 text-pink-500 fill-pink-500" />
                     <span>Your Subscribed Fandoms ({user.favoriteFandoms.length})</span>
                   </h4>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <button
                       onClick={() => {
                         setActiveTab('fandoms');
@@ -937,7 +924,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2.5">
+                <div className="flex flex-wrap gap-3">
                   {user.favoriteFandoms.length === 0 ? (
                     <div className="text-xs opacity-60 py-2">
                       You haven't followed any fandoms yet. Click below to explore and follow communities across K-Pop, Anime, Gaming, and more!
@@ -948,15 +935,14 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       return (
                         <span
                           key={idx}
-                          onClick={() => matched?.tag && handleSelectCategoryTheme(matched.tag)}
-                          className={`px-3.5 py-1.5 text-xs font-semibold flex items-center gap-2 shadow-2xs transition-all cursor-pointer ${currentTheme.fandomPillClass}`}
+                          className={`px-4 py-2 text-xs font-bold flex items-center gap-2.5 shadow-2xs transition-all ${currentTheme.fandomPillClass}`}
                         >
                           <span
                             className="w-2.5 h-2.5 rounded-full shrink-0"
                             style={{ backgroundColor: matched?.color || currentTheme.accentHex }}
                           />
                           {matched?.tag && (
-                            <span className="text-[10px] font-bold px-1.5 py-0.2 bg-black/10 dark:bg-white/10 rounded">
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 bg-black/10 dark:bg-white/10 rounded">
                               {matched.tag}
                             </span>
                           )}
@@ -970,18 +956,18 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       setActiveTab('fandoms');
                       setIsCreatingFandom(true);
                     }}
-                    className="px-3 py-1.5 border border-dashed border-slate-300 dark:border-slate-600 hover:border-indigo-500 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-4 py-2 border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-pink-500 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
                   >
-                    <Plus className="w-3 h-3" />
+                    <Plus className="w-3.5 h-3.5" />
                     <span>Tạo Fandom Mới</span>
                   </button>
                 </div>
               </div>
 
               {/* Recent Activity Snapshot */}
-              <div className={`p-5 space-y-3.5 ${currentTheme.cardClass}`}>
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+              <div className={`p-6 sm:p-7 space-y-4 ${currentTheme.cardClass}`}>
+                <div className="flex items-center justify-between pb-1">
+                  <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider flex items-center gap-2">
                     <Clock className="w-4 h-4 text-indigo-500" />
                     <span>Recent Activity</span>
                   </h4>
@@ -994,21 +980,21 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   </button>
                 </div>
 
-                <div className="space-y-2.5">
+                <div className="space-y-3">
                   {activities.slice(0, 3).map((act) => (
                     <div
                       key={act.id}
-                      className={`p-3 flex items-center justify-between text-xs transition-colors ${currentTheme.cardInnerClass}`}
+                      className={`p-3.5 sm:p-4 flex items-center justify-between text-xs transition-colors rounded-xl ${currentTheme.cardInnerClass}`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 min-w-0 pr-3">
                         <span
                           className="w-2.5 h-2.5 rounded-full shrink-0"
                           style={{ backgroundColor: currentTheme.accentHex }}
                         />
-                        <span className="font-semibold">{act.title}</span>
+                        <span className="font-semibold truncate">{sanitizeActivity(act.title)}</span>
                       </div>
-                      <span className="text-[11px] opacity-60 font-medium whitespace-nowrap ml-3">
-                        {act.timestamp}
+                      <span className="text-[11px] opacity-60 font-medium whitespace-nowrap shrink-0">
+                        {sanitizeActivity(act.timestamp)}
                       </span>
                     </div>
                   ))}
@@ -1095,7 +1081,6 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                         value={newFandomCategory}
                         onChange={(e) => {
                           setNewFandomCategory(e.target.value);
-                          handleSelectCategoryTheme(e.target.value);
                         }}
                         className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-900 cursor-pointer focus:outline-none"
                       >
@@ -1186,11 +1171,11 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   )}
                 </div>
 
-                {/* Categories Tabs - CLICKING ANY APPLIES THAT CATEGORY'S STYLE */}
+                {/* Categories Tabs - Filters fandoms by category */}
                 <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
                   {CATEGORY_ITEMS.map((cat) => {
-                    const isSelected = activeThemeKey === cat.key;
-                    const catName = cat.label.split(' / ')[0];
+                    const catName = cat.key === 'all' ? 'All' : cat.label.split(' / ')[0];
+                    const isSelected = selectedFandomCategory === catName;
                     const countInCat =
                       cat.key === 'all'
                         ? allFandomsList.length
@@ -1200,7 +1185,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       <button
                         key={cat.key}
                         type="button"
-                        onClick={() => handleSelectCategoryTheme(cat.key)}
+                        onClick={() => setSelectedFandomCategory(catName)}
                         className={`px-3 py-1.5 text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                           isSelected
                             ? `${currentTheme.tabActiveClass} rounded-xl shadow-xs scale-102`
@@ -1251,7 +1236,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                                 <span
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleSelectCategoryTheme(item.tag);
+                                    setSelectedFandomCategory(item.tag);
                                   }}
                                   className="text-[10px] font-extrabold px-2 py-0.5 bg-black/10 dark:bg-white/10 rounded-md uppercase hover:underline"
                                 >
@@ -1322,10 +1307,10 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       style={{ backgroundColor: currentTheme.accentHex }}
                       className="absolute -left-6 top-3 w-3 h-3 rounded-full ring-4 ring-white dark:ring-slate-900 shadow-xs"
                     />
-                    <div className={`p-4 flex items-center justify-between hover:shadow-md transition-shadow ${currentTheme.cardClass}`}>
+                    <div className={`p-4 sm:p-5 flex items-center justify-between hover:shadow-md transition-shadow rounded-xl ${currentTheme.cardClass}`}>
                       <div>
-                        <p className="text-xs font-bold">{act.title}</p>
-                        <span className="text-[11px] opacity-60 font-medium mt-1 inline-block">{act.timestamp}</span>
+                        <p className="text-xs sm:text-sm font-bold">{sanitizeActivity(act.title)}</p>
+                        <span className="text-[11px] opacity-60 font-medium mt-1 inline-block">{sanitizeActivity(act.timestamp)}</span>
                       </div>
                       {act.link && (
                         <Link
@@ -1596,7 +1581,6 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                           setSelectedInterests((prev) =>
                             isSelected ? prev.filter((c) => c !== catName) : [...prev, catName]
                           );
-                          handleSelectCategoryTheme(cat.key);
                         }}
                         className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                           isSelected
