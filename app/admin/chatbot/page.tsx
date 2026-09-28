@@ -85,6 +85,7 @@ export default function AdminChatbotPage() {
   // Chatbot Simulator Playground State
   const [isTesterOpen, setIsTesterOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
+  const [isTesterTyping, setIsTesterTyping] = useState(false);
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'bot' | 'user'; text: string }>>([
     {
       sender: 'bot',
@@ -341,16 +342,17 @@ export default function AdminChatbotPage() {
     }
   };
 
-  // Chatbot Tester query match
+  // Chatbot Tester query match with astream & typing indicator
   const handleSendTestChat = () => {
-    if (!chatInput.trim()) return;
+    if (!chatInput.trim() || isTesterTyping) return;
     const userQuestion = chatInput.trim();
     const newHistory = [...chatMessages, { sender: 'user' as const, text: userQuestion }];
     setChatMessages(newHistory);
     setChatInput('');
+    setIsTesterTyping(true);
 
     // Find best match in FAQs
-    setTimeout(() => {
+    setTimeout(async () => {
       const q = userQuestion.toLowerCase();
       const matched = faqs.find(
         (f) =>
@@ -362,10 +364,26 @@ export default function AdminChatbotPage() {
 
       const botReply = matched
         ? matched.answer
-        : 'Xin lỗi, tôi chưa tìm thấy câu trả lời chính xác trong kho tri thức FAQ. Đội ngũ hỗ trợ sẽ liên hệ với bạn sớm nhất!';
+        : (isVi
+            ? 'Xin lỗi, tôi chưa tìm thấy câu trả lời chính xác trong kho tri thức FAQ. Đội ngũ hỗ trợ sẽ liên hệ với bạn sớm nhất!'
+            : 'Sorry, I could not find a matching answer in the FAQ knowledge base. Our team will contact you soon!');
 
-      setChatMessages((prev) => [...prev, { sender: 'bot', text: botReply }]);
-    }, 400);
+      setIsTesterTyping(false);
+      // Stream bot reply
+      setChatMessages((prev) => [...prev, { sender: 'bot', text: '' }]);
+      const tokens = botReply.match(/\S+|\s+/g) || [botReply];
+      let current = '';
+      for (let i = 0; i < tokens.length; i++) {
+        current += tokens[i];
+        const snap = current;
+        setChatMessages((prev) => {
+          const next = [...prev];
+          next[next.length - 1] = { sender: 'bot', text: snap };
+          return next;
+        });
+        await new Promise((r) => setTimeout(r, 20));
+      }
+    }, 550);
   };
 
   // KPI computations
@@ -1147,6 +1165,21 @@ export default function AdminChatbotPage() {
                   </div>
                 </div>
               ))}
+
+              {/* 3 bouncing dots indicator in tester */}
+              {isTesterTyping && (
+                <div className="flex items-start gap-2.5 justify-start">
+                  <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-200 shadow-xs">
+                    <Bot className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="bg-white border border-slate-200 text-slate-800 p-3 rounded-2xl rounded-tl-xs shadow-xs flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:-0.32s]" />
+                    <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:-0.16s]" />
+                    <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" />
+                    <span className="text-[10px] text-slate-500 ml-1 font-medium">{isVi ? 'Đang soạn phản hồi...' : 'Typing...'}</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Input box */}

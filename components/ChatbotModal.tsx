@@ -12,6 +12,8 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [isGamingTheme, setIsGamingTheme] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [streamingMsgId, setStreamingMsgId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -47,12 +49,12 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
     return initialMessages;
   });
 
-  // Save chat history to localStorage
+  // Save chat history to localStorage when streaming is idle
   useEffect(() => {
-    if (typeof window !== 'undefined' && messages.length > 0) {
+    if (typeof window !== 'undefined' && messages.length > 0 && !streamingMsgId && !isTyping) {
       localStorage.setItem('fanhub_chat_history', JSON.stringify(messages));
     }
-  }, [messages]);
+  }, [messages, streamingMsgId, isTyping]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -60,7 +62,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
 
   useEffect(() => {
     if (isOpen) scrollToBottom();
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isTyping, streamingMsgId]);
 
   const handleClearHistory = () => {
     setMessages(initialMessages);
@@ -139,9 +141,47 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
     };
   };
 
+  // Helper function: LLM token astream typing effect
+  const streamTextToMessage = async (
+    targetMsgId: string,
+    fullText: string,
+    suggestedAction?: ChatMessage['suggestedAction']
+  ) => {
+    setStreamingMsgId(targetMsgId);
+
+    // Split text into tokens / words for natural streaming cadence
+    const tokens = fullText.match(/\S+|\s+/g) || [fullText];
+    let current = '';
+
+    for (let i = 0; i < tokens.length; i++) {
+      current += tokens[i];
+      const snapshot = current;
+      setMessages((prev) =>
+        prev.map((m) => (m.id === targetMsgId ? { ...m, text: snapshot } : m))
+      );
+      scrollToBottom();
+      // 20ms per token delivers a responsive yet distinct astream feel
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    }
+
+    // Finalize with completed text and suggested action
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === targetMsgId
+          ? {
+              ...m,
+              text: fullText,
+              suggestedAction,
+            }
+          : m
+      )
+    );
+    setStreamingMsgId(null);
+  };
+
   const handleSend = async (textToSend?: string) => {
     const text = textToSend || input;
-    if (!text.trim()) return;
+    if (!text.trim() || isTyping || streamingMsgId !== null) return;
 
     const userMsg: ChatMessage = {
       id: `msg-${Date.now()}`,
@@ -152,38 +192,83 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
 
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
+    setIsTyping(true);
+    setTimeout(scrollToBottom, 50);
+
+    // Ensure the 3 bouncing dots are visible for an organic thinking duration (650ms)
+    const minTypingDelay = new Promise((resolve) => setTimeout(resolve, 650));
+
+    let replyText = '';
+    let action: ChatMessage['suggestedAction'] | undefined = undefined;
 
     try {
-      const res = await fetch("/api/v1/chatbot/chat", {
+      const resPromise = fetch("/api/v1/chatbot/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text })
       });
-      
-      if (!res.ok) {
-        throw new Error(`Chatbot API error: HTTP ${res.status}`);
+
+      const [res] = await Promise.all([resPromise, minTypingDelay]);
+
+      if (res.ok) {
+        const contentType = res.headers.get("content-type") || "";
+        if (contentType.includes("text/event-stream") && res.body) {
+          // Native SSE / ReadableStream astream
+          setIsTyping(false);
+          const botMsgId = `msg-${Date.now() + 1}`;
+          const botMsg: ChatMessage = {
+            id: botMsgId,
+            sender: 'bot',
+            text: '',
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          };
+          setMessages((prev) => [...prev, botMsg]);
+          setStreamingMsgId(botMsgId);
+
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let streamAcc = '';
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            streamAcc += decoder.decode(value, { stream: true });
+            const snap = streamAcc;
+            setMessages((prev) =>
+              prev.map((m) => (m.id === botMsgId ? { ...m, text: snap } : m))
+            );
+            scrollToBottom();
+          }
+          setStreamingMsgId(null);
+          return;
+        }
+
+        const data = await res.json();
+        replyText = data.reply || generateBotReply(text).reply;
+        action = data.suggestedAction || generateBotReply(text).action;
+      } else {
+        const botReply = generateBotReply(text);
+        replyText = botReply.reply;
+        action = botReply.action;
       }
-      
-      const data = await res.json();
-      const botMsg: ChatMessage = {
-        id: `msg-${Date.now() + 1}`,
-        sender: 'bot',
-        text: data.reply || generateBotReply(text).reply,
-        suggestedAction: generateBotReply(text).action,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-      setMessages((prev) => [...prev, botMsg]);
-    } catch (error) {
+    } catch {
+      await minTypingDelay;
       const botReply = generateBotReply(text);
-      const botMsg: ChatMessage = {
-        id: `msg-${Date.now() + 1}`,
-        sender: 'bot',
-        text: botReply.reply,
-        suggestedAction: botReply.action,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-      setMessages((prev) => [...prev, botMsg]);
+      replyText = botReply.reply;
+      action = botReply.action;
     }
+
+    // Trigger token astream effect
+    setIsTyping(false);
+    const botMsgId = `msg-${Date.now() + 1}`;
+    const botMsg: ChatMessage = {
+      id: botMsgId,
+      sender: 'bot',
+      text: '',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+    setMessages((prev) => [...prev, botMsg]);
+
+    await streamTextToMessage(botMsgId, replyText, action);
   };
 
   const promptSuggestions = [
@@ -197,11 +282,11 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
 
   return (
     <>
-      {/* Floating Action Trigger Button */}
+      {/* Floating Action Trigger Button with High Z-Index */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         style={{ borderRadius: '0px' }}
-        className={`fixed bottom-6 right-6 z-40 px-4 py-3 ${isGamingTheme ? 'bg-black text-white hover:bg-white hover:text-black border-2 border-black shadow-none' : 'bg-[#d91470] text-white hover:bg-[#be185d] border-3 border-black shadow-[4px_4px_0px_#000000]'} font-mono text-xs font-black uppercase tracking-widest cursor-pointer transition-colors duration-100 flex items-center gap-2.5`}
+        className={`fixed bottom-6 right-6 z-[9999] px-4 py-3 ${isGamingTheme ? 'bg-black text-white hover:bg-white hover:text-black border-2 border-black shadow-none' : 'bg-[#d91470] text-white hover:bg-[#be185d] border-3 border-black shadow-[4px_4px_0px_#000000]'} font-mono text-xs font-black uppercase tracking-widest cursor-pointer transition-colors duration-100 flex items-center gap-2.5`}
         title="Launch AI Fandom Assistant"
         type="button"
       >
@@ -209,11 +294,11 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
         <span>★ AI BOT // FANDOM OS ✦</span>
       </button>
 
-      {/* Chat Window Modal */}
+      {/* Chat Window Modal with High Z-Index */}
       {isOpen && (
         <div 
           style={{ borderRadius: '0px' }}
-          className={`fixed bottom-24 right-4 sm:right-6 z-50 w-[94vw] sm:w-[450px] max-h-[620px] h-[560px] bg-white text-black border-3 border-black flex flex-col overflow-hidden ${isGamingTheme ? 'shadow-none' : 'shadow-[8px_8px_0px_#000000]'} font-mono text-xs`}
+          className={`fixed bottom-24 right-4 sm:right-6 z-[10000] w-[94vw] sm:w-[450px] max-h-[620px] h-[560px] bg-white text-black border-3 border-black flex flex-col overflow-hidden ${isGamingTheme ? 'shadow-none' : 'shadow-[8px_8px_0px_#000000]'} font-mono text-xs`}
         >
           {/* Y2K Window Bar Header */}
           <div className={`${isGamingTheme ? 'bg-black text-white' : 'bg-[#ffd60a] text-black'} px-4 py-2.5 flex items-center justify-between border-b-3 border-black select-none`}>
@@ -249,9 +334,10 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
             {promptSuggestions.map((prompt, idx) => (
               <button
                 key={idx}
+                disabled={isTyping || streamingMsgId !== null}
                 onClick={() => handleSend(prompt)}
                 style={{ borderRadius: '0px' }}
-                className={`whitespace-nowrap px-2.5 py-1 ${isGamingTheme ? 'bg-white hover:bg-black hover:text-white shadow-none' : 'bg-white hover:bg-[#ffd60a] shadow-[1px_1px_0px_#000]'} text-black border-2 border-black font-black uppercase transition-colors cursor-pointer shrink-0`}
+                className={`whitespace-nowrap px-2.5 py-1 ${isGamingTheme ? 'bg-white hover:bg-black hover:text-white shadow-none' : 'bg-white hover:bg-[#ffd60a] shadow-[1px_1px_0px_#000]'} text-black border-2 border-black font-black uppercase transition-colors cursor-pointer shrink-0 disabled:opacity-40 disabled:cursor-not-allowed`}
                 type="button"
               >
                 ★ {prompt}
@@ -277,11 +363,16 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
                   <div className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-1 flex items-center gap-1">
                     <span>{msg.sender === 'user' ? '⚡ USER_PROMPT' : '✪ SYSTEM_TELETYPE'}</span>
                   </div>
-                  <p className="whitespace-pre-wrap leading-relaxed font-mono font-medium">{msg.text}</p>
+                  <p className="whitespace-pre-wrap leading-relaxed font-mono font-medium">
+                    {msg.text}
+                    {streamingMsgId === msg.id && (
+                      <span className="inline-block w-2 h-3.5 bg-[#ff2e93] border border-black animate-pulse ml-1 align-middle" />
+                    )}
+                  </p>
 
                   {/* Contextual Action Button */}
-                  {msg.suggestedAction && (
-                    <div className="mt-3 pt-2.5 border-t-2 border-black flex flex-wrap gap-2">
+                  {msg.suggestedAction && streamingMsgId !== msg.id && (
+                    <div className="mt-3 pt-2.5 border-t-2 border-black flex flex-wrap gap-2 animate-in fade-in duration-300">
                       {msg.suggestedAction.type === 'filter_artist' && (
                         <button
                           onClick={() => {
@@ -338,6 +429,32 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
                 </div>
               </div>
             ))}
+
+            {/* Tin nhắn chờ 3 chấm nhảy nhảy (Typing Indicator) */}
+            {isTyping && (
+              <div className="flex flex-col items-start animate-in fade-in duration-200">
+                <div
+                  style={{ borderRadius: '0px' }}
+                  className="max-w-[90%] p-3.5 border-2 border-black shadow-[3px_3px_0px_#000000] bg-white text-black"
+                >
+                  <div className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-1 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-[#00f0ff] rounded-full animate-ping" />
+                    <span>✪ SYSTEM_TELETYPE // GENERATING ASTREAM...</span>
+                  </div>
+                  <div className="flex items-center gap-2 py-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 bg-[#ff2e93] rounded-full animate-bounce [animation-delay:-0.32s] border border-black shadow-[1px_1px_0px_#000]" />
+                      <span className="w-2.5 h-2.5 bg-[#00f0ff] rounded-full animate-bounce [animation-delay:-0.16s] border border-black shadow-[1px_1px_0px_#000]" />
+                      <span className="w-2.5 h-2.5 bg-[#ffd60a] rounded-full animate-bounce border border-black shadow-[1px_1px_0px_#000]" />
+                    </div>
+                    <span className="text-[11px] font-mono font-bold text-neutral-600 ml-1.5 tracking-wider animate-pulse">
+                      ĐANG TẢI PHẢN HỒI...
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div ref={messagesEndRef} />
           </div>
 
@@ -351,19 +468,26 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
           >
             <input
               type="text"
-              placeholder="ENTER SYSTEM QUERY..."
+              placeholder={
+                streamingMsgId !== null
+                  ? '[AI ĐANG STREAM DỮ LIỆU...]'
+                  : isTyping
+                  ? '[AI ĐANG SOẠN PHẢN HỒI...]'
+                  : 'ENTER SYSTEM QUERY...'
+              }
+              disabled={isTyping || streamingMsgId !== null}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               style={{ borderRadius: '0px' }}
-              className="flex-1 px-3 py-2 border-2 border-black text-xs font-mono uppercase bg-[#fdfbf7] focus:outline-none focus:bg-white focus:border-[#ff2e93]"
+              className="flex-1 px-3 py-2 border-2 border-black text-xs font-mono uppercase bg-[#fdfbf7] focus:outline-none focus:bg-white focus:border-[#ff2e93] disabled:opacity-50 disabled:bg-neutral-100"
             />
             <button
               type="submit"
-              disabled={!input.trim()}
+              disabled={!input.trim() || isTyping || streamingMsgId !== null}
               style={{ borderRadius: '0px' }}
               className="px-4 py-2 bg-[#ff2e93] text-white font-black uppercase tracking-wider disabled:opacity-40 hover:bg-[#e11d48] transition-colors cursor-pointer border-2 border-black shadow-[2px_2px_0px_#000] active:translate-y-0.5"
             >
-              [SEND →]
+              {streamingMsgId !== null ? '[STREAM...]' : isTyping ? '[...]' : '[SEND →]'}
             </button>
           </form>
         </div>
