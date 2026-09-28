@@ -5,6 +5,9 @@ import {
   JetBrains_Mono,
   Plus_Jakarta_Sans,
   Outfit,
+  Bangers,
+  Kalam,
+  Patrick_Hand,
 } from 'next/font/google';
 import './globals.css';
 import { CartWishlistProvider } from '../context/CartWishlistContext';
@@ -50,7 +53,32 @@ const fontJetBrains = JetBrains_Mono({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   display: 'swap',
+  preload: false,
   variable: '--font-jetbrains',
+});
+
+const fontBangers = Bangers({
+  subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap',
+  preload: false,
+  variable: '--font-bangers',
+});
+
+const fontKalam = Kalam({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  display: 'swap',
+  preload: false,
+  variable: '--font-kalam',
+});
+
+const fontPatrick = Patrick_Hand({
+  subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap',
+  preload: false,
+  variable: '--font-patrick',
 });
 
 export const metadata: Metadata = {
@@ -68,7 +96,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fontOutfit.variable} ${fontPlayfair.variable} ${fontSourceSerif.variable} ${fontSans.variable} ${fontJetBrains.variable}`}
+      className={`${fontOutfit.variable} ${fontPlayfair.variable} ${fontSourceSerif.variable} ${fontSans.variable} ${fontJetBrains.variable} ${fontBangers.variable} ${fontKalam.variable} ${fontPatrick.variable}`}
     >
       <body className={`${fontSourceSerif.className} antialiased bg-white text-black selection:bg-black selection:text-white`}>
         <GoogleTranslate />

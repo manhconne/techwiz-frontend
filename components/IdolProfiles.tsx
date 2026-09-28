@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useMemo } from 'react';
+import Image from 'next/image';
 import { mockArtists } from '../data/mockData';
 import { Artist } from '../types';
 
@@ -1105,77 +1106,6 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
         {/* ==================== 1. Editorial Header (Matching AlbumGrid Signature) ==================== */}
         <div style={{ marginBottom: '40px' }}>
           
-          {/* Top Row: Eyebrow on Left, Category Tabs on Right */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '26px',
-              gap: '24px',
-              flexWrap: 'wrap',
-            }}
-          >
-            {/* Eyebrow Label */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '20px', height: '2px', backgroundColor: '#000', display: 'inline-block', borderRadius: '2px' }} />
-              <span
-                style={{
-                  fontSize: '10px',
-                  fontWeight: 800,
-                  letterSpacing: '0.22em',
-                  textTransform: 'uppercase',
-                  color: '#94a3b8',
-                }}
-              >
-                Encyclopedic Archive · Characters & Lore
-              </span>
-            </div>
-
-            {/* Category Filter Tabs - Underline Editorial Style */}
-            <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto scrollbar-none max-w-full pb-1">
-              {categories.map((cat) => {
-                const isActive = selectedCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(cat.id)}
-                    type="button"
-                    style={{
-                      padding: '0 0 8px 0',
-                      fontSize: '11px',
-                      fontWeight: isActive ? 800 : 600,
-                      letterSpacing: '0.14em',
-                      textTransform: 'uppercase',
-                      color: isActive ? '#0f172a' : '#94a3b8',
-                      background: 'none',
-                      border: 'none',
-                      borderBottom: isActive ? '2px solid #0f172a' : '2px solid transparent',
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      transition: 'all 0.2s ease',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                    }}
-                  >
-                    <span>{cat.label}</span>
-                    <span 
-                      style={{ 
-                        fontSize: '10px', 
-                        fontFamily: 'monospace',
-                        color: isActive ? '#000' : '#cbd5e1',
-                        fontWeight: 700
-                      }}
-                    >
-                      ({cat.count})
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           {/* Title Row: Heading on Left + Compact Search Box on Right */}
           <div
             className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-7 border-b border-slate-200"
@@ -1185,7 +1115,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-tight tracking-tight text-black m-0"
               >
                 Fandom Universes{' '}
-                <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
+                <em className="font-serif italic font-normal text-[#d91470] drop-shadow-[1px_1px_0px_#000000]">
                   &amp; Character Dossiers
                 </em>
               </h2>
@@ -1290,9 +1220,9 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
             <div className="font-mono text-xs font-bold uppercase tracking-widest text-neutral-400 mb-2">
               [ARCHIVE EMPTY // NO MATCH]
             </div>
-            <h4 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '20px', fontWeight: 700, margin: '0 0 6px' }}>
+            <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '20px', fontWeight: 700, margin: '0 0 6px' }}>
               No Universes Found
-            </h4>
+            </h3>
             <p style={{ fontSize: '12px', color: '#737373', margin: '0 0 16px', fontFamily: 'monospace' }}>
               We could not find any artists or characters matching "{searchQuery}".
             </p>
@@ -1346,12 +1276,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                       overflow: 'hidden',
                     }}
                   >
-                    <img
+                    <Image
                       src={artist.bannerImage}
                       alt={artist.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       style={{
-                        width: '100%',
-                        height: '100%',
                         objectFit: 'cover',
                         opacity: 0.95,
                         transition: 'transform 0.5s ease',
@@ -1389,7 +1319,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           textTransform: 'uppercase',
                           letterSpacing: '0.12em',
                           padding: '4px 10px',
-                          backgroundColor: '#ff2e93',
+                          backgroundColor: '#d91470',
                           color: '#ffffff',
                           borderRadius: '0px',
                           border: '2px solid #000000',
@@ -1430,6 +1360,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                     >
                       <div 
                         style={{
+                          position: 'relative',
                           width: '56px',
                           height: '56px',
                           border: '2px solid #000000',
@@ -1440,10 +1371,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           boxShadow: '3px 3px 0px #ff2e93',
                         }}
                       >
-                        <img
+                        <Image
                           src={artist.image}
                           alt={artist.name}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          fill
+                          sizes="56px"
+                          style={{ objectFit: 'cover' }}
                         />
                       </div>
                       <div style={{ overflow: 'hidden' }}>
@@ -1501,7 +1434,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ color: '#ff2e93', fontWeight: 800, textTransform: 'uppercase' }}>
+                          <span style={{ color: '#d91470', fontWeight: 800, textTransform: 'uppercase' }}>
                             FANDOM //
                           </span>
                           <span style={{ fontWeight: 900, color: '#000000' }}>
@@ -1554,7 +1487,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                             activeBg = '#00f0ff';
                             activeColor = '#000000';
                           } else if (tId === 'fan') {
-                            activeBg = '#ff2e93';
+                            activeBg = '#d91470';
                             activeColor = '#ffffff';
                           }
 
@@ -1641,7 +1574,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {dossier?.catalog.officialMerch.slice(0, 2).map((item, idx) => (
                                 <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontFamily: "var(--font-mono), monospace", color: '#000000' }}>
-                                  <span className="font-bold text-[#ff2e93]">0{idx + 1} //</span>
+                                  <span className="font-bold text-[#d91470]">0{idx + 1} //</span>
                                   <span className="truncate font-semibold">{item}</span>
                                 </div>
                               ))}
@@ -1659,7 +1592,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                                 marginTop: '8px',
                               }}
                             >
-                              <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#ff2e93', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
+                              <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#d91470', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
                                 ★ COLLECTOR BOXSET:
                               </span>
                               <span style={{ fontSize: '11px', fontWeight: 800, color: '#000000', fontFamily: 'monospace' }} className="truncate block">
@@ -1691,7 +1624,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                               marginTop: '8px',
                             }}
                           >
-                            <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#ff2e93', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
+                            <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#d91470', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
                               PRE-ORDER BENEFIT (POB):
                             </span>
                             <span style={{ fontSize: '11px', fontWeight: 800, color: '#000000', fontFamily: 'monospace' }} className="truncate block">
@@ -1753,7 +1686,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         style={{
                           width: '100%',
                           height: '40px',
-                          backgroundColor: '#ff2e93',
+                          backgroundColor: '#d91470',
                           color: '#ffffff',
                           border: '2px solid #000000',
                           borderRadius: '0px',
@@ -1768,7 +1701,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           cursor: 'pointer',
                           boxShadow: '3px 3px 0px #000000',
                         }}
-                        className="hover:bg-[#ff007f] transition-colors duration-100"
+                        className="hover:bg-[#be185d] transition-colors duration-100"
                       >
                         <span>[VIEW DOSSIER ARCHIVE →]</span>
                       </button>
@@ -1848,10 +1781,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                   overflow: 'hidden',
                 }}
               >
-                <img 
+                <Image 
                   src={activeDossierArtist.bannerImage} 
                   alt={activeDossierArtist.name} 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.82 }}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 800px"
+                  style={{ objectFit: 'cover', opacity: 0.82 }}
                 />
                 <div 
                   style={{
@@ -1870,8 +1805,8 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                     top: '16px',
                     right: '16px',
                     zIndex: 20,
-                    width: '32px',
-                    height: '32px',
+                    width: '44px',
+                    height: '44px',
                     backgroundColor: '#000000',
                     color: '#ffffff',
                     border: '1.5px solid #ffffff',
@@ -1904,6 +1839,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                   <div style={{ display: 'flex', alignItems: 'flex-end', gap: '14px' }}>
                     <div 
                       style={{
+                        position: 'relative',
                         width: '70px',
                         height: '70px',
                         border: '2px solid #ffffff',
@@ -1913,10 +1849,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
                       }}
                     >
-                      <img 
+                      <Image 
                         src={activeDossierArtist.image} 
                         alt={activeDossierArtist.name} 
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        fill
+                        sizes="70px"
+                        style={{ objectFit: 'cover' }}
                       />
                     </div>
                     <div>

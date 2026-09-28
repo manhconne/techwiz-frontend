@@ -74,8 +74,12 @@ export function NotificationDropdown() {
         if (permission === 'granted') {
           console.log('Notification permission granted.');
           // Lấy token thiết bị
+          let swRegistration: ServiceWorkerRegistration | undefined;
+          if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+            swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+          }
           const token = await getToken(msg, {
-            // vapidKey: '...' // optional
+            serviceWorkerRegistration: swRegistration,
           });
           
           const accessToken = localStorage.getItem('access_token');

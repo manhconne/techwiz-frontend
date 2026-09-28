@@ -22,10 +22,13 @@ messaging.onBackgroundMessage(function (payload) {
     "[firebase-messaging-sw.js] Received background message ",
     payload,
   );
-  const notificationTitle = payload.notification.title;
+  const notificationTitle =
+    payload.notification?.title ||
+    payload.data?.title ||
+    "Fan Hub Plus";
   const notificationOptions = {
-    body: payload.notification.body,
-    icon: "/favicon.ico",
+    body: payload.notification?.body || payload.data?.body || "",
+    icon: "/logo.webp",
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);

@@ -4,28 +4,34 @@ import React, { useState } from 'react';
 import { Header } from '../components/Header';
 import { EventHeroBanner } from '../components/EventHeroBanner';
 
-import { UpcomingReleasesAndArticles } from '../components/UpcomingReleasesAndArticles';
 import { AlbumGrid } from '../components/AlbumGrid';
-import { MultimediaTeaserSection } from '../components/MultimediaTeaserSection';
-import { FanCommunityFeed } from '../components/FanCommunityFeed';
-import { WorldTourShowcase } from '../components/WorldTourShowcase';
-import { AlbumDetailModal } from '../components/AlbumDetailModal';
+import dynamic from 'next/dynamic';
 import { IdolProfiles } from '../components/IdolProfiles';
-import { CartDrawer } from '../components/CartDrawer';
-import { WishlistModal } from '../components/WishlistModal';
-import { ChatbotModal } from '../components/ChatbotModal';
-import { AudioPlayer } from '../components/AudioPlayer';
-import { AdminModal } from '../components/AdminModal';
-import { FeedbackModal } from '../components/FeedbackModal';
-
-import { Footer } from '../components/Footer';
 import { Y2KTickerTape } from '../components/Y2KTickerTape';
-import { MangaHandDrawnView } from '../components/MangaHandDrawnView';
-import { AnimeNeoBrutalView } from '../components/AnimeNeoBrutalView';
-import { ComicsPopArtView } from '../components/ComicsPopArtView';
-import { CinemaSwissView } from '../components/CinemaSwissView';
-import { TvShowsY2KView } from '../components/TvShowsY2KView';
-import { SitemapSection } from '../components/SitemapSection';
+
+// Dynamically load below-the-fold sections to optimize initial JS bundle while preserving SSR
+const UpcomingReleasesAndArticles = dynamic(() => import('../components/UpcomingReleasesAndArticles').then(m => m.UpcomingReleasesAndArticles));
+const MultimediaTeaserSection = dynamic(() => import('../components/MultimediaTeaserSection').then(m => m.MultimediaTeaserSection));
+const WorldTourShowcase = dynamic(() => import('../components/WorldTourShowcase').then(m => m.WorldTourShowcase));
+const FanCommunityFeed = dynamic(() => import('../components/FanCommunityFeed').then(m => m.FanCommunityFeed));
+const SitemapSection = dynamic(() => import('../components/SitemapSection').then(m => m.SitemapSection));
+const Footer = dynamic(() => import('../components/Footer').then(m => m.Footer));
+
+// Dynamically load alternative fandom views (only when active)
+const MangaHandDrawnView = dynamic(() => import('../components/MangaHandDrawnView').then(m => m.MangaHandDrawnView));
+const AnimeNeoBrutalView = dynamic(() => import('../components/AnimeNeoBrutalView').then(m => m.AnimeNeoBrutalView));
+const ComicsPopArtView = dynamic(() => import('../components/ComicsPopArtView').then(m => m.ComicsPopArtView));
+const CinemaSwissView = dynamic(() => import('../components/CinemaSwissView').then(m => m.CinemaSwissView));
+const TvShowsY2KView = dynamic(() => import('../components/TvShowsY2KView').then(m => m.TvShowsY2KView));
+
+// Dynamically load interactive modals & drawers (client-only, idle/interaction-loaded)
+const AlbumDetailModal = dynamic(() => import('../components/AlbumDetailModal').then(m => m.AlbumDetailModal), { ssr: false });
+const CartDrawer = dynamic(() => import('../components/CartDrawer').then(m => m.CartDrawer), { ssr: false });
+const WishlistModal = dynamic(() => import('../components/WishlistModal').then(m => m.WishlistModal), { ssr: false });
+const ChatbotModal = dynamic(() => import('../components/ChatbotModal').then(m => m.ChatbotModal), { ssr: false });
+const AudioPlayer = dynamic(() => import('../components/AudioPlayer').then(m => m.AudioPlayer), { ssr: false });
+const AdminModal = dynamic(() => import('../components/AdminModal').then(m => m.AdminModal), { ssr: false });
+const FeedbackModal = dynamic(() => import('../components/FeedbackModal').then(m => m.FeedbackModal), { ssr: false });
 // import { TestConnection } from '../components/TestConnection';
 import { Album, FandomCategoryKey } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
@@ -167,25 +173,31 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
             <Y2KTickerTape />
 
             {/* 2. Character & Idol Group Profiles (Encyclopedic Archive, Characters & Lore) */}
-            <IdolProfiles 
-              onSelectArtist={handleSelectArtistFromProfiles} 
-              fandomCategory={selectedFandomCategory}
-            />
+            <div className="section-lazy-layout">
+              <IdolProfiles 
+                onSelectArtist={handleSelectArtistFromProfiles} 
+                fandomCategory={selectedFandomCategory}
+              />
+            </div>
 
             {/* 3. Fandom Content Explorer & Official Album Drops with Multi-Filters & Search */}
-            <AlbumGrid
-              onSelectAlbum={(album) => setSelectedAlbum(album)}
-              searchQuery={searchQuery}
-              selectedArtistFilter={selectedArtistFilter}
-              setSelectedArtistFilter={setSelectedArtistFilter}
-              fandomCategory={selectedFandomCategory}
-            />
+            <div className="section-lazy-layout">
+              <AlbumGrid
+                onSelectAlbum={(album) => setSelectedAlbum(album)}
+                searchQuery={searchQuery}
+                selectedArtistFilter={selectedArtistFilter}
+                setSelectedArtistFilter={setSelectedArtistFilter}
+                fandomCategory={selectedFandomCategory}
+              />
+            </div>
 
             {/* 4. Multimedia Center Spotlight & Teaser Showcase */}
-            <MultimediaTeaserSection />
+            <div className="section-lazy-layout">
+              <MultimediaTeaserSection />
+            </div>
 
             {/* 5. Trending Articles & Upcoming Drops / Release Calendar */}
-            <div id="upcoming-releases">
+            <div id="upcoming-releases" className="section-lazy-layout">
               <UpcomingReleasesAndArticles 
                 initialCategory={selectedFandomCategory}
                 fandomCategory={selectedFandomCategory}
@@ -194,29 +206,37 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
             </div>
 
             {/* 6. World Tour & Stadium Arenas Showcase */}
-            <WorldTourShowcase />
+            <div className="section-lazy-layout">
+              <WorldTourShowcase />
+            </div>
 
             {/* Y2K Marquee Ticker 02 (Inverted Obsidian) */}
             <Y2KTickerTape inverted />
 
             {/* 7. Fan Community Social Feed */}
-            <FanCommunityFeed />
+            <div className="section-lazy-layout">
+              <FanCommunityFeed />
+            </div>
           </>
         )}
       </main>
 
       {/* SRS 1.9 Mandatory Deliverable: Fan Hub Plus Sitemap & Directory */}
-      <SitemapSection
-        onOpenAdmin={() => setIsAdminOpen(true)}
-        onOpenFeedback={() => setIsFeedbackOpen(true)}
-        onOpenWishlist={() => setIsWishlistOpen(true)}
-      />
+      <div className="section-lazy-layout">
+        <SitemapSection
+          onOpenAdmin={() => setIsAdminOpen(true)}
+          onOpenFeedback={() => setIsFeedbackOpen(true)}
+          onOpenWishlist={() => setIsWishlistOpen(true)}
+        />
+      </div>
 
-      {/* Interactive Modals and Drawers */}
-      <AlbumDetailModal
-        album={selectedAlbum}
-        onClose={() => setSelectedAlbum(null)}
-      />
+      {/* Interactive Modals and Drawers - Loaded on demand */}
+      {selectedAlbum && (
+        <AlbumDetailModal
+          album={selectedAlbum}
+          onClose={() => setSelectedAlbum(null)}
+        />
+      )}
 
       <CartDrawer fandomCategory={selectedFandomCategory} fandomThemeKey={fandomThemeKey} />
       <WishlistModal fandomCategory={selectedFandomCategory} fandomThemeKey={fandomThemeKey} />
@@ -228,23 +248,29 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
         onOpenCart={() => setIsCartOpen(true)}
       />
 
-      {/* Admin Control Panel Modal */}
-      <AdminModal
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-      />
+      {/* Admin Control Panel Modal - Loaded on demand */}
+      {isAdminOpen && (
+        <AdminModal
+          isOpen={isAdminOpen}
+          onClose={() => setIsAdminOpen(false)}
+        />
+      )}
 
-      {/* Dynamic Feedback Modal */}
-      <FeedbackModal
-        isOpen={isFeedbackOpen}
-        onClose={() => setIsFeedbackOpen(false)}
-      />
+      {/* Dynamic Feedback Modal - Loaded on demand */}
+      {isFeedbackOpen && (
+        <FeedbackModal
+          isOpen={isFeedbackOpen}
+          onClose={() => setIsFeedbackOpen(false)}
+        />
+      )}
 
       {/* Footer */}
-      <Footer
-        onOpenAdmin={() => setIsAdminOpen(true)}
-        onOpenFeedback={() => setIsFeedbackOpen(true)}
-      />
+      <div className="section-lazy-layout">
+        <Footer
+          onOpenAdmin={() => setIsAdminOpen(true)}
+          onOpenFeedback={() => setIsFeedbackOpen(true)}
+        />
+      </div>
     </div>
   );
 }

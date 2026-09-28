@@ -24,6 +24,7 @@ export function getCurrentGoogleLanguage(): 'en' | 'vi' {
  */
 export function setGoogleLanguage(lang: 'en' | 'vi') {
   if (typeof window === 'undefined') return;
+  loadGoogleTranslateScript();
   const hostname = window.location.hostname;
 
   if (lang === 'en') {
@@ -88,6 +89,19 @@ export function useGoogleLanguage() {
   };
 }
 
+export function loadGoogleTranslateScript() {
+  if (typeof document === 'undefined') return;
+  const scriptId = 'google-translate-script';
+  if (!document.getElementById(scriptId)) {
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.type = 'text/javascript';
+    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    script.async = true;
+    document.body.appendChild(script);
+  }
+}
+
 export const GoogleTranslate = () => {
   useEffect(() => {
     // Define global callback for Google Translate
@@ -104,15 +118,9 @@ export const GoogleTranslate = () => {
       }
     };
 
-    // Load Google Translate script once
-    const scriptId = 'google-translate-script';
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.type = 'text/javascript';
-      script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-      script.async = true;
-      document.body.appendChild(script);
+    // If user already requested Vietnamese, load immediately
+    if (getCurrentGoogleLanguage() === 'vi') {
+      loadGoogleTranslateScript();
     }
   }, []);
 

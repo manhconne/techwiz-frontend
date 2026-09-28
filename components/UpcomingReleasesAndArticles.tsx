@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import Image from 'next/image';
 import { Bookmark, Share2, Copy, Check, X } from 'lucide-react';
 import { mockFeaturedArticles, mockUpcomingReleases } from '../data/mockData';
 import { FandomCategoryKey, UpcomingRelease, FeaturedArticle } from '../types';
@@ -243,7 +244,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                     style={{ borderRadius: '0px' }}
                     className={`px-4 py-2 text-xs font-mono font-black tracking-widest uppercase cursor-pointer whitespace-nowrap transition-all duration-100 border-2 border-black ${
                       isSelected
-                        ? 'bg-[#ff2e93] text-white shadow-[3px_3px_0px_#000000] translate-x-[-1px] translate-y-[-1px]'
+                        ? 'bg-[#d91470] text-white shadow-[3px_3px_0px_#000000] translate-x-[-1px] translate-y-[-1px]'
                         : 'bg-white text-black hover:bg-[#fefce8] hover:shadow-[2px_2px_0px_#000000]'
                     }`}
                   >
@@ -265,14 +266,14 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-black leading-tight tracking-tight">
                 Trending Articles{' '}
-                <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
+                <em className="font-serif italic font-normal text-[#d91470] drop-shadow-[1px_1px_0px_#000000]">
                   &amp; Upcoming Drops
                 </em>
               </h2>
             </div>
 
             <div className="border-2 border-black bg-[#fefce8] px-4 py-2 font-mono text-xs text-black flex items-center gap-2 self-start md:self-end shadow-[3px_3px_0px_#000000]">
-              <span className="font-black text-sm text-[#ff2e93]">{filteredArticles.length}</span> ARTICLES
+              <span className="font-black text-sm text-[#d91470]">{filteredArticles.length}</span> ARTICLES
               <span className="text-neutral-400">/</span>
               <span className="font-black text-sm text-black">{filteredReleases.length}</span> DROPS
             </div>
@@ -327,7 +328,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                   type="button"
                   onClick={() => setIsSubmitModalOpen(true)}
                   style={{ borderRadius: '0px' }}
-                  className="px-4 py-2 bg-[#ff2e93] text-white text-xs font-mono font-black uppercase tracking-widest hover:bg-[#ff007f] border-2 border-black transition-colors duration-100 cursor-pointer shadow-[3px_3px_0px_#000000]"
+                  className="px-4 py-2 bg-[#d91470] text-white text-xs font-mono font-black uppercase tracking-widest hover:bg-[#be185d] border-2 border-black transition-colors duration-100 cursor-pointer shadow-[3px_3px_0px_#000000]"
                   title="Submit Fandom Article"
                 >
                   <span>[+ SUBMIT POST]</span>
@@ -375,7 +376,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                       {/* Timeline Milestone Square */}
                       <span 
                         style={{ borderRadius: '0px' }}
-                        className="absolute -left-8 top-1 w-6 h-6 bg-[#ff2e93] text-white flex items-center justify-center border-2 border-black font-mono text-[9px] font-black shadow-[2px_2px_0px_#000]"
+                        className="absolute -left-8 top-1 w-6 h-6 bg-[#d91470] text-white flex items-center justify-center border-2 border-black font-mono text-[9px] font-black shadow-[2px_2px_0px_#000]"
                       >
                         //
                       </span>
@@ -385,12 +386,15 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                         style={{ borderRadius: '0px' }}
                         className="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#00f0ff] transition-all duration-100 flex flex-col md:flex-row gap-6 group"
                       >
-                        <img
-                          src={art.coverImage}
-                          alt={art.title}
-                          style={{ borderRadius: '0px' }}
-                          className="w-full md:w-48 h-36 object-cover shrink-0 border-2 border-black group-hover:scale-105 transition-all duration-300"
-                        />
+                        <div className="relative w-full md:w-48 h-36 shrink-0 border-2 border-black overflow-hidden">
+                          <Image
+                            src={art.coverImage}
+                            alt={art.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 192px"
+                            className="object-cover group-hover:scale-105 transition-all duration-300"
+                          />
+                        </div>
                         <div className="flex-1 flex flex-col justify-between space-y-3">
                           <div>
                             <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500 mb-1">
@@ -410,14 +414,14 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                           </div>
 
                           <div className="pt-3 border-t-2 border-black flex items-center justify-between font-mono text-xs flex-wrap gap-2">
-                            <span className="font-black text-[#ff2e93]">{art.author.name}</span>
+                            <span className="font-black text-[#d91470]">{art.author.name}</span>
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => toggleLike(art.id, art.likes)}
                                 type="button"
-                                className="inline-flex items-center gap-1.5 cursor-pointer bg-[#fdf2f8] border border-black px-2 py-0.5 text-black hover:bg-[#ff2e93] hover:text-white transition-colors"
+                                className="inline-flex items-center gap-1.5 cursor-pointer bg-[#fdf2f8] border border-black px-2 py-0.5 text-black hover:bg-[#d91470] hover:text-white transition-colors"
                               >
-                                <span className="text-[#ff2e93]">★</span>
+                                <span className="text-[#d91470]">★</span>
                                 <span className="font-bold">{likesCount}</span>
                               </button>
                               <button
@@ -464,9 +468,11 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                     >
                       {/* Image Thumbnail */}
                       <div className="sm:w-[42%] relative min-h-[220px] sm:min-h-[260px] overflow-hidden bg-black shrink-0 border-b-2 sm:border-b-0 sm:border-r-2 border-black">
-                        <img 
+                        <Image 
                           src={art.coverImage} 
                           alt={art.title}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 42vw"
                           className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
                         />
 
@@ -483,7 +489,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                         {art.isHot && (
                           <div 
                             style={{ borderRadius: '0px' }}
-                            className="absolute bottom-3 left-3 px-2.5 py-1 bg-[#ff2e93] text-white font-mono text-[9px] font-black uppercase tracking-widest border-2 border-black shadow-[2px_2px_0px_#000000]"
+                            className="absolute bottom-3 left-3 px-2.5 py-1 bg-[#d91470] text-white font-mono text-[9px] font-black uppercase tracking-widest border-2 border-black shadow-[2px_2px_0px_#000000]"
                           >
                             ⚡ HOT DISPATCH
                           </div>
@@ -495,7 +501,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                         <div>
                           {/* Author & Meta */}
                           <div className="flex items-center justify-between font-mono text-xs text-neutral-500 mb-3">
-                            <span className="font-black tracking-wide uppercase text-[#ff2e93]">
+                            <span className="font-black tracking-wide uppercase text-[#d91470]">
                               {art.author.name}
                             </span>
                             <div className="flex items-center gap-1.5 font-bold">
@@ -531,7 +537,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                                   <span>DATE // Jan 21 &amp; 22, 2026</span>
                                 </div>
                                 <div>
-                                  <span className="text-[#ff2e93]">STATUS // ★ Certified Pass</span>
+                                  <span className="text-[#d91470]">STATUS // ★ Certified Pass</span>
                                 </div>
                               </div>
                             </div>
@@ -556,10 +562,10 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                             <button
                               onClick={() => toggleLike(art.id, art.likes)}
                               type="button"
-                              className="inline-flex items-center gap-1.5 cursor-pointer bg-[#fdf2f8] border border-black px-2.5 py-1 text-black hover:bg-[#ff2e93] hover:text-white transition-colors"
+                              className="inline-flex items-center gap-1.5 cursor-pointer bg-[#fdf2f8] border border-black px-2.5 py-1 text-black hover:bg-[#d91470] hover:text-white transition-colors"
                               title="Like"
                             >
-                              <span className="text-[#ff2e93]">★</span>
+                              <span className="text-[#d91470]">★</span>
                               <span className="font-bold">{likesCount}</span>
                             </button>
 
@@ -589,7 +595,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
 
                             <div className="inline-flex items-center gap-1 text-black font-bold ml-auto">
                               <span>COMMENTS:</span>
-                              <span className="font-black text-[#ff2e93]">{art.commentsCount}</span>
+                              <span className="font-black text-[#d91470]">{art.commentsCount}</span>
                             </div>
                           </div>
                         </div>
@@ -638,7 +644,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                       <div className="flex items-center justify-between gap-2.5 font-mono">
                         <span 
                           style={{ borderRadius: '0px' }}
-                          className="px-3 py-1 text-[10.5px] font-black uppercase tracking-widest border-2 border-black bg-[#ff2e93] text-white shadow-[2px_2px_0px_#000]"
+                          className="px-3 py-1 text-[10.5px] font-black uppercase tracking-widest border-2 border-black bg-[#d91470] text-white shadow-[2px_2px_0px_#000]"
                         >
                           ★ {rel.badgeText || rel.status}
                         </span>
@@ -654,19 +660,22 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
 
                       {/* Main Release Info */}
                       <div className="flex items-start gap-5">
-                        <img 
-                          src={rel.coverImage} 
-                          alt={rel.title}
-                          style={{ borderRadius: '0px' }}
-                          className="w-24 h-24 object-cover shrink-0 border-2 border-black group-hover:scale-105 transition-all duration-300 shadow-[2px_2px_0px_#000]" 
-                        />
+                        <div className="relative w-24 h-24 shrink-0 border-2 border-black overflow-hidden shadow-[2px_2px_0px_#000]">
+                          <Image 
+                            src={rel.coverImage} 
+                            alt={rel.title}
+                            fill
+                            sizes="96px"
+                            className="object-cover group-hover:scale-105 transition-all duration-300" 
+                          />
+                        </div>
                         <div className="flex-1 min-w-0">
-                          <span className="font-mono text-[10px] font-black text-[#ff2e93] uppercase tracking-widest block mb-1">
+                          <span className="font-mono text-[10px] font-black text-[#d91470] uppercase tracking-widest block mb-1">
                             {rel.category} // {rel.type}
                           </span>
-                          <h5 className="font-serif text-lg font-bold text-black leading-snug line-clamp-2">
+                          <h4 className="font-serif text-lg font-bold text-black leading-snug line-clamp-2">
                             {rel.title}
-                          </h5>
+                          </h4>
                           <p className="font-serif text-xs text-neutral-600 truncate mt-1">
                             {rel.creatorOrArtist}
                           </p>
@@ -688,7 +697,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                           className="bg-[#fefce8] p-3.5 border-2 border-black text-xs font-mono text-black flex flex-col gap-1.5 my-1 shadow-[2px_2px_0px_#000]"
                         >
                           <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest pb-1 border-b border-black">
-                            <span className="text-[#ff2e93]">INCLUSIONS &amp; SPECIFICATIONS:</span>
+                            <span className="text-[#d91470]">INCLUSIONS &amp; SPECIFICATIONS:</span>
                             <span className="text-black font-bold">OFFICIAL DROP</span>
                           </div>
                           <div className="flex flex-col gap-1 text-[11px] pt-1">
@@ -719,7 +728,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                           style={{ borderRadius: '0px' }}
                           className={`px-3 py-3 border-2 border-black text-xs font-black uppercase tracking-wider transition-colors duration-100 cursor-pointer shrink-0 shadow-[3px_3px_0px_#000000] ${
                             isReminded 
-                              ? 'bg-[#ff2e93] text-white' 
+                              ? 'bg-[#d91470] text-white' 
                               : 'bg-[#00f0ff] text-black hover:bg-[#38bdf8]'
                           }`}
                           title={isReminded ? 'Reminder set' : 'Remind me'}
@@ -740,7 +749,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
               className="mt-6 p-7 bg-[#ffd60a] text-black border-3 border-black shadow-[6px_6px_0px_#000000] flex flex-col sm:flex-row sm:items-center justify-between gap-6"
             >
               <div>
-                <span className="font-mono text-[10.5px] font-black uppercase tracking-widest bg-[#ff2e93] text-white px-2.5 py-0.5 border border-black inline-block mb-1 shadow-[2px_2px_0px_#000]">
+                <span className="font-mono text-[10.5px] font-black uppercase tracking-widest bg-[#d91470] text-white px-2.5 py-0.5 border border-black inline-block mb-1 shadow-[2px_2px_0px_#000]">
                   // FANDOM VIP ALLOCATION //
                 </span>
                 <h4 className="font-sans text-xl sm:text-2xl font-black uppercase tracking-tight text-black mt-1">
@@ -754,7 +763,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                 type="button"
                 onClick={() => alert('VIP membership pass requested!')}
                 style={{ borderRadius: '0px' }}
-                className="px-6 py-3 bg-[#ff2e93] hover:bg-[#e11d48] text-white border-2 border-black font-mono text-xs font-black uppercase tracking-widest cursor-pointer shadow-[3px_3px_0px_#000] active:translate-y-0.5 transition-all shrink-0 self-start sm:self-center"
+                className="px-6 py-3 bg-[#d91470] hover:bg-[#be185d] text-white border-2 border-black font-mono text-xs font-black uppercase tracking-widest cursor-pointer shadow-[3px_3px_0px_#000] active:translate-y-0.5 transition-all shrink-0 self-start sm:self-center"
               >
                 [CLAIM ACCESS →]
               </button>
@@ -803,8 +812,9 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
 
               <form onSubmit={handleFanSubmit} className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="font-black uppercase tracking-wider block mb-1">Title *</label>
+                  <label htmlFor="submit-article-title" className="font-black uppercase tracking-wider block mb-1">Title *</label>
                   <input
+                    id="submit-article-title"
                     type="text"
                     required
                     placeholder="e.g. My Dinh Stadium 30,000 Fandom Experience..."
@@ -817,8 +827,10 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="font-black uppercase tracking-wider block mb-1">Category *</label>
+                    <label htmlFor="submit-article-category" className="font-black uppercase tracking-wider block mb-1">Category *</label>
                     <select
+                      id="submit-article-category"
+                      aria-label="Article Category"
                       value={submitCategory}
                       onChange={(e) => setSubmitCategory(e.target.value as any)}
                       style={{ borderRadius: '0px' }}
@@ -832,8 +844,9 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                   </div>
 
                   <div>
-                    <label className="font-black uppercase tracking-wider block mb-1">Author Pen Name *</label>
+                    <label htmlFor="submit-article-author" className="font-black uppercase tracking-wider block mb-1">Author Pen Name *</label>
                     <input
+                      id="submit-article-author"
                       type="text"
                       required
                       placeholder="e.g. Tokki Fan Club"
@@ -846,8 +859,9 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                 </div>
 
                 <div>
-                  <label className="font-black uppercase tracking-wider block mb-1">Short Excerpt *</label>
+                  <label htmlFor="submit-article-excerpt" className="font-black uppercase tracking-wider block mb-1">Short Excerpt *</label>
                   <textarea
+                    id="submit-article-excerpt"
                     required
                     rows={2}
                     placeholder="Compelling 1-2 sentence lead paragraph..."
@@ -859,8 +873,9 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                 </div>
 
                 <div>
-                  <label className="font-black uppercase tracking-wider block mb-1">Cover Image URL</label>
+                  <label htmlFor="submit-article-image" className="font-black uppercase tracking-wider block mb-1">Cover Image URL</label>
                   <input
+                    id="submit-article-image"
                     type="url"
                     placeholder="https://images.unsplash.com/..."
                     value={submitImage}
@@ -871,8 +886,9 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                 </div>
 
                 <div>
-                  <label className="font-black uppercase tracking-wider block mb-1">Tags (Comma-separated)</label>
+                  <label htmlFor="submit-article-tags" className="font-black uppercase tracking-wider block mb-1">Tags (Comma-separated)</label>
                   <input
+                    id="submit-article-tags"
                     type="text"
                     placeholder="Concert, Review, NewJeans, Fandom"
                     value={submitTags}
@@ -894,7 +910,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                   <button
                     type="submit"
                     style={{ borderRadius: '0px' }}
-                    className="px-6 py-2.5 bg-[#ff2e93] text-white hover:bg-[#e11d48] border-2 border-black font-black uppercase tracking-widest cursor-pointer shadow-[3px_3px_0px_#000] active:translate-y-0.5 transition-all"
+                    className="px-6 py-2.5 bg-[#d91470] text-white hover:bg-[#be185d] border-2 border-black font-black uppercase tracking-widest cursor-pointer shadow-[3px_3px_0px_#000] active:translate-y-0.5 transition-all"
                   >
                     [PUBLISH DISPATCH →]
                   </button>
@@ -931,7 +947,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
             <div className="p-5 space-y-4">
               {/* Preview card */}
               <div className="p-3 bg-[#fdfbf7] border-2 border-black space-y-1.5">
-                <span className="text-[10px] font-black uppercase tracking-wider text-[#ff2e93] block">
+                <span className="text-[10px] font-black uppercase tracking-wider text-[#d91470] block">
                   [{sharingArticle.category}] • {sharingArticle.author.name}
                 </span>
                 <h4 className="font-serif font-bold text-sm text-black line-clamp-2">

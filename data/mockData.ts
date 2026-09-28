@@ -11,8 +11,8 @@ export const mockArtists: Artist[] = [
     fandomName: 'SayHi Believers',
     debutYear: 2024,
     members: ['HIEUTHUHAI', 'Rhyder', 'Isaac', 'Soobin', 'ERIK', 'Quang Hung MasterD', 'Duc Phuc', 'Anh Tu Atus'],
-    image: 'https://upload.wikimedia.org/wikipedia/commons/0/04/HIEUTHUHAI_Rapper.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/vi/7/7e/AnhTraiSayHiOpening.jpg',
+    image: '/banners/banner_stadium_live.webp',
+    bannerImage: '/banners/banner_stadium_live.webp',
     bio: 'The biggest breakthrough live concert phenomenon of 2024 with consecutive sold-out stadium shows at My Dinh National Stadium and Ho Chi Minh City.',
     totalAlbums: 3,
   },
@@ -25,8 +25,8 @@ export const mockArtists: Artist[] = [
     fandomName: 'Chong Gai Fandom Club',
     debutYear: 2024,
     members: ['Bang Kieu', 'Tu Long', 'Soobin Hoang Son', 'Cuong Seven', 'Jun Pham', 'S.T Son Thach', 'BB Tran', 'RHYDER'],
-    image: 'https://upload.wikimedia.org/wikipedia/commons/4/43/SOOBIN_ATVNCG2024.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/commons/4/43/SOOBIN_ATVNCG2024.jpg',
+    image: '/banners/banner_stadium_live.webp',
+    bannerImage: '/banners/banner_stadium_live.webp',
     bio: 'A landmark cultural reality show gathering 33 master artists, blending traditional heritage with contemporary music across massive red-ocean stadium concerts.',
     totalAlbums: 2,
   },
@@ -39,8 +39,8 @@ export const mockArtists: Artist[] = [
     fandomName: 'SKY',
     debutYear: 2012,
     members: ['Son Tung M-TP'],
-    image: 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Son_Tung_M-TP_1_%282017%29.png',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/commons/6/64/Son_Tung_M-TP_5_%282017%29.jpg',
+    image: '/banners/banner_monochrome_king.webp',
+    bannerImage: '/banners/banner_monochrome_king.webp',
     bio: 'Top-tier V-Pop icon holding multiple YouTube streaming records, monumental Sky Tour arena runs, and chart-topping international collaborations.',
     totalAlbums: 4,
   },
@@ -55,8 +55,8 @@ export const mockArtists: Artist[] = [
     fandomName: 'BLINK',
     debutYear: 2016,
     members: ['Jisoo', 'Jennie', 'Rose', 'Lisa'],
-    image: 'https://upload.wikimedia.org/wikipedia/commons/1/18/20240809_Blackpink_Pink_Carpet_09.png',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Blackpink_Born_Pink_Tour_Hanoi_01.jpg',
+    image: '/banners/banner_pixel_blackpink.webp',
+    bannerImage: '/banners/banner_pixel_blackpink.webp',
     bio: 'Global supergroup that set historic stadium attendance records with two unforgettable BORN PINK World Tour nights at My Dinh National Stadium.',
     totalAlbums: 6,
   },
@@ -69,8 +69,8 @@ export const mockArtists: Artist[] = [
     fandomName: 'Bunnies (Tokki)',
     debutYear: 2022,
     members: ['Minji', 'Hanni', 'Danielle', 'Haerin', 'Hyein'],
-    image: 'https://upload.wikimedia.org/wikipedia/commons/1/15/NewJeans_240903.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/commons/b/b6/NewJeans_230905.jpg',
+    image: '/banners/banner_pixel_newjeans.webp',
+    bannerImage: '/banners/banner_pixel_newjeans.webp',
     bio: 'Y2K retro pop revolution taking the global music world by storm with nostalgic beats, record-breaking streaming numbers, and trendsetting style.',
     totalAlbums: 4,
   },
@@ -83,8 +83,8 @@ export const mockArtists: Artist[] = [
     fandomName: 'A.R.M.Y',
     debutYear: 2013,
     members: ['RM', 'Jin', 'SUGA', 'j-hope', 'Jimin', 'V', 'Jung Kook'],
-    image: 'https://upload.wikimedia.org/wikipedia/commons/7/73/BTS_during_a_White_House_press_conference_May_31%2C_2022_%28cropped%29.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/commons/7/71/BTS_in_concert_at_Wembley_Stadium%2C_2_June_2019_01.jpg',
+    image: '/banners/banner_stadium_live.webp',
+    bannerImage: '/banners/banner_stadium_live.webp',
     bio: '21st-century pop icons connecting millions of A.R.M.Y worldwide through historic stadium world tours and inspirational chart-topping anthems.',
     totalAlbums: 9,
   },
@@ -99,8 +99,8 @@ export const mockArtists: Artist[] = [
     fandomName: 'Conan Global Fanclub',
     debutYear: 1996,
     members: ['Edogawa Conan', 'Kudo Shinichi', 'Ran Mouri', 'Kaito Kid', 'Heiji Hattori'],
-    image: 'https://upload.wikimedia.org/wikipedia/vi/9/9d/Conan_Movie_27.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/vi/9/9d/Conan_Movie_27.jpg',
+    image: '/banners/banner_pixel_anime_arcade.webp',
+    bannerImage: '/banners/banner_pixel_anime_arcade.webp',
     bio: 'Legendary anime mystery franchise consistently shattering summer box office records across IMAX and cinema chains worldwide.',
     totalAlbums: 5,
   },
@@ -113,8 +113,8 @@ export const mockArtists: Artist[] = [
     fandomName: 'Demon Slayer Corps',
     debutYear: 2019,
     members: ['Tanjiro', 'Nezuko', 'Zenitsu', 'Inosuke', 'Rengoku'],
-    image: 'https://upload.wikimedia.org/wikipedia/vi/e/ed/Thanh_G%C6%B0%C6%A1m_Di%E1%BB%87t_Qu%E1%BB%B7_Chuy%E1%BA%BFn_T%C3%A0u_V%C3%B4_T%E1%BA%ADn_Poster.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/vi/e/ed/Thanh_G%C6%B0%C6%A1m_Di%E1%BB%87t_Qu%E1%BB%B7_Chuy%E1%BA%BFn_T%C3%A0u_V%C3%B4_T%E1%BA%ADn_Poster.jpg',
+    image: '/banners/banner_pixel_anime_arcade.webp',
+    bannerImage: '/banners/banner_pixel_anime_arcade.webp',
     bio: 'Cinematic anime masterpiece that holds the all-time international box office record with world-class animation by ufotable.',
     totalAlbums: 3,
   },
@@ -128,7 +128,7 @@ export const mockArtists: Artist[] = [
     debutYear: 2024,
     members: ['Walter G.', 'Wassily K.', 'Oskar S.'],
     image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
-    bannerImage: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80',
+    bannerImage: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=80',
     bio: 'Pioneering theatrical costume atelier transforming pure geometry (circles, squares, triangles) and primary color theory into iconic living architectural cosplay experiences.',
     totalAlbums: 2,
   },
@@ -183,8 +183,8 @@ export const mockArtists: Artist[] = [
     fandomName: 'Travelers of Teyvat',
     debutYear: 2020,
     members: ['Yu-Peng Chen', 'Zoe', 'Dimeng Yuan', 'Furina', 'Zhongli', 'Raiden Shogun'],
-    image: 'https://upload.wikimedia.org/wikipedia/commons/1/1c/Genshin_Concert_January_2024.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/commons/1/1c/Genshin_Concert_January_2024.jpg',
+    image: '/banners/banner_pixel_game.webp',
+    bannerImage: '/banners/banner_pixel_game.webp',
     bio: 'Award-winning gaming orchestral ensemble blending traditional folk instruments with massive symphonic orchestrations for over 65 million global players.',
     totalAlbums: 6,
   },
@@ -243,10 +243,9 @@ export const mockAlbums: Album[] = [
     priceUSD: 25.0,
     priceVND: 620000,
     originalPriceUSD: 28.0,
-    coverImage: 'https://upload.wikimedia.org/wikipedia/vi/7/7e/AnhTraiSayHiOpening.jpg',
+    coverImage: '/banners/banner_stadium_live.webp',
     galleryImages: [
-      'https://upload.wikimedia.org/wikipedia/commons/0/04/HIEUTHUHAI_Rapper.jpg',
-      'https://upload.wikimedia.org/wikipedia/commons/8/83/Hieuthuhai_1.jpg'
+      '/banners/banner_stadium_live.webp'
     ],
     type: 'Full Album & Merch Box',
     releaseDate: '2024-09-28',
@@ -271,7 +270,7 @@ export const mockAlbums: Album[] = [
     photocards: [
       {
         member: 'HIEUTHUHAI',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/8/83/Hieuthuhai_1.jpg'
+        image: '/banners/banner_stadium_live.webp'
       }
     ],
     tracks: [
@@ -283,7 +282,7 @@ export const mockAlbums: Album[] = [
       {
         id: 'rev-sayhi-1',
         userName: 'SayHi_Believer_Global',
-        avatar: 'https://upload.wikimedia.org/wikipedia/commons/0/04/HIEUTHUHAI_Rapper.jpg',
+        avatar: '/banners/banner_stadium_live.webp',
         rating: 5,
         comment: 'Attended the My Dinh stadium night and immediately ordered this boxset! The printing quality and HIEUTHUHAI card are immaculate.',
         date: '2024-10-05',
@@ -302,10 +301,9 @@ export const mockAlbums: Album[] = [
     priceUSD: 35.0,
     priceVND: 880000,
     originalPriceUSD: 40.0,
-    coverImage: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Blackpink_Born_Pink_Tour_Hanoi_02.jpg',
+    coverImage: '/banners/banner_pixel_blackpink.webp',
     galleryImages: [
-      'https://upload.wikimedia.org/wikipedia/commons/e/ec/Blackpink_Born_Pink_Tour_Hanoi_01.jpg',
-      'https://upload.wikimedia.org/wikipedia/commons/b/bf/Blackpink_Born_Pink_Tour_Hanoi_03.jpg'
+      '/banners/banner_pixel_blackpink.webp'
     ],
     type: 'Concert Merchandise Box',
     releaseDate: '2023-07-29',
@@ -328,7 +326,7 @@ export const mockAlbums: Album[] = [
     photocards: [
       {
         member: 'BLACKPINK Live Stage',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/b/bf/Blackpink_Born_Pink_Tour_Hanoi_03.jpg'
+        image: '/banners/banner_pixel_blackpink.webp'
       }
     ],
     tracks: [
@@ -340,7 +338,7 @@ export const mockAlbums: Album[] = [
       {
         id: 'rev-hn-bp',
         userName: 'Blink_Global_VIP',
-        avatar: 'https://upload.wikimedia.org/wikipedia/commons/1/18/20240809_Blackpink_Pink_Carpet_09.png',
+        avatar: '/banners/banner_pixel_blackpink.webp',
         rating: 5,
         comment: 'The unforgettable stadium energy captured in a premium boxset. The photocards with traditional conical hats are historic collectibles!',
         date: '2023-08-02',
@@ -356,9 +354,9 @@ export const mockAlbums: Album[] = [
     category: 'K-Pop',
     priceUSD: 29.99,
     priceVND: 750000,
-    coverImage: 'https://upload.wikimedia.org/wikipedia/commons/1/18/20240809_Blackpink_Pink_Carpet_09.png',
+    coverImage: '/banners/banner_pixel_blackpink.webp',
     galleryImages: [
-      'https://upload.wikimedia.org/wikipedia/commons/1/18/20240809_Blackpink_Pink_Carpet_09.png'
+      '/banners/banner_pixel_blackpink.webp'
     ],
     type: 'Full Album',
     releaseDate: '2018-12-05',
@@ -391,10 +389,9 @@ export const mockAlbums: Album[] = [
     category: 'K-Pop',
     priceUSD: 24.50,
     priceVND: 590000,
-    coverImage: 'https://upload.wikimedia.org/wikipedia/commons/1/15/NewJeans_240903.jpg',
+    coverImage: '/banners/banner_pixel_newjeans.webp',
     galleryImages: [
-      'https://upload.wikimedia.org/wikipedia/commons/1/15/NewJeans_240903.jpg',
-      'https://upload.wikimedia.org/wikipedia/commons/b/b6/NewJeans_230905.jpg'
+      '/banners/banner_pixel_newjeans.webp'
     ],
     type: 'Mini EP',
     releaseDate: '2023-07-21',
@@ -428,9 +425,9 @@ export const mockAlbums: Album[] = [
     category: 'K-Pop',
     priceUSD: 49.99,
     priceVND: 1250000,
-    coverImage: 'https://upload.wikimedia.org/wikipedia/commons/7/71/BTS_in_concert_at_Wembley_Stadium%2C_2_June_2019_01.jpg',
+    coverImage: '/banners/banner_stadium_live.webp',
     galleryImages: [
-      'https://upload.wikimedia.org/wikipedia/commons/7/71/BTS_in_concert_at_Wembley_Stadium%2C_2_June_2019_01.jpg'
+      '/banners/banner_stadium_live.webp'
     ],
     type: 'Collector Boxset',
     releaseDate: '2022-06-10',
@@ -466,10 +463,10 @@ export const mockAlbums: Album[] = [
     category: 'Anime',
     priceUSD: 18.0,
     priceVND: 450000,
-    coverImage: 'https://upload.wikimedia.org/wikipedia/vi/9/9d/Conan_Movie_27.jpg',
+    coverImage: '/banners/banner_pixel_anime_arcade.webp',
     galleryImages: [
-      'https://upload.wikimedia.org/wikipedia/vi/9/9d/Conan_Movie_27.jpg',
-      'https://upload.wikimedia.org/wikipedia/vi/5/58/Conan_-_The_Black_Iron_Submarine_-_Vietnam_poster.jpg'
+      '/banners/banner_pixel_anime_arcade.webp',
+      '/banners/banner_pixel_anime_arcade.webp'
     ],
     type: 'Cinema Limited Boxset',
     releaseDate: '2024-08-02',
@@ -589,7 +586,7 @@ export const mockAlbums: Album[] = [
     originalPriceUSD: 62.0,
     coverImage: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
     galleryImages: [
-      'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80'
+      'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=800&q=80'
     ],
     type: 'Figure & Merch',
     releaseDate: '2026-03-01',
@@ -631,7 +628,7 @@ export const mockAlbums: Album[] = [
     priceUSD: 38.0,
     priceVND: 950000,
     originalPriceUSD: 44.0,
-    coverImage: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=800&q=80',
     galleryImages: [
       'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80'
     ],
@@ -943,7 +940,7 @@ export const mockTourEvents: TourEvent[] = [
     ticketPriceFromVND: 1200000,
     status: 'Selling Fast',
     coverImage: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
-    bannerImage: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80',
+    bannerImage: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=80',
     seatMapImage: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
     mapQuery: 'Berlin Exhibition Hall Germany',
     category: 'Cosplay',
@@ -969,9 +966,9 @@ export const mockTourEvents: TourEvent[] = [
     ticketPriceVND: 800000,
     ticketPriceFromVND: 800000,
     status: 'Sold Out',
-    coverImage: 'https://upload.wikimedia.org/wikipedia/vi/7/7e/AnhTraiSayHiOpening.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/vi/7/7e/AnhTraiSayHiOpening.jpg',
-    seatMapImage: 'https://upload.wikimedia.org/wikipedia/commons/0/04/HIEUTHUHAI_Rapper.jpg',
+    coverImage: '/banners/banner_stadium_live.webp',
+    bannerImage: '/banners/banner_stadium_live.webp',
+    seatMapImage: '/banners/banner_stadium_live.webp',
     mapQuery: 'My Dinh National Stadium Hanoi',
     category: 'V-Pop',
     badgeText: 'STADIUM ARENA TOUR',
@@ -995,9 +992,9 @@ export const mockTourEvents: TourEvent[] = [
     ticketPriceVND: 850000,
     ticketPriceFromVND: 850000,
     status: 'Sold Out',
-    coverImage: 'https://upload.wikimedia.org/wikipedia/commons/4/43/SOOBIN_ATVNCG2024.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/commons/4/43/SOOBIN_ATVNCG2024.jpg',
-    seatMapImage: 'https://upload.wikimedia.org/wikipedia/commons/4/43/SOOBIN_ATVNCG2024.jpg',
+    coverImage: '/banners/banner_stadium_live.webp',
+    bannerImage: '/banners/banner_stadium_live.webp',
+    seatMapImage: '/banners/banner_stadium_live.webp',
     mapQuery: 'Ocean Park 3 Hanoi',
     category: 'V-Pop',
     badgeText: 'NATIONAL ARENA CONCERT',
@@ -1021,9 +1018,9 @@ export const mockTourEvents: TourEvent[] = [
     ticketPriceVND: 1200000,
     ticketPriceFromVND: 1200000,
     status: 'Sold Out',
-    coverImage: 'https://upload.wikimedia.org/wikipedia/commons/b/bf/Blackpink_Born_Pink_Tour_Hanoi_03.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Blackpink_Born_Pink_Tour_Hanoi_01.jpg',
-    seatMapImage: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Blackpink_Born_Pink_Tour_Hanoi_02.jpg',
+    coverImage: '/banners/banner_pixel_blackpink.webp',
+    bannerImage: '/banners/banner_pixel_blackpink.webp',
+    seatMapImage: '/banners/banner_pixel_blackpink.webp',
     mapQuery: 'My Dinh National Stadium Hanoi',
     category: 'K-Pop',
     badgeText: 'STADIUM WORLD TOUR',
@@ -1047,9 +1044,9 @@ export const mockTourEvents: TourEvent[] = [
     ticketPriceVND: 600000,
     ticketPriceFromVND: 600000,
     status: 'Sold Out',
-    coverImage: 'https://upload.wikimedia.org/wikipedia/commons/7/71/BTS_in_concert_at_Wembley_Stadium%2C_2_June_2019_01.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/commons/7/71/BTS_in_concert_at_Wembley_Stadium%2C_2_June_2019_01.jpg',
-    seatMapImage: 'https://upload.wikimedia.org/wikipedia/commons/7/73/BTS_during_a_White_House_press_conference_May_31%2C_2022_%28cropped%29.jpg',
+    coverImage: '/banners/banner_stadium_live.webp',
+    bannerImage: '/banners/banner_stadium_live.webp',
+    seatMapImage: '/banners/banner_stadium_live.webp',
     mapQuery: 'Wembley Stadium London',
     category: 'K-Pop',
     badgeText: 'LEGENDARY STADIUM LIVE',
@@ -1073,9 +1070,9 @@ export const mockTourEvents: TourEvent[] = [
     ticketPriceVND: 180000,
     ticketPriceFromVND: 180000,
     status: 'Available',
-    coverImage: 'https://upload.wikimedia.org/wikipedia/vi/9/9d/Conan_Movie_27.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/vi/9/9d/Conan_Movie_27.jpg',
-    seatMapImage: 'https://upload.wikimedia.org/wikipedia/vi/5/58/Conan_-_The_Black_Iron_Submarine_-_Vietnam_poster.jpg',
+    coverImage: '/banners/banner_pixel_anime_arcade.webp',
+    bannerImage: '/banners/banner_pixel_anime_arcade.webp',
+    seatMapImage: '/banners/banner_pixel_anime_arcade.webp',
     mapQuery: 'CGV Vincom Center Ba Trieu Hanoi',
     category: 'Anime',
     badgeText: 'PREMIERE CINEMA EVENT',
@@ -1099,9 +1096,9 @@ export const mockTourEvents: TourEvent[] = [
     ticketPriceVND: 220000,
     ticketPriceFromVND: 220000,
     status: 'Available',
-    coverImage: 'https://upload.wikimedia.org/wikipedia/vi/e/ed/Thanh_G%C6%B0%C6%A1m_Di%E1%BB%87t_Qu%E1%BB%B7_Chuy%E1%BA%BFn_T%C3%A0u_V%C3%B4_T%E1%BA%ADn_Poster.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/vi/e/ed/Thanh_G%C6%B0%C6%A1m_Di%E1%BB%87t_Qu%E1%BB%B7_Chuy%E1%BA%BFn_T%C3%A0u_V%C3%B4_T%E1%BA%ADn_Poster.jpg',
-    seatMapImage: 'https://upload.wikimedia.org/wikipedia/vi/e/ed/Thanh_G%C6%B0%C6%A1m_Di%E1%BB%87t_Qu%E1%BB%B7_Chuy%E1%BA%BFn_T%C3%A0u_V%C3%B4_T%E1%BA%ADn_Poster.jpg',
+    coverImage: '/banners/banner_pixel_anime_arcade.webp',
+    bannerImage: '/banners/banner_pixel_anime_arcade.webp',
+    seatMapImage: '/banners/banner_pixel_anime_arcade.webp',
     mapQuery: 'Landmark 81 Cinema HCMC',
     category: 'Anime',
     badgeText: 'IMAX 70MM SPECIAL',
@@ -1125,9 +1122,9 @@ export const mockTourEvents: TourEvent[] = [
     ticketPriceVND: 1100000,
     ticketPriceFromVND: 1100000,
     status: 'Available',
-    coverImage: 'https://upload.wikimedia.org/wikipedia/commons/1/1c/Genshin_Concert_January_2024.jpg',
-    bannerImage: 'https://upload.wikimedia.org/wikipedia/commons/1/1c/Genshin_Concert_January_2024.jpg',
-    seatMapImage: 'https://upload.wikimedia.org/wikipedia/commons/1/1c/Genshin_Concert_January_2024.jpg',
+    coverImage: '/banners/banner_pixel_game.webp',
+    bannerImage: '/banners/banner_pixel_game.webp',
+    seatMapImage: '/banners/banner_pixel_game.webp',
     mapQuery: 'National Convention Centre Hanoi',
     category: 'Gaming',
     badgeText: 'GAMING SYMPHONY TOUR',

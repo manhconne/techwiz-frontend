@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useGoogleLanguage } from './GoogleTranslate';
 import {
@@ -255,7 +256,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
   ] : [
     {
       heading: 'Shop',
-      badgeColor: '#ff2e93',
+      badgeColor: '#d91470',
       badgeTextColor: '#ffffff',
       icon: <ShoppingBag size={12} strokeWidth={2.5} />,
       links: [
@@ -324,9 +325,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
           <div className="flex flex-col gap-5 col-span-2 md:col-span-1">
             {/* Logo */}
             <div className="notranslate">
-              <img
-                src="/logo-dark.png?v=2"
+              <Image
+                src="/logo-dark.webp"
                 alt="Fan Hub Plus"
+                width={160}
+                height={38}
                 style={{ height: '38px', width: 'auto', objectFit: 'contain', display: 'block' }}
               />
             </div>

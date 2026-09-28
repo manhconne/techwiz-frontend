@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 import { usePlayer } from '../context/PlayerContext';
 import { useCartWishlist } from '../context/CartWishlistContext';
 import { useDomainTheme } from '../context/DomainContext';
@@ -95,7 +96,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             <span
               style={{ borderRadius: '0px' }}
-              className="bg-[#ff2e93] text-white px-2.5 py-1 text-[11px] font-mono font-black tracking-wider uppercase border-2 border-black shadow-[2px_2px_0px_#000]"
+              className="bg-[#d91470] text-white px-2.5 py-1 text-[11px] font-mono font-black tracking-wider uppercase border-2 border-black shadow-[2px_2px_0px_#000]"
             >
               {current.subheadline}
             </span>
@@ -107,10 +108,16 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
             </span>
           </div>
 
-          {/* Main Title */}
-          <h1 className="font-sans font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-black leading-tight uppercase mb-3">
-            {current.headline}
-          </h1>
+          {/* Main Title - Uses proper hierarchy (h3 when embedded under section h2) */}
+          {embedded ? (
+            <h3 className="font-sans font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-black leading-tight uppercase mb-3">
+              {current.headline}
+            </h3>
+          ) : (
+            <h2 className="font-sans font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-black leading-tight uppercase mb-3">
+              {current.headline}
+            </h2>
+          )}
 
           {/* Description */}
           <p className="font-sans font-medium text-xs sm:text-sm text-neutral-700 leading-relaxed max-w-lg mb-4 line-clamp-3">
@@ -123,7 +130,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
             className="w-full bg-[#ecfeff] border-2 border-black p-3 mb-5 font-mono text-xs shadow-[2px_2px_0px_#000]"
           >
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-black text-[#ff2e93] uppercase">INCLUDES //</span>
+              <span className="font-black text-[#d91470] uppercase">INCLUDES //</span>
               <span className="font-bold text-black">{current.inclusions}</span>
             </div>
           </div>
@@ -134,13 +141,13 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
               {formatPrice(album.priceUSD, album.priceVND)}
             </span>
             {album.originalPriceUSD && (
-              <span className="text-sm font-bold text-neutral-400 line-through">
+              <span className="text-sm font-bold text-neutral-500 line-through">
                 {formatPrice(album.originalPriceUSD, (album.priceVND || 600000) * 1.2)}
               </span>
             )}
             <span 
               style={{ borderRadius: '0px' }}
-              className="bg-[#10b981] text-white text-[11px] font-black px-2.5 py-1 uppercase tracking-widest border-2 border-black shadow-[2px_2px_0px_#000]"
+              className="bg-[#047857] text-white text-[11px] font-black px-2.5 py-1 uppercase tracking-widest border-2 border-black shadow-[2px_2px_0px_#000]"
             >
               OFFICIAL DROP
             </span>
@@ -162,7 +169,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
               style={{ borderRadius: '0px' }}
               className={`flex-1 sm:flex-initial px-6 sm:px-8 py-3.5 border-2 border-black text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center cursor-pointer transition-colors duration-100 shadow-[3px_3px_0px_#000] ${
                 isThisPlaying
-                  ? 'bg-[#ff2e93] text-white font-black'
+                  ? 'bg-[#d91470] text-white font-black'
                   : 'bg-[#00f0ff] hover:bg-[#38bdf8] text-black font-black'
               }`}
               type="button"
@@ -180,20 +187,25 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
               0{activeIndex + 1} / 0{slides.length}
             </span>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveIndex(idx)}
-                  style={{ borderRadius: '0px' }}
-                  className={`transition-all cursor-pointer border-2 border-black ${
-                    activeIndex === idx
-                      ? 'w-7 h-3 bg-[#ff2e93] shadow-[1px_1px_0px_#000]'
-                      : 'w-3 h-3 bg-white hover:bg-[#ffd60a]'
-                  }`}
+                  className="p-1.5 -m-1 flex items-center justify-center cursor-pointer min-w-[28px] min-h-[28px]"
                   title={`Slide ${idx + 1}`}
+                  aria-label={`Go to slide ${idx + 1}`}
                   type="button"
-                />
+                >
+                  <span
+                    style={{ borderRadius: '0px' }}
+                    className={`block transition-all border-2 border-black ${
+                      activeIndex === idx
+                        ? 'w-7 h-3 bg-[#ff2e93] shadow-[1px_1px_0px_#000]'
+                        : 'w-3 h-3 bg-white hover:bg-[#ffd60a]'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
 
@@ -201,8 +213,9 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
               <button
                 onClick={handlePrev}
                 style={{ borderRadius: '0px' }}
-                className="w-8 h-8 bg-white hover:bg-[#ffd60a] text-black border-2 border-black flex items-center justify-center cursor-pointer transition-colors font-black text-xs shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
-                title="Previous"
+                className="w-9 h-9 min-w-[36px] min-h-[36px] bg-white hover:bg-[#ffd60a] text-black border-2 border-black flex items-center justify-center cursor-pointer transition-colors font-black text-xs shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
+                title="Previous Slide"
+                aria-label="Previous Slide"
                 type="button"
               >
                 ←
@@ -210,8 +223,9 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
               <button
                 onClick={handleNext}
                 style={{ borderRadius: '0px' }}
-                className="w-8 h-8 bg-white hover:bg-[#ffd60a] text-black border-2 border-black flex items-center justify-center cursor-pointer transition-colors font-black text-xs shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
-                title="Next"
+                className="w-9 h-9 min-w-[36px] min-h-[36px] bg-white hover:bg-[#ffd60a] text-black border-2 border-black flex items-center justify-center cursor-pointer transition-colors font-black text-xs shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
+                title="Next Slide"
+                aria-label="Next Slide"
                 type="button"
               >
                 →
@@ -226,16 +240,18 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ embedded = false }) => {
             style={{ borderRadius: '0px' }}
             className="relative w-full aspect-square border-3 border-black overflow-hidden group bg-neutral-100 shadow-[6px_6px_0px_#000000]"
           >
-            <img
+            <Image
               key={album.id}
               src={album.coverImage}
               alt={album.title}
+              fill
+              sizes="(max-width: 640px) 100vw, 400px"
               className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
             />
             <div className="absolute top-3 left-3 z-10">
               <span 
                 style={{ borderRadius: '0px' }}
-                className="bg-[#ff2e93] text-white text-[10px] font-mono font-black uppercase tracking-widest px-2.5 py-1 border-2 border-black shadow-[2px_2px_0px_#000000]"
+                className="bg-[#d91470] text-white text-[10px] font-mono font-black uppercase tracking-widest px-2.5 py-1 border-2 border-black shadow-[2px_2px_0px_#000000]"
               >
                 ★ SPOTLIGHT // #{activeIndex + 1}
               </span>

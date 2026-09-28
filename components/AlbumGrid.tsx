@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { useCartWishlist } from '../context/CartWishlistContext';
 import { usePlayer } from '../context/PlayerContext';
 import { useDomainTheme } from '../context/DomainContext';
@@ -253,7 +254,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     style={{ borderRadius: '0px' }}
                     className={`px-3.5 py-1.5 font-black uppercase tracking-wider cursor-pointer transition-all border-2 border-black ${
                       isActive 
-                        ? 'bg-[#ff2e93] text-white shadow-[3px_3px_0px_#000] -translate-y-0.5' 
+                        ? 'bg-[#d91470] text-white shadow-[3px_3px_0px_#000] -translate-y-0.5' 
                         : 'bg-white text-black shadow-[2px_2px_0px_#000] hover:bg-[#fff9db] hover:shadow-[3px_3px_0px_#000]'
                     }`}
                   >
@@ -272,7 +273,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-black leading-tight tracking-tight">
                 {activeCategoryTitle} &amp;{' '}
-                <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
+                <em className="font-serif italic font-normal text-[#d91470] drop-shadow-[1px_1px_0px_#000000]">
                   Album Drops
                 </em>
               </h2>
@@ -302,14 +303,14 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
           {/* Header Bar */}
           <div className="flex items-center justify-between pb-3 border-b-2 border-black">
             <span className="font-black uppercase tracking-wider text-black flex items-center gap-2">
-              <span className="text-base text-[#ff2e93]">★</span> MULTI-DIMENSIONAL CATALOG FILTER STATION
+              <span className="text-base text-[#d91470]">★</span> MULTI-DIMENSIONAL CATALOG FILTER STATION
             </span>
             {hasActiveFilters && (
               <button
                 onClick={handleResetFilters}
                 type="button"
                 style={{ borderRadius: '0px' }}
-                className="px-2.5 py-1 bg-[#ff2e93] text-white hover:bg-black font-black uppercase tracking-wider text-[11px] cursor-pointer border-2 border-black shadow-[2px_2px_0px_#000] transition-colors"
+                className="px-2.5 py-1 bg-[#d91470] text-white hover:bg-black font-black uppercase tracking-wider text-[11px] cursor-pointer border-2 border-black shadow-[2px_2px_0px_#000] transition-colors"
               >
                 [× RESET ALL]
               </button>
@@ -382,7 +383,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                         type="button"
                         onClick={() => { handleArtistChange(artist.id); setArtistDropdownOpen(false); }}
                         className={`w-full text-left p-1.5 text-xs uppercase cursor-pointer transition-colors ${
-                          activeArtist === artist.id ? 'bg-[#ff2e93] text-white font-black' : 'hover:bg-[#ffd60a] hover:text-black font-bold'
+                          activeArtist === artist.id ? 'bg-[#d91470] text-white font-black' : 'hover:bg-[#ffd60a] hover:text-black font-bold'
                         }`}
                       >
                         {artist.name}
@@ -398,6 +399,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
               value={activeGenre}
               onChange={(e) => setActiveGenre(e.target.value)}
               style={{ borderRadius: '0px' }}
+              aria-label="Filter by music genre"
               className="py-2 px-3 border-2 border-black bg-white text-black font-black uppercase tracking-wider focus:outline-none cursor-pointer shadow-[2px_2px_0px_#000] hover:bg-[#fff9db]"
             >
               <option value="all">ALL GENRES</option>
@@ -414,6 +416,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
               value={activeReleaseYear}
               onChange={(e) => setActiveReleaseYear(e.target.value)}
               style={{ borderRadius: '0px' }}
+              aria-label="Filter by release year"
               className="py-2 px-3 border-2 border-black bg-white text-black font-black uppercase tracking-wider focus:outline-none cursor-pointer shadow-[2px_2px_0px_#000] hover:bg-[#fff9db]"
             >
               <option value="all">YEAR: ALL</option>
@@ -428,6 +431,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
               type="button"
               onClick={() => setInStockOnly(!inStockOnly)}
               style={{ borderRadius: '0px' }}
+              aria-label="IN STOCK - Filter by in-stock items only"
               className={`px-3 py-2 border-2 border-black font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all ${
                 inStockOnly 
                   ? 'bg-[#10b981] text-white shadow-[2px_2px_0px_#000]' 
@@ -492,7 +496,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                           type="button"
                           onClick={() => { setActiveSort(key as any); setSortDropdownOpen(false); }}
                           className={`w-full text-left p-2 uppercase cursor-pointer transition-colors ${
-                            activeSort === key ? 'bg-[#ff2e93] text-white font-black' : 'hover:bg-[#ffd60a] hover:text-black font-bold'
+                            activeSort === key ? 'bg-[#d91470] text-white font-black' : 'hover:bg-[#ffd60a] hover:text-black font-bold'
                           }`}
                         >
                           {label}
@@ -528,15 +532,17 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                       style={{ borderRadius: '0px' }}
                       className="relative w-full aspect-video sm:aspect-[16/10] overflow-hidden bg-neutral-100 mb-4 border-2 border-black shadow-[3px_3px_0px_#000000]"
                     >
-                      <img
+                      <Image
                         src={album.coverImage}
                         alt={album.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 50vw"
                         className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
                       />
                       <div className="absolute top-2 left-2 z-10">
                         <span 
                           style={{ borderRadius: '0px' }}
-                          className="bg-[#ff2e93] text-white text-[9px] font-mono font-black uppercase tracking-widest px-2.5 py-1 border-2 border-black shadow-[2px_2px_0px_#000000]"
+                          className="bg-[#d91470] text-white text-[9px] font-mono font-black uppercase tracking-widest px-2.5 py-1 border-2 border-black shadow-[2px_2px_0px_#000000]"
                         >
                           ★ SPOTLIGHT // #01
                         </span>
@@ -570,7 +576,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     </div>
 
                     {/* Metadata & Title */}
-                    <div className="flex items-center gap-2 text-xs font-mono font-black uppercase tracking-widest text-[#ff2e93] mb-1.5 truncate">
+                    <div className="flex items-center gap-2 text-xs font-mono font-black uppercase tracking-widest text-[#d91470] mb-1.5 truncate">
                       <span>{album.artist}</span>
                       <span>//</span>
                       <span>{album.type}</span>
@@ -578,9 +584,9 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                       <span className="text-neutral-600">{album.releaseDate.split('-')[0]}</span>
                     </div>
 
-                    <h4 className="font-sans text-xl sm:text-2xl font-black uppercase text-black line-clamp-2 leading-tight mb-2">
+                    <h3 className="font-sans text-xl sm:text-2xl font-black uppercase text-black line-clamp-2 leading-tight mb-2">
                       {album.title}
-                    </h4>
+                    </h3>
 
                     <p className="font-sans font-medium text-xs sm:text-sm text-neutral-700 line-clamp-2 leading-relaxed mb-4">
                       {album.description || 'Authentic First-Press publication including complete photobook and limited collectible photocards.'}
@@ -593,7 +599,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                       <div className="text-xl font-black text-black tracking-tight">
                         {formatPrice(album.priceUSD, album.priceVND)}
                       </div>
-                      <span className="text-[10px] text-[#ff2e93] font-black uppercase tracking-widest block">
+                      <span className="text-[10px] text-[#d91470] font-black uppercase tracking-widest block">
                         ★ HANTEO CERTIFIED
                       </span>
                     </div>
@@ -631,11 +637,12 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                       style={{ borderRadius: '0px' }}
                       className="relative w-full aspect-square overflow-hidden bg-neutral-100 mb-3 border-2 border-black shadow-[2px_2px_0px_#000]"
                     >
-                      <img
+                      <Image
                         src={album.coverImage}
                         alt={album.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
-                        loading="lazy"
                       />
                       <div className="absolute top-2 left-2 z-10">
                         <span 
@@ -661,16 +668,16 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
 
                     {/* Artist & Year */}
                     <div className="flex items-center justify-between mb-1 font-mono text-neutral-500">
-                      <span className="text-[10px] font-black uppercase tracking-widest truncate max-w-[70%] text-[#ff2e93]">
+                      <span className="text-[10px] font-black uppercase tracking-widest truncate max-w-[70%] text-[#d91470]">
                         {album.artist}
                       </span>
                       <span className="text-[10px] font-bold text-neutral-600">{album.releaseDate.split('-')[0]}</span>
                     </div>
 
                     {/* Album Title */}
-                    <h4 className="font-sans text-base sm:text-lg font-black uppercase leading-snug line-clamp-1 mb-1 text-black">
+                    <h3 className="font-sans text-base sm:text-lg font-black uppercase leading-snug line-clamp-1 mb-1 text-black">
                       {album.title}
-                    </h4>
+                    </h3>
 
                     {/* Primary Inclusions */}
                     <div className="font-mono text-xs font-bold text-neutral-600 line-clamp-1 mb-2">
@@ -680,27 +687,27 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     {/* Rich Specification Panel: Eliminates empty gap */}
                     <div className="bg-[#ecfeff] border-2 border-black p-2.5 my-2 space-y-1 font-mono text-[10px] shadow-[1px_1px_0px_#000]">
                       <div className="flex items-center justify-between text-neutral-700">
-                        <span className="font-black text-[#ff2e93]">INCLUDES:</span>
+                        <span className="font-black text-[#d91470]">INCLUDES:</span>
                         <span className="text-black font-bold truncate max-w-[125px]">
                           {album.inclusions?.[1] || album.inclusions?.[0] || 'CD + Photobook'}
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-neutral-700">
-                        <span className="font-black text-[#ff2e93]">EDITION:</span>
-                        <span className="text-[#ff2e93] font-black uppercase">FIRST-PRESS</span>
+                        <span className="font-black text-[#d91470]">EDITION:</span>
+                        <span className="text-[#d91470] font-black uppercase">FIRST-PRESS</span>
                       </div>
                       <div className="flex items-center justify-between text-neutral-700">
-                        <span className="font-black text-[#ff2e93]">RATING:</span>
+                        <span className="font-black text-[#d91470]">RATING:</span>
                         <span className="text-black font-bold">★ {album.rating ? album.rating.toFixed(1) : '4.9'} ({album.reviewCount || 120})</span>
                       </div>
                     </div>
 
                     {/* Stock Status Badges */}
                     <div className="flex items-center gap-1.5 flex-wrap my-1 font-mono text-[9px]">
-                      <span className="px-1.5 py-0.5 bg-[#ecfeff] text-[#0284c7] border border-[#0284c7] font-black">
+                      <span className="px-1.5 py-0.5 bg-[#ecfeff] text-[#0369a1] border border-[#0369a1] font-black">
                         {(album.stock ?? 0) > 0 ? `IN STOCK (${album.stock})` : 'BACKORDER'}
                       </span>
-                      <span className="px-1.5 py-0.5 bg-[#fefce8] text-[#ca8a04] border border-[#ca8a04] font-black">
+                      <span className="px-1.5 py-0.5 bg-[#fefce8] text-[#854d0e] border border-[#854d0e] font-black">
                         HANTEO CERTIFIED
                       </span>
                     </div>
@@ -717,7 +724,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                       <div className="text-base font-black tracking-tight truncate text-black">
                         {formatPrice(album.priceUSD, album.priceVND)}
                       </div>
-                      <span className="text-[9px] text-[#10b981] font-bold block uppercase tracking-wider">
+                      <span className="text-[9px] text-[#047857] font-bold block uppercase tracking-wider">
                         READY TO SHIP
                       </span>
                     </div>
@@ -756,11 +763,12 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     style={{ borderRadius: '0px' }}
                     className={`relative w-full ${aspectClass} overflow-hidden bg-neutral-100 mb-3 border-2 border-black shadow-[2px_2px_0px_#000]`}
                   >
-                    <img
+                    <Image
                       src={album.coverImage}
                       alt={album.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
-                      loading="lazy"
                     />
                     <div className="absolute top-2 left-2 z-10">
                       <span 
@@ -773,12 +781,12 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                   </div>
 
                   <div>
-                    <span className="font-mono text-[10px] font-black uppercase tracking-widest text-[#ff2e93] block">
+                    <span className="font-mono text-[10px] font-black uppercase tracking-widest text-[#d91470] block">
                       {album.artist}
                     </span>
-                    <h4 className="font-sans text-base font-black line-clamp-1 mt-0.5 text-black">
+                    <h3 className="font-sans text-base font-black line-clamp-1 mt-0.5 text-black">
                       {album.title}
-                    </h4>
+                    </h3>
                   </div>
 
                   <div className="flex items-center justify-between mt-3 pt-3 border-t-2 border-black font-mono">
@@ -819,11 +827,12 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                       style={{ borderRadius: '0px' }}
                       className="relative w-full aspect-square overflow-hidden bg-neutral-100 mb-3 border-2 border-black shadow-[2px_2px_0px_#000]"
                     >
-                      <img
+                      <Image
                         src={album.coverImage}
                         alt={album.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
-                        loading="lazy"
                       />
                       <div className="absolute top-2 left-2 z-10">
                         <span 
@@ -848,15 +857,15 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     </div>
 
                     <div className="flex items-center justify-between mb-1 font-mono text-neutral-600">
-                      <span className="text-[10px] font-black uppercase tracking-widest truncate max-w-[70%] text-[#ff2e93]">
+                      <span className="text-[10px] font-black uppercase tracking-widest truncate max-w-[70%] text-[#d91470]">
                         {album.artist}
                       </span>
                       <span className="text-[10px] font-bold text-neutral-600">{album.releaseDate.split('-')[0]}</span>
                     </div>
 
-                    <h4 className="font-sans text-base font-black uppercase leading-snug line-clamp-1 mb-1 text-black">
+                    <h3 className="font-sans text-base font-black uppercase leading-snug line-clamp-1 mb-1 text-black">
                       {album.title}
-                    </h4>
+                    </h3>
                     <div className="font-mono text-xs font-bold text-neutral-600 mb-2 line-clamp-1">
                       {album.type} • {album.inclusions?.[0] || 'Sealed Official Copy'}
                     </div>
@@ -864,27 +873,27 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                     {/* Rich Specification Panel */}
                     <div className="bg-[#ecfeff] border-2 border-black p-2.5 my-2 space-y-1 font-mono text-[10px] shadow-[1px_1px_0px_#000]">
                       <div className="flex items-center justify-between text-neutral-700">
-                        <span className="font-black text-[#ff2e93]">INCLUDES:</span>
+                        <span className="font-black text-[#d91470]">INCLUDES:</span>
                         <span className="text-black font-bold truncate max-w-[125px]">
                           {album.inclusions?.[1] || album.inclusions?.[0] || 'CD + Photobook'}
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-neutral-700">
-                        <span className="font-black text-[#ff2e93]">EDITION:</span>
-                        <span className="text-[#ff2e93] font-black uppercase">FIRST-PRESS</span>
+                        <span className="font-black text-[#d91470]">EDITION:</span>
+                        <span className="text-[#d91470] font-black uppercase">FIRST-PRESS</span>
                       </div>
                       <div className="flex items-center justify-between text-neutral-700">
-                        <span className="font-black text-[#ff2e93]">RATING:</span>
+                        <span className="font-black text-[#d91470]">RATING:</span>
                         <span className="text-black font-bold">★ {album.rating ? album.rating.toFixed(1) : '4.9'} ({album.reviewCount || 120})</span>
                       </div>
                     </div>
 
                     {/* Stock Status Badges */}
                     <div className="flex items-center gap-1.5 flex-wrap my-1 font-mono text-[9px]">
-                      <span className="px-1.5 py-0.5 bg-[#ecfeff] text-[#0284c7] border border-[#0284c7] font-black">
+                      <span className="px-1.5 py-0.5 bg-[#ecfeff] text-[#0369a1] border border-[#0369a1] font-black">
                         {(album.stock ?? 0) > 0 ? `IN STOCK (${album.stock})` : 'BACKORDER'}
                       </span>
-                      <span className="px-1.5 py-0.5 bg-[#fefce8] text-[#ca8a04] border border-[#ca8a04] font-black">
+                      <span className="px-1.5 py-0.5 bg-[#fefce8] text-[#854d0e] border border-[#854d0e] font-black">
                         HANTEO CERTIFIED
                       </span>
                     </div>
@@ -895,7 +904,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
                       <div className="text-base font-black tracking-tight truncate text-black">
                         {formatPrice(album.priceUSD, album.priceVND)}
                       </div>
-                      <span className="text-[9px] text-[#10b981] font-bold block uppercase tracking-wider">
+                      <span className="text-[9px] text-[#047857] font-bold block uppercase tracking-wider">
                         READY TO SHIP
                       </span>
                     </div>
@@ -932,7 +941,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
             <button
               onClick={handleResetFilters}
               style={{ borderRadius: '0px' }}
-              className="bg-[#ff2e93] hover:bg-[#e11d48] text-white border-2 border-black text-xs font-mono font-black uppercase tracking-widest px-8 py-3.5 cursor-pointer shadow-[3px_3px_0px_#000] transition-all"
+              className="bg-[#d91470] hover:bg-[#be185d] text-white border-2 border-black text-xs font-mono font-black uppercase tracking-widest px-8 py-3.5 cursor-pointer shadow-[3px_3px_0px_#000] transition-all"
               type="button"
             >
               [RESET ALL FILTERS]

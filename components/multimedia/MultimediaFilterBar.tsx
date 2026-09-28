@@ -127,6 +127,7 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               style={{ borderRadius: '0px' }}
+              aria-label="Search multimedia archive"
               className="w-full px-3 py-1.5 border-2 border-black dark:border-[#334155] text-xs font-mono font-bold uppercase bg-white dark:bg-[#0f172a] text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-[#ff2e93] shadow-[2px_2px_0px_#000000] dark:shadow-none"
             />
           </div>
@@ -135,6 +136,7 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value as any)}
             style={{ borderRadius: '0px' }}
+            aria-label="Sort multimedia clips"
             className="border-2 border-black dark:border-[#334155] bg-white dark:bg-[#0f172a] text-black dark:text-white px-3 py-1.5 text-xs font-mono font-black uppercase cursor-pointer focus:outline-none shadow-[2px_2px_0px_#000000] dark:shadow-none hover:bg-[#fefce8] dark:hover:bg-[#1e293b]"
           >
             <option value="views">MOST VIEWED</option>

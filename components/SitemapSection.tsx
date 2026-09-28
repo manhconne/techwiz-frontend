@@ -30,9 +30,9 @@ export const SitemapSection: React.FC<SitemapSectionProps> = ({ onOpenAdmin, onO
     {
       category: 'Fandom Universe & Profiles',
       code: '★ 01 UNIVERSE',
-      accentColor: 'bg-[#ff2e93]',
+      accentColor: 'bg-[#d91470]',
       iconBg: 'bg-[#fdf2f8]',
-      icon: <Users className="w-4 h-4 text-[#ff2e93]" />,
+      icon: <Users className="w-4 h-4 text-[#d91470]" />,
       links: [
         { label: 'Idol & Character Profiles', href: '#artists' },
         { label: 'Debut History & Agency Lore', href: '#artists' },
@@ -100,7 +100,7 @@ export const SitemapSection: React.FC<SitemapSectionProps> = ({ onOpenAdmin, onO
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-sans font-black text-black uppercase tracking-tight">
             Complete Website Architecture &amp;{' '}
-            <span className="text-[#ff2e93] underline decoration-4 decoration-black">
+            <span className="text-[#d91470] underline decoration-4 decoration-black">
               Directory
             </span>
           </h2>
@@ -121,10 +121,10 @@ export const SitemapSection: React.FC<SitemapSectionProps> = ({ onOpenAdmin, onO
                 {/* Top Banner Accent */}
                 <div>
                   <div className={`${cat.accentColor} px-4 py-2 border-b-2 border-black flex items-center justify-between`}>
-                    <span className="font-mono text-[10px] font-black uppercase tracking-widest text-black">
+                    <span className={`font-mono text-[10px] font-black uppercase tracking-widest ${cat.accentColor.includes('#d91470') ? 'text-white' : 'text-black'}`}>
                       {cat.code}
                     </span>
-                    <span className="w-2 h-2 rounded-full bg-black" />
+                    <span className={`w-2 h-2 rounded-full ${cat.accentColor.includes('#d91470') ? 'bg-white' : 'bg-black'}`} />
                   </div>
 
                   <div className="p-5">

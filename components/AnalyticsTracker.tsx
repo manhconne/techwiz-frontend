@@ -22,8 +22,8 @@ export async function trackAnalyticsEvent(
   metadata?: Record<string, any>
 ) {
   try {
-    const apiBase =
-      process.env.NEXT_PUBLIC_ANALYTICS_SERVICE_URL || 'http://localhost:5015';
+    const apiBase = process.env.NEXT_PUBLIC_ANALYTICS_SERVICE_URL;
+    if (!apiBase) return;
     const token = getAccessToken();
 
     let userId: string | undefined = undefined;

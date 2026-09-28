@@ -1025,6 +1025,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       value={prefTheme}
                       onChange={(e) => setPrefTheme(e.target.value as any)}
                       style={{ borderRadius: '0px' }}
+                      aria-label="Theme Mode Preference"
                       className="w-full px-2 py-1.5 border-2 border-black text-xs bg-white font-mono cursor-pointer"
                     >
                       <option value="light">Light High-Contrast</option>
@@ -1037,6 +1038,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       value={prefFontSize}
                       onChange={(e) => setPrefFontSize(e.target.value as any)}
                       style={{ borderRadius: '0px' }}
+                      aria-label="Text Scale Preference"
                       className="w-full px-2 py-1.5 border-2 border-black text-xs bg-white font-mono cursor-pointer"
                     >
                       <option value="standard">Standard (100%)</option>
@@ -1049,6 +1051,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       value={prefLanding}
                       onChange={(e) => setPrefLanding(e.target.value)}
                       style={{ borderRadius: '0px' }}
+                      aria-label="Default Fandom Preference"
                       className="w-full px-2 py-1.5 border-2 border-black text-xs bg-white font-mono cursor-pointer"
                     >
                       <option value="all">Universe Explorer (All)</option>

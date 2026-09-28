@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 import { TourEvent, FandomCategoryKey } from '../types';
 import { mockTourEvents } from '../data/mockData';
 import { useCartWishlist } from '../context/CartWishlistContext';
@@ -26,7 +27,7 @@ export interface GraphicBannerSlide {
   badge: string;
   dateText: string;
   locationText: string;
-  priceText?: string;
+  priceText: string;
   ctaText: string;
   secondaryCtaText: string;
   targetAnchor: string;
@@ -71,44 +72,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
   const isCinema = currentCategory === 'Movies';
   const isTvShows = currentCategory === 'TV Shows';
 
-  // 5 Masterpiece Graphic Banners - Minimalist Monochrome with Oversized Typography
+  // 9 Masterpiece Graphic Banners - Minimalist Monochrome with Oversized Typography & Local Fast WebP Assets
   const BANNER_SLIDES: GraphicBannerSlide[] = [
-    {
-      id: 'slide-tvshows-y2k',
-      category: 'TV Shows',
-      categoryLabel: 'TV Shows & K-Drama Vault',
-      heroWord: 'BINGE',
-      title: 'TV SHOWS & K-DRAMA VAULT // Y2K BINGE EDITION',
-      subtitle: 'Certified television masterworks, exclusive holographic photocard inclusions, full screenplay monographs & deluxe 2LP soundtrack gatefolds.',
-      tag: '★ BINGE NIGHT // TV SERIES',
-      image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&auto=format&fit=crop&q=85',
-      badge: '★ Y2K BINGE DROP',
-      dateText: 'SEASON 2026 BROADCAST',
-      locationText: 'Seoul, Hawkins & Zaun',
-      priceText: 'From $24.99',
-      ctaText: 'Explore TV Releases',
-      secondaryCtaText: 'View Binge Catalog',
-      targetAnchor: 'tv-catalog',
-      eventRefId: 'tv-y2k-drop',
-    },
-    {
-      id: 'slide-cinema-swiss',
-      category: 'Movies',
-      categoryLabel: '70mm Cinema & Auteur Archive',
-      heroWord: 'CINEMA',
-      title: '70MM RESTORATION ARCHIVE • Auteur Retrospectives & 4K Masters',
-      subtitle: 'Objective optical clarity, pristine photogram fidelity & director-supervised collector monographs for Denis Villeneuve, Christopher Nolan & Wong Kar-wai.',
-      tag: '01. SWISS ARCHIVE // 70MM MASTER',
-      image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&auto=format&fit=crop&q=85',
-      badge: '70MM RESTORATION',
-      dateText: 'CRAFT SELECTION 2026',
-      locationText: 'Zurich Cinémathèque & BFI Southbank',
-      priceText: 'From $29.99',
-      ctaText: 'Browse 70mm Catalog',
-      secondaryCtaText: 'Explore Auteur Atelier',
-      targetAnchor: 'cinema-catalog',
-      eventRefId: 'cinema-swiss-drop',
-    },
     {
       id: 'slide-stadium-live',
       category: 'all',
@@ -117,7 +82,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       title: 'Say Hi All-Stars Live Stadium Tour',
       subtitle: 'Monumental 30,000-seat stadium concert with pyrotechnics, laser displays & 100% verified soundcheck passes.',
       tag: 'STADIUM TOUR // LIVE ARENA',
-      image: '/banners/banner_stadium_live.jpg',
+      image: '/banners/banner_stadium_live.webp',
       badge: 'OFFICIAL STADIUM PASS',
       dateText: 'DECEMBER 07 - 09, 2026',
       locationText: 'National Stadium, Hanoi',
@@ -135,7 +100,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       title: 'ACT:TOMORROW in Tokyo • Game Start',
       subtitle: 'Y2K collector edition pass. Tokyo Dome 55,000 fan support stage with unreleased hologram photocards.',
       tag: 'COLLECTOR EDITION // TOKYO DOME',
-      image: '/banners/banner_pixel_game.jpg',
+      image: '/banners/banner_pixel_game.webp',
       badge: 'TOKYO DOME 2026',
       dateText: 'JANUARY 21 & 22, 2026',
       locationText: 'Tokyo Dome, Japan',
@@ -153,7 +118,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       title: 'Monochrome Arena // High-Contrast Audio & Editorial Vinyl',
       subtitle: 'Austere high-fidelity sound laboratory, architectural precision, editorial monograph releases & limited black vinyl boxsets.',
       tag: 'EDITORIAL MONOGRAPH // SOUND LAB',
-      image: '/banners/banner_graffiti_hud.jpg',
+      image: '/banners/banner_graffiti_hud.webp',
       badge: 'MONOCHROME VAULT',
       dateText: 'SEASON 2026 GLOBAL',
       locationText: 'Makuhari Messe & Tokyo Arena',
@@ -171,7 +136,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       title: 'TOKYO TANKŌBON ARCHIVE • Weekly Shonen Jump & Kodansha',
       subtitle: 'Authentic Japanese tankōbon releases, mangaka G-Pen manuscripts, screen-tone artwork & limited collector prints.',
       tag: 'MANGA ARCHIVE // TANKŌBON EDITION',
-      image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1600&auto=format&fit=crop&q=85',
+      image: '/banners/banner_doodle_blue.webp',
       badge: 'OFFICIAL MANGA VAULT',
       dateText: 'TANKŌBON 2026',
       locationText: 'Jimbocho & Akihabara, Tokyo, Japan',
@@ -189,7 +154,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       title: 'Constructivist Modernism: Living Geometry Cosplay Expo 2026',
       subtitle: 'Form follows function — primary red, blue & yellow, stark black geometries and living architectural costume drops.',
       tag: 'BAUHAUS ATELIER // 2026',
-      image: '/banners/banner_monochrome_king.jpg',
+      image: '/banners/banner_monochrome_king.webp',
       badge: 'BAUHAUS EXPO DROP',
       dateText: 'SPRING EXHIBIT 2026',
       locationText: 'Dessau Bauhaus & Berlin Modernist Hall',
@@ -207,7 +172,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       title: 'SHONEN STREET REVOLUTION: Acid Lime Halftone & Pedido Drop',
       subtitle: 'Manga halftone aesthetics, oversized boxy drop-shoulder graphics & limited Harajuku Shonen anime merchandise drop.',
       tag: 'SHONEN STREETWEAR // ACID LIME',
-      image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1600&auto=format&fit=crop&q=85',
+      image: '/banners/banner_pixel_anime_arcade.webp',
       badge: '★ SHONEN STREET DROP',
       dateText: 'SPRING STREETWEAR 2026',
       locationText: 'Akihabara & Harajuku Flagship',
@@ -225,7 +190,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       title: 'GOLDEN & MODERN AGE: Pop-Art Ben-Day Dots & Omnibus Vault',
       subtitle: 'First printings, virgin foil variants, Eisner-award masterpieces & CGC 9.8 graded slabs from Marvel, DC, Image & Vertigo.',
       tag: '★ POP-ART COMIC VAULT',
-      image: 'https://images.unsplash.com/photo-1604200213928-ba3cf4fc8436?w=1600&auto=format&fit=crop&q=85',
+      image: '/banners/banner_pixel_newjeans.webp',
       badge: 'CGC 9.8 CERTIFIED',
       dateText: 'NEW COMIC BOOK DAY 2026',
       locationText: 'San Diego Comic-Con & Midtown Comics',
@@ -234,6 +199,42 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       secondaryCtaText: 'Explore Creator Imprints',
       targetAnchor: 'comic-catalog',
       eventRefId: 'comic-vault-drop',
+    },
+    {
+      id: 'slide-cinema-swiss',
+      category: 'Movies',
+      categoryLabel: '70mm Cinema & Auteur Archive',
+      heroWord: 'CINEMA',
+      title: '70MM RESTORATION ARCHIVE • Auteur Retrospectives & 4K Masters',
+      subtitle: 'Objective optical clarity, pristine photogram fidelity & director-supervised collector monographs for Denis Villeneuve, Christopher Nolan & Wong Kar-wai.',
+      tag: '01. SWISS ARCHIVE // 70MM MASTER',
+      image: '/banners/banner_pixel_aespa.webp',
+      badge: '70MM RESTORATION',
+      dateText: 'CRAFT SELECTION 2026',
+      locationText: 'Zurich Cinémathèque & BFI Southbank',
+      priceText: 'From $29.99',
+      ctaText: 'Browse 70mm Catalog',
+      secondaryCtaText: 'Explore Auteur Atelier',
+      targetAnchor: 'cinema-catalog',
+      eventRefId: 'cinema-swiss-drop',
+    },
+    {
+      id: 'slide-tvshows-y2k',
+      category: 'TV Shows',
+      categoryLabel: 'TV Shows & K-Drama Vault',
+      heroWord: 'BINGE',
+      title: 'TV SHOWS & K-DRAMA VAULT // Y2K BINGE EDITION',
+      subtitle: 'Certified television masterworks, exclusive holographic photocard inclusions, full screenplay monographs & deluxe 2LP soundtrack gatefolds.',
+      tag: '★ BINGE NIGHT // TV SERIES',
+      image: '/banners/banner_pixel_blackpink.webp',
+      badge: '★ Y2K BINGE DROP',
+      dateText: 'SEASON 2026 BROADCAST',
+      locationText: 'Seoul, Hawkins & Zaun',
+      priceText: 'From $24.99',
+      ctaText: 'Explore TV Releases',
+      secondaryCtaText: 'View Binge Catalog',
+      targetAnchor: 'tv-catalog',
+      eventRefId: 'tv-y2k-drop',
     },
   ];
 
@@ -344,6 +345,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       <div className="relative w-full h-[620px] sm:h-[720px] md:h-[820px] lg:h-[890px] xl:h-[940px] min-h-[82vh] overflow-hidden bg-neutral-900 group border-b-4 border-black">
         {filteredSlides.map((slide, idx) => {
           const isVisible = slide.id === currentSlide.id;
+          const shouldRenderImage = isVisible || idx === 0 || Math.abs(idx - activeIndex) <= 1;
           return (
             <div
               key={slide.id}
@@ -353,13 +355,20 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
                 : 'opacity-0 pointer-events-none z-0'
                 }`}
             >
-              {/* Full-bleed background graphic banner - VIBRANT FULL COLOR */}
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="w-full h-full object-cover object-center contrast-105 group-hover:scale-[1.01] transition-transform duration-300"
-                loading={idx === 0 ? 'eager' : 'lazy'}
-              />
+              {/* Full-bleed background graphic banner - Next.js Image with high priority for LCP slide */}
+              {shouldRenderImage && (
+                <Image
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  priority={idx === 0}
+                  loading={idx === 0 ? 'eager' : 'lazy'}
+                  decoding={idx === 0 ? 'sync' : 'async'}
+                  sizes="(max-width: 768px) 100vw, 100vw"
+                  quality={75}
+                  className="w-full h-full object-cover object-center group-hover:scale-[1.01] transition-transform duration-300"
+                />
+              )}
 
               {/* High-contrast Y2K Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
@@ -384,7 +393,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             <div className="flex items-center gap-3 flex-wrap font-mono">
               <span
                 style={{ borderRadius: isAnime || isComics ? '8px' : '0px' }}
-                className={`inline-flex items-center gap-2 px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : isCinema ? 'bg-[#FF3000] text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : isComics ? 'bg-[#ef4444] text-white border-2 border-black shadow-[3px_3px_0px_#000000]' : 'bg-[#ff2e93] text-white border-2 border-black shadow-[3px_3px_0px_#000000]'} text-[11px] font-black uppercase tracking-widest`}
+                className={`inline-flex items-center gap-2 px-3.5 py-1.5 ${isGaming ? 'bg-black text-white border-2 border-white shadow-none' : isCinema ? 'bg-[#FF3000] text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] text-black border-2 border-black shadow-[3px_3px_0px_#000000]' : isComics ? 'bg-[#ef4444] text-white border-2 border-black shadow-[3px_3px_0px_#000000]' : 'bg-[#d91470] text-white border-2 border-black shadow-[3px_3px_0px_#000000]'} text-[11px] font-black uppercase tracking-widest`}
               >
                 <span>★</span>
                 <span>{currentSlide.tag}</span>
@@ -428,7 +437,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             <div className="flex items-center gap-2 max-w-md my-1">
               <div
                 style={{ borderRadius: isAnime || isComics ? '3px' : '0px' }}
-                className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : isCinema ? 'bg-[#FF3000]' : isAnime ? 'bg-[#a3e635]' : isComics ? 'bg-[#ef4444]' : 'bg-[#ff2e93]'}`}
+                className={`w-2.5 h-2.5 border-2 border-black shrink-0 ${isGaming ? 'bg-white' : isCinema ? 'bg-[#FF3000]' : isAnime ? 'bg-[#a3e635]' : isComics ? 'bg-[#ef4444]' : 'bg-[#d91470]'}`}
               />
               <div className={`flex-1 h-[2px] ${isGaming ? 'bg-white' : isCinema ? 'bg-[#FF3000]' : isAnime ? 'bg-[#84cc16]' : isComics ? 'bg-[#facc15]' : 'bg-[#00f0ff]'}`} />
               <div
@@ -450,7 +459,7 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               <button
                 type="button"
                 onClick={handleMainCta}
-                className={`px-8 sm:px-12 py-3.5 sm:py-4 min-w-[200px] sm:min-w-[240px] justify-center ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black border-2 border-white shadow-none' : isCinema ? 'bg-[#FF3000] text-white hover:bg-black border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] border-2 border-black shadow-[4px_4px_0px_#000000]' : isComics ? 'bg-[#ef4444] text-white hover:bg-[#dc2626] border-2 border-black shadow-[4px_4px_0px_#000000]' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] hover:translate-y-[-2px]`}
+                className={`px-8 sm:px-12 py-3.5 sm:py-4 min-w-[200px] sm:min-w-[240px] justify-center ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black border-2 border-white shadow-none' : isCinema ? 'bg-[#FF3000] text-white hover:bg-black border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] border-2 border-black shadow-[4px_4px_0px_#000000]' : isComics ? 'bg-[#ef4444] text-white hover:bg-[#dc2626] border-2 border-black shadow-[4px_4px_0px_#000000]' : 'bg-[#d91470] text-white hover:bg-[#be185d] border-2 border-black shadow-[4px_4px_0px_#000000]'} text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all duration-100 select-none whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] hover:translate-y-[-2px]`}
                 style={{ borderRadius: isAnime || isComics ? '12px' : '0px', fontFamily: isAnime || isComics ? "'Patrick Hand', cursive, sans-serif" : undefined, fontSize: isAnime || isComics ? '16px' : undefined }}
               >
                 <span>{currentSlide.ctaText}</span>
@@ -469,15 +478,16 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
           </div>
         </div>
 
-        {/* Side Prev / Next Navigation Arrows */}
+        {/* Side Prev / Next Navigation Arrows with Accessible 48px touch targets */}
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             handlePrev();
           }}
-          className={`absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] text-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] hover:bg-[#84cc16] text-black border-2 border-black shadow-[3px_3px_0px_#000]' : isComics ? 'bg-[#ef4444] hover:bg-[#fef08a] text-white hover:text-black border-2 border-black shadow-[3px_3px_0px_#000]' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-all duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
+          className={`absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 min-w-[48px] min-h-[48px] ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] text-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] hover:bg-[#84cc16] text-black border-2 border-black shadow-[3px_3px_0px_#000]' : isComics ? 'bg-[#ef4444] hover:bg-[#fef08a] text-white hover:text-black border-2 border-black shadow-[3px_3px_0px_#000]' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-all duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
           style={{ borderRadius: isAnime || isComics ? '12px' : '0px' }}
+          aria-label="Previous Slide"
           title="Previous Slide"
         >
           <span className="font-mono text-base font-black">←</span>
@@ -489,8 +499,9 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
             e.stopPropagation();
             handleNext();
           }}
-          className={`absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] text-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] hover:bg-[#84cc16] text-black border-2 border-black shadow-[3px_3px_0px_#000]' : isComics ? 'bg-[#ef4444] hover:bg-[#fef08a] text-white hover:text-black border-2 border-black shadow-[3px_3px_0px_#000]' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-all duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
+          className={`absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 min-w-[48px] min-h-[48px] ${isGaming ? 'bg-white hover:bg-black text-black hover:text-white border-2 border-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] text-black hover:text-white border-2 border-black shadow-none' : isAnime ? 'bg-[#a3e635] hover:bg-[#84cc16] text-black border-2 border-black shadow-[3px_3px_0px_#000]' : isComics ? 'bg-[#ef4444] hover:bg-[#fef08a] text-white hover:text-black border-2 border-black shadow-[3px_3px_0px_#000]' : 'bg-[#ffd60a] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000]'} flex items-center justify-center transition-all duration-100 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]`}
           style={{ borderRadius: isAnime || isComics ? '12px' : '0px' }}
+          aria-label="Next Slide"
           title="Next Slide"
         >
           <span className="font-mono text-base font-black">→</span>
@@ -501,25 +512,31 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
           style={{ borderRadius: isAnime || isComics ? '10px' : '0px' }}
           className={`absolute right-6 sm:right-12 bottom-8 sm:bottom-12 z-30 flex items-center gap-3 bg-white px-4 py-2 border-2 border-black ${isGaming || isCinema ? 'shadow-none' : isAnime ? 'shadow-[3px_3px_0px_#84cc16]' : isComics ? 'shadow-[3px_3px_0px_#ef4444]' : 'shadow-[3px_3px_0px_#000]'} text-xs font-mono text-black font-bold`}
         >
-          <span className={`font-black text-sm ${isGaming ? 'text-black' : isCinema ? 'text-[#FF3000]' : isAnime ? 'text-[#65a30d]' : isComics ? 'text-[#ef4444]' : 'text-[#ff2e93]'}`}>0{activeIndex + 1}</span>
+          <span className={`font-black text-sm ${isGaming ? 'text-black' : isCinema ? 'text-[#FF3000]' : isAnime ? 'text-[#65a30d]' : isComics ? 'text-[#ef4444]' : 'text-[#d91470]'}`}>0{activeIndex + 1}</span>
           <span className="text-neutral-400">/</span>
           <span className="text-neutral-700">0{filteredSlides.length}</span>
 
-          <div className="flex items-center gap-1.5 ml-2">
+          <div className="flex items-center gap-1 ml-2">
             {filteredSlides.map((s, idx) => (
               <button
                 key={s.id}
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   setActiveIndex(idx);
                 }}
-                className={`w-3 h-3 transition-colors duration-100 cursor-pointer border border-black ${idx === activeIndex
-                  ? (isGaming ? 'bg-black' : isCinema ? 'bg-[#FF3000]' : isAnime ? 'bg-[#a3e635]' : isComics ? 'bg-[#ef4444]' : 'bg-[#ff2e93]')
-                  : (isGaming ? 'bg-neutral-200 hover:bg-black' : isCinema ? 'bg-neutral-200 hover:bg-black' : isAnime ? 'bg-neutral-200 hover:bg-[#a3e635]' : isComics ? 'bg-neutral-200 hover:bg-[#ef4444]' : 'bg-neutral-200 hover:bg-[#ffd60a]')
-                  }`}
-                style={{ borderRadius: isAnime || isComics ? '3px' : '0px' }}
+                className="p-2 -m-1 flex items-center justify-center cursor-pointer min-w-[28px] min-h-[28px]"
+                aria-label={`Go to slide ${idx + 1}: ${s.title}`}
                 title={`Slide ${idx + 1}`}
-              />
+              >
+                <span
+                  className={`w-3 h-3 block transition-colors duration-100 border border-black ${idx === activeIndex
+                    ? (isGaming ? 'bg-black' : isCinema ? 'bg-[#FF3000]' : isAnime ? 'bg-[#a3e635]' : isComics ? 'bg-[#ef4444]' : 'bg-[#d91470]')
+                    : (isGaming ? 'bg-neutral-200 hover:bg-black' : isCinema ? 'bg-neutral-200 hover:bg-black' : isAnime ? 'bg-neutral-200 hover:bg-[#a3e635]' : isComics ? 'bg-neutral-200 hover:bg-[#ef4444]' : 'bg-neutral-200 hover:bg-[#ffd60a]')
+                    }`}
+                  style={{ borderRadius: isAnime || isComics ? '3px' : '0px' }}
+                />
+              </button>
             ))}
           </div>
 
@@ -529,7 +546,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               e.stopPropagation();
               setIsPaused(!isPaused);
             }}
-            className={`transition-colors ml-2 p-1 cursor-pointer font-mono text-xs font-black ${isGaming ? 'text-black hover:opacity-60' : isCinema ? 'text-black hover:text-[#FF3000]' : isAnime ? 'text-black hover:text-[#65a30d]' : isComics ? 'text-black hover:text-[#ef4444]' : 'text-black hover:text-[#ff2e93]'}`}
+            className={`min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors ml-1 cursor-pointer font-mono text-xs font-black ${isGaming ? 'text-black hover:opacity-60' : isCinema ? 'text-black hover:text-[#FF3000]' : isAnime ? 'text-black hover:text-[#65a30d]' : isComics ? 'text-black hover:text-[#ef4444]' : 'text-black hover:text-[#ff2e93]'}`}
+            aria-label={isPaused ? 'Resume banner autoplay' : 'Pause banner autoplay'}
             title={isPaused ? 'Resume' : 'Pause'}
           >
             {isPaused ? '▶' : '❚❚'}
@@ -550,13 +568,13 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
               // Color per tab when active
               let activeBgClass = 'fandom-tab-active-all bg-[#ffd60a] text-black border-black dark:bg-[#ffd60a] dark:text-black dark:border-[#ffd60a]';
               if (tab.id === 'Gaming') activeBgClass = 'fandom-tab-active-gaming bg-black text-white border-black dark:bg-[#00f0ff] dark:text-black dark:border-[#00f0ff]';
-              else if (tab.id === 'K-Pop') activeBgClass = 'fandom-tab-active-kpop bg-[#ff2e93] text-white border-black dark:bg-[#ff2e93] dark:text-white dark:border-[#ff2e93]';
+              else if (tab.id === 'K-Pop') activeBgClass = 'fandom-tab-active-kpop bg-[#d91470] text-white border-black dark:bg-[#d91470] dark:text-white dark:border-[#d91470]';
               else if (tab.id === 'Manga') activeBgClass = 'fandom-tab-active-manga bg-[#fff9c4] text-[#2d2d2d] border-[#2d2d2d] dark:bg-[#ff4d4d] dark:text-white dark:border-[#ff4d4d]';
               else if (tab.id === 'Cosplay') activeBgClass = 'fandom-tab-active-cosplay bg-[#D02020] text-white border-black dark:bg-[#D02020] dark:text-white dark:border-[#D02020] shadow-[4px_4px_0px_#121212] dark:shadow-none';
               else if (tab.id === 'Anime') activeBgClass = 'fandom-tab-active-anime bg-[#a3e635] text-black border-black dark:bg-[#a3e635] dark:text-black dark:border-[#a3e635] shadow-[4px_4px_0px_#000000] dark:shadow-none';
               else if (tab.id === 'Comics') activeBgClass = 'fandom-tab-active-comics bg-[#38bdf8] text-black border-black dark:bg-[#38bdf8] dark:text-black dark:border-[#38bdf8]';
               else if (tab.id === 'Movies') activeBgClass = 'fandom-tab-active-movies bg-[#FF3000] text-white border-black dark:bg-[#FF3000] dark:text-white dark:border-[#FF3000]';
-              else if (tab.id === 'TV Shows') activeBgClass = 'fandom-tab-active-tv bg-[#ff2e93] text-white border-black dark:bg-[#ff2e93] dark:text-white dark:border-[#ff2e93]';
+              else if (tab.id === 'TV Shows') activeBgClass = 'fandom-tab-active-tv bg-[#d91470] text-white border-black dark:bg-[#d91470] dark:text-white dark:border-[#d91470]';
 
               return (
                 <button
@@ -564,7 +582,8 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
                   onClick={() => handleSelectTab(tab.id)}
                   type="button"
                   style={{ borderRadius: isAnime || isComics ? '8px' : '0px' }}
-                  className={`fandom-dock-btn px-4 sm:px-5 py-2.5 text-xs font-mono font-black tracking-widest uppercase transition-all duration-100 cursor-pointer flex items-center gap-2 whitespace-nowrap border-2 ${isActive
+                  aria-label={`Switch to ${tab.label} fandom category`}
+                  className={`fandom-dock-btn px-4 sm:px-5 py-2.5 text-xs font-mono font-black tracking-widest uppercase transition-all duration-100 cursor-pointer flex items-center gap-2 whitespace-nowrap border-2 min-h-[44px] ${isActive
                     ? `${activeBgClass} ${isGaming || isCinema ? 'shadow-none' : 'shadow-[3px_3px_0px_#000000]'}`
                     : `fandom-tab-inactive bg-white text-black border-black hover:bg-neutral-100 dark:bg-[#1e293b] dark:text-[#f8fafc] dark:border-[#334155] dark:hover:bg-[#2a364f] dark:hover:text-white ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`
                     }`}

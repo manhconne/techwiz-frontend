@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useGoogleLanguage } from './GoogleTranslate';
 import { useCartWishlist } from '../context/CartWishlistContext';
@@ -458,7 +459,7 @@ export const Header: React.FC<HeaderProps> = ({
     return {
       barBg: '#ffffff',
       barBorder: 'border-t border-black border-b-4 border-black',
-      btnBg: '#ff2e93',
+      btnBg: '#d91470',
       btnColor: '#ffffff',
       btnBorder: '2px solid #000000',
       btnRadius: '0px',
@@ -467,8 +468,8 @@ export const Header: React.FC<HeaderProps> = ({
       btnLabel: '★ ALL MD',
       tabFont: "var(--font-mono), monospace",
       tabColor: '#000000',
-      tabActiveColor: '#ff2e93',
-      tabActiveBorder: '3px solid #ff2e93',
+      tabActiveColor: '#d91470',
+      tabActiveBorder: '3px solid #d91470',
       tabLetterSpacing: '0.12em',
       tabFontWeight: 600,
       tabActiveWeight: 800,
@@ -621,18 +622,22 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2.5 sm:gap-4 md:gap-5 shrink-0">
           <button
             onClick={() => setIsMenuDrawerOpen(true)}
-            className={`mobile-menu-btn header-action-btn px-3 py-1.5 ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : isCinema ? 'bg-[#FF3000] text-white hover:bg-black shadow-none' : isCosplay ? 'bg-[#D02020] text-white hover:bg-[#b01818] shadow-[3px_3px_0px_#121212]' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] shadow-[2px_2px_0px_#000000]' : 'bg-[#ff2e93] text-white hover:bg-[#ff007f] shadow-[2px_2px_0px_#000000]'} items-center justify-center cursor-pointer shrink-0 border-2 border-black font-mono text-xs font-black uppercase tracking-widest transition-transform active:scale-95`}
+            className={`mobile-menu-btn header-action-btn px-3 py-1.5 min-h-[44px] min-w-[44px] ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : isCinema ? 'bg-[#FF3000] text-white hover:bg-black shadow-none' : isCosplay ? 'bg-[#D02020] text-white hover:bg-[#b01818] shadow-[3px_3px_0px_#121212]' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] shadow-[2px_2px_0px_#000000]' : 'bg-[#d91470] text-white hover:bg-[#be185d] shadow-[2px_2px_0px_#000000]'} items-center justify-center cursor-pointer shrink-0 border-2 border-black font-mono text-xs font-black uppercase tracking-widest transition-transform active:scale-95`}
             style={{ borderRadius: '0px' }}
             title="Menu"
+            aria-label="Toggle navigation menu"
             type="button"
           >
             [MENU]
           </button>
 
-          <Link href="/" className="flex items-center notranslate shrink-0">
-            <img
-              src="/logo-dark.png?v=2"
+          <Link href="/" className="flex items-center notranslate shrink-0" aria-label="Fan Hub Plus Home">
+            <Image
+              src="/logo-dark.webp"
               alt="Fan Hub Plus"
+              width={180}
+              height={44}
+              priority
               className={`header-logo h-8 sm:h-9 md:h-11 w-auto object-contain block transition-all hover:scale-105 ${isGaming || isCinema ? 'brightness-0' : ''}`}
             />
           </Link>
@@ -660,7 +665,7 @@ export const Header: React.FC<HeaderProps> = ({
                 fontFamily: isCosplay ? "var(--font-outfit), 'Outfit', sans-serif" : "var(--font-jetbrains), var(--font-mono), 'JetBrains Mono', monospace",
                 fontSize: '11px',
                 fontWeight: 900,
-                color: isGaming ? '#000000' : isCinema ? '#FF3000' : isCosplay ? '#D02020' : isAnime ? '#65a30d' : '#ff2e93',
+                color: isGaming ? '#000000' : isCinema ? '#FF3000' : isCosplay ? '#D02020' : isAnime ? '#65a30d' : '#d91470',
                 marginRight: '8px',
                 userSelect: 'none',
               }}
@@ -669,6 +674,8 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
 
             <input
+              id="desktop-header-search"
+              aria-label="Search albums, artists, or tours"
               type="text"
               placeholder={isManga ? "MANGA, TANKŌBON, AUTHOR, ARC..." : isCinema ? "70MM ARCHIVE, AUTEUR, RESTORATIONS, CRITERION..." : isCosplay ? "BAUHAUS COSPLAY, ATELIER PROPS, EXPO..." : isAnime ? "SHONEN ANIME, PEDIDO STREETWEAR, OSTS..." : "ARTIST, ALBUM, ARCHIVE..."}
               value={searchQuery}
@@ -721,9 +728,10 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Search Button */}
           <button
             onClick={() => setIsSearchModalOpen(true)}
-            className={`mobile-search-btn header-action-btn px-2.5 py-1.5 items-center justify-center text-black border-2 border-black hover:bg-black hover:text-white cursor-pointer bg-white transition-colors duration-100 font-bold ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
+            className={`mobile-search-btn header-action-btn px-2.5 py-1.5 min-h-[44px] min-w-[44px] items-center justify-center text-black border-2 border-black hover:bg-black hover:text-white cursor-pointer bg-white transition-colors duration-100 font-bold ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
             title="Search"
+            aria-label="Open search dialog"
             type="button"
           >
             [?]
@@ -732,9 +740,10 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Shopping Cart Button */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className={`header-action-btn px-3 py-1.5 flex items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#ffd60a] hover:bg-[#fde047] shadow-[2px_2px_0px_#000000]'}`}
+            className={`header-action-btn px-3 py-1.5 min-h-[44px] sm:min-h-[36px] flex items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#ffd60a] hover:bg-[#fde047] shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
             title="Cart"
+            aria-label={`BAG (${cartCount}) - Shopping Cart`}
             type="button"
           >
             <span>BAG ({cartCount})</span>
@@ -743,9 +752,10 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Wishlist Button */}
           <button
             onClick={() => setIsWishlistOpen(true)}
-            className={`header-action-btn hidden sm:flex px-3 py-1.5 items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#00f0ff] hover:bg-[#38bdf8] shadow-[2px_2px_0px_#000000]'}`}
+            className={`header-action-btn hidden sm:flex px-3 py-1.5 min-h-[44px] sm:min-h-[36px] items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#00f0ff] hover:bg-[#38bdf8] shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
             title="Wishlist"
+            aria-label={`SAVED (${wishlistCount}) - Saved Wishlist`}
             type="button"
           >
             <span>SAVED ({wishlistCount})</span>
@@ -755,8 +765,9 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={toggleLanguage}
             title="Language: English"
+            aria-label="Toggle language between English and Vietnamese"
             type="button"
-            className={`header-lang-btn hidden sm:flex notranslate hover:bg-black hover:text-white items-center px-2.5 py-1 text-xs font-mono font-bold border-2 border-black bg-white text-black h-8 sm:h-9 cursor-pointer transition-colors duration-100 ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
+            className={`header-lang-btn hidden sm:flex notranslate hover:bg-black hover:text-white items-center px-2.5 py-1 text-xs font-mono font-bold border-2 border-black bg-white text-black h-8 sm:h-9 min-h-[44px] sm:min-h-[36px] cursor-pointer transition-colors duration-100 ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
           >
             <span>[EN]</span>
@@ -766,8 +777,9 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={toggleThemeMode}
             title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             type="button"
-            className={`header-action-btn hidden sm:flex notranslate hover:bg-black hover:text-white px-2.5 py-1 items-center justify-center text-black border-2 border-black bg-white font-bold uppercase cursor-pointer transition-colors duration-100 h-8 sm:h-9 text-[11px] ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
+            className={`header-action-btn hidden sm:flex notranslate hover:bg-black hover:text-white px-2.5 py-1 items-center justify-center text-black border-2 border-black bg-white font-bold uppercase cursor-pointer transition-colors duration-100 h-8 sm:h-9 min-h-[44px] sm:min-h-[36px] text-[11px] ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
           >
             {themeMode === 'dark' ? '[LIGHT]' : '[DARK]'}
@@ -777,9 +789,10 @@ export const Header: React.FC<HeaderProps> = ({
           {isLoggedIn ? (
             <button
               onClick={() => setIsDashboardOpen(true)}
-              className={`header-action-btn flex items-center justify-center px-3 py-1.5 border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 text-xs ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#c084fc] hover:bg-[#d8b4fe] shadow-[2px_2px_0px_#000000]'}`}
+              className={`header-action-btn flex items-center justify-center px-3 py-1.5 border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 min-h-[44px] sm:min-h-[36px] text-xs ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#c084fc] hover:bg-[#d8b4fe] shadow-[2px_2px_0px_#000000]'}`}
               style={{ borderRadius: '0px' }}
               title={`${user.name} - Dashboard`}
+              aria-label={`User Account Dashboard for ${user.name}`}
               type="button"
             >
               <User className="w-3.5 h-3.5 mr-1" />
@@ -788,9 +801,10 @@ export const Header: React.FC<HeaderProps> = ({
           ) : (
             <button
               onClick={() => setIsAuthModalOpen(true)}
-              className={`header-action-btn flex items-center justify-center px-3 py-1.5 border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 text-xs ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : isCinema ? 'bg-[#FF3000] text-white hover:bg-black shadow-none' : 'text-black bg-[#ffd60a] hover:bg-[#ffe066] shadow-[2px_2px_0px_#000000]'}`}
+              className={`header-action-btn flex items-center justify-center px-3 py-1.5 border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 min-h-[44px] sm:min-h-[36px] text-xs ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : isCinema ? 'bg-[#FF3000] text-white hover:bg-black shadow-none' : 'text-black bg-[#ffd60a] hover:bg-[#ffe066] shadow-[2px_2px_0px_#000000]'}`}
               style={{ borderRadius: '0px' }}
               title="Sign In / Sign Up"
+              aria-label="LOGIN - Sign In or Register"
               type="button"
             >
               <User className="w-3.5 h-3.5 mr-1" />
@@ -1520,7 +1534,7 @@ export const Header: React.FC<HeaderProps> = ({
                 {/* Brand Logo Header */}
                 <div style={{ textAlign: 'center', marginBottom: '24px' }}>
                   <img
-                    src="/logo-dark.png?v=2"
+                    src="/logo-dark.webp"
                     alt="Fan Hub Plus Logo"
                     style={{ height: '40px', width: 'auto', margin: '0 auto 12px auto', objectFit: 'contain' }}
                   />
@@ -2251,7 +2265,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="flex items-center notranslate"
               >
                 <img
-                  src="/logo-dark.png?v=2"
+                  src="/logo-dark.webp"
                   alt="Fan Hub Plus"
                   className="h-8 w-auto object-contain block"
                 />
@@ -2587,6 +2601,8 @@ export const Header: React.FC<HeaderProps> = ({
                   <Search className="w-5 h-5 text-black shrink-0" />
 
                   <input
+                    id="mobile-header-search"
+                    aria-label="Search artist, album drops, or tours"
                     type="text"
                     autoFocus
                     placeholder="Search artist, album drops, tours (Playfair, BTS, NewJeans...)"
@@ -2609,6 +2625,7 @@ export const Header: React.FC<HeaderProps> = ({
                       onClick={() => setSearchQuery('')}
                       style={{ borderRadius: '0px' }}
                       className="w-7 h-7 bg-white hover:bg-black hover:text-white border border-black text-black flex items-center justify-center cursor-pointer shrink-0 mr-2 transition-colors duration-100"
+                      aria-label="Clear search input"
                       title="Clear text"
                     >
                       <X className="w-3.5 h-3.5" />
