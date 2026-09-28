@@ -125,6 +125,13 @@ export const CATEGORY_THEMES: Record<string, {
   tabInactiveClass: string;
   actionBtnClass: string;
   fandomPillClass: string;
+  tabBarClass: string;
+  contentBgClass: string;
+  tapeDecor?: boolean;
+  closeBtnClass?: string;
+  headerSubtitle?: string;
+  inputClass?: string;
+  borderRadius?: string;
 }> = {
   all: {
     name: 'all',
@@ -144,12 +151,18 @@ export const CATEGORY_THEMES: Record<string, {
     tabInactiveClass: 'text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800',
     actionBtnClass: 'rounded-xl bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-700 hover:to-pink-700 text-white shadow-md shadow-indigo-600/20',
     fandomPillClass: 'rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800',
+    tabBarClass: 'bg-slate-100/90 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/60',
+    contentBgClass: 'bg-white dark:bg-slate-900',
+    tapeDecor: false,
+    closeBtnClass: 'w-9 h-9 rounded-full bg-black/25 hover:bg-black/45 text-white backdrop-blur-md border border-white/20',
+    headerSubtitle: 'Universe Explorer & Cross-Fandom Hub',
+    inputClass: 'w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500',
   },
   kpop: {
     name: 'kpop',
     categoryLabel: 'K-Pop Official Hub',
     fontFamily: "'Outfit', sans-serif",
-    modalClass: 'rounded-3xl border-2 border-pink-500/40 shadow-2xl shadow-pink-500/10 bg-white dark:bg-slate-900',
+    modalClass: 'rounded-3xl border-3 border-pink-500/40 shadow-2xl shadow-pink-500/10 bg-white dark:bg-slate-900',
     headerClass: 'bg-gradient-to-br from-purple-950 via-slate-900 to-pink-950 text-white border-b border-pink-500/40',
     headerGlow1: 'bg-pink-500/25',
     headerGlow2: 'bg-cyan-500/20',
@@ -163,12 +176,19 @@ export const CATEGORY_THEMES: Record<string, {
     tabInactiveClass: 'text-slate-600 dark:text-slate-300 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-slate-800',
     actionBtnClass: 'rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white shadow-md shadow-pink-600/25',
     fandomPillClass: 'rounded-xl bg-pink-50 dark:bg-pink-950/50 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-800',
+    tabBarClass: 'bg-gradient-to-r from-pink-50 via-purple-50 to-pink-50 dark:from-pink-950/40 dark:via-purple-950/30 dark:to-pink-950/40 border-b-2 border-pink-300/60 dark:border-pink-800/60',
+    contentBgClass: 'bg-gradient-to-b from-pink-50/30 to-white dark:from-pink-950/20 dark:to-slate-900',
+    tapeDecor: false,
+    closeBtnClass: 'w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 hover:scale-105',
+    headerSubtitle: 'Official Hanteo Certified Member Gate & Photocard Vault',
+    inputClass: 'w-full px-3.5 py-2.5 rounded-xl border-2 border-pink-300 dark:border-pink-800 text-xs bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-pink-500',
   },
   manga: {
     name: 'manga',
     categoryLabel: 'Manga Tankōbon Guild',
     fontFamily: "'Kalam', cursive, sans-serif",
-    modalClass: 'rounded-2xl border-3 border-[#2d2d2d] shadow-[8px_8px_0px_#2d2d2d] bg-[#fdfbf7]',
+    modalClass: 'border-3 border-[#2d2d2d] shadow-[8px_8px_0px_#2d2d2d] bg-[#fdfbf7]',
+    borderRadius: '255px 15px 225px 15px/15px 225px 15px 255px',
     headerClass: 'bg-[#fdfbf7] text-[#2d2d2d] border-b-3 border-[#2d2d2d] relative',
     headerGlow1: 'bg-red-400/15',
     headerGlow2: 'bg-amber-300/15',
@@ -182,6 +202,12 @@ export const CATEGORY_THEMES: Record<string, {
     tabInactiveClass: 'text-[#2d2d2d] hover:bg-[#fff0f0] border-2 border-transparent',
     actionBtnClass: 'rounded-lg bg-[#ff4d4d] hover:bg-[#e03a3a] text-white border-2 border-[#2d2d2d] shadow-[3px_3px_0px_#2d2d2d]',
     fandomPillClass: 'rounded-lg bg-[#fff0f0] text-[#ff4d4d] border-2 border-[#2d2d2d] shadow-[1px_1px_0px_#2d2d2d]',
+    tabBarClass: 'bg-[#fdfbf7] border-b-3 border-[#2d2d2d] text-[#2d2d2d]',
+    contentBgClass: 'bg-[#fdfbf7] text-[#2d2d2d]',
+    tapeDecor: true,
+    closeBtnClass: 'w-8 h-8 rounded-none bg-white hover:bg-neutral-100 text-black border-2 border-[#2d2d2d] shadow-[2px_2px_0px_#2d2d2d]',
+    headerSubtitle: 'Mangaka & Tankōbon Collector Sign-In',
+    inputClass: 'w-full px-3.5 py-2.5 rounded-none border-2 border-[#2d2d2d] text-xs bg-white text-[#2d2d2d] focus:outline-none font-["Kalam"]',
   },
   anime: {
     name: 'anime',
@@ -201,31 +227,43 @@ export const CATEGORY_THEMES: Record<string, {
     tabInactiveClass: 'text-black hover:bg-[#fefce8] border-2 border-transparent font-bold',
     actionBtnClass: 'rounded-none bg-[#ccff00] hover:bg-[#b8e600] text-black border-2 border-black shadow-[3px_3px_0px_#000] font-black',
     fandomPillClass: 'rounded-none bg-[#ccff00]/30 text-black border-2 border-black shadow-[2px_2px_0px_#000] font-bold',
+    tabBarClass: 'bg-[#ffd60a] border-b-3 border-black text-black',
+    contentBgClass: 'bg-[#fffef5] text-black',
+    tapeDecor: false,
+    closeBtnClass: 'w-8 h-8 rounded-none bg-black hover:bg-[#ccff00] text-white hover:text-black border-2 border-black shadow-[2px_2px_0px_#000000]',
+    headerSubtitle: 'High-Framerate Collector & Otaku Authentication',
+    inputClass: 'w-full px-3.5 py-2.5 rounded-none border-2 border-black text-xs bg-[#fefce8] text-black focus:outline-none font-["Space_Grotesk"]',
   },
   gaming: {
     name: 'gaming',
     categoryLabel: 'Gaming & Esports Arena',
     fontFamily: "'JetBrains Mono', monospace",
-    modalClass: 'rounded-2xl border-2 border-cyan-500/60 shadow-[0_0_35px_rgba(6,182,212,0.3)] bg-slate-950 text-slate-100',
-    headerClass: 'bg-gradient-to-br from-black via-slate-950 to-cyan-950 text-white border-b border-cyan-500/40',
+    modalClass: 'rounded-none border-4 border-black shadow-[8px_8px_0px_#000000] bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100',
+    headerClass: 'bg-black text-white border-b-4 border-black',
     headerGlow1: 'bg-cyan-500/25',
     headerGlow2: 'bg-emerald-500/20',
     accentHex: '#06b6d4',
-    accentTextClass: 'text-cyan-400',
-    roleBadgeClass: 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50',
-    roleBadgeText: '★ GAMING ARENA // UNKILLABLE LEGEND ✦',
-    cardClass: 'rounded-xl border border-cyan-500/30 bg-slate-900/90 shadow-[0_0_15px_rgba(6,182,212,0.15)] text-slate-100',
-    cardInnerClass: 'bg-slate-950/80 rounded-lg border border-cyan-500/20',
-    tabActiveClass: 'bg-cyan-500 text-black font-extrabold shadow-[0_0_15px_rgba(6,182,212,0.5)]',
-    tabInactiveClass: 'text-slate-300 hover:text-cyan-300 hover:bg-slate-900',
-    actionBtnClass: 'rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black border border-cyan-400 font-extrabold shadow-[0_0_15px_rgba(6,182,212,0.4)]',
-    fandomPillClass: 'rounded-lg bg-cyan-950/80 text-cyan-300 border border-cyan-500/50 shadow-[0_0_8px_rgba(6,182,212,0.2)]',
+    accentTextClass: 'text-cyan-400 font-mono font-bold',
+    roleBadgeClass: 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 font-mono',
+    roleBadgeText: '★ GAMING ARENA // MEMBER GATE ✦',
+    cardClass: 'rounded-none border-2 border-black dark:border-cyan-500/40 bg-white dark:bg-slate-900 shadow-[3px_3px_0px_#000000] text-slate-900 dark:text-slate-100',
+    cardInnerClass: 'bg-slate-50 dark:bg-slate-950/80 rounded-none border border-black/20 dark:border-cyan-500/20',
+    tabActiveClass: 'bg-black text-white dark:bg-cyan-500 dark:text-black font-extrabold shadow-[2px_2px_0px_#000]',
+    tabInactiveClass: 'text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-cyan-300 hover:bg-slate-100 dark:hover:bg-slate-900',
+    actionBtnClass: 'rounded-none bg-black hover:bg-neutral-800 text-white dark:bg-cyan-500 dark:hover:bg-cyan-400 dark:text-black border-2 border-black font-extrabold shadow-[3px_3px_0px_#000]',
+    fandomPillClass: 'rounded-none bg-slate-100 dark:bg-cyan-950/80 text-black dark:text-cyan-300 border-2 border-black shadow-[1px_1px_0px_#000]',
+    tabBarClass: 'bg-neutral-100 dark:bg-slate-950 border-b-4 border-black text-black dark:text-white',
+    contentBgClass: 'bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100',
+    tapeDecor: false,
+    closeBtnClass: 'w-8 h-8 rounded-none bg-black hover:bg-neutral-800 text-white border-2 border-black shadow-[2px_2px_0px_#000000]',
+    headerSubtitle: 'Official Soundtracks & Collector Archive',
+    inputClass: 'w-full px-3.5 py-2.5 rounded-none border-2 border-black text-xs bg-white dark:bg-slate-900 text-black dark:text-white focus:outline-none font-mono',
   },
   comics: {
     name: 'comics',
     categoryLabel: 'Comics Pop-Art Hero Archive',
     fontFamily: "'Bangers', 'Kalam', cursive, sans-serif",
-    modalClass: 'rounded-xl border-4 border-black shadow-[10px_10px_0px_#ef4444] bg-white',
+    modalClass: 'rounded-none border-4 border-black shadow-[10px_10px_0px_#ef4444] bg-[#fffdf0]',
     headerClass: 'bg-gradient-to-r from-red-600 via-amber-500 to-yellow-400 text-black border-b-4 border-black',
     headerGlow1: 'bg-red-500/30',
     headerGlow2: 'bg-yellow-400/30',
@@ -233,18 +271,24 @@ export const CATEGORY_THEMES: Record<string, {
     accentTextClass: 'text-red-600 font-black',
     roleBadgeClass: 'bg-black text-[#ffd60a] border-2 border-black font-bold tracking-wider',
     roleBadgeText: '★ HERO ARCHIVE // VARIANT SECRET IDENTITY ✦',
-    cardClass: 'rounded-lg border-3 border-black bg-white shadow-[4px_4px_0px_#000000]',
-    cardInnerClass: 'bg-[#fffdf0] rounded-md border-2 border-black/30',
+    cardClass: 'rounded-none border-3 border-black bg-white shadow-[4px_4px_0px_#000000]',
+    cardInnerClass: 'bg-[#fffdf0] rounded-none border-2 border-black/30',
     tabActiveClass: 'bg-[#ef4444] text-white border-2 border-black shadow-[3px_3px_0px_#000] font-black',
     tabInactiveClass: 'text-black hover:bg-amber-100 border-2 border-transparent font-bold',
-    actionBtnClass: 'rounded-lg bg-[#ffd60a] hover:bg-amber-400 text-black border-3 border-black shadow-[3px_3px_0px_#ef4444] font-black',
-    fandomPillClass: 'rounded-lg bg-[#fee2e2] text-red-700 border-2 border-black shadow-[2px_2px_0px_#000] font-bold',
+    actionBtnClass: 'rounded-none bg-[#ffd60a] hover:bg-amber-400 text-black border-3 border-black shadow-[3px_3px_0px_#ef4444] font-black',
+    fandomPillClass: 'rounded-none bg-[#fee2e2] text-red-700 border-2 border-black shadow-[2px_2px_0px_#000] font-bold',
+    tabBarClass: 'bg-gradient-to-r from-amber-100 via-yellow-100 to-red-100 border-b-3 border-black text-black',
+    contentBgClass: 'bg-[#fffdf0] text-black',
+    tapeDecor: false,
+    closeBtnClass: 'w-8 h-8 rounded-none bg-white hover:bg-[#ffd60a] text-black border-3 border-black shadow-[3px_3px_0px_#000000]',
+    headerSubtitle: 'Unlock Exclusive Variant Pulls & Omnibuses',
+    inputClass: 'w-full px-3.5 py-2.5 rounded-none border-2 border-black text-xs bg-white text-black focus:outline-none',
   },
   cinema: {
     name: 'cinema',
     categoryLabel: 'Cinema 70mm Swiss Archive',
     fontFamily: "'Playfair Display', Georgia, serif",
-    modalClass: 'rounded-2xl border-2 border-amber-500/50 shadow-[0_20px_50px_rgba(212,175,55,0.25)] bg-[#0d0d0f] text-zinc-100',
+    modalClass: 'rounded-none border-2 border-[rgba(212,175,55,0.6)] shadow-[0_20px_50px_rgba(0,0,0,0.9)] bg-[#0d0d0f] text-zinc-100',
     headerClass: 'bg-gradient-to-br from-[#0d0d0f] via-zinc-950 to-neutral-900 text-white border-b border-amber-500/30',
     headerGlow1: 'bg-amber-500/20',
     headerGlow2: 'bg-yellow-600/15',
@@ -252,50 +296,68 @@ export const CATEGORY_THEMES: Record<string, {
     accentTextClass: 'text-amber-400 font-bold',
     roleBadgeClass: 'bg-amber-400/15 text-amber-300 border border-amber-400/40',
     roleBadgeText: '★ CINEMA 70MM // PATRON CRITERION GUILD ✦',
-    cardClass: 'rounded-xl border border-amber-500/25 bg-zinc-900/90 shadow-[0_4px_20px_rgba(0,0,0,0.5)] text-zinc-100',
-    cardInnerClass: 'bg-black/60 rounded-lg border border-amber-500/20',
+    cardClass: 'rounded-none border border-amber-500/25 bg-zinc-900/90 shadow-[0_4px_20px_rgba(0,0,0,0.5)] text-zinc-100',
+    cardInnerClass: 'bg-black/60 rounded-none border border-amber-500/20',
     tabActiveClass: 'bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold shadow-[0_0_15px_rgba(212,175,55,0.4)]',
     tabInactiveClass: 'text-zinc-400 hover:text-amber-300 hover:bg-zinc-800/60',
-    actionBtnClass: 'rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-black border border-amber-400/60 font-bold shadow-[0_2px_15px_rgba(212,175,55,0.3)]',
-    fandomPillClass: 'rounded-xl bg-amber-950/40 text-amber-300 border border-amber-500/40 shadow-[0_0_8px_rgba(212,175,55,0.15)]',
+    actionBtnClass: 'rounded-none bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-black border border-amber-400/60 font-bold shadow-[0_2px_15px_rgba(212,175,55,0.3)]',
+    fandomPillClass: 'rounded-none bg-amber-950/40 text-amber-300 border border-amber-500/40 shadow-[0_0_8px_rgba(212,175,55,0.15)]',
+    tabBarClass: 'bg-gradient-to-r from-zinc-950 via-amber-950/40 to-zinc-950 border-b border-amber-500/30 text-zinc-100',
+    contentBgClass: 'bg-[#0d0d0f] text-zinc-100',
+    tapeDecor: false,
+    closeBtnClass: 'w-8 h-8 rounded-none bg-[#0d0d0f] hover:bg-amber-500/20 text-[#d4af37] border border-[#d4af37] shadow-[0_0_10px_rgba(212,175,55,0.3)]',
+    headerSubtitle: 'Cannes & Criterion Guild Member Portal',
+    inputClass: 'w-full px-3.5 py-2.5 rounded-none border border-[rgba(212,175,55,0.5)] text-xs bg-[#18181b] text-[#fafaf9] focus:outline-none',
   },
   tv: {
     name: 'tv',
     categoryLabel: 'TV Shows Y2K Broadcast',
     fontFamily: "'Outfit', sans-serif",
-    modalClass: 'rounded-2xl border-2 border-purple-500/60 shadow-[0_0_35px_rgba(168,85,247,0.3)] bg-slate-950 text-slate-100',
-    headerClass: 'bg-gradient-to-br from-slate-950 via-purple-950 to-violet-900 text-white border-b border-purple-500/40',
+    modalClass: 'rounded-none border-3 border-black shadow-[8px_8px_0px_#8b5cf6] bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100',
+    headerClass: 'bg-gradient-to-br from-slate-950 via-purple-950 to-violet-900 text-white border-b-3 border-black',
     headerGlow1: 'bg-purple-500/25',
     headerGlow2: 'bg-fuchsia-500/20',
     accentHex: '#8b5cf6',
-    accentTextClass: 'text-purple-400',
+    accentTextClass: 'text-purple-600 dark:text-purple-400 font-bold',
     roleBadgeClass: 'bg-purple-500/20 text-purple-300 border border-purple-400/40',
-    roleBadgeText: '★ TV BROADCAST // THE HELLFIRE CLUB ✦',
-    cardClass: 'rounded-xl border border-purple-500/30 bg-slate-900/90 shadow-[0_0_15px_rgba(168,85,247,0.15)] text-slate-100',
-    cardInnerClass: 'bg-slate-950/80 rounded-lg border border-purple-500/20',
-    tabActiveClass: 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.5)]',
-    tabInactiveClass: 'text-slate-300 hover:text-purple-300 hover:bg-slate-900',
-    actionBtnClass: 'rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-md shadow-purple-600/30',
-    fandomPillClass: 'rounded-xl bg-purple-950/60 text-purple-300 border border-purple-500/40 shadow-[0_0_8px_rgba(168,85,247,0.2)]',
+    roleBadgeText: '★ TV BROADCAST // SUBSCRIBER ACCESS ✦',
+    cardClass: 'rounded-none border-2 border-black bg-white dark:bg-slate-900 shadow-[3px_3px_0px_#8b5cf6] text-slate-900 dark:text-slate-100',
+    cardInnerClass: 'bg-[#faf5ff] dark:bg-slate-950/80 rounded-none border border-black/20 dark:border-purple-500/20',
+    tabActiveClass: 'bg-[#8b5cf6] text-white border-2 border-black shadow-[2px_2px_0px_#000] font-bold',
+    tabInactiveClass: 'text-slate-700 dark:text-slate-300 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-slate-900',
+    actionBtnClass: 'rounded-none bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-2 border-black shadow-[3px_3px_0px_#000] font-bold',
+    fandomPillClass: 'rounded-none bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-300 border-2 border-black shadow-[1px_1px_0px_#8b5cf6]',
+    tabBarClass: 'bg-[#faf5ff] dark:bg-slate-950 border-b-3 border-black text-black dark:text-white',
+    contentBgClass: 'bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100',
+    tapeDecor: false,
+    closeBtnClass: 'w-8 h-8 rounded-none bg-purple-900 hover:bg-purple-800 text-white border-2 border-black shadow-[3px_3px_0px_#8b5cf6]',
+    headerSubtitle: 'Binge Series & K-Drama Streaming Access',
+    inputClass: 'w-full px-3.5 py-2.5 rounded-none border-2 border-black text-xs bg-[#faf5ff] text-black focus:outline-none',
   },
   cosplay: {
     name: 'cosplay',
     categoryLabel: 'Cosplay & Vanguard Atelier',
     fontFamily: "'Space Grotesk', sans-serif",
-    modalClass: 'rounded-2xl border-2 border-rose-500/50 shadow-[0_0_30px_rgba(244,63,94,0.25)] bg-slate-950 text-slate-100',
-    headerClass: 'bg-gradient-to-br from-slate-950 via-rose-950 to-pink-900 text-white border-b border-rose-500/40',
-    headerGlow1: 'bg-rose-500/25',
-    headerGlow2: 'bg-pink-500/20',
-    accentHex: '#f43f5e',
-    accentTextClass: 'text-rose-400',
-    roleBadgeClass: 'bg-rose-500/20 text-rose-300 border border-rose-400/40',
+    modalClass: 'rounded-none border-3 border-black shadow-[8px_8px_0px_#D02020] bg-white text-black',
+    headerClass: 'bg-black text-white border-b-3 border-black',
+    headerGlow1: 'bg-red-500/25',
+    headerGlow2: 'bg-neutral-500/20',
+    accentHex: '#D02020',
+    accentTextClass: 'text-[#D02020] font-bold',
+    roleBadgeClass: 'bg-[#D02020] text-white border border-black font-bold',
     roleBadgeText: '★ VANGUARD ATELIER // CONSTRUCTIVIST ✦',
-    cardClass: 'rounded-xl border border-rose-500/30 bg-slate-900/90 shadow-[0_0_15px_rgba(244,63,94,0.15)] text-slate-100',
-    cardInnerClass: 'bg-slate-950/80 rounded-lg border border-rose-500/20',
-    tabActiveClass: 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-[0_0_15px_rgba(244,63,94,0.4)]',
-    tabInactiveClass: 'text-slate-300 hover:text-rose-300 hover:bg-slate-900',
-    actionBtnClass: 'rounded-xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white shadow-md shadow-rose-600/30',
-    fandomPillClass: 'rounded-xl bg-rose-950/60 text-rose-300 border border-rose-500/40 shadow-[0_0_8px_rgba(244,63,94,0.2)]',
+    cardClass: 'rounded-none border-2 border-black bg-white shadow-[3px_3px_0px_#D02020] text-black',
+    cardInnerClass: 'bg-neutral-50 rounded-none border border-black/30',
+    tabActiveClass: 'bg-[#D02020] text-white border-2 border-black shadow-[2px_2px_0px_#000] font-bold',
+    tabInactiveClass: 'text-black hover:text-[#D02020] hover:bg-neutral-100',
+    actionBtnClass: 'rounded-none bg-[#D02020] hover:bg-red-700 text-white border-2 border-black shadow-[3px_3px_0px_#000] font-bold',
+    fandomPillClass: 'rounded-none bg-red-50 text-[#D02020] border-2 border-black shadow-[1px_1px_0px_#000]',
+    tabBarClass: 'bg-white border-b-3 border-black text-black',
+    contentBgClass: 'bg-white text-black',
+    tapeDecor: false,
+    closeBtnClass: 'w-8 h-8 rounded-none bg-black hover:bg-[#D02020] text-white border-2 border-black shadow-[2px_2px_0px_#000000]',
+    headerSubtitle: 'Constructivist Costuming & Runway Guild',
+    inputClass: 'w-full px-3.5 py-2.5 rounded-none border-2 border-black text-xs bg-white text-black focus:outline-none',
   },
   vpop: {
     name: 'vpop',
@@ -315,6 +377,12 @@ export const CATEGORY_THEMES: Record<string, {
     tabInactiveClass: 'text-slate-300 hover:text-emerald-300 hover:bg-slate-900',
     actionBtnClass: 'rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md shadow-emerald-600/30',
     fandomPillClass: 'rounded-xl bg-emerald-950/60 text-emerald-300 border border-emerald-500/40 shadow-[0_0_8px_rgba(16,185,129,0.2)]',
+    tabBarClass: 'bg-gradient-to-r from-slate-950 via-emerald-950/50 to-slate-950 border-b border-emerald-500/40 text-slate-100',
+    contentBgClass: 'bg-slate-950 text-slate-100',
+    tapeDecor: false,
+    closeBtnClass: 'w-9 h-9 rounded-xl bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/40 shadow-sm',
+    headerSubtitle: 'SayHi Live VIP & Vietnam Stadium Concert Hall',
+    inputClass: 'w-full px-3.5 py-2.5 rounded-xl border border-emerald-500/40 text-xs bg-slate-900 text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500',
   },
 };
 
@@ -689,6 +757,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({
     >
       <div
         className={`max-w-4xl w-full overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 transition-all ${currentTheme.modalClass}`}
+        style={currentTheme.borderRadius ? { borderRadius: currentTheme.borderRadius } : undefined}
         role="dialog"
         aria-modal="true"
       >
@@ -697,6 +766,25 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({
         {/* 1. DYNAMIC CATEGORY STYLE HEADER & PERSONAL GREETING      */}
         {/* ========================================================= */}
         <div className={`relative p-6 sm:p-8 overflow-hidden select-none transition-all duration-300 ${currentTheme.headerClass}`}>
+          {/* Top Tape for Manga */}
+          {currentTheme.tapeDecor && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '-12px',
+                left: '40px',
+                width: '110px',
+                height: '24px',
+                backgroundColor: '#e5e0d8',
+                opacity: 0.95,
+                zIndex: 20,
+                transform: 'rotate(-2deg)',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                pointerEvents: 'none',
+              }}
+            />
+          )}
+
           {/* Subtle Ambient Glow Effects */}
           <div className={`absolute -right-16 -top-16 w-72 h-72 rounded-full blur-3xl pointer-events-none ${currentTheme.headerGlow1}`} />
           <div className={`absolute left-1/3 -bottom-20 w-80 h-80 rounded-full blur-3xl pointer-events-none ${currentTheme.headerGlow2}`} />
@@ -704,7 +792,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 w-9 h-9 rounded-full bg-black/25 hover:bg-black/45 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md border border-white/20"
+            className={`absolute top-5 right-5 z-20 transition-all cursor-pointer flex items-center justify-center ${currentTheme.closeBtnClass || 'w-9 h-9 rounded-full bg-black/25 hover:bg-black/45 text-white backdrop-blur-md border border-white/20'}`}
             title="Close Dashboard"
           >
             <X className="w-5 h-5" />
@@ -752,7 +840,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({
                   <span className="text-amber-400">✨</span>
                 </h2>
                 <p className="text-xs sm:text-sm opacity-80 font-normal m-0 max-w-xl">
-                  {greeting.sub}
+                  {currentTheme.headerSubtitle || greeting.sub}
                 </p>
               </div>
 
@@ -776,44 +864,81 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({
         </div>
 
         {/* ========================================================= */}
-        {/* 2. NAVIGATION TABS BAR                                    */}
+        {/* 2. NAVIGATION TABS BAR — Dynamically styled per category  */}
         {/* ========================================================= */}
-        <div className="px-6 sm:px-8 py-3 bg-slate-100/90 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/60 flex items-center gap-2.5 sm:gap-3 overflow-x-auto scrollbar-none">
-          {[
-            { id: 'overview', label: 'OVERVIEW', icon: Sparkles },
-            { id: 'fandoms', label: 'FAVORITE FANDOMS', icon: Heart, count: user.favoriteFandoms.length },
-            { id: 'activities', label: 'RECENT ACTIVITY', icon: Clock, count: activities.length },
-            { id: 'bookmarks', label: 'BOOKMARKS & NOTES', icon: Bookmark, count: totalBookmarks },
-            { id: 'profile', label: 'PROFILE & SETTINGS', icon: Settings },
-          ].map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 py-2 px-3.5 sm:px-4 text-xs font-bold transition-all whitespace-nowrap cursor-pointer rounded-xl ${
-                  isActive
-                    ? `${currentTheme.tabActiveClass} shadow-sm`
-                    : `${currentTheme.tabInactiveClass}`
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{tab.label}</span>
-                {tab.count !== undefined && (
-                  <span
-                    className={`px-1.5 py-0.5 text-[10px] rounded-full font-bold ${
-                      isActive
-                        ? 'bg-black/20 text-white'
-                        : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                    }`}
-                  >
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+        <div className={`px-6 sm:px-8 py-3 transition-all duration-300 ${currentTheme.tabBarClass}`}>
+          {/* Category quick-switcher row */}
+          <div className="flex items-center gap-1.5 pb-2.5 mb-2.5 border-b border-current/10 overflow-x-auto scrollbar-none">
+            <span className="text-[10px] font-bold uppercase tracking-widest opacity-50 shrink-0 mr-1">THEME:</span>
+            {CATEGORY_ITEMS.map((cat) => {
+              const themeKey = cat.key;
+              const isSelected = activeThemeKey === themeKey;
+              const catTheme = CATEGORY_THEMES[themeKey];
+              return (
+                <button
+                  key={cat.key}
+                  type="button"
+                  onClick={() => {
+                    setActiveThemeKey(themeKey);
+                    persistFandomTheme(themeKey);
+                  }}
+                  title={catTheme?.categoryLabel || cat.label}
+                  className={`px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 rounded-lg ${
+                    isSelected
+                      ? `ring-2 ring-offset-1 shadow-sm scale-105`
+                      : 'opacity-60 hover:opacity-100'
+                  }`}
+                  style={{
+                    backgroundColor: isSelected ? (catTheme?.accentHex || '#6366f1') : 'transparent',
+                    color: isSelected ? '#fff' : 'inherit',
+                    '--tw-ring-color': catTheme?.accentHex || '#6366f1',
+                  } as React.CSSProperties}
+                >
+                  <cat.icon className="w-3 h-3" />
+                  <span className="hidden sm:inline">{cat.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Main tab navigation */}
+          <div className="flex items-center gap-2.5 sm:gap-3 overflow-x-auto scrollbar-none">
+            {[
+              { id: 'overview', label: 'OVERVIEW', icon: Sparkles },
+              { id: 'fandoms', label: 'FAVORITE FANDOMS', icon: Heart, count: user.favoriteFandoms.length },
+              { id: 'activities', label: 'RECENT ACTIVITY', icon: Clock, count: activities.length },
+              { id: 'bookmarks', label: 'BOOKMARKS & NOTES', icon: Bookmark, count: totalBookmarks },
+              { id: 'profile', label: 'PROFILE & SETTINGS', icon: Settings },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`flex items-center gap-2 py-2 px-3.5 sm:px-4 text-xs font-bold transition-all whitespace-nowrap cursor-pointer rounded-xl ${
+                    isActive
+                      ? `${currentTheme.tabActiveClass} shadow-sm`
+                      : `${currentTheme.tabInactiveClass}`
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{tab.label}</span>
+                  {tab.count !== undefined && (
+                    <span
+                      className={`px-1.5 py-0.5 text-[10px] rounded-full font-bold ${
+                        isActive
+                          ? 'bg-black/20 text-white'
+                          : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      {tab.count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Toast alert */}
@@ -827,7 +952,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({
         {/* ========================================================= */}
         {/* 3. TAB CONTENT VIEWS                                      */}
         {/* ========================================================= */}
-        <div className="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6 sm:space-y-8">
+        <div className={`p-6 sm:p-8 overflow-y-auto flex-1 space-y-6 sm:space-y-8 transition-all duration-300 ${currentTheme.contentBgClass}`}>
 
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
@@ -1516,7 +1641,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-800 focus:outline-none"
+                  className={currentTheme.inputClass || "w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-800 focus:outline-none"}
                   required
                 />
               </div>
@@ -1555,7 +1680,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({
                   value={editBio}
                   onChange={(e) => setEditBio(e.target.value)}
                   rows={2}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-800 focus:outline-none"
+                  className={currentTheme.inputClass || "w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-800 focus:outline-none"}
                 />
               </div>
 
