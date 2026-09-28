@@ -15,32 +15,60 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // If already logged in
+  // If already logged in, show user profile view
   if (isLoggedIn) {
     return (
       <div className="min-h-screen bg-[#0d1117] text-white flex flex-col items-center justify-center p-4 font-mono">
-        <div className="max-w-md w-full bg-[#161b22] border-2 border-black p-6 space-y-4 shadow-[6px_6px_0px_#000]">
-          <div className="flex items-center gap-2 text-emerald-400">
-            <Check className="w-5 h-5" />
-            <h2 className="text-sm font-black uppercase">LOGGED IN SUCCESSFULLY</h2>
+        <div className="max-w-md w-full bg-[#161b22] border-2 border-black p-6 space-y-5 shadow-[8px_8px_0px_#000000]">
+          <div className="bg-[#ffd60a] text-black px-4 py-2 border-b-2 border-black flex items-center justify-between -mx-6 -mt-6 mb-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-black" />
+              <h2 className="text-xs font-black uppercase tracking-wider m-0">FAN PROFILE CARD</h2>
+            </div>
+            <span className="text-[10px] font-black px-1.5 py-0.5 bg-black text-emerald-400">ONLINE</span>
           </div>
-          <p className="text-xs text-neutral-300">
-            Logged in as: <strong className="text-white">{user.name}</strong> ({user.email}) - Role: <span className="uppercase text-amber-400 font-bold">{user.role}</span>
-          </p>
-          <div className="pt-2 flex flex-col sm:flex-row gap-2">
+
+          <div className="text-center space-y-2">
+            <img
+              src={user.avatar}
+              alt={user.name}
+              className="w-20 h-20 rounded-full mx-auto object-cover border-3 border-[#ff2e93] shadow-[3px_3px_0px_#000]"
+            />
+            <h3 className="text-lg font-black text-white m-0">{user.name}</h3>
+            <p className="text-xs text-neutral-400 m-0">{user.email}</p>
+          </div>
+
+          <div className="p-3 bg-black/60 border border-neutral-700 text-xs space-y-2 rounded-none">
+            <div className="flex justify-between items-center">
+              <span className="text-neutral-400 uppercase text-[11px] font-bold">Role:</span>
+              <span className="text-[#ffd60a] font-black uppercase tracking-wider">{user.role}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-neutral-400 uppercase text-[11px] font-bold">Fandoms:</span>
+              <span className="text-white font-bold truncate max-w-[200px]">
+                {user.favoriteFandoms && user.favoriteFandoms.length > 0 ? user.favoriteFandoms.join(', ') : 'All Universal'}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-neutral-400 uppercase text-[11px] font-bold">Member Since:</span>
+              <span className="text-neutral-300 font-bold">{user.memberSince || '2024'}</span>
+            </div>
+          </div>
+
+          <div className="pt-2 flex flex-col gap-2.5">
             {user.role === 'admin' && (
               <Link
                 href="/admin"
-                className="flex-1 py-2 px-3 bg-amber-400 hover:bg-amber-300 text-black text-xs font-black text-center no-underline border border-black shadow-[2px_2px_0px_#000]"
+                className="py-2.5 px-4 bg-[#ffd60a] hover:bg-yellow-400 text-black text-xs font-black text-center no-underline border-2 border-black shadow-[3px_3px_0px_#000]"
               >
-                OPEN ADMIN DASHBOARD →
+                OPEN ADMIN MANAGEMENT PANEL →
               </Link>
             )}
             <Link
               href="/"
-              className="flex-1 py-2 px-3 bg-white hover:bg-neutral-200 text-black text-xs font-black text-center no-underline border border-black shadow-[2px_2px_0px_#000]"
+              className="py-2.5 px-4 bg-[#ff2e93] hover:bg-pink-600 text-white text-xs font-black text-center no-underline border-2 border-black shadow-[3px_3px_0px_#000]"
             >
-              BACK TO HOME
+              RETURN TO MAIN HUB &amp; EXPLORE →
             </Link>
           </div>
         </div>
