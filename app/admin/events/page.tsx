@@ -36,7 +36,7 @@ import {
   UserCheck,
   XCircle,
   FileCheck,
-  ExternalLink,
+  WifiOff,
   SlidersHorizontal,
 } from 'lucide-react';
 
@@ -68,84 +68,7 @@ export interface AdminEventItem {
   [key: string]: any;
 }
 
-// Fallback demo events to guarantee interactivity even when backend is offline
-const FALLBACK_EVENTS: AdminEventItem[] = [
-  {
-    id: 'evt_001',
-    title: 'Cosplay Expo 2026 - Vietnam Fandom Fest',
-    organizer: { name: 'Otaku Club Vietnam', email: 'contact@otakuclub.vn' },
-    status: 'Pending',
-    start_time: '2026-11-01T08:00:00Z',
-    end_time: '2026-11-02T18:00:00Z',
-    location: 'SECC Q7, TP. Hồ Chí Minh',
-    ticket_types: [
-      { name: 'Standard Day Pass', price: 150000, total: 2000 },
-      { name: 'VIP Meet & Greet', price: 500000, total: 200 },
-    ],
-    ai_risk_score: 0.05,
-    banner_url: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&auto=format&fit=crop&q=80',
-    description: 'Đại hội cosplay quy mô lớn nhất năm với hơn 50 khách mời cosplayer quốc tế, cuộc thi cosplay skit và khu ẩm thực Nhật Bản.',
-  },
-  {
-    id: 'evt_002',
-    title: 'K-POP Symphony World Tour Hanoi Stage',
-    organizer: { name: 'Star Media Entertainment', email: 'event@starmedia.com' },
-    status: 'Approved',
-    start_time: '2026-12-15T19:30:00Z',
-    end_time: '2026-12-15T22:30:00Z',
-    location: 'Sân vận động Quốc gia Mỹ Đình, Hà Nội',
-    ticket_types: [
-      { name: 'GA Standing', price: 800000, total: 5000 },
-      { name: 'VIP Seated', price: 2500000, total: 1000 },
-      { name: 'VVIP Soundcheck', price: 4200000, total: 300 },
-    ],
-    ai_risk_score: 0.02,
-    banner_url: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80',
-    description: 'Đêm nhạc giao hưởng các bản hit K-POP đình đám được phối khí bởi dàn nhạc giao hưởng quốc tế kết hợp hiệu ứng visual laser 3D.',
-  },
-  {
-    id: 'evt_003',
-    title: 'Giải Đấu MOBA Champions Cup 2026',
-    organizer: { name: 'Esports League VN', email: 'admin@esportsleague.vn' },
-    status: 'Approved',
-    start_time: '2026-10-25T13:00:00Z',
-    end_time: '2026-10-25T21:00:00Z',
-    location: 'Nhà thi đấu Quân khu 7, TP. HCM',
-    ticket_types: [
-      { name: 'Khán đài A', price: 200000, total: 1500 },
-      { name: 'Ghế sàn VIP', price: 600000, total: 400 },
-    ],
-    ai_risk_score: 0.12,
-    banner_url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop&q=80',
-    description: 'Chung kết giải đấu MOBA chuyên nghiệp với tổng giải thưởng 1 tỷ VND quy tụ 8 đội tuyển mạnh nhất Đông Nam Á.',
-  },
-  {
-    id: 'evt_004',
-    title: 'Hội Chợ Truyện Tranh & Đồng Nhân Doujinshi',
-    organizer: { name: 'Cộng Đồng Manga Club', email: 'doujin@mangaclub.org' },
-    status: 'Flagged',
-    start_time: '2026-10-18T09:00:00Z',
-    end_time: '2026-10-18T17:00:00Z',
-    location: 'Trung tâm triển lãm Tân Bình, TP. HCM',
-    ticket_types: [{ name: 'Vé vào cổng', price: 80000, total: 1000 }],
-    ai_risk_score: 0.78,
-    banner_url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80',
-    description: 'Sự kiện bị báo cáo có một số ấn phẩm chưa qua kiểm duyệt độ tuổi phát hành tại gian hàng tự do.',
-  },
-  {
-    id: 'evt_005',
-    title: 'Đêm Nhạc Acoustic Dưới Ánh Nến Candlelight',
-    organizer: { name: 'Acoustic Soul Studio', email: 'booking@acousticsoul.com' },
-    status: 'Rejected',
-    start_time: '2026-09-30T19:00:00Z',
-    end_time: '2026-09-30T22:00:00Z',
-    location: 'Rạp hát ngoài trời Thảo Cầm Viên',
-    ticket_types: [{ name: 'Vé thường', price: 300000, total: 300 }],
-    ai_risk_score: 0.65,
-    banner_url: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&auto=format&fit=crop&q=80',
-    description: 'Từ chối do thiếu phương án an toàn phòng cháy chữa cháy đối với chương trình sử dụng nến thật ngoài trời.',
-  },
-];
+
 
 export default function AdminEventsPage() {
   const { language } = useAdminLanguage();
@@ -159,6 +82,7 @@ export default function AdminEventsPage() {
   const [events, setEvents] = useState<AdminEventItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isConnectionError, setIsConnectionError] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [apiSuccess, setApiSuccess] = useState<string | null>(null);
 
@@ -248,6 +172,7 @@ export default function AdminEventsPage() {
   const fetchEvents = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
+    setIsConnectionError(false);
 
     try {
       const token = getAccessToken();
@@ -277,28 +202,15 @@ export default function AdminEventsPage() {
         setTotalCount(json.meta?.total || json.total || rawData.length);
       } else {
         setEvents([]);
+        setTotalCount(0);
       }
       setApiError(null);
+      setIsConnectionError(false);
     } catch (err: any) {
-      console.warn('API /api/v1/admin/events offline or error. Using fallback demo events:', err);
-      // Filter fallback demo
-      let filtered = [...FALLBACK_EVENTS];
-      if (statusFilter !== 'All') {
-        filtered = filtered.filter((e) => (e.status || '').toLowerCase() === statusFilter.toLowerCase());
-      }
-      if (searchTerm.trim()) {
-        const q = searchTerm.toLowerCase();
-        filtered = filtered.filter((e) => {
-          const orgName = typeof e.organizer === 'string' ? e.organizer : e.organizer?.name || '';
-          return (
-            e.title.toLowerCase().includes(q) ||
-            orgName.toLowerCase().includes(q) ||
-            (e.location && e.location.toLowerCase().includes(q))
-          );
-        });
-      }
-      setEvents(filtered);
-      setTotalCount(filtered.length);
+      console.warn('API /api/v1/admin/events offline or error:', err);
+      setEvents([]);
+      setTotalCount(0);
+      setIsConnectionError(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -630,8 +542,8 @@ export default function AdminEventsPage() {
     const colorClasses = isSafe
       ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
       : isModerate
-      ? 'bg-amber-50 text-amber-700 border-amber-200'
-      : 'bg-rose-50 text-rose-700 border-rose-200';
+        ? 'bg-amber-50 text-amber-700 border-amber-200'
+        : 'bg-rose-50 text-rose-700 border-rose-200';
 
     return (
       <span
@@ -657,7 +569,7 @@ export default function AdminEventsPage() {
       {/* SIDEBAR */}
       <AdminSidebar
         activeTab="events"
-        setActiveTab={() => {}}
+        setActiveTab={() => { }}
         isOpen={isSidebarOpen}
         onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
       />
@@ -673,45 +585,81 @@ export default function AdminEventsPage() {
           activeTab="events"
         />
 
-        {/* BREADCRUMB & TOP ACTIONS */}
-        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+        {/* BREADCRUMB & TOP ACTIONS HEADER */}
+        <div className="p-3 pb-0">
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-indigo-600 font-semibold">
-                  {isVi ? 'Quản lý Sự kiện (Events)' : 'Event Management'}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Quản lý Sự kiện' : 'Event Management'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
                   <Calendar className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Quản lý & Duyệt Sự Kiện' : 'Event Control & Approvals'}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                   {totalEvents} {isVi ? 'sự kiện' : 'events'}
                 </span>
               </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Quản lý danh sách sự kiện, kiểm duyệt đơn đăng ký và điều phối vé.'
+                  : 'Manage event catalog, review submissions, and control tickets.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
                 onClick={() => fetchEvents(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+                }}
+                className="hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700/80 transition-all"
                 title={isVi ? 'Làm mới' : 'Refresh'}
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
-                <span className="hidden sm:inline">{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
+                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
               </button>
 
               <button
+                type="button"
                 onClick={() => setIsCreateOpen(true)}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#4f46e5',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '9px 18px',
+                  fontWeight: 800,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 2px 6px rgba(79, 70, 229, 0.35)',
+                }}
+                className="hover:bg-indigo-700 transition-all"
               >
                 <Plus className="w-4 h-4 stroke-[2.5]" />
-                <span>{isVi ? 'Thêm sự kiện mới' : 'Create Event'}</span>
+                <span style={{ color: '#ffffff' }}>{isVi ? 'Thêm sự kiện mới' : 'Create Event'}</span>
               </button>
             </div>
           </div>
@@ -743,9 +691,9 @@ export default function AdminEventsPage() {
         )}
 
         {/* CONTENT BODY */}
-        <div className="p-6 space-y-6">
+        <div className="p-3">
           {/* KPI STATS CARDS */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
             <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
               <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
                 <span>{isVi ? 'Tổng số sự kiện' : 'Total Events'}</span>
@@ -792,7 +740,7 @@ export default function AdminEventsPage() {
           </div>
 
           {/* FILTER & SEARCH TOOLBAR */}
-          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
+          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3 mb-6 my-4">
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
               {/* Search Box */}
               <div className="relative flex-1">
@@ -809,7 +757,7 @@ export default function AdminEventsPage() {
                       ? 'Tìm kiếm theo tên sự kiện, đơn vị tổ chức, địa điểm (vd: Cosplay Expo, SECC, Otaku...)...'
                       : 'Search by event title, organizer, location...'
                   }
-                  className="w-full pl-9 pr-8 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
+                  className="w-full pl-11 pr-8 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
                 />
                 {searchTerm && (
                   <button
@@ -829,22 +777,20 @@ export default function AdminEventsPage() {
                 <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl p-0.5">
                   <button
                     onClick={() => setViewMode('grid')}
-                    className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
-                      viewMode === 'grid'
-                        ? 'bg-white text-indigo-600 font-semibold shadow-xs'
-                        : 'text-slate-500 hover:text-slate-700'
-                    }`}
+                    className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${viewMode === 'grid'
+                      ? 'bg-white text-indigo-600 font-semibold shadow-xs'
+                      : 'text-slate-500 hover:text-slate-700'
+                      }`}
                     title={isVi ? 'Xem dạng lưới card' : 'Grid View'}
                   >
                     <LayoutGrid className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setViewMode('table')}
-                    className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
-                      viewMode === 'table'
-                        ? 'bg-white text-indigo-600 font-semibold shadow-xs'
-                        : 'text-slate-500 hover:text-slate-700'
-                    }`}
+                    className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${viewMode === 'table'
+                      ? 'bg-white text-indigo-600 font-semibold shadow-xs'
+                      : 'text-slate-500 hover:text-slate-700'
+                      }`}
                     title={isVi ? 'Xem dạng bảng' : 'Table View'}
                   >
                     <List className="w-4 h-4" />
@@ -873,27 +819,25 @@ export default function AdminEventsPage() {
                       setStatusFilter(tab);
                       setPage(1);
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 flex items-center gap-1.5 ${
-                      isActive
-                        ? 'bg-indigo-600 text-white shadow-xs'
-                        : 'bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
-                    }`}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 flex items-center gap-1.5 ${isActive
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
+                      }`}
                   >
                     <span>
                       {tab === 'All'
                         ? isVi ? 'Tất cả' : 'All'
                         : tab === 'Pending'
-                        ? isVi ? 'Chờ duyệt' : 'Pending'
-                        : tab === 'Approved'
-                        ? isVi ? 'Đã duyệt' : 'Approved'
-                        : tab === 'Rejected'
-                        ? isVi ? 'Từ chối' : 'Rejected'
-                        : isVi ? 'Gắn cờ vi phạm' : 'Flagged'}
+                          ? isVi ? 'Chờ duyệt' : 'Pending'
+                          : tab === 'Approved'
+                            ? isVi ? 'Đã duyệt' : 'Approved'
+                            : tab === 'Rejected'
+                              ? isVi ? 'Từ chối' : 'Rejected'
+                              : isVi ? 'Gắn cờ vi phạm' : 'Flagged'}
                     </span>
                     <span
-                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                        isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
-                      }`}
+                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
+                        }`}
                     >
                       {count}
                     </span>
@@ -908,6 +852,42 @@ export default function AdminEventsPage() {
             <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs">
               <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
               <p className="text-xs text-slate-500">{isVi ? 'Đang tải danh sách sự kiện...' : 'Loading events...'}</p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => fetchEvents(true)}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
             </div>
           ) : events.length === 0 ? (
             <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
@@ -1660,11 +1640,10 @@ export default function AdminEventsPage() {
                   <button
                     type="button"
                     onClick={() => setReviewForm({ ...reviewForm, status: 'Approved' })}
-                    className={`p-3 rounded-xl border flex items-center justify-center gap-2 font-bold cursor-pointer transition-all ${
-                      reviewForm.status === 'Approved'
-                        ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-xs'
-                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                    }`}
+                    className={`p-3 rounded-xl border flex items-center justify-center gap-2 font-bold cursor-pointer transition-all ${reviewForm.status === 'Approved'
+                      ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-xs'
+                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
                   >
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{isVi ? 'Phê Duyệt (Approved)' : 'Approve'}</span>
@@ -1673,11 +1652,10 @@ export default function AdminEventsPage() {
                   <button
                     type="button"
                     onClick={() => setReviewForm({ ...reviewForm, status: 'Rejected' })}
-                    className={`p-3 rounded-xl border flex items-center justify-center gap-2 font-bold cursor-pointer transition-all ${
-                      reviewForm.status === 'Rejected'
-                        ? 'bg-rose-50 border-rose-500 text-rose-700 shadow-xs'
-                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                    }`}
+                    className={`p-3 rounded-xl border flex items-center justify-center gap-2 font-bold cursor-pointer transition-all ${reviewForm.status === 'Rejected'
+                      ? 'bg-rose-50 border-rose-500 text-rose-700 shadow-xs'
+                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
                   >
                     <XCircle className="w-4 h-4" />
                     <span>{isVi ? 'Từ Chối (Rejected)' : 'Reject'}</span>
@@ -1715,11 +1693,10 @@ export default function AdminEventsPage() {
                 <button
                   type="submit"
                   disabled={isSubmittingReview}
-                  className={`px-4 py-2 font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs ${
-                    reviewForm.status === 'Approved'
-                      ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                      : 'bg-rose-600 hover:bg-rose-700 text-white'
-                  }`}
+                  className={`px-4 py-2 font-bold rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs ${reviewForm.status === 'Approved'
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                    : 'bg-rose-600 hover:bg-rose-700 text-white'
+                    }`}
                 >
                   {isSubmittingReview && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>

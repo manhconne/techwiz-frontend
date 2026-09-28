@@ -801,7 +801,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* SECONDARY CATEGORY NAVIGATION BAR (Desktop Only) */}
-      <div 
+      <div
         className={`desktop-subnav header-subnav w-full relative z-30 transition-colors duration-150 ${subnavTheme.barBorder}`}
         style={{ backgroundColor: subnavTheme.barBg }}
       >
@@ -1664,10 +1664,10 @@ export const Header: React.FC<HeaderProps> = ({
                         <label style={{ fontSize: '12px', fontWeight: 700, color: loginTheme.textColor }}>
                           Password
                         </label>
-                        <a 
-                          href="#" 
-                          onClick={(e) => { e.preventDefault(); setAuthMode('forgot'); }} 
-                          style={{ fontSize: '11px', fontWeight: 700, color: loginTheme.accentColor }} 
+                        <a
+                          href="#"
+                          onClick={(e) => { e.preventDefault(); setAuthMode('forgot'); }}
+                          style={{ fontSize: '11px', fontWeight: 700, color: loginTheme.accentColor }}
                           className="hover:underline"
                         >
                           Forgot password?
@@ -2475,6 +2475,18 @@ export const Header: React.FC<HeaderProps> = ({
                   ) : (
                     <Moon className="w-4 h-4" />
                   )}
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleFontSize}
+                  style={{ borderRadius: '0px' }}
+                  className={`w-10 h-9 flex items-center justify-center border border-black text-xs font-mono font-bold cursor-pointer transition-colors duration-100 ${isLargeFont
+                    ? 'bg-black text-white'
+                    : 'bg-white text-black hover:bg-black hover:text-white'
+                    }`}
+                  title={isLargeFont ? 'Reduce font size' : 'Increase font size'}
+                >
+                  <span>{isLargeFont ? 'A+' : 'A'}</span>
                 </button>
               </div>
 

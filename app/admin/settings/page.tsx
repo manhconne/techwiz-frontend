@@ -179,33 +179,53 @@ export default function AdminSettingsPage() {
           activeTab="settings"
         />
 
-        {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+        {/* BREADCRUMB & TOP ACTIONS HEADER */}
+        <div className="p-6 pb-0">
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-indigo-600 font-medium">
-                  {isVi ? 'Cài đặt Hệ thống (System Settings)' : 'System Settings'}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Cài đặt Hệ thống' : 'System Settings'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
                   <Settings className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Cấu Hình Tham Số & Bảo Trì Hệ Thống' : 'System Configuration & Maintenance'}</span>
               </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Tùy chỉnh chế độ bảo trì toàn sàn, tỷ lệ phí hoa hồng nền tảng và hạn mức tải tệp.'
+                  : 'Configure system-wide maintenance mode, platform commission rates, and upload file limits.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
                 onClick={() => fetchSettings(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
-                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
               </button>
             </div>
           </div>
