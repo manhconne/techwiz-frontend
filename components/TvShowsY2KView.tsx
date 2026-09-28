@@ -593,7 +593,7 @@ export const TvShowsY2KView: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-8 space-y-12">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-10 space-y-24 sm:space-y-32">
 
         {/* =========================================================================
             2. HERO SPOTLIGHT // RETRO TV BROADCAST GAME BOY STYLE

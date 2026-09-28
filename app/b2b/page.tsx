@@ -12,6 +12,7 @@ import { FeedbackModal } from '../../components/FeedbackModal';
 import { Breadcrumbs } from '../../components/Breadcrumbs';
 import { Footer } from '../../components/Footer';
 import { useCartWishlist } from '../../context/CartWishlistContext';
+import { useActiveFandom } from '../../utils/fandomTheme';
 import { 
   Building2, 
   ShieldCheck, 
@@ -34,6 +35,7 @@ export default function B2bPage() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const { setIsCartOpen } = useCartWishlist();
+  const { themeKey, category } = useActiveFandom();
 
   // Form State
   const [orgName, setOrgName] = useState('');
@@ -41,10 +43,25 @@ export default function B2bPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [country, setCountry] = useState('Vietnam');
-  const [targetCategory, setTargetCategory] = useState('K-Pop Albums & EPs');
+  const [targetCategory, setTargetCategory] = useState('K-Pop Albums & Official Lightsticks');
   const [quantity, setQuantity] = useState(50);
   const [notes, setNotes] = useState('');
   const [submittedQuoteId, setSubmittedQuoteId] = useState<string | null>(null);
+
+  // Sync default target category with active fandom
+  React.useEffect(() => {
+    if (category) {
+      const c = category.toLowerCase();
+      if (c.includes('game')) setTargetCategory('Gaming Arena Gear & Peripheral Wholesale');
+      else if (c.includes('manga')) setTargetCategory('Manga Tankōbon & Boxsets Distribution');
+      else if (c.includes('anime')) setTargetCategory('Anime Sakuga Blu-ray & Convention Goods');
+      else if (c.includes('cosplay')) setTargetCategory('Cosplay Studio Materials & Wig Bundles');
+      else if (c.includes('comic')) setTargetCategory('Comic Shop Omnibuses & Graphic Novels');
+      else if (c.includes('cinema') || c.includes('movie')) setTargetCategory('Auteur Cinema 4K UHD & Script Publications');
+      else if (c.includes('tv')) setTargetCategory('Series Apparel & Fanclub Watch Party Packs');
+      else setTargetCategory('K-Pop Albums & Official Lightsticks');
+    }
+  }, [category]);
 
   // Discount tier calculation
   let discountRate = 15;
@@ -60,13 +77,18 @@ export default function B2bPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div 
+      className={`min-h-screen flex flex-col fandom-theme-${themeKey} transition-colors duration-500`}
+      data-fandom-theme={themeKey}
+    >
       {/* Navigation Header */}
       <Header
         onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        fandomThemeKey={themeKey}
+        fandomCategory={category}
       />
 
       <main className="flex-1">
@@ -80,63 +102,191 @@ export default function B2bPage() {
         </div>
 
         {/* Dedicated B2B Hero Banner */}
-        <section 
-          style={{
-            backgroundColor: '#000000',
-            color: '#ffffff',
-            padding: '48px 28px',
-            borderBottom: '1px solid #1e293b',
-          }}
-        >
-          <div style={{ maxWidth: '1440px', margin: '0 auto' }}>
-            {/* Breadcrumb */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '16px' }}>
-              <Link href="/" className="hover:text-white transition-colors">HOME</Link>
-              <span>/</span>
-              <span style={{ color: '#ffffff', fontWeight: 800 }}>B2B WHOLESALE & FANCLUB BULK ORDERS</span>
-            </div>
+        {/* Dedicated Category-Specific B2B Hero Banner */}
+        {(() => {
+          const bannerConfigs: Record<string, {
+            badge: string;
+            badgeColor: string;
+            title1: string;
+            title2: string;
+            desc: string;
+            metric1Val: string;
+            metric1Label: string;
+            metric2Val: string;
+            metric2Label: string;
+            metric3Val: string;
+            metric3Label: string;
+          }> = {
+            gaming: {
+              badge: 'AUTHORIZED GAMING & ESPORTS WHOLESALE HUB · DIRECT LICENSES',
+              badgeColor: '#00ff66',
+              title1: 'Gaming Gear, Peripherals ',
+              title2: '& Esports Wholesale',
+              desc: 'Specialized wholesale distribution for LAN centers, cyber cafes, esports academies, and gaming hobby retailers across 65+ countries. Tiered volume pricing up to 35% discount with direct developer authenticity verification.',
+              metric1Val: '35% OFF',
+              metric1Label: 'MAX DISCOUNT',
+              metric2Val: '100% REAL',
+              metric2Label: 'DEVELOPER DIRECT',
+              metric3Val: '65+ COUNTRIES',
+              metric3Label: 'GLOBAL LOGISTICS',
+            },
+            manga: {
+              badge: 'JAPANESE MANGA & BOOKSTORE WHOLESALE CONSIGNMENT',
+              badgeColor: '#f97316',
+              title1: 'Manga Tankōbon, Boxsets ',
+              title2: '& Bookstore Distribution',
+              desc: 'Tailored bulk supply for manga cafes, anime bookstores, comic shops, and university libraries. Direct Shueisha, Kodansha & Hakusensha import licenses with guaranteed first-press extras.',
+              metric1Val: '35% OFF',
+              metric1Label: 'BULK DISCOUNT',
+              metric2Val: '100% OFFICIAL',
+              metric2Label: 'PUBLISHER DIRECT',
+              metric3Val: '65+ COUNTRIES',
+              metric3Label: 'SEA/AIR FREIGHT',
+            },
+            anime: {
+              badge: 'CONVENTION MERCH & ANIME SHOP WHOLESALE ALLIANCE',
+              badgeColor: '#ccff00',
+              title1: 'Sakuga Blu-ray, Merch ',
+              title2: '& Convention Bulk Orders',
+              desc: 'Wholesale fulfillment for anime hobby retailers, comic-con vendor booths, and regional screening clubs. Licensed Toei, Aniplex, and Ufotable distributor allotments.',
+              metric1Val: '35% OFF',
+              metric1Label: 'MAX WHOLESALE',
+              metric2Val: '100% REAL',
+              metric2Label: 'STUDIO LICENSED',
+              metric3Val: '65+ COUNTRIES',
+              metric3Label: 'FAST CLEARANCE',
+            },
+            cosplay: {
+              badge: 'STUDIO FABRICATION & PROP SHOP BULK MATERIALS HUB',
+              badgeColor: '#38bdf8',
+              title1: 'Cosplay Materials, Wigs ',
+              title2: '& Workshop Bulk Supply',
+              desc: 'Bulk material supplies for cosplay production studios, theater prop shops, and maker ateliers. Pallet discounts on high-density EVA foam, wholesale lace-front wig bundles, and workshop hardware.',
+              metric1Val: '35% OFF',
+              metric1Label: 'VOLUME SAVINGS',
+              metric2Val: 'STUDIO GRADE',
+              metric2Label: 'TESTED MATERIALS',
+              metric3Val: '65+ COUNTRIES',
+              metric3Label: 'BULK CRATES',
+            },
+            comics: {
+              badge: 'COMIC SHOP SYNDICATE & DIRECT MARKET WHOLESALE',
+              badgeColor: '#ffd60a',
+              title1: 'Graphic Novels, Omnibuses ',
+              title2: '& Comic Shop Wholesale',
+              desc: 'Direct market wholesale for comic book shops, convention exhibitors, and online retailers. Case-quantity discounts on Marvel, DC, and indie publisher graphic novels and archival supplies.',
+              metric1Val: '35% OFF',
+              metric1Label: 'CASE DISCOUNT',
+              metric2Val: 'MINT GRADE',
+              metric2Label: 'DIAMOND STANDARD',
+              metric3Val: '65+ COUNTRIES',
+              metric3Label: 'AIR FREIGHT',
+            },
+            cinema: {
+              badge: 'FILM SOCIETY & BOUTIQUE CINEMA RECEPTIVE SUPPLY',
+              badgeColor: '#d4af37',
+              title1: '70mm Auteur Media, 4K UHD ',
+              title2: '& Cinema Exhibition Wholesale',
+              desc: 'Archival physical media distribution for arthouse cinemas, film schools, and boutique film clubs. Bulk pricing on Criterion editions, 4K UHD digipaks, and deluxe screenplay publications.',
+              metric1Val: '35% OFF',
+              metric1Label: 'ACADEMIC/SHOP',
+              metric2Val: '100% ARCHIVAL',
+              metric2Label: '4K DCI MASTER',
+              metric3Val: '65+ COUNTRIES',
+              metric3Label: 'GLOBAL DISPATCH',
+            },
+            tv: {
+              badge: 'STREAMING FANCLUB & EVENT BULK MERCHANDISE',
+              badgeColor: '#a78bfa',
+              title1: 'Series Merchandise, Apparel ',
+              title2: '& Watch Party Wholesale',
+              desc: 'Volume ordering for fan-led watch parties, university TV clubs, and television fandom pop-ups. Licensed apparel batches, prop replica packs, and commemorative season boxsets.',
+              metric1Val: '35% OFF',
+              metric1Label: 'FANCLUB TIER',
+              metric2Val: '100% LICENSED',
+              metric2Label: 'OFFICIAL SERIES',
+              metric3Val: '65+ COUNTRIES',
+              metric3Label: 'WORLDWIDE SHIP',
+            },
+            kpop: {
+              badge: 'Authorized Wholesale Distributor · Global Export Hub',
+              badgeColor: '#38bdf8',
+              title1: 'B2B Wholesale, Bulk Orders ',
+              title2: '& Fanclub Group Buys',
+              desc: 'Tailored wholesale supply solutions for independent record shops, regional fan club coordinators, universities, and commercial retailers across 65+ countries. Tiered volume pricing up to 35% discount with full Hanteo Chart verification.',
+              metric1Val: '35% OFF',
+              metric1Label: 'MAX DISCOUNT',
+              metric2Val: '100% REAL',
+              metric2Label: 'CHART COUNTED',
+              metric3Val: '65+ COUNTRIES',
+              metric3Label: 'EXPORT DESTINATIONS',
+            }
+          };
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '24px' }}>
-              <div style={{ maxWidth: '780px' }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', backgroundColor: '#1e293b', color: '#38bdf8', fontSize: '10px', fontFamily: 'monospace', fontWeight: 800, textTransform: 'uppercase', marginBottom: '12px', border: '1px solid rgba(56,189,248,0.3)' }}>
-                  <Building2 style={{ width: '12px', height: '12px' }} />
-                  <span>Authorized Wholesale Distributor · Global Export Hub</span>
-                </div>
-                <h1 
-                  style={{
-                    fontFamily: "'Playfair Display', Georgia, serif",
-                    fontSize: 'clamp(32px, 4vw, 56px)',
-                    fontWeight: 800,
-                    lineHeight: 1.1,
-                    letterSpacing: '-0.02em',
-                    margin: '0 0 12px 0',
-                  }}
-                >
-                  B2B Wholesale, Bulk Orders <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic' }}>& Fanclub Group Buys</em>
-                </h1>
-                <p style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6, margin: 0, fontWeight: 300 }}>
-                  Tailored wholesale supply solutions for independent record shops, regional fan club coordinators, universities, and commercial retailers across 65+ countries. Tiered volume pricing up to 35% discount with full Hanteo Chart verification.
-                </p>
-              </div>
+          const conf = bannerConfigs[themeKey] || bannerConfigs.kpop;
 
-              {/* Wholesale Metrics */}
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
-                  <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>MAX DISCOUNT</span>
-                  <span style={{ fontSize: '26px', fontWeight: 900, fontFamily: 'monospace', color: '#38bdf8' }}>35% OFF</span>
+          return (
+            <section 
+              style={{
+                backgroundColor: '#000000',
+                color: '#ffffff',
+                padding: '48px 28px',
+                borderBottom: '1px solid #1e293b',
+              }}
+            >
+              <div style={{ maxWidth: '1440px', margin: '0 auto' }}>
+                {/* Breadcrumb */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '16px' }}>
+                  <Link href="/" className="hover:text-white transition-colors">HOME</Link>
+                  <span>/</span>
+                  <span style={{ color: '#ffffff', fontWeight: 800 }}>B2B WHOLESALE &amp; BULK DISTRIBUTION</span>
+                  <span>/</span>
+                  <span style={{ color: conf.badgeColor, fontWeight: 800 }}>{category}</span>
                 </div>
-                <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
-                  <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>CHART COUNTED</span>
-                  <span style={{ fontSize: '26px', fontWeight: 900, fontFamily: 'monospace', color: '#10b981' }}>100% REAL</span>
-                </div>
-                <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
-                  <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>EXPORT DESTINATIONS</span>
-                  <span style={{ fontSize: '26px', fontWeight: 900, fontFamily: 'monospace', color: '#ffffff' }}>65+ COUNTRIES</span>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '24px' }}>
+                  <div style={{ maxWidth: '780px' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', backgroundColor: '#1e293b', color: conf.badgeColor, fontSize: '10px', fontFamily: 'monospace', fontWeight: 800, textTransform: 'uppercase', marginBottom: '12px', border: `1px solid ${conf.badgeColor}40` }}>
+                      <Building2 style={{ width: '12px', height: '12px' }} />
+                      <span>{conf.badge}</span>
+                    </div>
+                    <h1 
+                      style={{
+                        fontFamily: "'Playfair Display', Georgia, serif",
+                        fontSize: 'clamp(32px, 4vw, 56px)',
+                        fontWeight: 800,
+                        lineHeight: 1.1,
+                        letterSpacing: '-0.02em',
+                        margin: '0 0 12px 0',
+                      }}
+                    >
+                      {conf.title1}<em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic' }}>{conf.title2}</em>
+                    </h1>
+                    <p style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6, margin: 0, fontWeight: 300 }}>
+                      {conf.desc}
+                    </p>
+                  </div>
+
+                  {/* Wholesale Metrics */}
+                  <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                    <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
+                      <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>{conf.metric1Label}</span>
+                      <span style={{ fontSize: '26px', fontWeight: 900, fontFamily: 'monospace', color: conf.badgeColor }}>{conf.metric1Val}</span>
+                    </div>
+                    <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
+                      <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>{conf.metric2Label}</span>
+                      <span style={{ fontSize: '26px', fontWeight: 900, fontFamily: 'monospace', color: '#10b981' }}>{conf.metric2Val}</span>
+                    </div>
+                    <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
+                      <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>{conf.metric3Label}</span>
+                      <span style={{ fontSize: '26px', fontWeight: 900, fontFamily: 'monospace', color: '#ffffff' }}>{conf.metric3Val}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
+            </section>
+          );
+        })()}
 
         {/* Content Section */}
         <section className="py-16 px-4 sm:px-7 max-w-[1440px] mx-auto">
@@ -344,11 +494,15 @@ export default function B2bPage() {
                       onChange={(e) => setTargetCategory(e.target.value)}
                       style={{ width: '100%', height: '40px', padding: '0 12px', fontSize: '12px', border: '1.5px solid #000000', outline: 'none', backgroundColor: '#ffffff' }}
                     >
-                      <option value="K-Pop Albums & EPs">K-Pop Albums & EPs (NewJeans, BLACKPINK, BTS...)</option>
-                      <option value="Official Lightsticks">Official Lightsticks with Bluetooth Sync</option>
-                      <option value="Vinyl & Collector Editions">Vinyl LPs & Deluxe Boxsets</option>
-                      <option value="Anime & Gaming Goods">Anime & Gaming Soundtracks / Figures</option>
-                      <option value="Mixed Assortment">Mixed Fandom Assortment</option>
+                      <option value="Gaming Arena Gear & Peripheral Wholesale">Gaming Arena Gear & Peripheral Wholesale</option>
+                      <option value="Manga Tankōbon & Boxsets Distribution">Manga Tankōbon & Boxsets Distribution</option>
+                      <option value="Anime Sakuga Blu-ray & Convention Goods">Anime Sakuga Blu-ray & Convention Goods</option>
+                      <option value="Cosplay Studio Materials & Wig Bundles">Cosplay Studio Materials & Wig Bundles</option>
+                      <option value="Comic Shop Omnibuses & Graphic Novels">Comic Shop Omnibuses & Graphic Novels</option>
+                      <option value="Auteur Cinema 4K UHD & Script Publications">Auteur Cinema 4K UHD & Script Publications</option>
+                      <option value="Series Apparel & Fanclub Watch Party Packs">Series Apparel & Fanclub Watch Party Packs</option>
+                      <option value="K-Pop Albums & Official Lightsticks">K-Pop Albums & Official Lightsticks (Hanteo Certified)</option>
+                      <option value="Mixed Assortment">Mixed Global Fandom Assortment</option>
                     </select>
                   </div>
 

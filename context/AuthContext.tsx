@@ -35,10 +35,10 @@ const defaultGuestUser: UserProfile = {
 };
 
 const initialActivities: UserActivity[] = [
-  { id: 'act-1', title: 'ÄÃ£ Ä‘Ã¡nh giÃ¡ 5â˜… trailer NewJeans "Supernatural" Comeback MV', type: 'media', timestamp: '10 phÃºt trÆ°á»›c', link: '/multimedia' },
-  { id: 'act-2', title: 'ÄÃ£ lÆ°u sá»± kiá»‡n SEVENTEEN World Tour [RIGHT HERE] vÃ o lá»‹ch', type: 'event', timestamp: '1 giá» trÆ°á»›c', link: '/event' },
-  { id: 'act-3', title: 'ÄÃ£ thÃªm aespa "Whiplash" Mini Album vÃ o danh sÃ¡ch yÃªu thÃ­ch', type: 'bookmark', timestamp: 'HÃ´m qua', link: '/#albums' },
-  { id: 'act-4', title: 'ÄÃ£ tham gia cá»™ng Ä‘á»“ng Bunnies (NewJeans Official Fandom)', type: 'fandom', timestamp: '3 ngÃ y trÆ°á»›c', link: '/#artists' },
+  { id: 'act-1', title: 'Rated 5★ for NewJeans "Supernatural" Comeback MV', type: 'media', timestamp: '10 mins ago', link: '/multimedia' },
+  { id: 'act-2', title: 'Saved SEVENTEEN World Tour [RIGHT HERE] to calendar', type: 'event', timestamp: '1 hour ago', link: '/event' },
+  { id: 'act-3', title: 'Bookmarked aespa "Whiplash" Mini Album to favorites', type: 'bookmark', timestamp: 'Yesterday', link: '/#albums' },
+  { id: 'act-4', title: 'Joined Bunnies (NewJeans Official Fandom) community', type: 'fandom', timestamp: '3 days ago', link: '/#artists' },
 ];
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -91,7 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } catch { }
       }
     };
-    
+
     fetchMe();
 
     const savedActs = localStorage.getItem('kpop_user_activities');
@@ -105,7 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginAs = (role: 'registered' | 'admin', customData?: { id?: string; name?: string; email?: string }) => {
     const newUser: UserProfile = {
       id: customData?.id || (role === 'admin' ? 'admin-001' : 'user-777'),
-      name: customData?.name || (role === 'admin' ? 'Fandom Director (Admin)' : 'Haerin Star â­'),
+      name: customData?.name || (role === 'admin' ? 'Fandom Director (Admin)' : 'Haerin Star ⭐'),
       email: customData?.email || (role === 'admin' ? 'admin@fanhubplus.com' : 'fan_tokki@gmail.com'),
       role,
       avatar:
@@ -118,27 +118,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(newUser);
     setIsLoggedIn(true);
     localStorage.setItem('kpop_user', JSON.stringify(newUser));
+    if (role === 'admin') {
+      localStorage.setItem('access_token', 'mock_admin_token_srs_eval');
+    }
 
-    addActivity('ÄÄƒng nháº­p thÃ nh cÃ´ng vÃ o há»‡ thá»‘ng Fan Hub Universe', 'fandom');
-    
+    addActivity('Successfully signed into Fan Hub Universe', 'fandom');
+
     // Simulate New Device Login Notification
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('fanhub_local_push', {
         detail: {
           type: 'system',
-          title: 'Cáº£nh BÃ¡o Báº£o Máº­t',
-          message: 'TÃ i khoáº£n cá»§a báº¡n vá»«a Ä‘Äƒng nháº­p tá»« thiáº¿t bá»‹ má»›i (Chrome - Windows).',
+          title: 'Security Alert',
+          message: 'Your account was just logged in from a new device (Chrome - Windows).',
         }
       }));
     }, 2000);
-    
+
     // Simulate Registration Welcome Notification
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('fanhub_local_push', {
         detail: {
           type: 'social',
-          title: 'ChÃ o má»«ng gia nháº­p FanHub!',
-          message: 'ÄÄƒng kÃ½ tÃ i khoáº£n thÃ nh cÃ´ng. HÃ£y khÃ¡m phÃ¡ cÃ¡c sá»± kiá»‡n Ä‘ang diá»…n ra nhÃ©.',
+          title: 'Welcome to FanHub!',
+          message: 'Account created successfully. Explore all live fandom events now!',
         }
       }));
     }, 4000);
@@ -160,7 +163,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('kpop_user', JSON.stringify(updated));
       return updated;
     });
-    addActivity('ÄÃ£ cáº­p nháº­t thÃ´ng tin há»“ sÆ¡ vÃ  sá»Ÿ thÃ­ch fandom', 'fandom');
+    addActivity('Updated profile information and fandom preferences', 'fandom');
   };
 
   const toggleFavoriteFandom = (fandom: string) => {
@@ -173,7 +176,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('kpop_user', JSON.stringify(nextUser));
       return nextUser;
     });
-    addActivity(`ÄÃ£ ${user.favoriteFandoms.includes(fandom) ? 'bá» theo dÃµi' : 'theo dÃµi fandom'} ${fandom}`, 'fandom');
+    addActivity(`${user.favoriteFandoms.includes(fandom) ? 'Unfollowed' : 'Followed'} ${fandom} fandom`, 'fandom');
   };
 
   const addActivity = (title: string, type: UserActivity['type'], link?: string) => {
@@ -181,7 +184,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: `act-${Date.now()}`,
       title,
       type,
-      timestamp: 'Vá»«a xong',
+      timestamp: 'Just now',
       link,
     };
     setActivities((prev) => {
@@ -198,27 +201,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return {
       success: true,
       token,
-      message: `MÃ£ xÃ¡c thá»±c Ä‘áº·t láº¡i máº­t kháº©u Ä‘Ã£ Ä‘Æ°á»£c gá»­i tá»›i email ${email}. (MÃ£ thá»­ nghiá»‡m mÃ´ phá»ng: ${token})`,
+      message: `Password reset verification token has been dispatched to ${email}. (Demo token: ${token})`,
     };
   };
 
   const resetPasswordWithToken = (email: string, token: string, newPass: string) => {
     const stored = localStorage.getItem(`pwd_reset_${email}`);
     if (!stored) {
-      return { success: false, message: 'YÃªu cáº§u Ä‘áº·t láº¡i máº­t kháº©u khÃ´ng tá»“n táº¡i hoáº·c Ä‘Ã£ háº¿t háº¡n.' };
+      return { success: false, message: 'Password reset request does not exist or has expired.' };
     }
     try {
       const parsed = JSON.parse(stored);
       if (parsed.token !== token.trim().toUpperCase()) {
-        return { success: false, message: 'MÃ£ xÃ¡c thá»±c token khÃ´ng chÃ­nh xÃ¡c. Vui lÃ²ng kiá»ƒm tra láº¡i.' };
+        return { success: false, message: 'Invalid verification token. Please verify and try again.' };
       }
       if (Date.now() > parsed.expires) {
-        return { success: false, message: 'MÃ£ xÃ¡c thá»±c Ä‘Ã£ háº¿t háº¡n (quÃ¡ 15 phÃºt).' };
+        return { success: false, message: 'Verification token has expired (exceeded 15 minutes).' };
       }
       localStorage.removeItem(`pwd_reset_${email}`);
-      return { success: true, message: 'Máº­t kháº©u cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c cáº­p nháº­t thÃ nh cÃ´ng! HÃ£y Ä‘Äƒng nháº­p láº¡i.' };
+      return { success: true, message: 'Your password has been successfully updated! Please sign in again.' };
     } catch {
-      return { success: false, message: 'Lá»—i xá»­ lÃ½ xÃ¡c thá»±c.' };
+      return { success: false, message: 'Authentication processing error.' };
     }
   };
 

@@ -511,44 +511,49 @@ export const GamingMonochromeView: React.FC<GamingMonochromeViewProps> = ({
       {/* =========================================================================
           3. BOLD CHOICE #3: INVERTED STATS SECTION (Pure Black & White with Texture)
       ========================================================================= */}
+      {/* =========================================================================
+          3. STATS SECTION (Minimalist Monochrome on #FFFFFF with Editorial Rules)
+      ========================================================================= */}
       <section 
         id="gaming-stats"
-        className="w-full bg-[#000000] text-[#FFFFFF] py-24 sm:py-32 px-6 md:px-8 lg:px-12 border-b-4 border-[#000000] relative overflow-hidden"
+        className="w-full bg-[#FFFFFF] text-[#000000] py-24 sm:py-32 px-6 md:px-8 lg:px-12 border-b-4 border-[#000000] relative overflow-hidden"
         style={{
-          backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 1px, #fff 1px, #fff 2px)',
-          backgroundSize: '4px 100%',
-          opacity: 0.98
+          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, #000 1px, #000 2px)',
+          backgroundSize: '100% 4px'
         }}
       >
         <div className="max-w-6xl mx-auto relative z-10">
           
           {/* Section Subhead */}
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-bold block mb-2">
+            <span className="font-mono text-xs uppercase tracking-widest text-[#525252] font-black block mb-2">
               AUDITED NUMERICAL RIGOR
             </span>
             <h2 
               style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
-              className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-[#FFFFFF]"
+              className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-[#000000]"
             >
               The Mechanics of Scale.
             </h2>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 divide-y sm:divide-y-0 sm:divide-x divide-neutral-800">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 divide-y sm:divide-y-0 sm:divide-x divide-black border-y-2 border-black py-8">
             
             <div className="pt-6 sm:pt-0 sm:px-6 text-center">
               <div 
                 style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
-                className="text-6xl sm:text-7xl font-bold tracking-tighter text-[#FFFFFF] mb-2 leading-none"
+                className="text-6xl sm:text-7xl font-bold tracking-tighter text-[#000000] mb-2 leading-none"
               >
                 120K+
               </div>
-              <div className="font-mono text-xs font-black uppercase tracking-widest text-neutral-400">
+              <div className="font-mono text-xs font-black uppercase tracking-widest text-[#000000]">
                 STADIUM SPECTATORS
               </div>
-              <p className="font-serif text-xs text-neutral-500 mt-2">
+              <p 
+                style={{ fontFamily: '"Source Serif 4", Georgia, serif' }}
+                className="text-xs text-[#525252] mt-2"
+              >
                 Simultaneous verified attendance across Tokyo Dome and London O2 arena tours.
               </p>
             </div>
@@ -556,14 +561,17 @@ export const GamingMonochromeView: React.FC<GamingMonochromeViewProps> = ({
             <div className="pt-6 sm:pt-0 sm:px-6 text-center">
               <div 
                 style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
-                className="text-6xl sm:text-7xl font-bold tracking-tighter text-[#FFFFFF] mb-2 leading-none"
+                className="text-6xl sm:text-7xl font-bold tracking-tighter text-[#000000] mb-2 leading-none"
               >
                 0.00MS
               </div>
-              <div className="font-mono text-xs font-black uppercase tracking-widest text-neutral-400">
+              <div className="font-mono text-xs font-black uppercase tracking-widest text-[#000000]">
                 ZERO-LATENCY FIDELITY
               </div>
-              <p className="font-serif text-xs text-neutral-500 mt-2">
+              <p 
+                style={{ fontFamily: '"Source Serif 4", Georgia, serif' }}
+                className="text-xs text-[#525252] mt-2"
+              >
                 192kHz / 24-bit direct audio lacquer pressings without digital compression.
               </p>
             </div>
@@ -571,14 +579,17 @@ export const GamingMonochromeView: React.FC<GamingMonochromeViewProps> = ({
             <div className="pt-6 sm:pt-0 sm:px-6 text-center">
               <div 
                 style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
-                className="text-6xl sm:text-7xl font-bold tracking-tighter text-[#FFFFFF] mb-2 leading-none"
+                className="text-6xl sm:text-7xl font-bold tracking-tighter text-[#000000] mb-2 leading-none"
               >
                 100%
               </div>
-              <div className="font-mono text-xs font-black uppercase tracking-widest text-neutral-400">
+              <div className="font-mono text-xs font-black uppercase tracking-widest text-[#000000]">
                 AUDITED &amp; CERTIFIED
               </div>
-              <p className="font-serif text-xs text-neutral-500 mt-2">
+              <p 
+                style={{ fontFamily: '"Source Serif 4", Georgia, serif' }}
+                className="text-xs text-[#525252] mt-2"
+              >
                 Every release serialized and registered in the global fandom archive.
               </p>
             </div>
@@ -586,14 +597,17 @@ export const GamingMonochromeView: React.FC<GamingMonochromeViewProps> = ({
             <div className="pt-6 sm:pt-0 sm:px-6 text-center">
               <div 
                 style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
-                className="text-6xl sm:text-7xl font-bold tracking-tighter text-[#FFFFFF] mb-2 leading-none"
+                className="text-6xl sm:text-7xl font-bold tracking-tighter text-[#000000] mb-2 leading-none"
               >
                 24/7
               </div>
-              <div className="font-mono text-xs font-black uppercase tracking-widest text-neutral-400">
+              <div className="font-mono text-xs font-black uppercase tracking-widest text-[#000000]">
                 ARENA ACCESS VAULT
               </div>
-              <p className="font-serif text-xs text-neutral-500 mt-2">
+              <p 
+                style={{ fontFamily: '"Source Serif 4", Georgia, serif' }}
+                className="text-xs text-[#525252] mt-2"
+              >
                 Instant digital authentication for VIP soundcheck and tournament kits.
               </p>
             </div>
@@ -961,32 +975,31 @@ export const GamingMonochromeView: React.FC<GamingMonochromeViewProps> = ({
       </section>
 
       {/* =========================================================================
-          7. FINAL CALL-TO-ACTION (Radial Gradient on Black with Terminal Input)
+          7. FINAL CALL-TO-ACTION (Minimalist Monochrome on #FFFFFF)
       ========================================================================= */}
       <section 
-        className="w-full bg-[#000000] text-[#FFFFFF] py-28 sm:py-36 px-6 md:px-8 lg:px-12 relative overflow-hidden"
+        className="w-full bg-[#FFFFFF] text-[#000000] py-24 sm:py-32 px-6 md:px-8 lg:px-12 border-b-4 border-[#000000] relative overflow-hidden"
         style={{
-          backgroundImage: 'radial-gradient(circle at top center, #ffffff, transparent 70%)',
-          backgroundSize: '100% 100%',
-          opacity: 0.98
+          backgroundImage: 'linear-gradient(#00000008 1px, transparent 1px), linear-gradient(90deg, #00000008 1px, transparent 1px)',
+          backgroundSize: '40px 40px'
         }}
       >
         <div className="max-w-4xl mx-auto text-center relative z-10">
           
-          <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-bold block mb-4">
+          <span className="font-mono text-xs uppercase tracking-widest text-[#525252] font-black block mb-4">
             SUBSCRIPTION // DISPATCHES
           </span>
 
           <h2 
             style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
-            className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tighter text-[#FFFFFF] uppercase leading-none mb-6"
+            className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tighter text-[#000000] uppercase leading-none mb-6"
           >
             Enter The Arena.
           </h2>
 
           <p 
             style={{ fontFamily: '"Source Serif 4", Georgia, serif' }}
-            className="text-base sm:text-lg text-neutral-400 max-w-xl mx-auto mb-10 leading-relaxed font-normal"
+            className="text-base sm:text-lg text-[#525252] max-w-xl mx-auto mb-10 leading-relaxed font-normal"
           >
             Receive direct telegram notices of limited vinyl drops, tournament passes, and pro soundcheck accreditation.
           </p>
@@ -1000,24 +1013,24 @@ export const GamingMonochromeView: React.FC<GamingMonochromeViewProps> = ({
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
               style={{ borderRadius: '0px' }}
-              className="w-full bg-transparent border-b-2 border-[#FFFFFF] focus:border-b-[4px] focus:outline-none text-[#FFFFFF] placeholder:text-neutral-500 placeholder:italic py-3.5 px-2 font-mono text-sm tracking-wider"
+              className="w-full bg-transparent border-b-2 border-[#000000] focus:border-b-[4px] focus:outline-none text-[#000000] placeholder:text-[#525252] placeholder:italic py-3.5 px-2 font-mono text-sm tracking-wider"
             />
             <button
               type="submit"
               style={{ borderRadius: '0px' }}
-              className="w-full sm:w-auto px-8 py-3.5 bg-[#FFFFFF] text-[#000000] hover:bg-[#000000] hover:text-[#FFFFFF] hover:border-[#FFFFFF] border-2 border-[#FFFFFF] font-mono text-xs font-black uppercase tracking-widest whitespace-nowrap cursor-pointer transition-colors duration-100"
+              className="w-full sm:w-auto px-8 py-3.5 bg-[#000000] text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#000000] border-2 border-[#000000] font-mono text-xs font-black uppercase tracking-widest whitespace-nowrap cursor-pointer transition-colors duration-100"
             >
               ENLIST →
             </button>
           </form>
 
           {newsletterSuccess && (
-            <p className="font-mono text-xs text-neutral-300 mt-4 uppercase tracking-widest">
+            <p className="font-mono text-xs text-black font-bold mt-4 uppercase tracking-widest">
               ✓ Registered in the official dispatch registry.
             </p>
           )}
 
-          <div className="mt-14 pt-8 border-t border-neutral-800 flex items-center justify-center gap-6 font-mono text-[10px] text-neutral-500 uppercase tracking-widest">
+          <div className="mt-14 pt-8 border-t border-black flex items-center justify-center gap-6 font-mono text-[10px] text-[#525252] uppercase tracking-widest">
             <span>HANTEO VERIFIED</span>
             <span>•</span>
             <span>RIOT GAMES AUDITED</span>

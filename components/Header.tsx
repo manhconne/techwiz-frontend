@@ -9,7 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { useDomainTheme } from '../context/DomainContext';
 import { NotificationDropdown } from './NotificationDropdown';
 import { PersonalDashboardModal } from './PersonalDashboardModal';
-import { checkIsAdmin } from '../utils/authUtils';
+import { getActiveFandomTheme, persistFandomTheme } from '../utils/fandomTheme';
 import {
   Menu,
   Search,
@@ -89,11 +89,440 @@ export const Header: React.FC<HeaderProps> = ({
   const { user, isLoggedIn, loginAs, logout, requestPasswordReset, resetPasswordWithToken } = useAuth();
   const { themeMode, toggleThemeMode } = useDomainTheme();
 
-  const isManga = fandomCategory === 'Manga' || fandomThemeKey === 'manga' || pathname?.startsWith('/manga');
-  const isGaming = fandomCategory === 'Gaming' || fandomThemeKey === 'gaming' || pathname?.startsWith('/gaming');
-  const isCosplay = fandomCategory === 'Cosplay' || fandomThemeKey === 'cosplay';
-  const isAnime = fandomCategory === 'Anime' || fandomThemeKey === 'anime';
-  const isCinema = fandomCategory === 'Movies' || fandomThemeKey === 'cinema';
+  const [activeFandomTheme, setActiveFandomTheme] = useState(() => getActiveFandomTheme(fandomThemeKey, fandomCategory));
+
+  useEffect(() => {
+    const updateTheme = () => {
+      setActiveFandomTheme(getActiveFandomTheme(fandomThemeKey, fandomCategory));
+    };
+    updateTheme();
+
+    const handleCustomChange = (e: any) => {
+      if (e?.detail?.theme && e.detail.theme !== 'all') {
+        setActiveFandomTheme(e.detail.theme);
+      } else {
+        updateTheme();
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('fandom-theme-change', handleCustomChange);
+    }
+    if (typeof document !== 'undefined') {
+      const observer = new MutationObserver(updateTheme);
+      observer.observe(document.body, { attributes: true, attributeFilter: ['data-fandom-theme'] });
+      return () => {
+        if (typeof window !== 'undefined') {
+          window.removeEventListener('fandom-theme-change', handleCustomChange);
+        }
+        observer.disconnect();
+      };
+    }
+  }, [fandomThemeKey, fandomCategory]);
+
+  useEffect(() => {
+    if (fandomThemeKey && fandomThemeKey !== 'all') {
+      setActiveFandomTheme(fandomThemeKey);
+    }
+  }, [fandomThemeKey]);
+
+  const effectiveTheme = (fandomThemeKey && fandomThemeKey !== 'all')
+    ? fandomThemeKey
+    : (activeFandomTheme || getActiveFandomTheme(fandomThemeKey, fandomCategory));
+  const isManga = effectiveTheme === 'manga' || pathname?.startsWith('/manga');
+  const isGaming = effectiveTheme === 'gaming' || pathname?.startsWith('/gaming');
+  const isCosplay = effectiveTheme === 'cosplay' || pathname?.startsWith('/cosplay');
+  const isAnime = effectiveTheme === 'anime' || pathname?.startsWith('/anime');
+  const isCinema = effectiveTheme === 'cinema' || pathname?.startsWith('/cinema');
+  const isComics = effectiveTheme === 'comics' || pathname?.startsWith('/comics');
+  const isTvShows = effectiveTheme === 'tv' || pathname?.startsWith('/tv');
+  const isKpop = effectiveTheme === 'kpop' || pathname?.startsWith('/kpop');
+
+  const loginTheme = React.useMemo(() => {
+    if (isManga) {
+      return {
+        fontFamily: "'Kalam', cursive, sans-serif",
+        modalBg: '#fdfbf7',
+        textColor: '#2d2d2d',
+        subtitleColor: '#2d5da1',
+        border: '3px solid #2d2d2d',
+        shadow: '8px 8px 0px #2d2d2d',
+        borderRadius: '255px 15px 225px 15px/15px 225px 15px 255px',
+        headerTitle: 'MANGA GUILD // PASSPORT LOGIN',
+        headerSubtitle: 'Mangaka & Tankōbon Collector Sign-In',
+        primaryBtnBg: '#ff4d4d',
+        primaryBtnColor: '#ffffff',
+        primaryBtnBorder: '2px solid #2d2d2d',
+        primaryBtnShadow: '3px 3px 0px #2d2d2d',
+        primaryBtnRadius: '120px 8px 110px 8px/8px 110px 8px 120px',
+        inputBorder: '2px solid #2d2d2d',
+        inputRadius: '120px 8px 110px 8px/8px 110px 8px 120px',
+        inputBg: '#ffffff',
+        inputColor: '#2d2d2d',
+        accentColor: '#2d5da1',
+        tapeDecor: true,
+      };
+    }
+    if (isAnime) {
+      return {
+        fontFamily: "'Space Grotesk', monospace, sans-serif",
+        modalBg: '#ffffff',
+        textColor: '#000000',
+        subtitleColor: '#525252',
+        border: '3px solid #000000',
+        shadow: '8px 8px 0px #ccff00',
+        borderRadius: '0px',
+        headerTitle: 'SAKUGA VAULT // ANIME ID ACCESS',
+        headerSubtitle: 'High-Framerate Collector & Otaku Authentication',
+        primaryBtnBg: '#ccff00',
+        primaryBtnColor: '#000000',
+        primaryBtnBorder: '2px solid #000000',
+        primaryBtnShadow: '3px 3px 0px #000000',
+        primaryBtnRadius: '0px',
+        inputBorder: '2px solid #000000',
+        inputRadius: '0px',
+        inputBg: '#f7fee7',
+        inputColor: '#000000',
+        accentColor: '#ccff00',
+        tapeDecor: false,
+      };
+    }
+    if (isComics) {
+      return {
+        fontFamily: "'Bangers', 'Kalam', cursive, sans-serif",
+        modalBg: '#ffffff',
+        textColor: '#000000',
+        subtitleColor: '#ef4444',
+        border: '4px solid #000000',
+        shadow: '8px 8px 0px #ef4444',
+        borderRadius: '0px',
+        headerTitle: 'HERO ARCHIVE // SECRET IDENTITY LOGIN',
+        headerSubtitle: 'Unlock Exclusive Variant Pulls & Omnibuses',
+        primaryBtnBg: '#ffd60a',
+        primaryBtnColor: '#000000',
+        primaryBtnBorder: '3px solid #000000',
+        primaryBtnShadow: '4px 4px 0px #000000',
+        primaryBtnRadius: '0px',
+        inputBorder: '2px solid #000000',
+        inputRadius: '2px',
+        inputBg: '#fffdf0',
+        inputColor: '#000000',
+        accentColor: '#ef4444',
+        tapeDecor: false,
+      };
+    }
+    if (isGaming) {
+      return {
+        fontFamily: "'JetBrains Mono', monospace",
+        modalBg: '#ffffff',
+        textColor: '#000000',
+        subtitleColor: '#525252',
+        border: '4px solid #000000',
+        shadow: '8px 8px 0px #000000',
+        borderRadius: '0px',
+        headerTitle: 'GAMING ARENA // MEMBER LOGIN',
+        headerSubtitle: 'Official Soundtracks & Collector Archive',
+        primaryBtnBg: '#000000',
+        primaryBtnColor: '#ffffff',
+        primaryBtnBorder: '2px solid #000000',
+        primaryBtnShadow: 'none',
+        primaryBtnRadius: '0px',
+        inputBorder: '2px solid #000000',
+        inputRadius: '0px',
+        inputBg: '#ffffff',
+        inputColor: '#000000',
+        accentColor: '#000000',
+        tapeDecor: false,
+      };
+    }
+    if (isCinema) {
+      return {
+        fontFamily: "'Playfair Display', Georgia, serif",
+        modalBg: '#0d0d0f',
+        textColor: '#ffffff',
+        subtitleColor: '#d4af37',
+        border: '2px solid rgba(212,175,55,0.6)',
+        shadow: '0 20px 45px rgba(0,0,0,0.9)',
+        borderRadius: '0px',
+        headerTitle: 'CINEMA ARCHIVE // PATRON CREDENTIALS',
+        headerSubtitle: 'Cannes & Criterion Guild Member Portal',
+        primaryBtnBg: '#d4af37',
+        primaryBtnColor: '#09090b',
+        primaryBtnBorder: '1px solid #d4af37',
+        primaryBtnShadow: '2px 2px 0px rgba(0,0,0,0.5)',
+        primaryBtnRadius: '0px',
+        inputBorder: '1px solid rgba(212,175,55,0.5)',
+        inputRadius: '0px',
+        inputBg: '#18181b',
+        inputColor: '#fafaf9',
+        accentColor: '#d4af37',
+        tapeDecor: false,
+      };
+    }
+    if (isTvShows) {
+      return {
+        fontFamily: "'Outfit', sans-serif",
+        modalBg: '#ffffff',
+        textColor: '#000000',
+        subtitleColor: '#7c3aed',
+        border: '3px solid #000000',
+        shadow: '8px 8px 0px #8b5cf6',
+        borderRadius: '0px',
+        headerTitle: 'TV BROADCAST // SUBSCRIBER LOGIN',
+        headerSubtitle: 'Binge Series & K-Drama Streaming Access',
+        primaryBtnBg: '#8b5cf6',
+        primaryBtnColor: '#ffffff',
+        primaryBtnBorder: '2px solid #000000',
+        primaryBtnShadow: '3px 3px 0px #000000',
+        primaryBtnRadius: '0px',
+        inputBorder: '2px solid #000000',
+        inputRadius: '0px',
+        inputBg: '#faf5ff',
+        inputColor: '#000000',
+        accentColor: '#7c3aed',
+        tapeDecor: false,
+      };
+    }
+    return {
+      fontFamily: "'Outfit', monospace, sans-serif",
+      modalBg: '#ffffff',
+      textColor: '#000000',
+      subtitleColor: '#ff2e93',
+      border: '3px solid #000000',
+      shadow: '8px 8px 0px #ff2e93',
+      borderRadius: '0px',
+      headerTitle: 'FAN HUB PLUS // MEMBER LOGIN',
+      headerSubtitle: 'Official Hanteo Certified Member Gate',
+      primaryBtnBg: '#ff2e93',
+      primaryBtnColor: '#ffffff',
+      primaryBtnBorder: '2px solid #000000',
+      primaryBtnShadow: '3px 3px 0px #000000',
+      primaryBtnRadius: '0px',
+      inputBorder: '2px solid #000000',
+      inputRadius: '0px',
+      inputBg: '#ffffff',
+      inputColor: '#000000',
+      accentColor: '#ff2e93',
+      tapeDecor: false,
+    };
+  }, [isManga, isAnime, isComics, isGaming, isCinema, isTvShows]);
+
+  const subnavTheme = React.useMemo(() => {
+    if (isGaming) {
+      return {
+        barBg: '#0a0a0f',
+        barBorder: 'border-t-2 border-[#00f0ff] border-b-4 border-[#00ff66]',
+        btnBg: '#00ff66',
+        btnColor: '#000000',
+        btnBorder: '2px solid #00ff66',
+        btnRadius: '0px',
+        btnShadow: '0 0 10px rgba(0, 255, 102, 0.4)',
+        btnFont: "'JetBrains Mono', monospace",
+        btnLabel: '★ GAMING ARENA MD',
+        tabFont: "'JetBrains Mono', monospace",
+        tabColor: '#94a3b8',
+        tabActiveColor: '#00ff66',
+        tabActiveBorder: '3px solid #00ff66',
+        tabLetterSpacing: '0.12em',
+        tabFontWeight: 600,
+        tabActiveWeight: 900,
+        fandomQuery: 'gaming',
+      };
+    }
+    if (isManga) {
+      return {
+        barBg: '#fdfbf7',
+        barBorder: 'border-t-2 border-[#2d2d2d] border-b-4 border-[#2d2d2d]',
+        btnBg: '#ff4d4d',
+        btnColor: '#ffffff',
+        btnBorder: '2px solid #2d2d2d',
+        btnRadius: '255px 15px 225px 15px/15px 225px 15px 255px',
+        btnShadow: '3px 3px 0px #2d2d2d',
+        btnFont: "'Patrick Hand', 'Kalam', cursive, sans-serif",
+        btnLabel: '★ MANGA GUILD MD',
+        tabFont: "'Patrick Hand', 'Kalam', cursive, sans-serif",
+        tabColor: '#2d2d2d',
+        tabActiveColor: '#ff4d4d',
+        tabActiveBorder: '3px solid #ff4d4d',
+        tabLetterSpacing: '0.08em',
+        tabFontWeight: 700,
+        tabActiveWeight: 900,
+        fandomQuery: 'manga',
+      };
+    }
+    if (isAnime) {
+      return {
+        barBg: '#ecfccb',
+        barBorder: 'border-t-2 border-black border-b-4 border-[#84cc16]',
+        btnBg: '#a3e635',
+        btnColor: '#000000',
+        btnBorder: '2px solid #000000',
+        btnRadius: '0px',
+        btnShadow: '3px 3px 0px #000000',
+        btnFont: "'Space Grotesk', sans-serif",
+        btnLabel: '★ SAKUGA VAULT MD',
+        tabFont: "'Space Grotesk', sans-serif",
+        tabColor: '#000000',
+        tabActiveColor: '#4d7c0f',
+        tabActiveBorder: '3px solid #65a30d',
+        tabLetterSpacing: '0.1em',
+        tabFontWeight: 700,
+        tabActiveWeight: 900,
+        fandomQuery: 'anime',
+      };
+    }
+    if (isComics) {
+      return {
+        barBg: '#fef9c3',
+        barBorder: 'border-t-2 border-black border-b-4 border-[#ef4444]',
+        btnBg: '#ef4444',
+        btnColor: '#ffffff',
+        btnBorder: '2px solid #000000',
+        btnRadius: '0px',
+        btnShadow: '3px 3px 0px #000000',
+        btnFont: "'Bangers', 'Space Grotesk', cursive, sans-serif",
+        btnLabel: '★ HERO ARCHIVE MD',
+        tabFont: "'Bangers', 'Space Grotesk', cursive, sans-serif",
+        tabColor: '#000000',
+        tabActiveColor: '#ef4444',
+        tabActiveBorder: '3px solid #ef4444',
+        tabLetterSpacing: '0.08em',
+        tabFontWeight: 700,
+        tabActiveWeight: 900,
+        fandomQuery: 'comics',
+      };
+    }
+    if (isCinema) {
+      return {
+        barBg: '#0d0d0f',
+        barBorder: 'border-t border-[#d4af37]/40 border-b-2 border-[#d4af37]',
+        btnBg: '#d4af37',
+        btnColor: '#09090b',
+        btnBorder: '1px solid #d4af37',
+        btnRadius: '0px',
+        btnShadow: '0 0 10px rgba(212,175,55,0.3)',
+        btnFont: "'Playfair Display', Georgia, serif",
+        btnLabel: '★ 70MM CINEMA MD',
+        tabFont: "'Playfair Display', Georgia, serif",
+        tabColor: 'rgba(255,255,255,0.75)',
+        tabActiveColor: '#d4af37',
+        tabActiveBorder: '3px solid #d4af37',
+        tabLetterSpacing: '0.15em',
+        tabFontWeight: 600,
+        tabActiveWeight: 800,
+        fandomQuery: 'cinema',
+      };
+    }
+    if (isTvShows) {
+      return {
+        barBg: '#faf5ff',
+        barBorder: 'border-t-2 border-[#7c3aed] border-b-4 border-[#7c3aed]',
+        btnBg: '#8b5cf6',
+        btnColor: '#ffffff',
+        btnBorder: '2px solid #7c3aed',
+        btnRadius: '0px',
+        btnShadow: '3px 3px 0px #7c3aed',
+        btnFont: "'Outfit', sans-serif",
+        btnLabel: '★ TV SERIES MD',
+        tabFont: "'Outfit', sans-serif",
+        tabColor: '#4c1d95',
+        tabActiveColor: '#7c3aed',
+        tabActiveBorder: '3px solid #8b5cf6',
+        tabLetterSpacing: '0.1em',
+        tabFontWeight: 700,
+        tabActiveWeight: 900,
+        fandomQuery: 'tv',
+      };
+    }
+    if (isCosplay) {
+      return {
+        barBg: '#ffffff',
+        barBorder: 'border-t-2 border-black border-b-4 border-[#D02020]',
+        btnBg: '#D02020',
+        btnColor: '#ffffff',
+        btnBorder: '2px solid #000000',
+        btnRadius: '0px',
+        btnShadow: '3px 3px 0px #000000',
+        btnFont: "'Outfit', var(--font-sans), sans-serif",
+        btnLabel: '★ BAUHAUS COSPLAY MD',
+        tabFont: "'Outfit', var(--font-sans), sans-serif",
+        tabColor: '#000000',
+        tabActiveColor: '#D02020',
+        tabActiveBorder: '3px solid #D02020',
+        tabLetterSpacing: '0.12em',
+        tabFontWeight: 700,
+        tabActiveWeight: 900,
+        fandomQuery: 'cosplay',
+      };
+    }
+    if (isKpop) {
+      return {
+        barBg: '#ffffff',
+        barBorder: 'border-t border-black border-b-4 border-black',
+        btnBg: '#ff2e93',
+        btnColor: '#ffffff',
+        btnBorder: '2px solid #000000',
+        btnRadius: '0px',
+        btnShadow: '3px 3px 0px #000000',
+        btnFont: "var(--font-jetbrains), var(--font-mono), monospace",
+        btnLabel: '★ K-POP UNIVERSE MD',
+        tabFont: "var(--font-mono), monospace",
+        tabColor: '#000000',
+        tabActiveColor: '#ff2e93',
+        tabActiveBorder: '3px solid #ff2e93',
+        tabLetterSpacing: '0.12em',
+        tabFontWeight: 600,
+        tabActiveWeight: 800,
+        fandomQuery: 'kpop',
+      };
+    }
+    // Default / All Fandoms (effectiveTheme === 'all')
+    return {
+      barBg: '#ffffff',
+      barBorder: 'border-t border-black border-b-4 border-black',
+      btnBg: '#000000',
+      btnColor: '#ffffff',
+      btnBorder: '2px solid #000000',
+      btnRadius: '0px',
+      btnShadow: '3px 3px 0px #000000',
+      btnFont: "var(--font-jetbrains), var(--font-mono), monospace",
+      btnLabel: '★ ALL MD',
+      tabFont: "var(--font-mono), monospace",
+      tabColor: '#000000',
+      tabActiveColor: '#000000',
+      tabActiveBorder: '3px solid #000000',
+      tabLetterSpacing: '0.12em',
+      tabFontWeight: 600,
+      tabActiveWeight: 800,
+      fandomQuery: 'all',
+    };
+  }, [isGaming, isManga, isAnime, isComics, isCinema, isTvShows, isCosplay, isKpop]);
+
+  const SUBNAV_TABS = React.useMemo(() => [
+    { label: 'ARTIST', href: '/artist' },
+    { label: 'EVENT', href: '/event' },
+    { label: 'MULTIMEDIA', href: '/multimedia' },
+    { label: 'CD/DVD/BOOK', href: '/cd-dvd-book' },
+    { label: 'MD', href: '/md' },
+    { label: 'B2B/BULK', href: '/b2b' },
+  ], []);
+
+  const getTabHref = React.useCallback((baseHref: string) => {
+    const q = (subnavTheme.fandomQuery && subnavTheme.fandomQuery !== 'all')
+      ? subnavTheme.fandomQuery
+      : (effectiveTheme && effectiveTheme !== 'all' ? effectiveTheme : '');
+    if (q) {
+      return `${baseHref}?fandom=${q}`;
+    }
+    return baseHref;
+  }, [subnavTheme.fandomQuery, effectiveTheme]);
+
+  useEffect(() => {
+    if (typeof document !== 'undefined' && effectiveTheme) {
+      document.documentElement.setAttribute('data-fandom-theme', effectiveTheme);
+      document.body.setAttribute('data-fandom-theme', effectiveTheme);
+    }
+  }, [effectiveTheme]);
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
@@ -171,23 +600,23 @@ export const Header: React.FC<HeaderProps> = ({
       el.scrollIntoView({ behavior: 'smooth' });
     } else {
       if (id === 'tours') {
-        window.location.href = '/event';
+        window.location.href = getTabHref('/event');
       } else {
-        window.location.href = `/#${id}`;
+        window.location.href = getTabHref(`/#${id}`);
       }
     }
   };
 
   const allMdItems = [
-    { label: 'EVENT & TICKETS', icon: Ticket, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/event'; } },
-    { label: 'CD, DVD & VINYL', icon: Disc, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/cd-dvd-book'; } },
-    { label: 'OFFICIAL MD GOODS', icon: ShoppingBag, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
-    { label: "SEASON'S GREETINGS", icon: Gift, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/cd-dvd-book'; } },
+    { label: 'EVENT & TICKETS', icon: Ticket, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/event'); } },
+    { label: 'CD, DVD & VINYL', icon: Disc, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/cd-dvd-book'); } },
+    { label: 'OFFICIAL MD GOODS', icon: ShoppingBag, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/md'); } },
+    { label: "SEASON'S GREETINGS", icon: Gift, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/cd-dvd-book'); } },
     { label: 'CUSTOM GOODS ZONE', icon: Palette, action: () => { setIsAllMdDropdownOpen(false); setIsCustomZoneOpen(true); } },
-    { label: 'DUCKJIL FANDOM HUB', icon: Heart, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/artist'; } },
-    { label: 'ALLMD BEAUTY & CARE', icon: Sparkles, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
-    { label: 'B2B / BULK ORDER', icon: Building2, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/b2b'; } },
-    { label: 'MULTIMEDIA CENTER', icon: Tv, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/multimedia'; } },
+    { label: 'DUCKJIL FANDOM HUB', icon: Heart, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/artist'); } },
+    { label: 'ALLMD BEAUTY & CARE', icon: Sparkles, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/md'); } },
+    { label: 'B2B / BULK ORDER', icon: Building2, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/b2b'); } },
+    { label: 'MULTIMEDIA CENTER', icon: Tv, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/multimedia'); } },
   ];
 
   return (
@@ -196,16 +625,16 @@ export const Header: React.FC<HeaderProps> = ({
       data-fandom-theme={fandomThemeKey}
     >
       {/* Y2K System Status Ribbon */}
-      <div className="w-full bg-black text-white px-4 sm:px-8 py-1 font-mono text-[10px] font-bold tracking-widest uppercase flex items-center justify-between border-b border-black select-none">
+      <div className={`w-full ${isGaming ? 'bg-white text-black' : 'bg-black text-white'} px-4 sm:px-8 py-1 font-mono text-[10px] font-bold tracking-widest uppercase flex items-center justify-between border-b border-black select-none`}>
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 bg-white animate-pulse" />
+            <span className={`w-1.5 h-1.5 ${isGaming ? 'bg-black' : 'bg-white'} animate-pulse`} />
             <span>PORTAL // READY</span>
           </span>
-          <span className="hidden md:inline text-neutral-400">SYS.VER: 2026.1.0</span>
+          <span className={`hidden md:inline ${isGaming ? 'text-neutral-600' : 'text-neutral-400'}`}>SYS.VER: 2026.1.0</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="hidden sm:inline text-neutral-400">HANTEO &amp; CIRCLE CERTIFIED</span>
+          <span className={`hidden sm:inline ${isGaming ? 'text-neutral-600' : 'text-neutral-400'}`}>HANTEO &amp; CIRCLE CERTIFIED</span>
           <span>TIME // 2026 UTC</span>
         </div>
       </div>
@@ -324,27 +753,6 @@ export const Header: React.FC<HeaderProps> = ({
             [?]
           </button>
 
-          {/* User Profile Button */}
-          <button
-            onClick={() => {
-              if (isLoggedIn) {
-                setIsDashboardOpen(true);
-              } else {
-                setIsAuthModalOpen(true);
-              }
-            }}
-            className={`header-action-btn px-3 py-1.5 flex items-center justify-center border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#c084fc] hover:bg-[#d8b4fe] shadow-[2px_2px_0px_#000000]'}`}
-            style={{ borderRadius: '0px' }}
-            title={isLoggedIn ? `${user.name} - Dashboard` : 'Sign In'}
-            type="button"
-          >
-            {isLoggedIn ? (
-              <span className="truncate max-w-[80px]">{user.name.split(' ')[0]}</span>
-            ) : (
-              <span>[ID]</span>
-            )}
-          </button>
-
           {/* Shopping Cart Button */}
           <button
             onClick={() => setIsCartOpen(true)}
@@ -367,15 +775,15 @@ export const Header: React.FC<HeaderProps> = ({
             <span>SAVED ({wishlistCount})</span>
           </button>
 
-          {/* Language Switcher Button [ EN / VI ] */}
+          {/* Language Switcher Button [ EN ] */}
           <button
             onClick={toggleLanguage}
-            title={language === 'en' ? 'Translate to Vietnamese' : 'Switch to English'}
+            title="Language: English"
             type="button"
             className={`header-lang-btn hidden sm:flex notranslate hover:bg-black hover:text-white items-center px-2.5 py-1 text-xs font-mono font-bold border-2 border-black bg-white text-black h-8 sm:h-9 cursor-pointer transition-colors duration-100 ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`}
             style={{ borderRadius: '0px' }}
           >
-            <span>[{language === 'en' ? 'EN' : 'VI'}]</span>
+            <span>[EN]</span>
           </button>
 
           {/* Theme Mode Toggle Button */}
@@ -389,40 +797,45 @@ export const Header: React.FC<HeaderProps> = ({
             {themeMode === 'dark' ? '[LIGHT]' : '[DARK]'}
           </button>
 
-          {/* Font Size Adjuster Button */}
-          <button
-            onClick={toggleFontSize}
-            title={isLargeFont ? 'Standard Text Size' : 'Enlarge Text Size (+12.5%)'}
-            type="button"
-            className={`header-action-btn hidden sm:flex notranslate w-8 sm:w-9 h-8 sm:h-9 items-center justify-center border-2 border-black font-mono font-bold text-xs cursor-pointer transition-colors duration-100 ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'} ${isLargeFont ? 'bg-black text-white' : 'hover:bg-black hover:text-white text-black bg-white'}`}
-            style={{ borderRadius: '0px' }}
-          >
-            <span>{isLargeFont ? 'A+' : 'A'}</span>
-          </button>
-
-          {/* Admin shortcut if admin */}
-          {checkIsAdmin(user) && (
-            <Link
-              href="/admin"
-              className="flex items-center gap-1 px-2.5 py-1 text-xs font-black bg-amber-100 text-amber-800 border border-amber-300 rounded-md cursor-pointer h-8 text-decoration-none"
-              title="Admin Portal"
+          {/* User Account / Login Button */}
+          {isLoggedIn ? (
+            <button
+              onClick={() => setIsDashboardOpen(true)}
+              className={`header-action-btn flex items-center justify-center px-3 py-1.5 border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 text-xs ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#c084fc] hover:bg-[#d8b4fe] shadow-[2px_2px_0px_#000000]'}`}
+              style={{ borderRadius: '0px' }}
+              title={`${user.name} - Dashboard`}
+              type="button"
             >
-              <ShieldCheck style={{ width: '15px', height: '15px', color: '#d97706' }} />
-              <span className="hidden md:inline">Admin</span>
-            </Link>
+              <User className="w-3.5 h-3.5 mr-1" />
+              <span className="truncate max-w-[85px]">{user.name.split(' ')[0]}</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => setIsAuthModalOpen(true)}
+              className={`header-action-btn flex items-center justify-center px-3 py-1.5 border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 text-xs ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : isCinema ? 'bg-[#FF3000] text-white hover:bg-black shadow-none' : 'text-black bg-[#ffd60a] hover:bg-[#ffe066] shadow-[2px_2px_0px_#000000]'}`}
+              style={{ borderRadius: '0px' }}
+              title="Sign In / Sign Up"
+              type="button"
+            >
+              <User className="w-3.5 h-3.5 mr-1" />
+              <span>LOGIN</span>
+            </button>
           )}
         </div>
       </div>
 
       {/* SECONDARY CATEGORY NAVIGATION BAR (Desktop Only) */}
-      <div className="desktop-subnav header-subnav w-full border-t border-black border-b-4 border-black relative z-30 bg-white">
+      <div 
+        className={`desktop-subnav header-subnav w-full relative z-30 transition-colors duration-150 ${subnavTheme.barBorder}`}
+        style={{ backgroundColor: subnavTheme.barBg }}
+      >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between h-11 sm:h-[50px] relative gap-4">
           {/* [ ≡ ALL MD ] Button with Exact Dropdown */}
           <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center', zIndex: 60 }}>
             <button
               onClick={() => setIsAllMdDropdownOpen(!isAllMdDropdownOpen)}
               type="button"
-              className={`header-allmd-btn transition-colors duration-100 ${isGaming ? 'hover:bg-white hover:text-black' : isCinema ? 'hover:bg-black hover:text-white' : 'hover:opacity-90'}`}
+              className="header-allmd-btn transition-colors duration-100 hover:opacity-90"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -430,22 +843,22 @@ export const Header: React.FC<HeaderProps> = ({
                 gap: '8px',
                 padding: '8px 18px',
                 height: '36px',
-                backgroundColor: isGaming ? '#000000' : isCinema ? '#FF3000' : isCosplay ? '#D02020' : isAnime ? '#a3e635' : '#ff2e93',
-                color: isAnime ? '#000000' : '#ffffff',
-                fontFamily: "var(--font-jetbrains), var(--font-mono), monospace",
+                backgroundColor: subnavTheme.btnBg,
+                color: subnavTheme.btnColor,
+                fontFamily: subnavTheme.btnFont,
                 fontSize: '11px',
                 fontWeight: 900,
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
-                border: '2px solid #000000',
-                borderRadius: '0px',
+                border: subnavTheme.btnBorder,
+                borderRadius: subnavTheme.btnRadius,
                 cursor: 'pointer',
                 flexShrink: 0,
-                boxShadow: isGaming || isCinema ? 'none' : '3px 3px 0px #000000',
+                boxShadow: subnavTheme.btnShadow,
               }}
             >
               <Menu style={{ width: '15px', height: '15px', flexShrink: 0, strokeWidth: 2.5 }} />
-              <span style={{ whiteSpace: 'nowrap' }}>{isManga ? '★ MANGA MD' : isCinema ? '★ 70MM CINEMA MD' : isAnime ? '★ ANIME STREET MD' : '★ ALL MD'}</span>
+              <span style={{ whiteSpace: 'nowrap' }}>{subnavTheme.btnLabel}</span>
             </button>
 
             {/* Dropdown Menu under [ ≡ ALL MD ] (Strictly 0px, pure monochrome, no shadow) */}
@@ -497,6 +910,62 @@ export const Header: React.FC<HeaderProps> = ({
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
+                  </div>
+
+                  {/* Fandom Universes Quick Switcher */}
+                  <div className="pb-3 mb-3 border-b border-black">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-mono text-[10px] font-black uppercase tracking-widest text-neutral-500">
+                        FANDOM UNIVERSE STYLE
+                      </span>
+                      <span className="font-mono text-[9px] px-1.5 py-0.5 bg-black text-white font-bold uppercase">
+                        {effectiveTheme}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      {[
+                        { key: 'all', label: 'All', color: '#000000', cat: 'all' },
+                        { key: 'kpop', label: 'K-Pop', color: '#ff2e93', cat: 'K-Pop' },
+                        { key: 'gaming', label: 'Gaming', color: '#00ff66', cat: 'Gaming' },
+                        { key: 'manga', label: 'Manga', color: '#ff4d4d', cat: 'Manga' },
+                        { key: 'anime', label: 'Anime', color: '#a3e635', cat: 'Anime' },
+                        { key: 'cosplay', label: 'Cosplay', color: '#D02020', cat: 'Cosplay' },
+                        { key: 'comics', label: 'Comics', color: '#ef4444', cat: 'Comics' },
+                        { key: 'cinema', label: 'Cinema', color: '#d4af37', cat: 'Movies' },
+                        { key: 'tv', label: 'TV Shows', color: '#8b5cf6', cat: 'TV Shows' },
+                      ].map(fandom => {
+                        const isCurrent = effectiveTheme === fandom.key;
+                        return (
+                          <button
+                            key={fandom.key}
+                            type="button"
+                            onClick={() => {
+                              setIsAllMdDropdownOpen(false);
+                              if (typeof window !== 'undefined') {
+                                persistFandomTheme(fandom.key, fandom.cat);
+                                const url = new URL(window.location.href);
+                                if (fandom.key !== 'all') {
+                                  url.searchParams.set('fandom', fandom.key);
+                                } else {
+                                  url.searchParams.delete('fandom');
+                                  url.searchParams.delete('category');
+                                }
+                                window.location.href = url.toString();
+                              }
+                            }}
+                            className="px-1.5 py-1.5 text-[10px] font-mono font-bold uppercase text-center border border-black cursor-pointer transition-colors"
+                            style={{
+                              backgroundColor: isCurrent ? (fandom.color === '#00ff66' ? '#000' : fandom.color) : '#fff',
+                              color: isCurrent ? (fandom.color === '#00ff66' ? '#00ff66' : fandom.key === 'anime' ? '#000' : '#fff') : '#000',
+                              borderColor: isCurrent ? fandom.color : '#000',
+                            }}
+                          >
+                            {isCurrent && <span className="mr-0.5">★</span>}
+                            {fandom.label}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   {/* Category Items with Library Icons */}
@@ -615,291 +1084,36 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* Horizontal Links */}
+          {/* Horizontal Links - Layout strictly preserved across all categories */}
           <nav className="flex items-center gap-6 sm:gap-8 lg:gap-10 xl:gap-12 flex-nowrap h-full shrink-0 overflow-x-auto scrollbar-none">
-            {isManga ? (
-              <>
+            {SUBNAV_TABS.map((tab) => {
+              const isActive = pathname === tab.href || (tab.href !== '/' && pathname?.startsWith(tab.href));
+              const targetHref = getTabHref(tab.href);
+              return (
                 <Link
-                  href="/manga#manga-catalog"
+                  key={tab.label}
+                  href={targetHref}
                   style={{
-                    fontFamily: "var(--font-mono), monospace",
+                    fontFamily: subnavTheme.tabFont,
                     fontSize: '12px',
-                    fontWeight: 700,
-                    letterSpacing: '0.12em',
+                    fontWeight: isActive ? subnavTheme.tabActiveWeight : subnavTheme.tabFontWeight,
+                    letterSpacing: subnavTheme.tabLetterSpacing,
                     textTransform: 'uppercase',
                     padding: '12px 4px',
                     display: 'inline-flex',
                     alignItems: 'center',
                     cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: '3px solid #ff4d4d',
+                    color: isActive ? subnavTheme.tabActiveColor : subnavTheme.tabColor,
+                    transition: 'all 0.15s ease',
+                    borderBottom: isActive ? subnavTheme.tabActiveBorder : '3px solid transparent',
                     textDecoration: 'none',
                   }}
-                  className="hover:opacity-60"
+                  className="header-subnav-tab header-nav-link hover:opacity-70"
                 >
-                  TANKŌBON
+                  {tab.label}
                 </Link>
-                <Link
-                  href="/manga#manga-catalog"
-                  style={{
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: '12px',
-                    fontWeight: 500,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '12px 4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: '3px solid transparent',
-                    textDecoration: 'none',
-                  }}
-                  className="hover:opacity-60"
-                >
-                  SHONEN & SEINEN
-                </Link>
-                <Link
-                  href="/manga#mangaka-studio"
-                  style={{
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: '12px',
-                    fontWeight: 500,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '12px 4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: '3px solid transparent',
-                    textDecoration: 'none',
-                  }}
-                  className="hover:opacity-60"
-                >
-                  STUDIO
-                </Link>
-                <Link
-                  href="/manga#manga-notes"
-                  style={{
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: '12px',
-                    fontWeight: 500,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '12px 4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: '3px solid transparent',
-                    textDecoration: 'none',
-                  }}
-                  className="hover:opacity-60"
-                >
-                  READER NOTES
-                </Link>
-                <Link
-                  href="/md"
-                  style={{
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: '12px',
-                    fontWeight: pathname === '/md' ? 700 : 500,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '12px 4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: pathname === '/md' ? '3px solid #000000' : '3px solid transparent',
-                    textDecoration: 'none',
-                  }}
-                  className="hover:opacity-60"
-                >
-                  MANGA MD
-                </Link>
-                <Link
-                  href="/event"
-                  style={{
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: '12px',
-                    fontWeight: pathname?.startsWith('/event') ? 700 : 500,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '12px 4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: pathname?.startsWith('/event') ? '3px solid #000000' : '3px solid transparent',
-                    textDecoration: 'none',
-                  }}
-                  className="hover:opacity-60"
-                >
-                  EVENT
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/artist"
-                  style={{
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: '12px',
-                    fontWeight: pathname?.startsWith('/artist') ? 700 : 500,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '12px 4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: pathname?.startsWith('/artist') ? '3px solid #000000' : '3px solid transparent',
-                    textDecoration: 'none',
-                  }}
-                  className="hover:opacity-60"
-                >
-                  ARTIST
-                </Link>
-                <Link
-                  href="/event"
-                  style={{
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: '12px',
-                    fontWeight: pathname?.startsWith('/event') ? 700 : 500,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '12px 4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: pathname?.startsWith('/event') ? '3px solid #000000' : '3px solid transparent',
-                    textDecoration: 'none',
-                  }}
-                  className="hover:opacity-60"
-                >
-                  EVENT
-                </Link>
-                <Link
-                  href="/multimedia"
-                  style={{
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: '12px',
-                    fontWeight: pathname?.startsWith('/multimedia') ? 700 : 500,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '12px 4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: pathname?.startsWith('/multimedia') ? '3px solid #000000' : '3px solid transparent',
-                    textDecoration: 'none',
-                  }}
-                  className="hover:opacity-60"
-                >
-                  MULTIMEDIA
-                </Link>
-                <Link
-                  href="/cd-dvd-book"
-                  style={{
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: '12px',
-                    fontWeight: pathname === '/cd-dvd-book' ? 700 : 500,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '12px 4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: pathname === '/cd-dvd-book' ? '3px solid #000000' : '3px solid transparent',
-                    textDecoration: 'none',
-                  }}
-                  className="hover:opacity-60"
-                >
-                  CD/DVD/BOOK
-                </Link>
-                <Link
-                  href="/md"
-                  style={{
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: '12px',
-                    fontWeight: pathname === '/md' ? 700 : 500,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '12px 4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: pathname === '/md' ? '3px solid #000000' : '3px solid transparent',
-                    textDecoration: 'none',
-                  }}
-                  className="hover:opacity-60"
-                >
-                  MD
-                </Link>
-                <Link
-                  href="/b2b"
-                  style={{
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: '12px',
-                    fontWeight: pathname?.startsWith('/b2b') ? 700 : 500,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '12px 4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    color: '#000000',
-                    transition: 'all 0.1s ease',
-                    borderBottom: pathname?.startsWith('/b2b') ? '3px solid #000000' : '3px solid transparent',
-                    textDecoration: 'none',
-                  }}
-                  className="hover:opacity-60"
-                >
-                  B2B/BULK
-                </Link>
-              </>
-            )}
-            {checkIsAdmin(user) && (
-              <Link
-                href="/admin"
-                style={{
-                  fontSize: '14px',
-                  fontWeight: 900,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  padding: '14px 8px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  cursor: 'pointer',
-                  color: '#d97706',
-                  transition: 'all 0.15s ease',
-                  borderBottom: pathname?.startsWith('/admin') ? '2.5px solid #d97706' : '2.5px solid transparent',
-                  textDecoration: 'none',
-                }}
-                className="header-nav-link hover:opacity-80"
-              >
-                <ShieldCheck style={{ width: '15px', height: '15px' }} />
-                <span>ADMIN PORTAL</span>
-              </Link>
-            )}
+              );
+            })}
           </nav>
         </div>
       </div>
@@ -1196,16 +1410,35 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <div
             style={{
-              backgroundColor: '#ffffff',
-              borderRadius: '0px',
-              maxWidth: '430px',
+              backgroundColor: loginTheme.modalBg,
+              borderRadius: loginTheme.borderRadius,
+              maxWidth: '440px',
               width: '100%',
               padding: '28px 24px',
-              boxShadow: 'none',
+              boxShadow: loginTheme.shadow,
               position: 'relative',
-              border: '2px solid #000000'
+              border: loginTheme.border,
+              fontFamily: loginTheme.fontFamily,
             }}
           >
+            {/* Top Tape for Manga */}
+            {loginTheme.tapeDecor && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-12px',
+                  left: '40px',
+                  width: '110px',
+                  height: '24px',
+                  backgroundColor: '#e5e0d8',
+                  opacity: 0.9,
+                  zIndex: 20,
+                  transform: 'rotate(-2deg)',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                  pointerEvents: 'none',
+                }}
+              />
+            )}
             {/* Close Button */}
             <button
               onClick={() => {
@@ -1371,13 +1604,13 @@ export const Header: React.FC<HeaderProps> = ({
                     alt="Fan Hub Plus Logo"
                     style={{ height: '40px', width: 'auto', margin: '0 auto 12px auto', objectFit: 'contain' }}
                   />
-                  <h3 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: '0 0 4px 0' }}>
-                    {authMode === 'signin' ? 'Sign In' : 'Create Account'}
+                  <h3 style={{ fontSize: '20px', fontWeight: 800, color: loginTheme.textColor, letterSpacing: '-0.02em', margin: '0 0 4px 0', fontFamily: loginTheme.fontFamily }}>
+                    {authMode === 'signin' ? loginTheme.headerTitle : 'NEW COLLECTOR REGISTRATION'}
                   </h3>
-                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>
+                  <p style={{ fontSize: '12px', color: loginTheme.subtitleColor, margin: 0, fontWeight: 700 }}>
                     {authMode === 'signin'
-                      ? 'Welcome back to Fan Hub Plus'
-                      : 'Join now for exclusive fan perks & pre-order access'}
+                      ? loginTheme.headerSubtitle
+                      : 'Join now for exclusive verified fandom perks & pre-order access'}
                   </p>
                 </div>
 
@@ -1391,7 +1624,7 @@ export const Header: React.FC<HeaderProps> = ({
                       color: '#047857',
                       fontSize: '12px',
                       fontWeight: 700,
-                      borderRadius: 'var(--radius)',
+                      borderRadius: loginTheme.inputRadius,
                       textAlign: 'center'
                     }}
                   >
@@ -1409,7 +1642,7 @@ export const Header: React.FC<HeaderProps> = ({
                       color: '#b91c1c',
                       fontSize: '12px',
                       fontWeight: 700,
-                      borderRadius: 'var(--radius)',
+                      borderRadius: loginTheme.inputRadius,
                       textAlign: 'center'
                     }}
                   >
@@ -1480,47 +1713,47 @@ export const Header: React.FC<HeaderProps> = ({
                       }
                     }}
                   >
+
                     <div style={{ marginBottom: '14px' }}>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: loginTheme.textColor, marginBottom: '6px' }}>
                         Email Address
                       </label>
-                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
-                        <Mail style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
-                        <input
-                          type="email"
-                          required
-                          placeholder="e.g. user@example.com"
-                          value={loginEmail}
-                          onChange={(e) => setLoginEmail(e.target.value)}
-                          style={{
-                            width: '100%',
-                            paddingLeft: '38px',
-                            paddingRight: '14px',
-                            paddingTop: '10px',
-                            paddingBottom: '10px',
-                            fontSize: '13px',
-                            backgroundColor: 'var(--bg-body)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: 'var(--radius)',
-                            outline: 'none',
-                            color: 'var(--text-primary)',
-                            transition: 'all var(--transition-fast)'
-                          }}
-                        />
-                      </div>
+                      <input
+                        type="email"
+                        required
+                        placeholder="e.g. user@example.com"
+                        value={loginEmail}
+                        onChange={(e) => setLoginEmail(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '10px 14px',
+                          fontSize: '13px',
+                          backgroundColor: loginTheme.inputBg,
+                          border: loginTheme.inputBorder,
+                          borderRadius: loginTheme.inputRadius,
+                          outline: 'none',
+                          color: loginTheme.inputColor,
+                          fontFamily: loginTheme.fontFamily,
+                          transition: 'all 0.15s ease'
+                        }}
+                      />
                     </div>
 
                     <div style={{ marginBottom: '16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                        <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                        <label style={{ fontSize: '12px', fontWeight: 700, color: loginTheme.textColor }}>
                           Password
                         </label>
-                        <a href="#" onClick={(e) => e.preventDefault()} style={{ fontSize: '11px', fontWeight: 700, color: '#000000' }} className="dark:text-white hover:underline">
+                        <a 
+                          href="#" 
+                          onClick={(e) => { e.preventDefault(); setAuthMode('forgot'); }} 
+                          style={{ fontSize: '11px', fontWeight: 700, color: loginTheme.accentColor }} 
+                          className="hover:underline"
+                        >
                           Forgot password?
                         </a>
                       </div>
                       <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
-                        <Lock style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
                         <input
                           type={showPassword ? 'text' : 'password'}
                           required
@@ -1529,17 +1762,18 @@ export const Header: React.FC<HeaderProps> = ({
                           onChange={(e) => setLoginPassword(e.target.value)}
                           style={{
                             width: '100%',
-                            paddingLeft: '38px',
-                            paddingRight: '38px',
+                            paddingLeft: '14px',
+                            paddingRight: '50px',
                             paddingTop: '10px',
                             paddingBottom: '10px',
                             fontSize: '13px',
-                            backgroundColor: 'var(--bg-body)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: 'var(--radius)',
+                            backgroundColor: loginTheme.inputBg,
+                            border: loginTheme.inputBorder,
+                            borderRadius: loginTheme.inputRadius,
                             outline: 'none',
-                            color: 'var(--text-primary)',
-                            transition: 'all var(--transition-fast)'
+                            color: loginTheme.inputColor,
+                            fontFamily: loginTheme.fontFamily,
+                            transition: 'all 0.15s ease'
                           }}
                         />
                         <button
@@ -1553,15 +1787,18 @@ export const Header: React.FC<HeaderProps> = ({
                             background: 'none',
                             border: 'none',
                             cursor: 'pointer',
-                            color: 'var(--text-muted)',
+                            color: loginTheme.inputColor,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            padding: '4px'
+                            padding: '4px',
+                            fontSize: '10px',
+                            fontWeight: 800,
+                            letterSpacing: '0.05em'
                           }}
                           title={showPassword ? 'Hide password' : 'Show password'}
                         >
-                          {showPassword ? <EyeOff style={{ width: '16px', height: '16px' }} /> : <Eye style={{ width: '16px', height: '16px' }} />}
+                          {showPassword ? 'HIDE' : 'SHOW'}
                         </button>
                       </div>
                     </div>
@@ -1578,13 +1815,13 @@ export const Header: React.FC<HeaderProps> = ({
                           background: 'none',
                           border: 'none',
                           fontSize: '12px',
-                          color: '#2563eb',
+                          color: loginTheme.accentColor,
                           fontWeight: 700,
                           cursor: 'pointer',
                           padding: 0
                         }}
                       >
-                        Forgot password? (Reset via Token/Email)
+                        Reset password via Token/Email
                       </button>
                     </div>
 
@@ -1593,34 +1830,27 @@ export const Header: React.FC<HeaderProps> = ({
                       disabled={isLoadingAuth}
                       style={{
                         width: '100%',
-                        padding: '11px',
-                        backgroundColor: '#000000',
-                        color: '#ffffff',
+                        padding: '12px',
+                        backgroundColor: loginTheme.primaryBtnBg,
+                        color: loginTheme.primaryBtnColor,
                         fontSize: '13px',
-                        fontWeight: 700,
-                        borderRadius: 'var(--radius)',
-                        border: '1px solid #000000',
+                        fontWeight: 800,
+                        borderRadius: loginTheme.primaryBtnRadius,
+                        border: loginTheme.primaryBtnBorder,
+                        boxShadow: loginTheme.primaryBtnShadow,
                         cursor: isLoadingAuth ? 'not-allowed' : 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: '8px',
-                        boxShadow: 'var(--shadow-sm)',
                         opacity: isLoadingAuth ? 0.7 : 1,
-                        transition: 'all var(--transition-fast)'
+                        transition: 'all 0.15s ease'
                       }}
-                      className="dark:bg-white dark:text-black dark:border-white"
                     >
                       {isLoadingAuth ? (
-                        <>
-                          <Loader2 className="animate-spin" style={{ width: '16px', height: '16px' }} />
-                          <span>Signing in...</span>
-                        </>
+                        <span>Signing in...</span>
                       ) : (
-                        <>
-                          <span>Sign In</span>
-                          <ArrowRight style={{ width: '16px', height: '16px' }} />
-                        </>
+                        <span>Sign In</span>
                       )}
                     </button>
                   </form>
@@ -1701,100 +1931,84 @@ export const Header: React.FC<HeaderProps> = ({
                     }}
                   >
                     <div style={{ marginBottom: '12px' }}>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: loginTheme.textColor, marginBottom: '5px' }}>
                         Full Name
                       </label>
-                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
-                        <User style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. Alex Morgan"
-                          value={signupName}
-                          onChange={(e) => setSignupName(e.target.value)}
-                          style={{
-                            width: '100%',
-                            paddingLeft: '38px',
-                            paddingRight: '14px',
-                            paddingTop: '9px',
-                            paddingBottom: '9px',
-                            fontSize: '13px',
-                            backgroundColor: 'var(--bg-body)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: 'var(--radius)',
-                            outline: 'none',
-                            color: 'var(--text-primary)',
-                            transition: 'all var(--transition-fast)'
-                          }}
-                        />
-                      </div>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Alex Morgan"
+                        value={signupName}
+                        onChange={(e) => setSignupName(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '9px 14px',
+                          fontSize: '13px',
+                          backgroundColor: loginTheme.inputBg,
+                          border: loginTheme.inputBorder,
+                          borderRadius: loginTheme.inputRadius,
+                          outline: 'none',
+                          color: loginTheme.inputColor,
+                          fontFamily: loginTheme.fontFamily,
+                          transition: 'all 0.15s ease'
+                        }}
+                      />
                     </div>
 
                     <div style={{ marginBottom: '12px' }}>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: loginTheme.textColor, marginBottom: '5px' }}>
                         Email Address
                       </label>
-                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
-                        <Mail style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
-                        <input
-                          type="email"
-                          required
-                          placeholder="user@example.com"
-                          value={signupEmail}
-                          onChange={(e) => setSignupEmail(e.target.value)}
-                          style={{
-                            width: '100%',
-                            paddingLeft: '38px',
-                            paddingRight: '14px',
-                            paddingTop: '9px',
-                            paddingBottom: '9px',
-                            fontSize: '13px',
-                            backgroundColor: 'var(--bg-body)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: 'var(--radius)',
-                            outline: 'none',
-                            color: 'var(--text-primary)',
-                            transition: 'all var(--transition-fast)'
-                          }}
-                        />
-                      </div>
+                      <input
+                        type="email"
+                        required
+                        placeholder="user@example.com"
+                        value={signupEmail}
+                        onChange={(e) => setSignupEmail(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '9px 14px',
+                          fontSize: '13px',
+                          backgroundColor: loginTheme.inputBg,
+                          border: loginTheme.inputBorder,
+                          borderRadius: loginTheme.inputRadius,
+                          outline: 'none',
+                          color: loginTheme.inputColor,
+                          fontFamily: loginTheme.fontFamily,
+                          transition: 'all 0.15s ease'
+                        }}
+                      />
                     </div>
 
                     <div style={{ marginBottom: '12px' }}>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: loginTheme.textColor, marginBottom: '5px' }}>
                         Phone Number
                       </label>
-                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
-                        <Phone style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
-                        <input
-                          type="tel"
-                          placeholder="e.g. 0912345678"
-                          value={signupPhone}
-                          onChange={(e) => setSignupPhone(e.target.value)}
-                          style={{
-                            width: '100%',
-                            paddingLeft: '38px',
-                            paddingRight: '14px',
-                            paddingTop: '9px',
-                            paddingBottom: '9px',
-                            fontSize: '13px',
-                            backgroundColor: 'var(--bg-body)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: 'var(--radius)',
-                            outline: 'none',
-                            color: 'var(--text-primary)',
-                            transition: 'all var(--transition-fast)'
-                          }}
-                        />
-                      </div>
+                      <input
+                        type="tel"
+                        placeholder="e.g. 0912345678"
+                        value={signupPhone}
+                        onChange={(e) => setSignupPhone(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '9px 14px',
+                          fontSize: '13px',
+                          backgroundColor: loginTheme.inputBg,
+                          border: loginTheme.inputBorder,
+                          borderRadius: loginTheme.inputRadius,
+                          outline: 'none',
+                          color: loginTheme.inputColor,
+                          fontFamily: loginTheme.fontFamily,
+                          transition: 'all 0.15s ease'
+                        }}
+                      />
                     </div>
 
                     <div style={{ marginBottom: '12px' }}>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: loginTheme.textColor, marginBottom: '5px' }}>
                         Password
                       </label>
                       <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
-                        <Lock style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
                         <input
                           type={showPassword ? 'text' : 'password'}
                           required
@@ -1803,17 +2017,18 @@ export const Header: React.FC<HeaderProps> = ({
                           onChange={(e) => setSignupPassword(e.target.value)}
                           style={{
                             width: '100%',
-                            paddingLeft: '38px',
-                            paddingRight: '38px',
+                            paddingLeft: '14px',
+                            paddingRight: '50px',
                             paddingTop: '9px',
                             paddingBottom: '9px',
                             fontSize: '13px',
-                            backgroundColor: 'var(--bg-body)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: 'var(--radius)',
+                            backgroundColor: loginTheme.inputBg,
+                            border: loginTheme.inputBorder,
+                            borderRadius: loginTheme.inputRadius,
                             outline: 'none',
-                            color: 'var(--text-primary)',
-                            transition: 'all var(--transition-fast)'
+                            color: loginTheme.inputColor,
+                            fontFamily: loginTheme.fontFamily,
+                            transition: 'all 0.15s ease'
                           }}
                         />
                         <button
@@ -1827,47 +2042,44 @@ export const Header: React.FC<HeaderProps> = ({
                             background: 'none',
                             border: 'none',
                             cursor: 'pointer',
-                            color: 'var(--text-muted)',
+                            color: loginTheme.inputColor,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            padding: '4px'
+                            padding: '4px',
+                            fontSize: '10px',
+                            fontWeight: 800
                           }}
                           title={showPassword ? 'Hide password' : 'Show password'}
                         >
-                          {showPassword ? <EyeOff style={{ width: '16px', height: '16px' }} /> : <Eye style={{ width: '16px', height: '16px' }} />}
+                          {showPassword ? 'HIDE' : 'SHOW'}
                         </button>
                       </div>
                     </div>
 
                     <div style={{ marginBottom: '16px' }}>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: loginTheme.textColor, marginBottom: '5px' }}>
                         Confirm Password
                       </label>
-                      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
-                        <Lock style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
-                        <input
-                          type={showPassword ? 'text' : 'password'}
-                          required
-                          placeholder="Repeat password"
-                          value={signupConfirmPassword}
-                          onChange={(e) => setSignupConfirmPassword(e.target.value)}
-                          style={{
-                            width: '100%',
-                            paddingLeft: '38px',
-                            paddingRight: '14px',
-                            paddingTop: '9px',
-                            paddingBottom: '9px',
-                            fontSize: '13px',
-                            backgroundColor: 'var(--bg-body)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: 'var(--radius)',
-                            outline: 'none',
-                            color: 'var(--text-primary)',
-                            transition: 'all var(--transition-fast)'
-                          }}
-                        />
-                      </div>
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        placeholder="Repeat password"
+                        value={signupConfirmPassword}
+                        onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '9px 14px',
+                          fontSize: '13px',
+                          backgroundColor: loginTheme.inputBg,
+                          border: loginTheme.inputBorder,
+                          borderRadius: loginTheme.inputRadius,
+                          outline: 'none',
+                          color: loginTheme.inputColor,
+                          fontFamily: loginTheme.fontFamily,
+                          transition: 'all 0.15s ease'
+                        }}
+                      />
                     </div>
 
                     <button
@@ -1875,34 +2087,27 @@ export const Header: React.FC<HeaderProps> = ({
                       disabled={isLoadingAuth}
                       style={{
                         width: '100%',
-                        padding: '11px',
-                        backgroundColor: '#000000',
-                        color: '#ffffff',
+                        padding: '12px',
+                        backgroundColor: loginTheme.primaryBtnBg,
+                        color: loginTheme.primaryBtnColor,
                         fontSize: '13px',
-                        fontWeight: 700,
-                        borderRadius: 'var(--radius)',
-                        border: '1px solid #000000',
+                        fontWeight: 800,
+                        borderRadius: loginTheme.primaryBtnRadius,
+                        border: loginTheme.primaryBtnBorder,
+                        boxShadow: loginTheme.primaryBtnShadow,
                         cursor: isLoadingAuth ? 'not-allowed' : 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: '8px',
-                        boxShadow: 'var(--shadow-sm)',
                         opacity: isLoadingAuth ? 0.7 : 1,
-                        transition: 'all var(--transition-fast)'
+                        transition: 'all 0.15s ease'
                       }}
-                      className="dark:bg-white dark:text-black dark:border-white"
                     >
                       {isLoadingAuth ? (
-                        <>
-                          <Loader2 className="animate-spin" style={{ width: '16px', height: '16px' }} />
-                          <span>Creating Account...</span>
-                        </>
+                        <span>Creating Account...</span>
                       ) : (
-                        <>
-                          <span>Create Account</span>
-                          <UserCheck style={{ width: '16px', height: '16px' }} />
-                        </>
+                        <span>Create Account</span>
                       )}
                     </button>
                   </form>
@@ -1948,41 +2153,36 @@ export const Header: React.FC<HeaderProps> = ({
                   >
                     {!isResetTokenSent ? (
                       <div style={{ marginBottom: '16px' }}>
-                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: loginTheme.textColor, marginBottom: '5px' }}>
                           Registered Account Email
                         </label>
-                        <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
-                          <Mail style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)', pointerEvents: 'none' }} />
-                          <input
-                            type="email"
-                            required
-                            placeholder="fan@example.com"
-                            value={forgotEmail}
-                            onChange={(e) => setForgotEmail(e.target.value)}
-                            style={{
-                              width: '100%',
-                              paddingLeft: '38px',
-                              paddingRight: '14px',
-                              paddingTop: '10px',
-                              paddingBottom: '10px',
-                              fontSize: '13px',
-                              backgroundColor: 'var(--bg-body)',
-                              border: '1px solid var(--border-color)',
-                              borderRadius: 'var(--radius)',
-                              outline: 'none',
-                              color: 'var(--text-primary)',
-                              transition: 'all var(--transition-fast)'
-                            }}
-                          />
-                        </div>
-                        <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px' }}>
+                        <input
+                          type="email"
+                          required
+                          placeholder="fan@example.com"
+                          value={forgotEmail}
+                          onChange={(e) => setForgotEmail(e.target.value)}
+                          style={{
+                            width: '100%',
+                            padding: '10px 14px',
+                            fontSize: '13px',
+                            backgroundColor: loginTheme.inputBg,
+                            border: loginTheme.inputBorder,
+                            borderRadius: loginTheme.inputRadius,
+                            outline: 'none',
+                            color: loginTheme.inputColor,
+                            fontFamily: loginTheme.fontFamily,
+                            transition: 'all 0.15s ease'
+                          }}
+                        />
+                        <p style={{ fontSize: '11px', color: loginTheme.subtitleColor, marginTop: '6px' }}>
                           We will send a 6-character verification token to securely reset your password.
                         </p>
                       </div>
                     ) : (
                       <div className="space-y-3">
                         <div style={{ marginBottom: '12px' }}>
-                          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: loginTheme.textColor, marginBottom: '5px' }}>
                             Verification Token (Sent via email)
                           </label>
                           <input
@@ -2001,7 +2201,7 @@ export const Header: React.FC<HeaderProps> = ({
                               textAlign: 'center',
                               backgroundColor: '#fef3c7',
                               border: '1.5px solid #f59e0b',
-                              borderRadius: 'var(--radius)',
+                              borderRadius: loginTheme.inputRadius,
                               outline: 'none',
                               color: '#92400e'
                             }}
@@ -2009,7 +2209,7 @@ export const Header: React.FC<HeaderProps> = ({
                         </div>
 
                         <div style={{ marginBottom: '16px' }}>
-                          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '5px' }}>
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: loginTheme.textColor, marginBottom: '5px' }}>
                             New Password
                           </label>
                           <input
@@ -2022,11 +2222,13 @@ export const Header: React.FC<HeaderProps> = ({
                               width: '100%',
                               padding: '10px 14px',
                               fontSize: '13px',
-                              backgroundColor: 'var(--bg-body)',
-                              border: '1px solid var(--border-color)',
-                              borderRadius: 'var(--radius)',
+                              backgroundColor: loginTheme.inputBg,
+                              border: loginTheme.inputBorder,
+                              borderRadius: loginTheme.inputRadius,
                               outline: 'none',
-                              color: 'var(--text-primary)'
+                              color: loginTheme.inputColor,
+                              fontFamily: loginTheme.fontFamily,
+                              transition: 'all 0.15s ease'
                             }}
                           />
                         </div>
@@ -2038,61 +2240,57 @@ export const Header: React.FC<HeaderProps> = ({
                       style={{
                         width: '100%',
                         padding: '11px',
-                        backgroundColor: '#000000',
-                        color: '#ffffff',
+                        backgroundColor: loginTheme.primaryBtnBg,
+                        color: loginTheme.primaryBtnColor,
                         fontSize: '13px',
-                        fontWeight: 700,
-                        borderRadius: 'var(--radius)',
-                        border: '1px solid #000000',
+                        fontWeight: 800,
+                        borderRadius: loginTheme.primaryBtnRadius,
+                        border: loginTheme.primaryBtnBorder,
+                        boxShadow: loginTheme.primaryBtnShadow,
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: '8px',
-                        boxShadow: 'var(--shadow-sm)',
-                        transition: 'all var(--transition-fast)'
+                        transition: 'all 0.15s ease'
                       }}
                     >
                       <span>{isResetTokenSent ? 'Confirm Password Reset' : 'Send Verification Token via Email'}</span>
-                      <ArrowRight style={{ width: '16px', height: '16px' }} />
                     </button>
                   </form>
                 )}
 
                 {/* Bottom Switch Link */}
-                <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--border-color)', textAlign: 'center' }}>
+                <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(0,0,0,0.1)', textAlign: 'center' }}>
                   {authMode === 'signin' ? (
-                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
+                    <p style={{ fontSize: '13px', color: loginTheme.textColor, margin: 0, opacity: 0.85 }}>
                       {"Don't have an account?"}{' '}
                       <button
                         type="button"
                         onClick={() => { setAuthMode('signup'); setAuthNotification(null); }}
-                        style={{ fontWeight: 800, color: '#000000', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                        className="dark:text-white hover:underline"
+                        style={{ fontWeight: 800, color: loginTheme.accentColor || loginTheme.textColor, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
                       >
                         Sign up now
                       </button>
                     </p>
                   ) : authMode === 'signup' ? (
-                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
+                    <p style={{ fontSize: '13px', color: loginTheme.textColor, margin: 0, opacity: 0.85 }}>
                       Already have an account?{' '}
                       <button
                         type="button"
                         onClick={() => { setAuthMode('signin'); setAuthNotification(null); }}
-                        style={{ fontWeight: 800, color: '#000000', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                        className="dark:text-white hover:underline"
+                        style={{ fontWeight: 800, color: loginTheme.accentColor || loginTheme.textColor, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
                       >
                         Sign in now
                       </button>
                     </p>
                   ) : (
-                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
+                    <p style={{ fontSize: '13px', color: loginTheme.textColor, margin: 0, opacity: 0.85 }}>
                       Remember your password?{' '}
                       <button
                         type="button"
                         onClick={() => { setAuthMode('signin'); setAuthNotification(null); setIsResetTokenSent(false); }}
-                        style={{ fontWeight: 800, color: '#000000', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                        className="dark:text-white hover:underline"
+                        style={{ fontWeight: 800, color: loginTheme.accentColor || loginTheme.textColor, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
                       >
                         Back to Sign In
                       </button>
@@ -2164,7 +2362,30 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Scrollable Nav Area */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5">
+              {/* Accessibility & Quick Settings (Dark Mode, Language) */}
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+                <div className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  Accessibility &amp; Settings
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={toggleThemeMode}
+                    className="py-1.5 px-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-center hover:bg-slate-100 flex items-center justify-center gap-1 cursor-pointer"
+                  >
+                    <span>{themeMode === 'dark' ? '☀️ Light' : '🌙 Dark'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={toggleLanguage}
+                    className="py-1.5 px-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-center hover:bg-slate-100 flex items-center justify-center gap-1 cursor-pointer"
+                  >
+                    <span>🌐 {language === 'en' ? 'EN' : 'VI'}</span>
+                  </button>
+                </div>
+              </div>
+
               {/* 1. Main Navigation Links */}
               <div>
                 <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">
@@ -2172,7 +2393,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
                 <div className="space-y-1">
                   <Link
-                    href="/artist"
+                    href={getTabHref('/artist')}
                     onClick={() => setIsMenuDrawerOpen(false)}
                     className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
                   >
@@ -2183,7 +2404,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <ArrowRight className="w-4 h-4 text-slate-400" />
                   </Link>
                   <Link
-                    href="/event"
+                    href={getTabHref('/event')}
                     onClick={() => setIsMenuDrawerOpen(false)}
                     className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
                   >
@@ -2194,7 +2415,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <ArrowRight className="w-4 h-4 text-slate-400" />
                   </Link>
                   <Link
-                    href="/multimedia"
+                    href={getTabHref('/multimedia')}
                     onClick={() => setIsMenuDrawerOpen(false)}
                     className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
                   >
@@ -2205,7 +2426,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <ArrowRight className="w-4 h-4 text-slate-400" />
                   </Link>
                   <Link
-                    href="/cd-dvd-book"
+                    href={getTabHref('/cd-dvd-book')}
                     onClick={() => setIsMenuDrawerOpen(false)}
                     className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
                   >
@@ -2216,13 +2437,24 @@ export const Header: React.FC<HeaderProps> = ({
                     <ArrowRight className="w-4 h-4 text-slate-400" />
                   </Link>
                   <Link
-                    href="/md"
+                    href={getTabHref('/md')}
                     onClick={() => setIsMenuDrawerOpen(false)}
                     className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
                   >
                     <span className="flex items-center gap-2.5">
                       <Sparkles className="w-4 h-4 text-black" />
                       MD (Official Merchandise)
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </Link>
+                  <Link
+                    href={getTabHref('/b2b')}
+                    onClick={() => setIsMenuDrawerOpen(false)}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100 hover:text-black transition-colors"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Building2 className="w-4 h-4 text-black" />
+                      B2B / BULK ORDERS
                     </span>
                     <ArrowRight className="w-4 h-4 text-slate-400" />
                   </Link>
@@ -2323,18 +2555,6 @@ export const Header: React.FC<HeaderProps> = ({
                   ) : (
                     <Moon className="w-4 h-4" />
                   )}
-                </button>
-                <button
-                  type="button"
-                  onClick={toggleFontSize}
-                  style={{ borderRadius: '0px' }}
-                  className={`w-10 h-9 flex items-center justify-center border border-black text-xs font-mono font-bold cursor-pointer transition-colors duration-100 ${isLargeFont
-                      ? 'bg-black text-white'
-                      : 'bg-white text-black hover:bg-black hover:text-white'
-                    }`}
-                  title={isLargeFont ? 'Reduce font size' : 'Increase font size'}
-                >
-                  <span>{isLargeFont ? 'A+' : 'A'}</span>
                 </button>
               </div>
 

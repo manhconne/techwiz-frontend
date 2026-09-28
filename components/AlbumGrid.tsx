@@ -49,6 +49,16 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
   }, [fandomCategory]);
 
   useEffect(() => {
+    const handleFandomChange = (e: any) => {
+      if (e.detail?.category) {
+        setActiveCategory(e.detail.category);
+      }
+    };
+    window.addEventListener('fandom-theme-change', handleFandomChange);
+    return () => window.removeEventListener('fandom-theme-change', handleFandomChange);
+  }, []);
+
+  useEffect(() => {
     if (selectedArtistFilter) {
       setActiveArtist(selectedArtistFilter);
     }
@@ -77,12 +87,15 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
     if (setSelectedArtistFilter) setSelectedArtistFilter('all');
   };
 
-  // 1. Filter by Domain & Subcategory
+  // 1. Filter by Domain & Subcategory (Respect activeCategory and fandomCategory)
   const domainFilteredAlbums = useMemo(() => {
+    if (activeCategory !== 'all' || (fandomCategory && fandomCategory !== 'all')) {
+      return mockAlbums;
+    }
     const byDomain = filterAlbumsByDomain(mockAlbums, currentDomain);
     if (activeSubCategory === 'all') return byDomain;
     return byDomain.filter((a) => a.category === activeSubCategory || a.type === activeSubCategory);
-  }, [currentDomain, activeSubCategory]);
+  }, [currentDomain, activeSubCategory, activeCategory, fandomCategory]);
 
   // 2. Filter artists for active domain
   const availableArtists = useMemo(() => {
@@ -92,7 +105,17 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
   // 3. Multi-dimensional filtering
   const filteredAlbums = useMemo(() => {
     return domainFilteredAlbums.filter((album) => {
-      if (activeCategory !== 'all' && album.category !== activeCategory) return false;
+      if (activeCategory !== 'all') {
+        const normActive = activeCategory.toLowerCase();
+        const normAlbumCat = (album.category || '').toLowerCase();
+        const matches =
+          normAlbumCat.includes(normActive) ||
+          normActive.includes(normAlbumCat) ||
+          (normActive.includes('game') && normAlbumCat.includes('gaming')) ||
+          (normActive.includes('movie') && normAlbumCat.includes('movies')) ||
+          (normActive.includes('tv') && normAlbumCat.includes('tv'));
+        if (!matches) return false;
+      }
       if (activeArtist !== 'all' && album.artistId !== activeArtist) return false;
       if (activeType !== 'all' && album.type !== activeType) return false;
       if (inStockOnly && (album.stock ?? 0) <= 0) return false;

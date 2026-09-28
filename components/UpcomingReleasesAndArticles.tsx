@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { Bookmark, Share2, Copy, Check, X } from 'lucide-react';
 import { mockFeaturedArticles, mockUpcomingReleases } from '../data/mockData';
 import { FandomCategoryKey, UpcomingRelease, FeaturedArticle } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
@@ -22,6 +23,18 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
   const [activeCategory, setActiveCategory] = useState<FandomCategoryKey | 'all'>(fandomCategory || initialCategory);
   const [remindedItems, setRemindedItems] = useState<Record<string, boolean>>({});
   const [likedArticles, setLikedArticles] = useState<Record<string, number>>({});
+
+  // SRS 1.6: Bookmarking, Notes & Sharing state
+  const [bookmarkedArticles, setBookmarkedArticles] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_bookmarked_articles');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return {};
+  });
+  const [sharingArticle, setSharingArticle] = useState<FeaturedArticle | null>(null);
+  const [articleToast, setArticleToast] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   // View Mode: 'grid' vs 'timeline'
   const [viewMode, setViewMode] = useState<'grid' | 'timeline'>('grid');
@@ -48,6 +61,28 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
       } catch {}
     }
   }, []);
+
+  // SRS 1.6 Handlers for Bookmarking & Sharing Articles
+  const toggleBookmarkArticle = (art: FeaturedArticle) => {
+    setBookmarkedArticles((prev) => {
+      const isSaved = !!prev[art.id];
+      const next = { ...prev, [art.id]: !isSaved };
+      try {
+        localStorage.setItem('fanhub_bookmarked_articles', JSON.stringify(next));
+      } catch {}
+      setArticleToast(!isSaved ? `★ Saved article "${art.title}" to Bookmarks!` : `Removed article from Bookmarks.`);
+      setTimeout(() => setArticleToast(null), 3000);
+      return next;
+    });
+  };
+
+  const handleCopyArticleLink = (art: FeaturedArticle) => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(`${window.location.origin}/#upcoming-releases?article=${art.id}`);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
+  };
 
   // Sync with fandomCategory or initialCategory if parent changes
   useEffect(() => {
@@ -311,6 +346,17 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
               </div>
             )}
 
+            {/* SRS 1.6: Article Bookmark Toast Notification */}
+            {articleToast && (
+              <div 
+                style={{ borderRadius: '0px' }}
+                className="p-3 bg-[#ccff00] text-black border-2 border-black text-xs font-mono font-black flex items-center gap-2 shadow-[3px_3px_0px_#000] animate-in fade-in duration-150"
+              >
+                <Bookmark className="w-4 h-4 fill-black" />
+                <span>{articleToast}</span>
+              </div>
+            )}
+
             {filteredArticles.length === 0 ? (
               <div 
                 style={{ borderRadius: '0px' }}
@@ -363,16 +409,40 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                             </p>
                           </div>
 
-                          <div className="pt-3 border-t-2 border-black flex items-center justify-between font-mono text-xs">
+                          <div className="pt-3 border-t-2 border-black flex items-center justify-between font-mono text-xs flex-wrap gap-2">
                             <span className="font-black text-[#ff2e93]">{art.author.name}</span>
-                            <button
-                              onClick={() => toggleLike(art.id, art.likes)}
-                              type="button"
-                              className="inline-flex items-center gap-1.5 cursor-pointer bg-[#fdf2f8] border border-black px-2 py-0.5 text-black hover:bg-[#ff2e93] hover:text-white transition-colors"
-                            >
-                              <span className="text-[#ff2e93]">★</span>
-                              <span className="font-bold">{likesCount}</span>
-                            </button>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => toggleLike(art.id, art.likes)}
+                                type="button"
+                                className="inline-flex items-center gap-1.5 cursor-pointer bg-[#fdf2f8] border border-black px-2 py-0.5 text-black hover:bg-[#ff2e93] hover:text-white transition-colors"
+                              >
+                                <span className="text-[#ff2e93]">★</span>
+                                <span className="font-bold">{likesCount}</span>
+                              </button>
+                              <button
+                                onClick={() => toggleBookmarkArticle(art)}
+                                type="button"
+                                className={`inline-flex items-center gap-1 cursor-pointer border border-black px-2 py-0.5 text-[10.5px] font-bold transition-colors ${
+                                  bookmarkedArticles[art.id]
+                                    ? 'bg-[#ccff00] text-black shadow-[1px_1px_0px_#000]'
+                                    : 'bg-white text-black hover:bg-neutral-100'
+                                }`}
+                                title="Bookmark Article"
+                              >
+                                <Bookmark className={`w-3 h-3 ${bookmarkedArticles[art.id] ? 'fill-black' : ''}`} />
+                                <span>{bookmarkedArticles[art.id] ? 'SAVED' : 'SAVE'}</span>
+                              </button>
+                              <button
+                                onClick={() => setSharingArticle(art)}
+                                type="button"
+                                className="inline-flex items-center gap-1 cursor-pointer bg-white border border-black px-2 py-0.5 text-[10.5px] font-bold hover:bg-[#00f0ff] transition-colors"
+                                title="Share Article"
+                              >
+                                <Share2 className="w-3 h-3" />
+                                <span>SHARE</span>
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -482,7 +552,7 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                             ))}
                           </div>
 
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <button
                               onClick={() => toggleLike(art.id, art.likes)}
                               type="button"
@@ -493,7 +563,31 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                               <span className="font-bold">{likesCount}</span>
                             </button>
 
-                            <div className="inline-flex items-center gap-1 text-black font-bold">
+                            <button
+                              onClick={() => toggleBookmarkArticle(art)}
+                              type="button"
+                              className={`inline-flex items-center gap-1 cursor-pointer border border-black px-2.5 py-1 text-xs font-bold transition-colors ${
+                                bookmarkedArticles[art.id]
+                                  ? 'bg-[#ccff00] text-black shadow-[1px_1px_0px_#000]'
+                                  : 'bg-white text-black hover:bg-neutral-100'
+                              }`}
+                              title="Bookmark Article"
+                            >
+                              <Bookmark className={`w-3.5 h-3.5 ${bookmarkedArticles[art.id] ? 'fill-black' : ''}`} />
+                              <span>{bookmarkedArticles[art.id] ? 'SAVED' : 'SAVE'}</span>
+                            </button>
+
+                            <button
+                              onClick={() => setSharingArticle(art)}
+                              type="button"
+                              className="inline-flex items-center gap-1 cursor-pointer bg-white border border-black px-2.5 py-1 text-black hover:bg-[#00f0ff] text-xs font-bold transition-colors"
+                              title="Share Article"
+                            >
+                              <Share2 className="w-3.5 h-3.5" />
+                              <span>SHARE</span>
+                            </button>
+
+                            <div className="inline-flex items-center gap-1 text-black font-bold ml-auto">
                               <span>COMMENTS:</span>
                               <span className="font-black text-[#ff2e93]">{art.commentsCount}</span>
                             </div>
@@ -806,6 +900,100 @@ export const UpcomingReleasesAndArticles: React.FC<UpcomingReleasesAndArticlesPr
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SRS 1.6: Interactive Article Sharing Modal */}
+      {sharingArticle && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 font-mono">
+          <div 
+            style={{ borderRadius: '0px' }}
+            className="bg-white max-w-md w-full border-3 border-black shadow-[8px_8px_0px_#000000] overflow-hidden animate-in zoom-in-95 duration-150"
+          >
+            {/* Window Bar */}
+            <div className="bg-[#00f0ff] border-b-3 border-black px-4 py-2.5 flex items-center justify-between select-none">
+              <div className="flex items-center gap-2 text-xs font-black uppercase text-black">
+                <Share2 className="w-3.5 h-3.5" />
+                <span>★ SHARE FANDOM DISPATCH ✦</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSharingArticle(null)}
+                style={{ borderRadius: '0px' }}
+                className="bg-white text-black hover:bg-black hover:text-white px-2 py-0.5 border-2 border-black text-xs font-black cursor-pointer shadow-[1px_1px_0px_#000]"
+              >
+                [✕]
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4">
+              {/* Preview card */}
+              <div className="p-3 bg-[#fdfbf7] border-2 border-black space-y-1.5">
+                <span className="text-[10px] font-black uppercase tracking-wider text-[#ff2e93] block">
+                  [{sharingArticle.category}] • {sharingArticle.author.name}
+                </span>
+                <h4 className="font-serif font-bold text-sm text-black line-clamp-2">
+                  {sharingArticle.title}
+                </h4>
+                <p className="text-[11px] text-neutral-600 line-clamp-2 font-sans">
+                  {sharingArticle.excerpt}
+                </p>
+              </div>
+
+              {/* Direct Link Copy */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold text-neutral-600 uppercase block">DIRECT PASS LINK:</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    readOnly
+                    value={typeof window !== 'undefined' ? `${window.location.origin}/#upcoming-releases?article=${sharingArticle.id}` : ''}
+                    className="flex-1 text-xs px-2.5 py-2 bg-neutral-100 border-2 border-black font-mono select-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleCopyArticleLink(sharingArticle)}
+                    style={{ borderRadius: '0px' }}
+                    className="px-3 py-2 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white text-black text-xs font-black border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer flex items-center gap-1"
+                  >
+                    {copiedLink ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedLink ? 'COPIED!' : 'COPY'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Social Channels */}
+              <div className="space-y-1.5 pt-2 border-t-2 border-dashed border-neutral-300">
+                <span className="text-[10px] font-black uppercase text-neutral-600 block">BROADCAST TO SOCIAL:</span>
+                <div className="grid grid-cols-3 gap-2 text-xs font-bold">
+                  <a
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out "${sharingArticle.title}" on Fan Hub Plus!`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 bg-black text-white text-center border-2 border-black hover:bg-neutral-800 text-decoration-none shadow-[2px_2px_0px_#000] block"
+                  >
+                    X / Twitter
+                  </a>
+                  <a
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 bg-[#1877F2] text-white text-center border-2 border-black hover:opacity-90 text-decoration-none shadow-[2px_2px_0px_#000] block"
+                  >
+                    Facebook
+                  </a>
+                  <a
+                    href={`https://t.me/share/url?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&text=${encodeURIComponent(sharingArticle.title)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 bg-[#0088cc] text-white text-center border-2 border-black hover:opacity-90 text-decoration-none shadow-[2px_2px_0px_#000] block"
+                  >
+                    Telegram
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

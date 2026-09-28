@@ -64,7 +64,7 @@ const FALLBACK_TRANSACTIONS: AdminTransactionItem[] = [
     merchant_ref: 'ORD_12346',
     status: 'Success',
     created_at: '2026-09-26T15:10:00Z',
-    payment_method: 'Ví MoMo',
+    payment_method: 'MoMo E-Wallet',
   },
   {
     id: 'tx_98126',
@@ -74,7 +74,7 @@ const FALLBACK_TRANSACTIONS: AdminTransactionItem[] = [
     merchant_ref: 'ORD_12347',
     status: 'Pending',
     created_at: '2026-09-26T16:05:00Z',
-    payment_method: 'ATM Nội địa',
+    payment_method: 'Domestic Debit ATM',
   },
   {
     id: 'tx_98127',
@@ -94,7 +94,7 @@ const FALLBACK_TRANSACTIONS: AdminTransactionItem[] = [
     merchant_ref: 'ORD_12349',
     status: 'Success',
     created_at: '2026-09-27T08:12:00Z',
-    payment_method: 'Chuyển khoản VietQR Pro',
+    payment_method: 'VietQR Instant Transfer',
   },
   {
     id: 'tx_98129',
@@ -104,7 +104,7 @@ const FALLBACK_TRANSACTIONS: AdminTransactionItem[] = [
     merchant_ref: 'ORD_12350',
     status: 'Failed',
     created_at: '2026-09-27T09:20:00Z',
-    payment_method: 'Thẻ Quốc tế Visa/Master',
+    payment_method: 'International Visa/Mastercard',
   },
 ];
 
@@ -146,7 +146,7 @@ export default function AdminTransactionsPage() {
 
   // Helper get user name
   const getUserName = (u: any) => {
-    if (!u) return 'Ẩn danh';
+    if (!u) return 'Anonymous';
     if (typeof u === 'string') return u;
     return u.name || u.email || 'User';
   };

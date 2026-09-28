@@ -109,43 +109,41 @@ export function NotificationDropdown() {
             const newNotif = {
               id: payload.data?.notificationId || `notif-${Date.now()}`,
               type: payload.data?.type?.toLowerCase() || 'system',
-              title: payload.notification?.title || 'Thông báo mới',
+              title: payload.notification?.title || 'New Notification',
               message: payload.notification?.body || '',
-              timestamp: new Date().toLocaleString('vi-VN'),
+              timestamp: new Date().toLocaleString('en-US'),
               read: false
             };
             setNotifications(prev => [newNotif, ...prev]);
           });
 
-          // Lắng nghe sự kiện thông báo nội bộ (cho Demo Phase 4)
+          // Listen to internal custom events
           window.addEventListener('fanhub_local_push', ((e: CustomEvent) => {
             const payload = e.detail;
             console.log('Received local push:', payload);
             const newNotif = {
               id: `notif-local-${Date.now()}`,
               type: payload.type || 'system',
-              title: payload.title || 'Thông báo mới',
+              title: payload.title || 'New Notification',
               message: payload.message || '',
-              timestamp: new Date().toLocaleString('vi-VN'),
+              timestamp: new Date().toLocaleString('en-US'),
               read: false
             };
             setNotifications(prev => [newNotif, ...prev]);
             
-            // Push ra hệ điều hành (nếu được cấp quyền)
+            // Push to browser OS if granted
             if (Notification.permission === 'granted') {
               new Notification(newNotif.title, { body: newNotif.message });
             }
           }) as EventListener);        }
       } catch (error) {
-        console.error('Lỗi khi thiết lập Firebase:', error);
+        console.error('Error setting up Firebase:', error);
       }
     };
 
     fetchHistory();
     setupFirebase();
   }, []);
-
-
 
   const markAllAsRead = async () => {
     const accessToken = localStorage.getItem('access_token');
@@ -173,7 +171,7 @@ export function NotificationDropdown() {
       <button
         onClick={handleToggle}
         className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-100 cursor-pointer border-0 bg-transparent transition-colors relative"
-        title="Thông báo"
+        title="Notifications"
       >
         <Bell size={20} strokeWidth={1.8} />
         {unreadCount > 0 && (
@@ -189,7 +187,7 @@ export function NotificationDropdown() {
           
           <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50/50">
             <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider flex items-center gap-2">
-              Thông báo Realtime 
+              Live Notifications
               <span className="bg-emerald-100 text-emerald-600 text-[9px] px-2 py-0.5 rounded-full font-bold">LIVE</span>
             </h3>
             {unreadCount > 0 && (
@@ -197,7 +195,7 @@ export function NotificationDropdown() {
                 onClick={markAllAsRead}
                 className="text-[10px] font-bold text-blue-600 hover:text-blue-700 uppercase tracking-wide cursor-pointer flex items-center gap-1"
               >
-                <CheckCircle2 size={12} /> Đánh dấu đã đọc
+                <CheckCircle2 size={12} /> Mark all as read
               </button>
             )}
           </div>
@@ -205,7 +203,7 @@ export function NotificationDropdown() {
           <div className="max-h-[360px] overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="p-8 text-center text-slate-400 text-sm">
-                Bạn không có thông báo nào.
+                You have no notifications.
               </div>
             ) : (
               <ul className="divide-y divide-slate-100">
@@ -214,7 +212,6 @@ export function NotificationDropdown() {
                     key={notif.id} 
                     className={`p-4 hover:bg-slate-50 transition-colors cursor-pointer flex gap-3 ${!notif.read ? 'bg-blue-50/30' : ''}`}
                     onClick={() => {
-                      // mark this one as read
                       if (!notif.read) {
                         const accessToken = localStorage.getItem('access_token');
                         if (accessToken) {
@@ -252,7 +249,7 @@ export function NotificationDropdown() {
           
           <div className="p-3 bg-slate-50 border-t border-slate-100 text-center">
             <button className="text-xs font-bold text-slate-600 hover:text-slate-900 cursor-pointer">
-              Xem tất cả thông báo
+              View all notifications
             </button>
           </div>
         </div>

@@ -43,7 +43,7 @@ export function checkIsAdmin(user?: any): boolean {
       if (Array.isArray(parsed.roles) && parsed.roles.some((r: string) => String(r).toLowerCase() === 'admin')) return true;
       if (parsed.email && (adminEmails.includes(parsed.email.toLowerCase()) || parsed.email.toLowerCase().includes('admin'))) return true;
     }
-  } catch {}
+  } catch { }
 
   const token = getAccessToken();
   if (token) {

@@ -26,6 +26,7 @@ interface MultimediaCenterProps {
 
 export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
   initialMediaId,
+  defaultCategory,
 }) => {
   // Media items state (allows persistent rating and thumbs updates in memory)
   const [mediaList, setMediaList] = useState<MediaItem[]>(INITIAL_MEDIA_ITEMS);
@@ -46,6 +47,45 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'views' | 'rating' | 'newest' | 'duration'>('views');
 
+  // Synchronize category filter with active fandom category
+  useEffect(() => {
+    const applyCategory = (catName?: string) => {
+      if (!catName || catName === 'all') return;
+      const lower = catName.toLowerCase();
+      let matched: FandomCategory | null = null;
+      if (lower.includes('gaming')) matched = 'Gaming';
+      else if (lower.includes('manga')) matched = 'Manga';
+      else if (lower.includes('anime') || lower.includes('sakuga')) matched = 'Anime';
+      else if (lower.includes('cosplay')) matched = 'Cosplay';
+      else if (lower.includes('comic')) matched = 'Comics';
+      else if (lower.includes('cinema') || lower.includes('movie')) matched = 'Cinema';
+      else if (lower.includes('tv')) matched = 'TV Shows';
+      else if (lower.includes('kpop') || lower.includes('k-pop')) matched = 'K-Pop';
+      else if (lower.includes('vpop') || lower.includes('v-pop')) matched = 'V-Pop';
+
+      if (matched) {
+        setSelectedUniverse(matched);
+        const firstMatch = mediaList.find((m) => m.category === matched);
+        if (firstMatch) {
+          setActiveMediaId(firstMatch.id);
+        }
+      }
+    };
+
+    if (defaultCategory) {
+      applyCategory(defaultCategory);
+    }
+
+    const handleThemeChange = (e: any) => {
+      if (e.detail?.category) {
+        applyCategory(e.detail.category);
+      }
+    };
+
+    window.addEventListener('fandom-theme-change', handleThemeChange);
+    return () => window.removeEventListener('fandom-theme-change', handleThemeChange);
+  }, [defaultCategory, mediaList]);
+
   // Cinema Mode / Lighting Dimmer
   const [isCinemaMode, setIsCinemaMode] = useState(false);
 
@@ -62,7 +102,14 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
   const [showRatingBreakdown, setShowRatingBreakdown] = useState(false);
 
   // Bookmark / Watch Later
-  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_bookmarked_media');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [shareToast, setShareToast] = useState<string | null>(null);
 
   // Live Chat State
@@ -229,9 +276,16 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
 
   // Bookmark toggle
   const toggleBookmark = (id: string) => {
-    setBookmarkedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
+    setBookmarkedIds((prev) => {
+      const isSaved = prev.includes(id);
+      const next = isSaved ? prev.filter((i) => i !== id) : [...prev, id];
+      try {
+        localStorage.setItem('fanhub_bookmarked_media', JSON.stringify(next));
+      } catch {}
+      setRatingToast(isSaved ? 'REMOVED FROM SAVED ARCHIVES' : `★ SAVED "${activeMedia.title.slice(0, 24)}..." TO BOOKMARKS`);
+      setTimeout(() => setRatingToast(null), 3000);
+      return next;
+    });
   };
 
   // Share Link Handler

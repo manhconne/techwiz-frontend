@@ -278,7 +278,7 @@ export const EventLeafletMap: React.FC<EventLeafletMapProps> = ({
           </div>
           <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; padding-top: 6px; border-top: 1px solid #e2e8f0;">
             <span style="font-weight: 800; color: #059669; font-family: monospace;">
-              ${ev.freeEntry ? 'FREE RSVP' : `$${ev.priceUSD} · ${ev.priceVND?.toLocaleString()}đ`}
+              ${ev.freeEntry ? 'FREE RSVP' : `$${ev.priceUSD}`}
             </span>
             <button 
               id="leaflet-popup-btn-${ev.id}" 

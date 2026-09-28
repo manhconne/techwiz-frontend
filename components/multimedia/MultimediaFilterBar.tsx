@@ -37,11 +37,15 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
 
   const universeChips: { id: FandomCategory | 'all'; label: string }[] = [
     { id: 'all', label: 'ALL SECTORS' },
+    { id: 'Gaming', label: 'GAMING ARENA' },
+    { id: 'Manga', label: 'MANGA GUILD' },
+    { id: 'Anime', label: 'SAKUGA ANIME' },
+    { id: 'Cosplay', label: 'COSPLAY ATELIER' },
+    { id: 'Comics', label: 'COMICS' },
+    { id: 'Cinema', label: 'CINEMA 70MM' },
+    { id: 'TV Shows', label: 'TV SHOWS' },
     { id: 'K-Pop', label: 'K-POP' },
     { id: 'V-Pop', label: 'V-POP' },
-    { id: 'Anime', label: 'ANIME' },
-    { id: 'Gaming', label: 'GAMING' },
-    { id: 'Cinema', label: 'CINEMA' },
   ];
 
   return (

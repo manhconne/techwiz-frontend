@@ -334,6 +334,237 @@ const CINEMA_CATALOG: CinemaItem[] = [
     ],
     stock: 19,
   },
+  {
+    id: 'film-the-godfather',
+    catalogNumber: 'CH-09',
+    title: 'THE GODFATHER (50TH ANNIVERSARY)',
+    director: 'Francis Ford Coppola',
+    year: 1972,
+    country: 'USA',
+    genre: 'Classic',
+    aspectRatio: '1.85:1 Academy Flat',
+    runtimeMinutes: 175,
+    format: 'Paramount 4K UHD 50th Collector Vault',
+    priceUSD: 46.99,
+    priceVND: 1170000,
+    originalPriceUSD: 58.99,
+    rating: 5.0,
+    reviewCount: 7890,
+    tag: '09. THE CORLEONE CHRONICLE',
+    coverImage: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=700&auto=format&fit=crop&q=85',
+    description: 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son. Restored under the direct supervision of Francis Ford Coppola across 3 years with pristine 4K grain reproduction.',
+    technicalSpecs: [
+      'Original 35mm Technicolor Camera Negative Scan',
+      'Restored 5.1 Dolby TrueHD & Original 1972 Mono',
+      'Archival Nino Rota Orchestral Score Monograph',
+      'Hardcover 48-Page Archival Photography Book',
+      'Heavyweight Linen Embossed Corleone Slipbox',
+    ],
+    previewFrames: [
+      'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1000&auto=format&fit=crop&q=85',
+    ],
+    stock: 16,
+  },
+  {
+    id: 'film-apocalypse-now-final-cut',
+    catalogNumber: 'CH-10',
+    title: 'APOCALYPSE NOW: FINAL CUT',
+    director: 'Francis Ford Coppola',
+    year: 1979,
+    country: 'USA',
+    genre: 'Auteur',
+    aspectRatio: '2.35:1 Technovision 70mm',
+    runtimeMinutes: 183,
+    format: '70MM Master 4K UHD + Meyer Sound Sensurround',
+    priceUSD: 45.50,
+    priceVND: 1140000,
+    originalPriceUSD: 55.00,
+    rating: 4.97,
+    reviewCount: 5340,
+    tag: '10. PSYCHEDELIC WAR ODYSSEY',
+    coverImage: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=700&auto=format&fit=crop&q=85',
+    description: 'A U.S. Army officer serving in Vietnam is tasked with assassinating a renegade Special Forces Colonel who sees himself as a god. Vittorio Storaro’s legendary cinematography presented in reference Dolby Vision.',
+    technicalSpecs: [
+      'Scanned from the Original Camera Negative in 4K 16-bit',
+      'Groundbreaking Dolby Atmos Soundtrack by Walter Murch',
+      'Includes 1979 Theatrical, Redux, and Final Cut versions',
+      'Replica Vietnam Field Military Map & Dossier',
+      'Custom Industrial Camouflage Steel Slipcase',
+    ],
+    previewFrames: [
+      'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1000&auto=format&fit=crop&q=85',
+    ],
+    stock: 20,
+  },
+  {
+    id: 'film-spirited-away-ghibli',
+    catalogNumber: 'CH-11',
+    title: 'SPIRITED AWAY (千と千尋の神隠し)',
+    director: 'Hayao Miyazaki',
+    year: 2001,
+    country: 'JPN',
+    genre: 'Classic',
+    aspectRatio: '1.85:1 Theatrical Flat',
+    runtimeMinutes: 125,
+    format: 'Studio Ghibli Archival 4K Boxset + Cel',
+    priceUSD: 42.00,
+    priceVND: 1050000,
+    originalPriceUSD: 50.00,
+    rating: 4.99,
+    reviewCount: 8450,
+    tag: '11. STUDIO GHIBLI GOLDEN CROWN',
+    coverImage: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=700&auto=format&fit=crop&q=85',
+    description: 'During her family\'s move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches, and spirits. Oscar Winner for Best Animated Feature, mastered with Joe Hisaishi’s transcendent symphonic score.',
+    technicalSpecs: [
+      'Pristine 4K 12-bit Restoration Supervised by Studio Ghibli',
+      'Joe Hisaishi Complete Orchestral Score in 24-bit 96kHz',
+      'Mounted Authentic 35mm Hand-Drawn Cel Specimen',
+      'Exclusive Miyazaki Storyboard Comparison Angle',
+      'Gold Foil Embossed Japanese Washi Paper Slipcase',
+    ],
+    previewFrames: [
+      'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1000&auto=format&fit=crop&q=85',
+    ],
+    stock: 25,
+  },
+  {
+    id: 'film-se7en-fincher',
+    catalogNumber: 'CH-12',
+    title: 'SE7EN: THE 4K REMASTER',
+    director: 'David Fincher',
+    year: 1995,
+    country: 'USA',
+    genre: 'Noir',
+    aspectRatio: '2.39:1 Anamorphic Panavision',
+    runtimeMinutes: 127,
+    format: 'Fincher Certified 4K HDR10+ Deluxe Box',
+    priceUSD: 39.50,
+    priceVND: 980000,
+    originalPriceUSD: 48.00,
+    rating: 4.95,
+    reviewCount: 4890,
+    tag: '12. THE BLEACH-BYPASS NOIR',
+    coverImage: 'https://images.unsplash.com/photo-1509281373149-e957c6296406?w=700&auto=format&fit=crop&q=85',
+    description: 'Two detectives, a rookie and a veteran, hunt a serial killer who uses the seven deadly sins as his motives. Overhauled frame-by-frame by David Fincher using the CCE (Silver Retention) process reproduction.',
+    technicalSpecs: [
+      'Frame-by-Frame 8K Scan Approved by David Fincher',
+      'Uncompressed 7.1 Surround Sound Mix & Howard Shore Score',
+      'John Doe Investigation Scrapbook Replica (100+ Pages)',
+      'Audio Commentary with Brad Pitt, Morgan Freeman & Fincher',
+      'Custom Industrial Riveted Black Slipcase',
+    ],
+    previewFrames: [
+      'https://images.unsplash.com/photo-1509281373149-e957c6296406?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1563089145-599997674d42?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1000&auto=format&fit=crop&q=85',
+    ],
+    stock: 17,
+  },
+  {
+    id: 'film-pulp-fiction-30th',
+    catalogNumber: 'CH-13',
+    title: 'PULP FICTION: 30TH ANNIVERSARY',
+    director: 'Quentin Tarantino',
+    year: 1994,
+    country: 'USA',
+    genre: 'Auteur',
+    aspectRatio: '2.35:1 Panavision Widescreen',
+    runtimeMinutes: 154,
+    format: 'Palme d\'Or 30th Anniversary 4K Steelbook',
+    priceUSD: 41.00,
+    priceVND: 1020000,
+    originalPriceUSD: 49.99,
+    rating: 4.98,
+    reviewCount: 6510,
+    tag: '13. POST-MODERN CINEMA ICON',
+    coverImage: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=700&auto=format&fit=crop&q=85',
+    description: 'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption. Andrzej Sekula\'s low-grain 50 ASA cinematography mastered in 4K HDR.',
+    technicalSpecs: [
+      'Original 35mm Camera Negative 4K HDR Master',
+      'DTS-HD Master Audio 5.1 & Surf-Rock Master Tracks',
+      'Jack Rabbit Slim\'s Retro Menu & Matchbook Set',
+      'Full Cast Oral History Retrospective Booklet',
+      'Embossed Pulp Hardcover Slipcase with Gold Spine',
+    ],
+    previewFrames: [
+      'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1000&auto=format&fit=crop&q=85',
+    ],
+    stock: 22,
+  },
+  {
+    id: 'film-taxi-driver-scorsese',
+    catalogNumber: 'CH-14',
+    title: 'TAXI DRIVER: 4K ARCHIVAL RESTORATION',
+    director: 'Martin Scorsese',
+    year: 1976,
+    country: 'USA',
+    genre: 'Noir',
+    aspectRatio: '1.85:1 Theatrical Flat',
+    runtimeMinutes: 114,
+    format: 'Sony 4K Columbia Classics Collection',
+    priceUSD: 38.00,
+    priceVND: 950000,
+    originalPriceUSD: 45.00,
+    rating: 4.96,
+    reviewCount: 4210,
+    tag: '14. MIDNIGHT NEW YORK NEO-NOIR',
+    coverImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=700&auto=format&fit=crop&q=85',
+    description: 'A mentally unstable veteran works as a nighttime taxi driver in New York City, where the perceived decadence fuels his urge for violent action. Michael Chapman\'s neon-drenched cinematography in pristine 4K.',
+    technicalSpecs: [
+      'Scanned from 35mm Original Camera Negative in 4K',
+      'Bernard Herrmann Final Orchestral Score in Uncompressed Audio',
+      'Screenplay by Paul Schrader with Author Annotations',
+      'Archival Travis Bickle Checker Cab Taxi Pass Specimen',
+      'High-Gloss Yellow & Black Checkerboard Slipbox',
+    ],
+    previewFrames: [
+      'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1509281373149-e957c6296406?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1000&auto=format&fit=crop&q=85',
+    ],
+    stock: 15,
+  },
+  {
+    id: 'film-stalker-tarkovsky',
+    catalogNumber: 'CH-15',
+    title: 'STALKER (СТАЛКЕР)',
+    director: 'Andrei Tarkovsky',
+    year: 1979,
+    country: 'SUN',
+    genre: 'Auteur',
+    aspectRatio: '1.37:1 Academy Standard',
+    runtimeMinutes: 162,
+    format: 'Mosfilm 4K Criterion Archival Edition',
+    priceUSD: 43.50,
+    priceVND: 1080000,
+    originalPriceUSD: 52.00,
+    rating: 4.98,
+    reviewCount: 3950,
+    tag: '15. POETIC METAPHYSICAL ASCENT',
+    coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=700&auto=format&fit=crop&q=85',
+    description: 'A guide leads two men through an area known as the Zone to find a room that grants a person\'s innermost desires. Tarkovsky\'s hypnotic metaphysical journey restored from the 35mm negative by Mosfilm.',
+    technicalSpecs: [
+      'Mosfilm 4K Digital Restoration from Original Camera Negative',
+      'Eduard Artemyev Electronic & Acoustic Synthesizer Score',
+      'Arkady & Boris Strugatsky Original "Roadside Picnic" Notes',
+      'Essays by Film Critic Mark Le Fanu & J. Hoberman',
+      'Linen Textured Raw Canvas Presentation Box',
+    ],
+    previewFrames: [
+      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1000&auto=format&fit=crop&q=85',
+      'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1000&auto=format&fit=crop&q=85',
+    ],
+    stock: 18,
+  },
 ];
 
 // Helper to convert CinemaItem to Album format for cart
@@ -392,6 +623,95 @@ function cinemaToAlbum(item: CinemaItem): Album {
   };
 }
 
+// Swiss 70mm Large Format Spotlight Banners
+export interface CinemaBanner {
+  id: string;
+  catalogNumber: string;
+  title: string;
+  director: string;
+  year: number;
+  format: string;
+  badge: string;
+  specs: string;
+  desc: string;
+  image: string;
+  aspectRatio: string;
+  targetId?: string;
+}
+
+const CINEMA_SPOTLIGHT_BANNERS: CinemaBanner[] = [
+  {
+    id: 'cb-dune2',
+    catalogNumber: 'CH-01',
+    title: 'DUNE: PART TWO (2024)',
+    director: 'Denis Villeneuve',
+    year: 2024,
+    format: '70MM IMAX EXPANDED 1.43:1 MASTER',
+    badge: '★ CANTON ZÜRICH ARCHIVAL FEATURE',
+    specs: 'Native 4K 2160p HEVC • Dolby Atmos 7.1.4',
+    desc: 'Filmed with Arri Alexa LF IMAX large-format cameras. Full 1.43:1 aspect ratio integration with Hans Zimmer’s acoustic soundscape and mounted 70mm film frame specimen.',
+    image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1600&auto=format&fit=crop&q=85',
+    aspectRatio: '1.43:1 IMAX Expanded',
+    targetId: 'film-dune-2-70mm',
+  },
+  {
+    id: 'cb-oppenheimer',
+    catalogNumber: 'CH-02',
+    title: 'OPPENHEIMER (2023)',
+    director: 'Christopher Nolan',
+    year: 2023,
+    format: 'PHOTOCHEMICAL 65MM ORIGINAL NEGATIVE',
+    badge: '★ PHOTOCHEMICAL ARCHIVE CROWN',
+    specs: 'Direct 65mm Negative Scan • 5.1 DTS-HD Nolan Mix',
+    desc: 'Mastered directly from the 65mm original camera negative without digital intermediate. Custom Kodak 65mm B&W film stock sequence in matte black linen hardcover.',
+    image: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1600&auto=format&fit=crop&q=85',
+    aspectRatio: '1.43:1 / 2.20:1 Variable',
+    targetId: 'film-oppenheimer-70mm',
+  },
+  {
+    id: 'cb-interstellar',
+    catalogNumber: 'CH-06',
+    title: 'INTERSTELLAR: 10TH ANNIVERSARY (2014)',
+    director: 'Christopher Nolan',
+    year: 2014,
+    format: '15/70MM WORLDWIDE ROADSHOW RE-ISSUE',
+    badge: '★ DECADE MEMORIAL IMAX RELEASE',
+    specs: 'Over 60 Mins 15/70mm IMAX • Kip Thorne Physics Equations',
+    desc: 'The cosmic relativity masterwork returns in 15/70mm format. Experience Gargantua black hole gravitational lensing and Hans Zimmer’s cathedral organ in reference clarity.',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&auto=format&fit=crop&q=85',
+    aspectRatio: '1.43:1 / 2.39:1 Variable',
+    targetId: 'film-interstellar-imax',
+  },
+  {
+    id: 'cb-bladerunner',
+    catalogNumber: 'CH-05',
+    title: 'BLADE RUNNER 2049 (2017)',
+    director: 'Denis Villeneuve',
+    year: 2017,
+    format: 'ROGER DEAKINS MASTERWORK STEELBOOK',
+    badge: '★ OSCAR BEST CINEMATOGRAPHY',
+    specs: '4K HDR10+ Dolby Vision • Reference Brutalist Mix',
+    desc: 'Roger Deakins’ breathtaking dystopian frames presented in pristine 4K HDR. Brutalist architecture study monograph and brushed aluminum steelbook casing.',
+    image: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=1600&auto=format&fit=crop&q=85',
+    aspectRatio: '2.39:1 Anamorphic Panavision',
+    targetId: 'film-blade-runner-2049',
+  },
+  {
+    id: 'cb-2001',
+    catalogNumber: 'CH-04',
+    title: '2001: A SPACE ODYSSEY (1968)',
+    director: 'Stanley Kubrick',
+    year: 1968,
+    format: '70MM UNRESTORED PHOTOCHEMICAL PRINT',
+    badge: '★ THE ARCHITECTURAL HORIZON',
+    specs: '8K Original Negative Scan • 1968 6-Track 70mm Audio',
+    desc: 'Stanley Kubrick’s monumental journey from prehistoric dawn to cosmic rebirth. Photochemical timing supervised by Christopher Nolan in matte white Swiss slipcase.',
+    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1600&auto=format&fit=crop&q=85',
+    aspectRatio: '2.20:1 Super Panavision 70',
+    targetId: 'film-2001-space-odyssey',
+  },
+];
+
 export const CinemaSwissView: React.FC = () => {
   const { addToCart, toggleWishlist, isWishlisted, formatPrice, setIsCartOpen } = useCartWishlist();
 
@@ -403,6 +723,15 @@ export const CinemaSwissView: React.FC = () => {
   const [dispatchEmail, setDispatchEmail] = useState('');
   const [dispatchSubscribed, setDispatchSubscribed] = useState(false);
   const [addedToast, setAddedToast] = useState<string | null>(null);
+  const [currentBannerIdx, setCurrentBannerIdx] = useState(0);
+
+  // Auto rotate banner every 6s
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentBannerIdx((prev) => (prev + 1) % CINEMA_SPOTLIGHT_BANNERS.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Community Film Criticism Wall State
   const [criticismNotes, setCriticismNotes] = useState([
@@ -521,8 +850,8 @@ export const CinemaSwissView: React.FC = () => {
         </div>
       )}
 
-      {/* Main Container - Strict Swiss Asymmetric Flex Gap */}
-      <div className="max-w-6xl mx-auto flex flex-col gap-24 sm:gap-28">
+      {/* Main Container - Widened to 1440px for spacious modernist browsing */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8 flex flex-col gap-24 sm:gap-32">
 
         {/* =========================================================================
             01. HERO SECTION: INTERNATIONAL TYPOGRAPHIC CINEMA ARCHIVE
@@ -671,6 +1000,140 @@ export const CinemaSwissView: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* =========================================================================
+            FEATURED 70MM LARGE FORMAT SPOTLIGHT BANNER CAROUSEL
+        ========================================================================= */}
+        <section className="relative">
+          {/* Top Architectural Indicator */}
+          <div className="flex items-center justify-between border-b-2 border-black pb-2 text-[11px] font-mono uppercase tracking-widest text-[#525252] mb-4">
+            <div className="flex items-center gap-3">
+              <span className="inline-block w-2.5 h-2.5 bg-[#FF3000]" />
+              <span className="font-black text-black">SPOTLIGHT PANAVISION &amp; 70MM LARGE FORMAT</span>
+              <span>// CH-SERIES ARCHIVE</span>
+            </div>
+            <div className="hidden sm:flex items-center gap-4">
+              <span>CANTON BASEL ARCHIVE</span>
+              <span className="text-black font-bold">EDITION 0{currentBannerIdx + 1} / 0{CINEMA_SPOTLIGHT_BANNERS.length}</span>
+            </div>
+          </div>
+
+          <div 
+            className="border-4 border-black bg-black text-white overflow-hidden relative"
+            style={{ borderRadius: SWISS.radius }}
+          >
+            {/* Banner Slide Container */}
+            <div className="relative min-h-[380px] sm:min-h-[440px] md:min-h-[480px] flex flex-col justify-end p-6 sm:p-10 md:p-14 overflow-hidden">
+              {/* Background 70mm Film Frame */}
+              <img
+                src={CINEMA_SPOTLIGHT_BANNERS[currentBannerIdx].image}
+                alt={CINEMA_SPOTLIGHT_BANNERS[currentBannerIdx].title}
+                className="absolute inset-0 w-full h-full object-cover transition-all duration-700 brightness-65 scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/20" />
+
+              {/* Swiss Minimalist Linear Overlay */}
+              <div
+                className="absolute inset-0 opacity-10 pointer-events-none"
+                style={{
+                  backgroundImage: 'linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px)',
+                  backgroundSize: '100% 32px',
+                }}
+              />
+
+              {/* Banner Content Container */}
+              <div className="relative z-10 max-w-4xl space-y-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className="px-3 py-1 bg-[#FF3000] text-white font-mono text-xs font-black uppercase tracking-widest"
+                    style={{ borderRadius: SWISS.radius }}
+                  >
+                    {CINEMA_SPOTLIGHT_BANNERS[currentBannerIdx].badge}
+                  </span>
+                  <span
+                    className="px-3 py-1 bg-white text-black font-mono text-xs font-black uppercase tracking-widest"
+                    style={{ borderRadius: SWISS.radius }}
+                  >
+                    {CINEMA_SPOTLIGHT_BANNERS[currentBannerIdx].catalogNumber}
+                  </span>
+                  <span className="text-xs font-mono text-white/80 border border-white/30 px-2 py-0.5">
+                    {CINEMA_SPOTLIGHT_BANNERS[currentBannerIdx].format}
+                  </span>
+                  <span className="text-xs font-mono text-[#FF3000] border border-[#FF3000]/60 px-2 py-0.5">
+                    {CINEMA_SPOTLIGHT_BANNERS[currentBannerIdx].aspectRatio}
+                  </span>
+                </div>
+
+                <h3 className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-white leading-none">
+                  {CINEMA_SPOTLIGHT_BANNERS[currentBannerIdx].title}
+                </h3>
+
+                <p className="text-xs sm:text-sm font-mono text-white/90">
+                  DIRECTED BY <strong className="text-white font-black">{CINEMA_SPOTLIGHT_BANNERS[currentBannerIdx].director.toUpperCase()}</strong> // {CINEMA_SPOTLIGHT_BANNERS[currentBannerIdx].specs}
+                </p>
+
+                <p className="text-xs sm:text-sm text-neutral-300 max-w-2xl font-sans leading-relaxed">
+                  {CINEMA_SPOTLIGHT_BANNERS[currentBannerIdx].desc}
+                </p>
+
+                <div className="pt-2 flex flex-wrap items-center gap-4">
+                  <a
+                    href="#cinema-catalog"
+                    className="px-8 py-3 bg-[#FF3000] hover:bg-white hover:text-black text-white font-mono text-xs font-black uppercase tracking-widest transition-colors duration-150 flex items-center gap-3 cursor-pointer"
+                    style={{ borderRadius: SWISS.radius }}
+                  >
+                    <span>VIEW FILM IN SELECTION</span>
+                    <ArrowRight size={16} strokeWidth={3} />
+                  </a>
+
+                  <div className="text-xs font-mono text-neutral-400 bg-black/60 px-3 py-2 border border-white/20">
+                    SLIDE 0{currentBannerIdx + 1} / 0{CINEMA_SPOTLIGHT_BANNERS.length}
+                  </div>
+                </div>
+              </div>
+
+              {/* Prev / Next Navigation Arrows (Swiss 0px sharp buttons) */}
+              <div className="absolute bottom-6 right-6 z-20 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCurrentBannerIdx((prev) => (prev - 1 + CINEMA_SPOTLIGHT_BANNERS.length) % CINEMA_SPOTLIGHT_BANNERS.length)}
+                  className="w-12 h-12 bg-white text-black hover:bg-[#FF3000] hover:text-white border-2 border-black flex items-center justify-center font-mono font-black transition-colors duration-150 cursor-pointer"
+                  style={{ borderRadius: SWISS.radius }}
+                  title="Previous Archival Feature"
+                >
+                  <ChevronLeft size={22} strokeWidth={3} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentBannerIdx((prev) => (prev + 1) % CINEMA_SPOTLIGHT_BANNERS.length)}
+                  className="w-12 h-12 bg-white text-black hover:bg-[#FF3000] hover:text-white border-2 border-black flex items-center justify-center font-mono font-black transition-colors duration-150 cursor-pointer"
+                  style={{ borderRadius: SWISS.radius }}
+                  title="Next Archival Feature"
+                >
+                  <ChevronRight size={22} strokeWidth={3} />
+                </button>
+              </div>
+
+              {/* Segmented Progress Indicators */}
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+                {CINEMA_SPOTLIGHT_BANNERS.map((banner, idx) => (
+                  <button
+                    key={banner.id}
+                    type="button"
+                    onClick={() => setCurrentBannerIdx(idx)}
+                    className="h-2 transition-all cursor-pointer"
+                    style={{
+                      width: currentBannerIdx === idx ? '36px' : '10px',
+                      backgroundColor: currentBannerIdx === idx ? SWISS.red : 'rgba(255,255,255,0.4)',
+                      borderRadius: '0px',
+                    }}
+                    title={`Feature 0${idx + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
