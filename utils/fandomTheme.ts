@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 export const getFandomCategoryFromTheme = (theme: string): string => {
   const t = (theme || '').toLowerCase();
+  if (t === 'all') return 'All Fandoms';
   if (t === 'manga') return 'Manga';
   if (t === 'anime') return 'Anime';
   if (t === 'cosplay') return 'Cosplay';
@@ -14,6 +15,7 @@ export const getFandomCategoryFromTheme = (theme: string): string => {
 
 export const getFandomThemeKeyFromCategory = (cat: string): string => {
   const c = (cat || '').toLowerCase();
+  if (c === 'all' || c === 'all fandoms') return 'all';
   if (c.includes('manga')) return 'manga';
   if (c.includes('anime')) return 'anime';
   if (c.includes('cosplay')) return 'cosplay';

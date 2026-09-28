@@ -2670,8 +2670,20 @@ html:not(.dark):not([data-theme="dark"]) .fandom-theme-tv .text-slate-500 {
   border-bottom-width: 2.5px !important;
 }
 [data-fandom-theme="comics"] .header-nav-link {
+  font-family: var(--font-bangers), 'Bangers', cursive, sans-serif !important;
   color: #000000 !important;
-  font-weight: 900 !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.08em !important;
+  font-size: 15px !important;
+}
+[data-fandom-theme="comics"] .header-nav-link:hover {
+  color: #ef4444 !important;
+  opacity: 0.8 !important;
+}
+[data-fandom-theme="comics"] .header-nav-link.active,
+[data-fandom-theme="comics"] .header-nav-link[data-active="true"] {
+  color: #ef4444 !important;
+  border-bottom: 3.5px solid #ef4444 !important;
 }
 [data-fandom-theme="comics"] .header-allmd-btn {
   background: #ef4444 !important;
@@ -3068,4 +3080,61 @@ html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="anime"] .bg-black b
 [data-fandom-theme="anime"] button[class*="bg-[#a3e635]"] * {
   color: #000000 !important;
 }
+
+/* ==========================================================================
+   FANDOM NAV DOCK & ARTIST HERO BANNER - BULLETPROOF THEMING
+   ========================================================================== */
+.fandom-nav-dock,
+nav.fandom-nav-dock,
+[data-fandom-theme] nav.fandom-nav-dock,
+.fandom-theme-gaming nav.fandom-nav-dock,
+.fandom-theme-gaming [class*="bg-[#000000]"].fandom-nav-dock {
+  background-color: #000000 !important;
+  border-bottom: 4px solid #ffd60a !important;
+}
+
+/* Force 100% visible black text on all buttons and spans in the dock across ALL themes */
+.fandom-nav-dock button,
+.fandom-nav-dock button *,
+.fandom-nav-dock button span,
+nav.fandom-nav-dock button,
+nav.fandom-nav-dock button *,
+html .fandom-theme-gaming nav.fandom-nav-dock button,
+html .fandom-theme-gaming nav.fandom-nav-dock button *,
+html .fandom-theme-gaming [class*="bg-[#000000]"].fandom-nav-dock button,
+html .fandom-theme-gaming [class*="bg-[#000000]"].fandom-nav-dock button *,
+html [data-fandom-theme="gaming"] nav.fandom-nav-dock button,
+html [data-fandom-theme="gaming"] nav.fandom-nav-dock button * {
+  color: #000000 !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.fandom-nav-dock button[data-active="true"],
+nav.fandom-nav-dock button[data-active="true"],
+html .fandom-theme-gaming nav.fandom-nav-dock button[data-active="true"],
+html [data-fandom-theme="gaming"] nav.fandom-nav-dock button[data-active="true"] {
+  background-color: #ffd60a !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+.fandom-nav-dock button:not([data-active="true"]),
+nav.fandom-nav-dock button:not([data-active="true"]),
+html .fandom-theme-gaming nav.fandom-nav-dock button:not([data-active="true"]),
+html [data-fandom-theme="gaming"] nav.fandom-nav-dock button:not([data-active="true"]) {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+/* Artist Hero Banner: Crisp styling across all fandom themes */
+#artist-hero-banner,
+.artist-hero-banner {
+  opacity: 1 !important;
+  display: block !important;
+  position: relative !important;
+}
+
 

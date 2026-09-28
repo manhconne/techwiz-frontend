@@ -43,9 +43,21 @@ import {
   mockLocationEvents, 
   calculateDistanceKm 
 } from '../data/locationEventsData';
+import { useActiveFandom } from '../utils/fandomTheme';
 
-export const LocationAwareEventExplorer: React.FC = () => {
+interface LocationAwareEventExplorerProps {
+  fandomCategory?: string;
+}
+
+export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProps> = ({ fandomCategory: propFandomCategory }) => {
   const { formatPrice } = useCartWishlist();
+  const { themeKey, category } = useActiveFandom();
+  const effectiveCategory = propFandomCategory || category;
+  const isComics = themeKey === 'comics' || effectiveCategory?.toLowerCase().includes('comic');
+  const isManga = themeKey === 'manga' || effectiveCategory?.toLowerCase().includes('manga');
+  const isAnime = themeKey === 'anime' || effectiveCategory?.toLowerCase().includes('anime');
+  const isGaming = themeKey === 'gaming' || effectiveCategory?.toLowerCase().includes('gaming') || effectiveCategory?.toLowerCase().includes('game');
+  const isCosplay = themeKey === 'cosplay' || effectiveCategory?.toLowerCase().includes('cosplay');
 
   // User location state
   const [userLocation, setUserLocation] = useState<{
@@ -221,6 +233,22 @@ export const LocationAwareEventExplorer: React.FC = () => {
   };
 
   const getEventTypeBadge = (type: LocationEvent['type']) => {
+    if (isComics) {
+      switch (type) {
+        case 'stadium_concert':
+          return { label: 'Concert & Stadium Tour', icon: Ticket, color: 'bg-[#ef4444] text-white border-2 border-black font-bold' };
+        case 'cup_sleeve_cafe':
+          return { label: 'Cup Sleeve & Birthday Cafe', icon: Coffee, color: 'bg-[#ec4899] text-white border-2 border-black font-bold' };
+        case 'photocard_trade':
+          return { label: 'Photocard Trade Lounge', icon: Sparkles, color: 'bg-[#8b5cf6] text-white border-2 border-black font-bold' };
+        case 'anime_expo':
+          return { label: 'Manga & Cosplay Expo', icon: Layers, color: 'bg-[#ffd60a] text-black border-2 border-black font-bold' };
+        case 'gaming_arena':
+          return { label: 'Gaming Arena Live Watch', icon: Radio, color: 'bg-[#00f0ff] text-black border-2 border-black font-bold' };
+        default:
+          return { label: 'Comic Fandom Event', icon: Compass, color: 'bg-[#ef4444] text-white border-2 border-black font-bold' };
+      }
+    }
     switch (type) {
       case 'stadium_concert':
         return { label: 'Concert & Stadium Tour', icon: Ticket, color: 'bg-blue-600 text-white border-blue-500' };
@@ -241,21 +269,32 @@ export const LocationAwareEventExplorer: React.FC = () => {
     <section 
       id="location-events"
       style={{ scrollMarginTop: '100px' }}
-      className="py-16 sm:py-24 w-full bg-slate-50/70 border-t border-b border-slate-200/90"
+      className={`py-16 sm:py-24 w-full border-t border-b ${
+        isComics ? 'bg-transparent border-black' : 'bg-slate-50/70 border-slate-200/90'
+      }`}
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
         
         {/* ==================== 1. Editorial Section Header ==================== */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/80 text-[11px] font-bold uppercase tracking-wider mb-2.5">
-              <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
-              <LocateFixed size={12} className="text-blue-600" />
+            <div className={`inline-flex items-center gap-2 px-3 py-1 text-[11px] font-bold uppercase tracking-wider mb-2.5 ${
+              isComics 
+                ? 'bg-[#ffd60a] text-black border-2 border-black font-mono shadow-[2px_2px_0px_#000000] rounded-none' 
+                : 'bg-blue-50 text-blue-700 border border-blue-200/80 rounded-full'
+            }`}>
+              <span className={`w-2 h-2 rounded-full ${isComics ? 'bg-[#ef4444]' : 'bg-blue-600'} animate-ping`} />
+              <LocateFixed size={12} className={isComics ? 'text-black' : 'text-blue-600'} />
               <span>Location-Aware Event Radar &amp; GPS Discovery</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight uppercase font-sans m-0">
-              Discover Events <span className="text-blue-600">&amp; Meetups Near You</span>
+            <h2 
+              style={{ fontFamily: isComics ? "var(--font-bangers), 'Bangers', cursive, sans-serif" : undefined }}
+              className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight uppercase m-0 ${
+                isComics ? 'text-black tracking-wide' : 'text-slate-900 font-sans'
+              }`}
+            >
+              Discover Events <span className={isComics ? 'text-[#ef4444]' : 'text-blue-600'}>&amp; Meetups Near You</span>
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-2xl font-normal leading-relaxed">
               Live GPS radar automatically locates stadium concert tours, birthday cup-sleeve cafes, manga and cosplay expos, and official photocard trading meetups near you.
@@ -263,14 +302,22 @@ export const LocationAwareEventExplorer: React.FC = () => {
           </div>
 
           {/* View Mode Switcher */}
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white border border-slate-200/90 shadow-2xs self-start md:self-auto shrink-0">
+          <div className={`flex items-center gap-1.5 p-1 self-start md:self-auto shrink-0 ${
+            isComics 
+              ? 'bg-white border-2 border-black shadow-[3px_3px_0px_#000000] rounded-none' 
+              : 'rounded-xl bg-white border border-slate-200/90 shadow-2xs'
+          }`}>
             <button
               type="button"
               onClick={() => setViewMode('map')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                viewMode === 'map'
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                isComics
+                  ? viewMode === 'map'
+                    ? 'bg-[#ef4444] text-white border-2 border-black shadow-[2px_2px_0px_#000000] rounded-none font-bold'
+                    : 'text-black hover:bg-[#fef9c3] rounded-none font-bold'
+                  : viewMode === 'map'
+                    ? 'bg-slate-900 text-white shadow-xs rounded-lg'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg'
               }`}
             >
               <Navigation size={13} />
@@ -280,10 +327,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
             <button
               type="button"
               onClick={() => setViewMode('calendar')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                viewMode === 'calendar'
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                isComics
+                  ? viewMode === 'calendar'
+                    ? 'bg-[#ef4444] text-white border-2 border-black shadow-[2px_2px_0px_#000000] rounded-none font-bold'
+                    : 'text-black hover:bg-[#fef9c3] rounded-none font-bold'
+                  : viewMode === 'calendar'
+                    ? 'bg-slate-900 text-white shadow-xs rounded-lg'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg'
               }`}
             >
               <CalendarIcon size={13} />
@@ -293,10 +344,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
             <button
               type="button"
               onClick={() => setViewMode('list')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                viewMode === 'list'
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                isComics
+                  ? viewMode === 'list'
+                    ? 'bg-[#ef4444] text-white border-2 border-black shadow-[2px_2px_0px_#000000] rounded-none font-bold'
+                    : 'text-black hover:bg-[#fef9c3] rounded-none font-bold'
+                  : viewMode === 'list'
+                    ? 'bg-slate-900 text-white shadow-xs rounded-lg'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg'
               }`}
             >
               <Users size={13} />
@@ -306,7 +361,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
         </div>
 
         {/* ==================== 2. GPS Locator Bar & City Pills ==================== */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm mb-8 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        <div className={`p-4 sm:p-5 mb-8 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 ${
+          isComics 
+            ? 'bg-white border-3 border-black shadow-[4px_4px_0px_#000000] rounded-none' 
+            : 'rounded-2xl bg-white border border-slate-200/90 shadow-sm'
+        }`}>
           
           {/* GPS Auto-Detect Button & Current Coordinates indicator */}
           <div className="flex items-center gap-3 flex-wrap">
@@ -314,10 +373,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
               type="button"
               onClick={handleDetectGps}
               disabled={isLocating}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-xs ${
-                userLocation.isGpsActive
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20'
+              className={`inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                isComics
+                  ? userLocation.isGpsActive
+                    ? 'bg-[#10b981] text-white border-2 border-black shadow-[3px_3px_0px_#000000] rounded-none'
+                    : 'bg-[#ef4444] hover:bg-[#dc2626] text-white border-2 border-black shadow-[3px_3px_0px_#000000] rounded-none'
+                  : userLocation.isGpsActive
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20 rounded-xl shadow-xs'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20 rounded-xl shadow-xs'
               }`}
             >
               <LocateFixed size={14} className={isLocating ? 'animate-spin' : ''} />
@@ -326,7 +389,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
               </span>
             </button>
 
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100/90 border border-slate-200 text-xs font-medium text-slate-700">
+            <div className={`flex items-center gap-2 px-3 py-2 text-xs font-medium ${
+              isComics 
+                ? 'rounded-none bg-[#fffdf0] border-2 border-black text-black font-mono font-bold' 
+                : 'rounded-xl bg-slate-100/90 border border-slate-200 text-slate-700'
+            }`}>
               <MapPin size={13} className="text-rose-500 shrink-0" />
               <span className="truncate max-w-[240px] sm:max-w-none">
                 {userLocation.name}
@@ -352,10 +419,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   key={city.id}
                   type="button"
                   onClick={() => handleSelectCityPreset(city.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer shrink-0 flex items-center gap-1 ${
-                    isActive
-                      ? 'bg-slate-900 text-white shadow-2xs'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                  className={`px-3 py-1.5 text-xs font-bold transition-all cursor-pointer shrink-0 flex items-center gap-1 ${
+                    isComics
+                      ? isActive
+                        ? 'bg-[#ffd60a] text-black border-2 border-black shadow-[2px_2px_0px_#000000] rounded-none'
+                        : 'bg-white text-black border border-black hover:bg-[#fef9c3] rounded-none'
+                      : isActive
+                        ? 'bg-slate-900 text-white shadow-2xs rounded-lg'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900 rounded-lg'
                   }`}
                 >
                   <span>{city.flag}</span>
@@ -372,7 +443,9 @@ export const LocationAwareEventExplorer: React.FC = () => {
           
           {/* Radius Selector Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 sm:pb-0">
-            <span className="text-[10.5px] font-mono font-bold uppercase tracking-wider text-slate-400 shrink-0 mr-1">
+            <span className={`text-[10.5px] font-mono font-bold uppercase tracking-wider shrink-0 mr-1 ${
+              isComics ? 'text-black' : 'text-slate-400'
+            }`}>
               Radius:
             </span>
             {[
@@ -385,10 +458,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 key={r.val}
                 type="button"
                 onClick={() => setMaxRadiusKm(r.val)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                  maxRadiusKm === r.val
-                    ? 'bg-blue-600 text-white shadow-2xs'
-                    : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
+                className={`px-3 py-1 text-xs font-semibold transition-all cursor-pointer ${
+                  isComics
+                    ? maxRadiusKm === r.val
+                      ? 'bg-[#ef4444] text-white border-2 border-black shadow-[2px_2px_0px_#000000] rounded-none font-bold'
+                      : 'bg-white border-2 border-black text-black hover:bg-[#fef9c3] rounded-none font-bold'
+                    : maxRadiusKm === r.val
+                      ? 'bg-blue-600 text-white shadow-2xs rounded-full'
+                      : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300 rounded-full'
                 }`}
               >
                 {r.label}
@@ -398,7 +475,9 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
           {/* Event Category Tabs */}
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs text-xs">
+            <div className={`flex items-center gap-1 ${
+              isComics ? 'bg-white p-1 rounded-none border-2 border-black shadow-[2px_2px_0px_#000000]' : 'bg-white p-1 rounded-xl border border-slate-200 shadow-2xs'
+            } text-xs`}>
               {[
                 { id: 'all', label: 'All Types' },
                 { id: 'stadium_concert', label: 'Concert' },
@@ -411,10 +490,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   key={t.id}
                   type="button"
                   onClick={() => setSelectedType(t.id)}
-                  className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                    selectedType === t.id
-                      ? 'bg-slate-900 text-white'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  className={`px-2.5 py-1 font-bold transition-all cursor-pointer ${
+                    isComics
+                      ? selectedType === t.id
+                        ? 'bg-[#ffd60a] text-black border-2 border-black rounded-none shadow-[1px_1px_0px_#000000]'
+                        : 'text-black hover:bg-[#fef9c3] rounded-none'
+                      : selectedType === t.id
+                        ? 'bg-slate-900 text-white rounded-lg'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg'
                   }`}
                 >
                   {t.label}
@@ -424,13 +507,17 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
             {/* Keyword Search */}
             <div className="relative min-w-[220px]">
-              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search size={13} className={`absolute left-3 top-1/2 -translate-y-1/2 ${isComics ? 'text-black' : 'text-slate-400'}`} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search venue, artist, tour..."
-                className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 shadow-2xs font-sans"
+                className={`w-full pl-8 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none shadow-2xs font-sans ${
+                  isComics
+                    ? 'bg-white border-2 border-black rounded-none shadow-[2px_2px_0px_#000000] focus:border-[#ef4444] text-black font-medium'
+                    : 'bg-white border border-slate-200 rounded-xl focus:border-blue-500'
+                }`}
               />
             </div>
           </div>
@@ -444,26 +531,40 @@ export const LocationAwareEventExplorer: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
             {/* Left 7 Columns: High-Tech GPS Interactive Map Canvas / Radar */}
-            <div className="lg:col-span-7 rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 shadow-xl relative min-h-[460px] sm:min-h-[540px] flex flex-col justify-between">
+            <div className={`lg:col-span-7 overflow-hidden relative min-h-[460px] sm:min-h-[540px] flex flex-col justify-between ${
+              isComics
+                ? 'rounded-none bg-slate-900 border-3 border-black shadow-[6px_6px_0px_#000000]'
+                : 'rounded-2xl bg-slate-900 border border-slate-800 shadow-xl'
+            }`}>
               
               {/* Map Top Overlay HUD: GPS Status & Stats */}
               <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between gap-3 pointer-events-none">
-                <div className="pointer-events-auto px-3 py-1.5 rounded-xl bg-slate-950/85 backdrop-blur-md border border-slate-700/80 text-white flex items-center gap-2 shadow-lg">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                <div className={`pointer-events-auto px-3 py-1.5 flex items-center gap-2 ${
+                  isComics
+                    ? 'rounded-none bg-black border-2 border-white text-white font-mono shadow-[2px_2px_0px_#ef4444]'
+                    : 'rounded-xl bg-slate-950/85 backdrop-blur-md border border-slate-700/80 text-white shadow-lg'
+                }`}>
+                  <span className={`w-2.5 h-2.5 rounded-full ${isComics ? 'bg-[#ffd60a]' : 'bg-emerald-400'} animate-ping`} />
                   <span className="text-[11px] font-mono font-bold tracking-wider uppercase">
                     Satellite GPS Radar: {filteredEvents.length} Active Venues
                   </span>
                 </div>
 
                 <div className="pointer-events-auto flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md border border-white/10 text-slate-300 text-[10px] font-mono">
+                  <span className={`px-2.5 py-1 text-[10px] font-mono ${
+                    isComics
+                      ? 'rounded-none bg-black border-2 border-white text-white'
+                      : 'rounded-lg bg-black/75 backdrop-blur-md border border-white/10 text-slate-300'
+                  }`}>
                     Coordinates: {userLocation.lat.toFixed(2)}°N, {userLocation.lng.toFixed(2)}°E
                   </span>
                 </div>
               </div>
 
               {/* REAL LEAFLET GPS MAP OVERLAY */}
-              <div className="relative w-full h-[460px] sm:h-[540px] z-10 rounded-xl overflow-hidden shadow-inner border border-slate-200">
+              <div className={`relative w-full h-[460px] sm:h-[540px] z-10 overflow-hidden shadow-inner ${
+                isComics ? 'rounded-none border-b-2 border-black' : 'rounded-xl border border-slate-200'
+              }`}>
                 <RealGpsMap 
                   events={filteredEvents}
                   activeEvent={activeEvent}
@@ -472,18 +573,22 @@ export const LocationAwareEventExplorer: React.FC = () => {
               </div>
 
               {/* Map Bottom Legend / Compass Bar */}
-              <div className="p-3.5 bg-slate-950/90 border-t border-slate-800 text-slate-300 text-xs flex items-center justify-between flex-wrap gap-2 z-10">
+              <div className={`p-3.5 border-t text-xs flex items-center justify-between flex-wrap gap-2 z-10 ${
+                isComics
+                  ? 'bg-black border-black text-white'
+                  : 'bg-slate-950/90 border-slate-800 text-slate-300'
+              }`}>
                 <div className="flex items-center gap-3 text-[11px] font-medium flex-wrap">
-                  <span className="flex items-center gap-1.5 text-slate-400">
+                  <span className="flex items-center gap-1.5 text-slate-300">
                     <span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> You
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-400">
+                  <span className="flex items-center gap-1.5 text-slate-300">
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-400" /> Concert
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-400">
+                  <span className="flex items-center gap-1.5 text-slate-300">
                     <span className="w-2.5 h-2.5 rounded-full bg-pink-400" /> Cafe Meetup
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-400">
+                  <span className="flex items-center gap-1.5 text-slate-300">
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-400" /> Manga/Cosplay
                   </span>
                 </div>
@@ -497,7 +602,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         window.open(url, '_blank');
                       }
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition-all cursor-pointer"
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer ${
+                      isComics
+                        ? 'bg-[#ef4444] hover:bg-[#dc2626] text-white border-2 border-black shadow-[2px_2px_0px_#000000] rounded-none'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white rounded-lg'
+                    }`}
                   >
                     <Compass size={12} />
                     <span>Google Maps Directions</span>
@@ -513,23 +622,37 @@ export const LocationAwareEventExplorer: React.FC = () => {
               
               {/* Highlight Card for Active Selected Pin */}
               {activeEvent ? (
-                <div className="rounded-2xl bg-white border-2 border-blue-600/90 shadow-lg p-5 sm:p-6 relative overflow-hidden transition-all">
+                <div className={`p-5 sm:p-6 relative overflow-hidden transition-all ${
+                  isComics
+                    ? 'rounded-none bg-white border-3 border-black shadow-[6px_6px_0px_#000000]'
+                    : 'rounded-2xl bg-white border-2 border-blue-600/90 shadow-lg'
+                }`}>
                   
                   {/* Category Pill & Distance Badge */}
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border flex items-center gap-1.5 shadow-2xs ${getEventTypeBadge(activeEvent.type).color}`}>
+                    <span className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider border flex items-center gap-1.5 ${
+                      isComics
+                        ? 'rounded-none border-2 border-black shadow-[2px_2px_0px_#000000]'
+                        : 'rounded-full shadow-2xs'
+                    } ${getEventTypeBadge(activeEvent.type).color}`}>
                       <Radio size={11} className="animate-pulse" />
                       <span>{getEventTypeBadge(activeEvent.type).label}</span>
                     </span>
 
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-mono font-bold">
-                      <LocateFixed size={12} className="text-emerald-600" />
+                    <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-mono font-bold ${
+                      isComics
+                        ? 'rounded-none bg-[#ffd60a] text-black border-2 border-black shadow-[2px_2px_0px_#000000]'
+                        : 'rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200'
+                    }`}>
+                      <LocateFixed size={12} className={isComics ? 'text-black' : 'text-emerald-600'} />
                       <span>{activeEvent.distanceKm} km away</span>
                     </span>
                   </div>
 
                   {/* Image & Title */}
-                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-4 bg-slate-100 border border-slate-200">
+                  <div className={`relative aspect-[16/9] overflow-hidden mb-4 bg-slate-100 ${
+                    isComics ? 'rounded-none border-2 border-black' : 'rounded-xl border border-slate-200'
+                  }`}>
                     <img 
                       src={activeEvent.coverImage} 
                       alt={activeEvent.title}
@@ -537,10 +660,19 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                     <div className="absolute bottom-3 left-3 right-3 text-white">
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-amber-300 font-bold block mb-0.5">
+                      <span className={`text-[10px] font-mono uppercase tracking-widest font-bold block mb-0.5 ${
+                        isComics ? 'text-[#ffd60a]' : 'text-amber-300'
+                      }`}>
                         {activeEvent.artistOrHost}
                       </span>
-                      <h3 className="text-base sm:text-lg font-black leading-tight text-white m-0">
+                      <h3 
+                        className={`text-base sm:text-lg font-black leading-tight text-white m-0 ${
+                          isComics ? 'tracking-wide' : ''
+                        }`}
+                        style={{
+                          fontFamily: isComics ? "var(--font-bangers), 'Bangers', cursive, sans-serif" : undefined
+                        }}
+                      >
                         {activeEvent.title}
                       </h3>
                     </div>
@@ -558,7 +690,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
                     <div className="flex items-center justify-between text-slate-600 pt-2 border-t border-slate-100">
                       <div className="flex items-center gap-1.5">
-                        <CalendarIcon size={13} className="text-blue-600" />
+                        <CalendarIcon size={13} className={isComics ? 'text-[#ef4444]' : 'text-blue-600'} />
                         <span className="font-semibold text-slate-900">{activeEvent.date}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
@@ -577,7 +709,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   {activeEvent.perks && activeEvent.perks.length > 0 && (
                     <div className="flex items-center gap-1.5 flex-wrap mb-5">
                       {activeEvent.perks.slice(0, 2).map((p, pIdx) => (
-                        <span key={pIdx} className="text-[10.5px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                        <span key={pIdx} className={`text-[10.5px] font-medium px-2 py-0.5 ${
+                          isComics
+                            ? 'rounded-none bg-[#fef9c3] text-black border border-black font-bold'
+                            : 'rounded bg-slate-100 text-slate-700 border border-slate-200'
+                        }`}>
                           ✓ {p}
                         </span>
                       ))}
@@ -590,9 +726,9 @@ export const LocationAwareEventExplorer: React.FC = () => {
                       <span className="text-[10px] text-slate-400 font-mono uppercase font-bold tracking-wider block">
                         {activeEvent.freeEntry ? 'Admission' : 'Tickets From'}
                       </span>
-                      <div className="text-base sm:text-lg font-black text-slate-950">
+                      <div className="text-base sm:text-lg font-black text-slate-950 font-mono">
                         {activeEvent.freeEntry ? (
-                          <span className="text-emerald-600">Free Admission (RSVP)</span>
+                          <span className={isComics ? 'text-[#ef4444]' : 'text-emerald-600'}>Free Admission (RSVP)</span>
                         ) : (
                           formatPrice(activeEvent.priceUSD, activeEvent.priceVND)
                         )}
@@ -603,7 +739,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleShare(activeEvent)}
-                        className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
+                        className={`p-2.5 transition-colors cursor-pointer ${
+                          isComics
+                            ? 'rounded-none border-2 border-black bg-white hover:bg-[#fef9c3] shadow-[2px_2px_0px_#000000] text-black'
+                            : 'rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                        }`}
                         title="Share event link"
                       >
                         {copiedLink ? <Check size={14} className="text-emerald-600" /> : <Share2 size={14} />}
@@ -616,12 +756,15 @@ export const LocationAwareEventExplorer: React.FC = () => {
                           setBookingCompleted(false);
                         }}
                         style={{
-                          backgroundColor: '#000000',
-                          color: '#ffffff',
+                          backgroundColor: isComics ? '#ffd60a' : '#000000',
+                          color: isComics ? '#000000' : '#ffffff',
+                          border: isComics ? '2px solid #000000' : 'none',
+                          boxShadow: isComics ? '3px 3px 0px #000000' : 'none',
+                          borderRadius: isComics ? '0px' : '12px',
                         }}
-                        className="px-4 py-2.5 rounded-xl hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                        className="px-4 py-2.5 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer font-mono"
                       >
-                        <Ticket size={13} style={{ color: '#ffffff' }} />
+                        <Ticket size={13} style={{ color: isComics ? '#000000' : '#ffffff' }} />
                         <span>{activeEvent.freeEntry ? 'RSVP Now' : 'Book Tickets'}</span>
                       </button>
                     </div>
@@ -629,14 +772,20 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
                 </div>
               ) : (
-                <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500 text-sm">
+                <div className={`p-8 text-center text-sm ${
+                  isComics
+                    ? 'rounded-none bg-white border-2 border-black text-black'
+                    : 'rounded-2xl bg-white border border-slate-200 text-slate-500'
+                }`}>
                   No events found within the selected radius. Try expanding your radius or selecting another city.
                 </div>
               )}
 
               {/* Quick Scrollable Nearby Events List Below Spotlight */}
               <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono block px-1">
+                <span className={`text-[11px] font-bold uppercase tracking-wider font-mono block px-1 ${
+                  isComics ? 'text-black' : 'text-slate-400'
+                }`}>
                   Other nearby venues ({filteredEvents.length}):
                 </span>
                 {filteredEvents.map(ev => {
@@ -645,15 +794,23 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     <div
                       key={ev.id}
                       onClick={() => setSelectedEventId(ev.id)}
-                      className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
-                        isCurrent 
-                          ? 'bg-blue-50/80 border-blue-400 shadow-2xs' 
-                          : 'bg-white border-slate-200/90 hover:border-slate-300 hover:bg-slate-50'
+                      className={`p-3 transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                        isComics
+                          ? isCurrent 
+                            ? 'bg-[#ffd60a] border-2 border-black shadow-[3px_3px_0px_#000000] rounded-none text-black' 
+                            : 'bg-white border-2 border-black hover:bg-[#fef9c3] rounded-none text-black shadow-[1px_1px_0px_#000000]'
+                          : isCurrent 
+                            ? 'bg-blue-50/80 border-blue-400 shadow-2xs rounded-xl' 
+                            : 'bg-white border-slate-200/90 hover:border-slate-300 hover:bg-slate-50 rounded-xl'
                       }`}
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 ${
+                            isComics
+                              ? 'bg-black text-white rounded-none'
+                              : 'rounded bg-slate-100 text-slate-700'
+                          }`}>
                             {ev.city}
                           </span>
                           <span className="text-xs font-bold text-slate-900 truncate block">
@@ -666,7 +823,9 @@ export const LocationAwareEventExplorer: React.FC = () => {
                       </div>
 
                       <div className="text-right shrink-0">
-                        <span className="text-[11px] font-mono font-bold text-blue-600 block">
+                        <span className={`text-[11px] font-mono font-bold block ${
+                          isComics ? 'text-[#ef4444]' : 'text-blue-600'
+                        }`}>
                           {ev.distanceKm} km
                         </span>
                         <span className="text-[10px] text-slate-400">
@@ -685,10 +844,17 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
         {/* --- VIEW MODE 2: CALENDAR VIEW --- */}
         {viewMode === 'calendar' && (
-          <div className="rounded-2xl bg-white border border-slate-200/90 shadow-sm p-6 sm:p-8">
+          <div className={`p-6 sm:p-8 ${
+            isComics
+              ? 'rounded-none bg-white border-3 border-black shadow-[6px_6px_0px_#000000]'
+              : 'rounded-2xl bg-white border border-slate-200/90 shadow-sm'
+          }`}>
             <div className="flex items-center justify-between mb-6 flex-wrap gap-4 pb-4 border-b border-slate-100">
               <div>
-                <h3 className="text-lg sm:text-xl font-black text-slate-900 uppercase">
+                <h3 
+                  className="text-lg sm:text-xl font-black text-slate-900 uppercase"
+                  style={{ fontFamily: isComics ? "var(--font-bangers), 'Bangers', cursive, sans-serif" : undefined }}
+                >
                   Fandom Event Schedule by Date
                 </h3>
                 <p className="text-xs text-slate-500 mt-1">
@@ -700,7 +866,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedDate('')}
-                  className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors"
+                  className={`px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer ${
+                    isComics
+                      ? 'rounded-none bg-[#ef4444] text-white border-2 border-black shadow-[2px_2px_0px_#000000]'
+                      : 'rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700'
+                  }`}
                 >
                   ✕ Clear date filter ({selectedDate})
                 </button>
@@ -718,10 +888,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     key={dateStr}
                     type="button"
                     onClick={() => setSelectedDate(isSelected ? '' : dateStr)}
-                    className={`p-3 rounded-xl border text-center transition-all cursor-pointer min-w-[100px] shrink-0 ${
-                      isSelected
-                        ? 'bg-slate-900 text-white border-slate-900 shadow-md'
-                        : 'bg-white border-slate-200 hover:border-blue-400 hover:bg-blue-50/50'
+                    className={`p-3 text-center transition-all cursor-pointer min-w-[100px] shrink-0 ${
+                      isComics
+                        ? isSelected
+                          ? 'rounded-none bg-[#ffd60a] text-black border-2 border-black shadow-[3px_3px_0px_#000000] font-bold'
+                          : 'rounded-none bg-white border-2 border-black hover:bg-[#fef9c3] text-black'
+                        : isSelected
+                          ? 'rounded-xl bg-slate-900 text-white border-slate-900 shadow-md'
+                          : 'rounded-xl bg-white border-slate-200 hover:border-blue-400 hover:bg-blue-50/50'
                     }`}
                   >
                     <span className="text-[10px] font-mono uppercase font-bold text-slate-400 block">
@@ -730,8 +904,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     <span className="text-base font-black block my-0.5">
                       {dateStr.split('-').slice(1).join('/')}
                     </span>
-                    <span className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-full inline-block ${
-                      isSelected ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-700'
+                    <span className={`text-[9.5px] font-bold px-1.5 py-0.5 inline-block ${
+                      isComics
+                        ? isSelected ? 'bg-black text-white rounded-none' : 'bg-[#fffdf0] border border-black text-black rounded-none'
+                        : isSelected ? 'bg-blue-500 text-white rounded-full' : 'bg-slate-100 text-slate-700 rounded-full'
                     }`}>
                       {count} {count === 1 ? 'event' : 'events'}
                     </span>
@@ -745,26 +921,37 @@ export const LocationAwareEventExplorer: React.FC = () => {
               {filteredEvents.map(ev => (
                 <div
                   key={ev.id}
-                  className="rounded-2xl overflow-hidden bg-white border border-slate-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between p-5"
+                  className={`overflow-hidden bg-white transition-all flex flex-col justify-between p-5 ${
+                    isComics
+                      ? 'rounded-none border-2 border-black shadow-[4px_4px_0px_#000000] hover:translate-y-[-2px]'
+                      : 'rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md'
+                  }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${getEventTypeBadge(ev.type).color}`}>
+                      <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                        isComics ? 'rounded-none border border-black shadow-[1px_1px_0px_#000000]' : 'rounded-full'
+                      } ${getEventTypeBadge(ev.type).color}`}>
                         {getEventTypeBadge(ev.type).label}
                       </span>
-                      <span className="text-xs font-mono font-bold text-blue-600">
+                      <span className={`text-xs font-mono font-bold ${isComics ? 'text-[#ef4444]' : 'text-blue-600'}`}>
                         {ev.distanceKm} km away
                       </span>
                     </div>
 
-                    <div className="relative aspect-[16/10] rounded-xl overflow-hidden mb-3 bg-slate-100">
+                    <div className={`relative aspect-[16/10] overflow-hidden mb-3 bg-slate-100 ${
+                      isComics ? 'rounded-none border-2 border-black' : 'rounded-xl'
+                    }`}>
                       <img src={ev.coverImage} alt={ev.title} className="w-full h-full object-cover" />
                     </div>
 
                     <span className="text-[10px] font-mono text-slate-400 font-bold block uppercase mb-1">
                       {ev.artistOrHost}
                     </span>
-                    <h4 className="text-base font-bold text-slate-900 line-clamp-1 mb-2">
+                    <h4 
+                      className="text-base font-bold text-slate-900 line-clamp-1 mb-2"
+                      style={{ fontFamily: isComics ? "var(--font-bangers), 'Bangers', cursive, sans-serif" : undefined }}
+                    >
                       {ev.title}
                     </h4>
                     <p className="text-xs text-slate-500 line-clamp-2 mb-3">
@@ -775,7 +962,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] text-slate-400 font-mono block">From</span>
-                      <strong className="text-sm font-black text-slate-900">
+                      <strong className="text-sm font-black text-slate-900 font-mono">
                         {ev.freeEntry ? 'Free' : formatPrice(ev.priceUSD, ev.priceVND)}
                       </strong>
                     </div>
@@ -783,8 +970,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setBookingEvent(ev)}
-                      style={{ backgroundColor: '#000000', color: '#ffffff' }}
-                      className="px-3.5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-slate-800 transition-colors"
+                      style={{
+                        backgroundColor: isComics ? '#ffd60a' : '#000000',
+                        color: isComics ? '#000000' : '#ffffff',
+                        border: isComics ? '2px solid #000000' : 'none',
+                        boxShadow: isComics ? '2px 2px 0px #000000' : 'none',
+                        borderRadius: isComics ? '0px' : '12px',
+                      }}
+                      className="px-3.5 py-2 text-xs font-bold uppercase tracking-wider cursor-pointer font-mono"
                     >
                       {ev.freeEntry ? 'RSVP' : 'Get Tickets'}
                     </button>
@@ -798,31 +991,46 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
         {/* --- VIEW MODE 3: FULL LIST VIEW --- */}
         {viewMode === 'list' && (
-          <div className="rounded-2xl bg-white border border-slate-200/90 shadow-sm overflow-hidden">
-            <div className="divide-y divide-slate-100">
+          <div className={`overflow-hidden ${
+            isComics
+              ? 'rounded-none bg-white border-3 border-black shadow-[6px_6px_0px_#000000]'
+              : 'rounded-2xl bg-white border border-slate-200/90 shadow-sm'
+          }`}>
+            <div className={`divide-y ${isComics ? 'divide-black' : 'divide-slate-100'}`}>
               {filteredEvents.map(ev => (
                 <div
                   key={ev.id}
-                  className="p-4 sm:p-6 hover:bg-slate-50/80 transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                  className={`p-4 sm:p-6 transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
+                    isComics ? 'hover:bg-[#fef9c3]/50' : 'hover:bg-slate-50/80'
+                  }`}
                 >
                   <div className="flex items-start gap-4 min-w-0 flex-1">
                     <img
                       src={ev.coverImage}
                       alt={ev.title}
-                      className="w-20 h-20 rounded-xl object-cover shrink-0 border border-slate-200"
+                      className={`w-20 h-20 object-cover shrink-0 ${
+                        isComics ? 'rounded-none border-2 border-black' : 'rounded-xl border border-slate-200'
+                      }`}
                     />
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className={`px-2 py-0.5 rounded text-[9.5px] font-bold uppercase ${getEventTypeBadge(ev.type).color}`}>
+                        <span className={`px-2 py-0.5 text-[9.5px] font-bold uppercase ${
+                          isComics ? 'rounded-none border border-black' : 'rounded'
+                        } ${getEventTypeBadge(ev.type).color}`}>
                           {getEventTypeBadge(ev.type).label}
                         </span>
-                        <span className="text-xs font-mono font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                        <span className={`text-xs font-mono font-bold px-2 py-0.5 ${
+                          isComics ? 'rounded-none bg-[#ffd60a] text-black border border-black' : 'rounded text-emerald-600 bg-emerald-50'
+                        }`}>
                           {ev.distanceKm} km away
                         </span>
                         <span className="text-xs text-slate-400">• {ev.date} ({ev.time})</span>
                       </div>
 
-                      <h4 className="text-base font-bold text-slate-900 leading-snug">
+                      <h4 
+                        className="text-base font-bold text-slate-900 leading-snug"
+                        style={{ fontFamily: isComics ? "var(--font-bangers), 'Bangers', cursive, sans-serif" : undefined }}
+                      >
                         {ev.title}
                       </h4>
                       <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
@@ -835,7 +1043,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end pt-3 md:pt-0 border-t md:border-t-0 border-slate-100">
                     <div className="text-left md:text-right">
                       <span className="text-[10px] text-slate-400 font-mono uppercase block">Tickets</span>
-                      <strong className="text-base font-black text-slate-900">
+                      <strong className="text-base font-black text-slate-900 font-mono">
                         {ev.freeEntry ? 'Free RSVP' : formatPrice(ev.priceUSD, ev.priceVND)}
                       </strong>
                     </div>
@@ -847,7 +1055,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                           const url = `https://www.google.com/maps/dir/?api=1&destination=${ev.lat},${ev.lng}`;
                           window.open(url, '_blank');
                         }}
-                        className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
+                        className={`p-2.5 transition-colors cursor-pointer ${
+                          isComics
+                            ? 'rounded-none border-2 border-black bg-white hover:bg-[#fef9c3] text-black shadow-[2px_2px_0px_#000000]'
+                            : 'rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                        }`}
                         title="Google Maps Directions"
                       >
                         <Compass size={14} />
@@ -856,8 +1068,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setBookingEvent(ev)}
-                        style={{ backgroundColor: '#000000', color: '#ffffff' }}
-                        className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white hover:bg-slate-800 transition-all cursor-pointer shrink-0"
+                        style={{
+                          backgroundColor: isComics ? '#ffd60a' : '#000000',
+                          color: isComics ? '#000000' : '#ffffff',
+                          border: isComics ? '2px solid #000000' : 'none',
+                          boxShadow: isComics ? '3px 3px 0px #000000' : 'none',
+                          borderRadius: isComics ? '0px' : '12px',
+                        }}
+                        className="px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shrink-0 font-mono"
                       >
                         {ev.freeEntry ? 'RSVP Now' : 'Book Tickets'}
                       </button>
@@ -874,7 +1092,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
       {/* ==================== 5. MODAL: TICKETS & MEETUP RSVP ==================== */}
       {bookingEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200 relative">
+          <div className={`max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative ${
+            isComics
+              ? 'rounded-none bg-[#fffdf0] border-4 border-black shadow-[10px_10px_0px_#000000]'
+              : 'bg-white rounded-3xl shadow-2xl border border-slate-200'
+          }`}>
             
             {/* Close Button */}
             <button
@@ -883,7 +1105,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 setBookingEvent(null);
                 setBookingCompleted(false);
               }}
-              className="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-900 transition-colors cursor-pointer"
+              className={`absolute top-5 right-5 p-2 transition-colors cursor-pointer ${
+                isComics
+                  ? 'rounded-none border-2 border-black bg-white hover:bg-black hover:text-white text-black'
+                  : 'rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-900'
+              }`}
             >
               <X size={18} />
             </button>
@@ -891,7 +1117,9 @@ export const LocationAwareEventExplorer: React.FC = () => {
             {!bookingCompleted ? (
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${getEventTypeBadge(bookingEvent.type).color}`}>
+                  <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase ${
+                    isComics ? 'rounded-none border border-black' : 'rounded-full'
+                  } ${getEventTypeBadge(bookingEvent.type).color}`}>
                     {getEventTypeBadge(bookingEvent.type).label}
                   </span>
                   <span className="text-xs font-mono font-bold text-slate-500">
@@ -899,7 +1127,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   </span>
                 </div>
 
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900 uppercase pr-8 mb-2">
+                <h3 
+                  className="text-xl sm:text-2xl font-black text-slate-900 uppercase pr-8 mb-2"
+                  style={{ fontFamily: isComics ? "var(--font-bangers), 'Bangers', cursive, sans-serif" : undefined }}
+                >
                   {bookingEvent.title}
                 </h3>
                 <p className="text-xs text-slate-500 mb-6 flex items-center gap-1.5">
@@ -918,10 +1149,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         <label
                           key={idx}
                           onClick={() => setSelectedTierIndex(idx)}
-                          className={`p-3.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
-                            selectedTierIndex === idx
-                              ? 'bg-blue-50 border-blue-600 shadow-2xs'
-                              : 'bg-white border-slate-200 hover:border-slate-300'
+                          className={`p-3.5 border flex items-center justify-between cursor-pointer transition-all ${
+                            isComics
+                              ? selectedTierIndex === idx
+                                ? 'rounded-none bg-[#ffd60a] border-2 border-black shadow-[2px_2px_0px_#000000]'
+                                : 'rounded-none bg-white border-2 border-black hover:bg-[#fef9c3]'
+                              : selectedTierIndex === idx
+                                ? 'rounded-xl bg-blue-50 border-blue-600 shadow-2xs'
+                                : 'rounded-xl bg-white border-slate-200 hover:border-slate-300'
                           }`}
                         >
                           <div className="min-w-0 pr-2">
@@ -931,7 +1166,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                                 name="tier"
                                 checked={selectedTierIndex === idx}
                                 onChange={() => setSelectedTierIndex(idx)}
-                                className="accent-blue-600"
+                                className={isComics ? 'accent-[#ef4444]' : 'accent-blue-600'}
                               />
                               <span className="text-xs font-bold text-slate-900">{tier.name}</span>
                             </div>
@@ -941,7 +1176,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                           </div>
 
                           <div className="text-right shrink-0">
-                            <span className="text-sm font-black text-slate-900">
+                            <span className="text-sm font-black text-slate-900 font-mono">
                               {formatPrice(tier.priceUSD, tier.priceVND)}
                             </span>
                           </div>
@@ -956,15 +1191,23 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setTicketQuantity(Math.max(1, ticketQuantity - 1))}
-                          className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center font-bold text-slate-700 hover:bg-slate-100"
+                          className={`w-8 h-8 flex items-center justify-center font-bold cursor-pointer ${
+                            isComics
+                              ? 'rounded-none border-2 border-black bg-white hover:bg-black hover:text-white text-black'
+                              : 'rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100'
+                          }`}
                         >
                           -
                         </button>
-                        <span className="text-sm font-bold text-slate-900 w-6 text-center">{ticketQuantity}</span>
+                        <span className="text-sm font-bold text-slate-900 w-6 text-center font-mono">{ticketQuantity}</span>
                         <button
                           type="button"
                           onClick={() => setTicketQuantity(Math.min(4, ticketQuantity + 1))}
-                          className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center font-bold text-slate-700 hover:bg-slate-100"
+                          className={`w-8 h-8 flex items-center justify-center font-bold cursor-pointer ${
+                            isComics
+                              ? 'rounded-none border-2 border-black bg-white hover:bg-black hover:text-white text-black'
+                              : 'rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100'
+                          }`}
                         >
                           +
                         </button>
@@ -973,7 +1216,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   </div>
                 ) : (
                   /* Free Meetup RSVP Form */
-                  <div className="space-y-3 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                  <div className={`space-y-3 mb-6 p-4 border ${
+                    isComics
+                      ? 'rounded-none bg-white border-2 border-black shadow-[2px_2px_0px_#000000]'
+                      : 'rounded-2xl bg-slate-50 border-slate-200'
+                  }`}>
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-900 block font-mono">
                       Attendee Information (Free RSVP):
                     </span>
@@ -983,7 +1230,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         type="text"
                         value={rsvpName}
                         onChange={e => setRsvpName(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                        className={`w-full px-3 py-2 text-xs text-slate-900 focus:outline-none ${
+                          isComics
+                            ? 'rounded-none bg-white border-2 border-black focus:border-[#ef4444]'
+                            : 'rounded-xl bg-white border border-slate-200 focus:border-blue-500'
+                        }`}
                         placeholder="Alex Morgan"
                       />
                     </div>
@@ -994,7 +1245,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                           type="email"
                           value={rsvpEmail}
                           onChange={e => setRsvpEmail(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                          className={`w-full px-3 py-2 text-xs text-slate-900 focus:outline-none ${
+                            isComics
+                              ? 'rounded-none bg-white border-2 border-black focus:border-[#ef4444]'
+                              : 'rounded-xl bg-white border border-slate-200 focus:border-blue-500'
+                          }`}
                         />
                       </div>
                       <div>
@@ -1003,7 +1258,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                           type="text"
                           value={rsvpPhone}
                           onChange={e => setRsvpPhone(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                          className={`w-full px-3 py-2 text-xs text-slate-900 focus:outline-none ${
+                            isComics
+                              ? 'rounded-none bg-white border-2 border-black focus:border-[#ef4444]'
+                              : 'rounded-xl bg-white border border-slate-200 focus:border-blue-500'
+                          }`}
                         />
                       </div>
                     </div>
@@ -1014,7 +1273,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
                   <div>
                     <span className="text-[10px] text-slate-400 font-mono block">Total Due</span>
-                    <strong className="text-lg font-black text-slate-950">
+                    <strong className="text-lg font-black text-slate-950 font-mono">
                       {bookingEvent.freeEntry
                         ? '$0.00 (Free)'
                         : formatPrice(
@@ -1027,8 +1286,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setBookingCompleted(true)}
-                    style={{ backgroundColor: '#000000', color: '#ffffff' }}
-                    className="px-6 py-3 rounded-xl hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+                    style={{
+                      backgroundColor: isComics ? '#ffd60a' : '#000000',
+                      color: isComics ? '#000000' : '#ffffff',
+                      border: isComics ? '2px solid #000000' : 'none',
+                      boxShadow: isComics ? '4px 4px 0px #000000' : 'none',
+                      borderRadius: isComics ? '0px' : '12px',
+                    }}
+                    className="px-6 py-3 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer font-mono"
                   >
                     {bookingEvent.freeEntry ? 'Confirm Free RSVP' : 'Confirm & Issue Ticket'}
                   </button>
@@ -1037,11 +1302,18 @@ export const LocationAwareEventExplorer: React.FC = () => {
             ) : (
               /* Success Confirmation with Barcode & Google Maps Direction Link */
               <div className="text-center py-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+                <div className={`w-16 h-16 flex items-center justify-center mx-auto mb-4 border ${
+                  isComics
+                    ? 'rounded-none bg-[#ffd60a] text-black border-2 border-black shadow-[3px_3px_0px_#000000]'
+                    : 'rounded-full bg-emerald-100 text-emerald-600 border-emerald-200'
+                }`}>
                   <CheckCircle2 size={32} />
                 </div>
 
-                <h3 className="text-2xl font-black text-slate-900 uppercase mb-1">
+                <h3 
+                  className="text-2xl font-black text-slate-900 uppercase mb-1"
+                  style={{ fontFamily: isComics ? "var(--font-bangers), 'Bangers', cursive, sans-serif" : undefined }}
+                >
                   {bookingEvent.freeEntry ? 'RSVP Registration Confirmed!' : 'Ticket Order Successful!'}
                 </h3>
                 <p className="text-xs text-slate-600 max-w-md mx-auto mb-6">
@@ -1049,17 +1321,28 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 </p>
 
                 {/* Digital Ticket Mock Card */}
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 max-w-sm mx-auto mb-6 text-left relative overflow-hidden">
+                <div className={`p-5 max-w-sm mx-auto mb-6 text-left relative overflow-hidden ${
+                  isComics
+                    ? 'rounded-none bg-white border-3 border-black shadow-[5px_5px_0px_#000000]'
+                    : 'rounded-2xl bg-slate-50 border border-slate-200'
+                }`}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[10px] font-mono font-bold text-slate-400 uppercase">
                       FAN HUB PLUS VERIFIED PASS
                     </span>
-                    <span className="text-[10px] font-mono font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded">
+                    <span className={`text-[10px] font-mono font-bold px-2 py-0.5 ${
+                      isComics
+                        ? 'rounded-none bg-[#ffd60a] text-black border border-black'
+                        : 'rounded text-emerald-600 bg-emerald-100'
+                    }`}>
                       ACTIVE
                     </span>
                   </div>
 
-                  <h4 className="text-sm font-bold text-slate-900 truncate">
+                  <h4 
+                    className="text-sm font-bold text-slate-900 truncate"
+                    style={{ fontFamily: isComics ? "var(--font-bangers), 'Bangers', cursive, sans-serif" : undefined }}
+                  >
                     {bookingEvent.title}
                   </h4>
                   <p className="text-[11px] text-slate-500 mt-0.5">
@@ -1067,30 +1350,34 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   </p>
 
                   {/* Blockchain QR Code Simulation */}
-                    <div className="mt-4 pt-4 border-t border-slate-200 border-dashed flex flex-col items-center">
-                      <div className="p-2 bg-white rounded-xl shadow-sm border border-slate-200">
-                        <QRCode 
-                          value={`https://sepolia.etherscan.io/tx/0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa`} 
-                          size={100} 
-                          style={{ height: "auto", maxWidth: "100px", width: "100%" }}
-                          viewBox={`0 0 100 100`}
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 text-left bg-slate-900 rounded-lg p-3">
-                        <div className="text-[10px] text-slate-400 font-mono uppercase mb-1 flex items-center justify-between">
-                            <span>Blockchain Ticket</span>
-                            <span className="text-emerald-400 font-bold">MINTED</span>
-                        </div>
-                        <div className="text-[11px] text-white font-mono break-all leading-tight">
-                            TxHash: <span className="text-blue-300">0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa</span>
-                        </div>
-                        <div className="text-[11px] text-white font-mono mt-1">
-                            TokenID: <span className="text-pink-400">#7077</span>
-                        </div>
+                  <div className="mt-4 pt-4 border-t border-slate-200 border-dashed flex flex-col items-center">
+                    <div className={`p-2 bg-white ${
+                      isComics ? 'rounded-none border-2 border-black' : 'rounded-xl shadow-sm border border-slate-200'
+                    }`}>
+                      <QRCode 
+                        value={`https://sepolia.etherscan.io/tx/0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa`} 
+                        size={100} 
+                        style={{ height: "auto", maxWidth: "100px", width: "100%" }}
+                        viewBox={`0 0 100 100`}
+                      />
                     </div>
                   </div>
+                  
+                  <div className={`mt-4 text-left p-3 ${
+                    isComics ? 'bg-black rounded-none border-2 border-white' : 'bg-slate-900 rounded-lg'
+                  }`}>
+                    <div className="text-[10px] text-slate-400 font-mono uppercase mb-1 flex items-center justify-between">
+                      <span>Blockchain Ticket</span>
+                      <span className="text-emerald-400 font-bold">MINTED</span>
+                    </div>
+                    <div className="text-[11px] text-white font-mono break-all leading-tight">
+                      TxHash: <span className="text-blue-300">0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa</span>
+                    </div>
+                    <div className="text-[11px] text-white font-mono mt-1">
+                      TokenID: <span className="text-pink-400">#7077</span>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Actions */}
                 <div className="flex items-center justify-center gap-3">
@@ -1100,7 +1387,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                       const url = `https://www.google.com/maps/dir/?api=1&destination=${bookingEvent.lat},${bookingEvent.lng}`;
                       window.open(url, '_blank');
                     }}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold uppercase transition-all shadow-sm cursor-pointer"
+                    className={`inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold uppercase transition-all cursor-pointer font-mono ${
+                      isComics
+                        ? 'bg-[#ef4444] hover:bg-[#dc2626] text-white border-2 border-black shadow-[2px_2px_0px_#000000] rounded-none'
+                        : 'rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
+                    }`}
                   >
                     <Compass size={14} />
                     <span>Open Google Maps Directions</span>
@@ -1112,7 +1403,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
                       setBookingEvent(null);
                       setBookingCompleted(false);
                     }}
-                    className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-bold uppercase transition-all cursor-pointer"
+                    className={`px-4 py-2.5 text-xs font-bold uppercase transition-all cursor-pointer font-mono ${
+                      isComics
+                        ? 'rounded-none border-2 border-black bg-white hover:bg-[#fef9c3] text-black shadow-[2px_2px_0px_#000000]'
+                        : 'rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100'
+                    }`}
                   >
                     Close
                   </button>

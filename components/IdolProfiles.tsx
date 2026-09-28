@@ -871,6 +871,88 @@ import { useDomainTheme } from '../context/DomainContext';
 import { filterArtistsByDomain } from '../utils/domainFilters';
 import { Bookmark, Share2, Check, Copy, X } from 'lucide-react';
 
+const getCategoryBadgeStyles = (cat?: string) => {
+  const c = (cat || '').toLowerCase();
+  if (c.includes('gaming')) {
+    return {
+      badgeBg: '#00f0ff',
+      badgeText: '#000000',
+      tagColor: '#00f0ff',
+      avatarShadow: '3px 3px 0px #00f0ff',
+      hoverBorder: 'hover:border-[#00f0ff]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#00f0ff]'
+    };
+  }
+  if (c.includes('manga')) {
+    return {
+      badgeBg: '#ff4d4d',
+      badgeText: '#ffffff',
+      tagColor: '#ff4d4d',
+      avatarShadow: '3px 3px 0px #ff4d4d',
+      hoverBorder: 'hover:border-[#ff4d4d]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#ff4d4d]'
+    };
+  }
+  if (c.includes('anime')) {
+    return {
+      badgeBg: '#a3e635',
+      badgeText: '#000000',
+      tagColor: '#84cc16',
+      avatarShadow: '3px 3px 0px #a3e635',
+      hoverBorder: 'hover:border-[#84cc16]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#84cc16]'
+    };
+  }
+  if (c.includes('cosplay')) {
+    return {
+      badgeBg: '#D02020',
+      badgeText: '#ffffff',
+      tagColor: '#D02020',
+      avatarShadow: '3px 3px 0px #D02020',
+      hoverBorder: 'hover:border-[#D02020]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#D02020]'
+    };
+  }
+  if (c.includes('comic')) {
+    return {
+      badgeBg: '#38bdf8',
+      badgeText: '#000000',
+      tagColor: '#38bdf8',
+      avatarShadow: '3px 3px 0px #ffd60a',
+      hoverBorder: 'hover:border-[#38bdf8]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#38bdf8]'
+    };
+  }
+  if (c.includes('movie') || c.includes('cinema')) {
+    return {
+      badgeBg: '#d4af37',
+      badgeText: '#000000',
+      tagColor: '#d4af37',
+      avatarShadow: '3px 3px 0px #d4af37',
+      hoverBorder: 'hover:border-[#d4af37]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#d4af37]'
+    };
+  }
+  if (c.includes('tv')) {
+    return {
+      badgeBg: '#c084fc',
+      badgeText: '#000000',
+      tagColor: '#c084fc',
+      avatarShadow: '3px 3px 0px #ffd60a',
+      hoverBorder: 'hover:border-[#c084fc]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#c084fc]'
+    };
+  }
+  return {
+    badgeBg: '#d91470',
+    badgeText: '#ffffff',
+    tagColor: '#d91470',
+    avatarShadow: '3px 3px 0px #ff2e93',
+    hoverBorder: 'hover:border-[#d91470]',
+    hoverShadow: 'hover:shadow-[4px_4px_0px_#ff2e93]'
+  };
+};
+
 export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fandomCategory }) => {
   const { currentDomain, activeSubCategory, activeConfig } = useDomainTheme();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -878,6 +960,15 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
   const [activeDossierArtist, setActiveDossierArtist] = useState<Artist | null>(null);
   const [activeCardTab, setActiveCardTab] = useState<Record<string, 'lore' | 'catalog' | 'fan'>>({});
   const [modalActiveTab, setModalActiveTab] = useState<'lore' | 'characters' | 'catalog' | 'fan'>('lore');
+
+  const isManga = selectedCategory === 'manga' || fandomCategory?.toLowerCase().includes('manga');
+  const isGaming = selectedCategory === 'gaming' || fandomCategory?.toLowerCase().includes('gaming') || fandomCategory?.toLowerCase().includes('game');
+  const isAnime = selectedCategory === 'anime' || fandomCategory?.toLowerCase().includes('anime');
+  const isCosplay = selectedCategory === 'cosplay' || fandomCategory?.toLowerCase().includes('cosplay');
+  const isComics = selectedCategory === 'comics' || fandomCategory?.toLowerCase().includes('comic');
+  const isCinema = selectedCategory === 'movie' || selectedCategory === 'cinema' || fandomCategory?.toLowerCase().includes('movie') || fandomCategory?.toLowerCase().includes('cinema');
+  const isTv = selectedCategory === 'tv' || fandomCategory?.toLowerCase().includes('tv');
+  const isKpop = selectedCategory === 'k-pop' || fandomCategory?.toLowerCase().includes('kpop') || fandomCategory?.toLowerCase().includes('k-pop');
 
   // SRS 1.6: Bookmarking & Sharing characters & artists
   const [bookmarkedArtists, setBookmarkedArtists] = useState<Record<string, boolean>>(() => {
@@ -966,15 +1057,21 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
         setSelectedCategory('movie');
       } else if (fc.includes('tv')) {
         setSelectedCategory('tv');
-      } else if (fc === 'all') {
+      } else if (fc === 'all' || fc.includes('all')) {
         setSelectedCategory('all');
       }
     }
   }, [fandomCategory]);
 
   const domainFilteredArtists = useMemo(() => {
-    return filterArtistsByDomain(mockArtists, currentDomain, activeSubCategory);
-  }, [currentDomain, activeSubCategory]);
+    // When a fandom category is selected or provided by the page, use mockArtists directly
+    // so non-music domains (Gaming, Anime, Manga, Cosplay, Comics, Cinema, TV) are not filtered out
+    if (fandomCategory || selectedCategory !== 'all') {
+      return mockArtists;
+    }
+    const filtered = filterArtistsByDomain(mockArtists, currentDomain, activeSubCategory);
+    return filtered.length > 0 ? filtered : mockArtists;
+  }, [fandomCategory, selectedCategory, currentDomain, activeSubCategory]);
 
   // Filter artists
   const filteredArtists = useMemo(() => {
@@ -988,7 +1085,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
               ? artist.category === 'K-Pop' 
               : selectedCategory === 'anime' 
                 ? artist.category === 'Anime' 
-                : selectedCategory === 'movie' 
+                : (selectedCategory === 'movie' || selectedCategory === 'cinema' || selectedCategory === 'movies')
                   ? (artist.category === 'Movies' || artist.category === 'Movie') 
                   : selectedCategory === 'gaming' 
                     ? artist.category === 'Gaming' 
@@ -998,7 +1095,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         ? artist.category === 'Manga'
                         : selectedCategory === 'comics'
                           ? artist.category === 'Comics'
-                          : selectedCategory === 'tv'
+                          : (selectedCategory === 'tv' || selectedCategory === 'tv shows')
                             ? artist.category === 'TV Shows'
                             : true;
 
@@ -1112,12 +1209,38 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
           >
             <div className="flex-1 max-w-2xl">
               <h2
+                style={{
+                  fontFamily: isManga ? "'Kalam', cursive" : isCinema ? "'Playfair Display', Georgia, serif" : isComics ? "'Bangers', cursive" : isGaming ? "var(--font-mono)" : undefined
+                }}
                 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-tight tracking-tight text-black m-0"
               >
-                Fandom Universes{' '}
-                <em className="font-serif italic font-normal text-[#d91470] drop-shadow-[1px_1px_0px_#000000]">
-                  &amp; Character Dossiers
-                </em>
+                {isGaming ? (
+                  <>Roster Index <em style={{ fontStyle: 'normal', color: '#0891b2' }}>// Canonical Character Dossiers</em></>
+                ) : isManga ? (
+                  <>Mangaka Roster <em style={{ fontStyle: 'italic', color: '#e11d48' }}>&amp; Character Archives</em></>
+                ) : isAnime ? (
+                  <>Voice Cast &amp; Studios <em style={{ fontStyle: 'normal', color: '#4d7c0f' }}>// Canonical Dossiers</em></>
+                ) : isCosplay ? (
+                  <>Constructors &amp; Ateliers <em style={{ fontStyle: 'italic', color: '#D02020' }}>&amp; Costume Archives</em></>
+                ) : isComics ? (
+                  <>Multiverse Registry <em style={{ fontStyle: 'normal', color: '#dc2626' }}>// Character Archives</em></>
+                ) : isCinema ? (
+                  <>Auteurs &amp; Directors <em style={{ fontStyle: 'italic', color: '#d4af37' }}>&amp; Film Monographs</em></>
+                ) : isTv ? (
+                  <>Ensemble Casts <em style={{ fontStyle: 'normal', color: '#c084fc' }}>&amp; Episode Dossiers</em></>
+                ) : isKpop ? (
+                  <>Idol Roster{' '}
+                    <em className="font-serif italic font-normal text-[#d91470] drop-shadow-[1px_1px_0px_#000000]">
+                      &amp; Member Matrices
+                    </em>
+                  </>
+                ) : (
+                  <>Character Dossiers{' '}
+                    <em className="font-serif italic font-normal text-[#d91470] drop-shadow-[1px_1px_0px_#000000]">
+                      &amp; Fandom Archives
+                    </em>
+                  </>
+                )}
               </h2>
               <p
                 style={{
@@ -1128,8 +1251,21 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                   lineHeight: 1.6,
                 }}
               >
-                Curated archive of legendary K-Pop groups, Anime icons, and Gaming franchises. 
-                Explore key character dossiers, canonical universe lore, catalog collections, and official fandom perks.
+                {isGaming
+                  ? 'Official dossiers of World Champion esports icons, Riot Games legends, and HoYo-MiX symphonic orchestrators.'
+                  : isManga
+                  ? 'Weekly Shonen Jump archives, master mangaka manuscripts, and legendary pirate & ninja lore.'
+                  : isAnime
+                  ? 'Curated archive of landmark anime studios, premier seiyuu voice talents, and supernatural sorcery.'
+                  : isCosplay
+                  ? 'Bauhaus theatrical ateliers, avant-garde constructivism, geometric silhouettes, and living architecture.'
+                  : isComics
+                  ? 'Pop-art superhero multiverse, vintage comic panels, variant cover editions, and iconic graphic lore.'
+                  : isCinema
+                  ? '70mm photochemical cinema archives, auteur director monographs, and uncompressed analog scores.'
+                  : isTv
+                  ? 'Retro television binge vault, 80s synthwave mysteries, and ensemble cast character biographies.'
+                  : 'Curated archive of legendary K-Pop groups, Anime icons, and Gaming franchises. Explore key character dossiers, canonical universe lore, catalog collections, and official fandom perks.'}
               </p>
             </div>
 
@@ -1250,6 +1386,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
             {filteredArtists.map((artist) => {
               const dossier = UNIVERSE_DOSSIERS[artist.id];
               const currentTab = getCardTab(artist.id);
+              const badgeStyle = getCategoryBadgeStyles(artist.category);
 
               return (
                 <div
@@ -1263,7 +1400,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                   }}
-                  className="group hover:border-black transition-all"
+                  className={`group ${badgeStyle.hoverBorder} ${badgeStyle.hoverShadow} transition-all`}
                 >
                   
                   {/* Card Banner Image & Integrated Avatar */}
@@ -1298,7 +1435,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                       }} 
                     />
 
-                    {/* Top Badges (Vibrant Y2K Pop Badges) */}
+                    {/* Top Badges (Vibrant Category Badges) */}
                     <div 
                       style={{
                         position: 'absolute',
@@ -1319,8 +1456,8 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           textTransform: 'uppercase',
                           letterSpacing: '0.12em',
                           padding: '4px 10px',
-                          backgroundColor: '#d91470',
-                          color: '#ffffff',
+                          backgroundColor: badgeStyle.badgeBg,
+                          color: badgeStyle.badgeText,
                           borderRadius: '0px',
                           border: '2px solid #000000',
                           boxShadow: '2px 2px 0px #000000',
@@ -1368,7 +1505,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           backgroundColor: '#ffd60a',
                           overflow: 'hidden',
                           flexShrink: 0,
-                          boxShadow: '3px 3px 0px #ff2e93',
+                          boxShadow: badgeStyle.avatarShadow,
                         }}
                       >
                         <Image
@@ -1434,7 +1571,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ color: '#d91470', fontWeight: 800, textTransform: 'uppercase' }}>
+                          <span style={{ color: badgeStyle.tagColor, fontWeight: 800, textTransform: 'uppercase' }}>
                             FANDOM //
                           </span>
                           <span style={{ fontWeight: 900, color: '#000000' }}>

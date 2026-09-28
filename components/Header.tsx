@@ -135,7 +135,7 @@ export const Header: React.FC<HeaderProps> = ({
   const isCosplay = effectiveTheme === 'cosplay' || pathname?.startsWith('/cosplay');
   const isAnime = effectiveTheme === 'anime' || pathname?.startsWith('/anime');
   const isCinema = effectiveTheme === 'cinema' || pathname?.startsWith('/cinema');
-  const isComics = effectiveTheme === 'comics' || pathname?.startsWith('/comics');
+  const isComics = effectiveTheme === 'comics' || pathname?.startsWith('/comics') || fandomCategory?.toLowerCase().includes('comic') || fandomThemeKey?.toLowerCase().includes('comic');
   const isTvShows = effectiveTheme === 'tv' || pathname?.startsWith('/tv');
 
   const loginTheme = React.useMemo(() => {
@@ -373,22 +373,22 @@ export const Header: React.FC<HeaderProps> = ({
     }
     if (isComics) {
       return {
-        barBg: '#fffdf0',
+        barBg: '#fef9c3',
         barBorder: 'border-t-2 border-black border-b-4 border-black',
-        btnBg: '#ffd60a',
-        btnColor: '#000000',
-        btnBorder: '2px solid #000000',
+        btnBg: '#ef4444',
+        btnColor: '#ffffff',
+        btnBorder: '2.5px solid #000000',
         btnRadius: '0px',
-        btnShadow: '3px 3px 0px #ef4444',
-        btnFont: "'Bangers', 'Space Grotesk', sans-serif",
+        btnShadow: '3px 3px 0px #000000',
+        btnFont: "var(--font-bangers), 'Bangers', cursive, sans-serif",
         btnLabel: '★ COMICS MD',
-        tabFont: "'Bangers', 'Space Grotesk', sans-serif",
+        tabFont: "var(--font-bangers), 'Bangers', cursive, sans-serif",
         tabColor: '#000000',
         tabActiveColor: '#ef4444',
         tabActiveBorder: '3px solid #ef4444',
         tabLetterSpacing: '0.08em',
-        tabFontWeight: 700,
-        tabActiveWeight: 900,
+        tabFontWeight: 400,
+        tabActiveWeight: 400,
         fandomQuery: 'comics',
       };
     }
@@ -598,8 +598,8 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-[100] w-full header-root fandom-header-${fandomThemeKey} transition-all duration-300${isScrolled ? ' header-scrolled' : ''}`}
-      data-fandom-theme={fandomThemeKey}
+      className={`sticky top-0 z-[100] w-full header-root fandom-header-${effectiveTheme} transition-all duration-300${isScrolled ? ' header-scrolled' : ''}`}
+      data-fandom-theme={effectiveTheme}
     >
       {/* Y2K System Status Ribbon */}
       <div className={`w-full ${isGaming ? 'bg-white text-black' : 'bg-black text-white'} px-4 sm:px-8 py-1 font-mono text-[10px] font-bold tracking-widest uppercase flex items-center justify-between border-b border-black select-none`}>
@@ -622,7 +622,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2.5 sm:gap-4 md:gap-5 shrink-0">
           <button
             onClick={() => setIsMenuDrawerOpen(true)}
-            className={`mobile-menu-btn header-action-btn px-3 py-1.5 min-h-[44px] min-w-[44px] ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : isCinema ? 'bg-[#FF3000] text-white hover:bg-black shadow-none' : isCosplay ? 'bg-[#D02020] text-white hover:bg-[#b01818] shadow-[3px_3px_0px_#121212]' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] shadow-[2px_2px_0px_#000000]' : 'bg-[#d91470] text-white hover:bg-[#be185d] shadow-[2px_2px_0px_#000000]'} items-center justify-center cursor-pointer shrink-0 border-2 border-black font-mono text-xs font-black uppercase tracking-widest transition-transform active:scale-95`}
+            className={`mobile-menu-btn header-action-btn px-3 py-1.5 min-h-[44px] min-w-[44px] ${isGaming ? 'bg-black text-white hover:bg-white hover:text-black shadow-none' : isCinema ? 'bg-[#FF3000] text-white hover:bg-black shadow-none' : isCosplay ? 'bg-[#D02020] text-white hover:bg-[#b01818] shadow-[3px_3px_0px_#121212]' : isAnime ? 'bg-[#a3e635] text-black hover:bg-[#84cc16] shadow-[2px_2px_0px_#000000]' : isComics ? 'bg-[#ef4444] text-white hover:bg-[#dc2626] shadow-[3px_3px_0px_#000000]' : 'bg-[#d91470] text-white hover:bg-[#be185d] shadow-[2px_2px_0px_#000000]'} items-center justify-center cursor-pointer shrink-0 border-2 border-black font-mono text-xs font-black uppercase tracking-widest transition-transform active:scale-95`}
             style={{ borderRadius: '0px' }}
             title="Menu"
             aria-label="Toggle navigation menu"
@@ -654,7 +654,7 @@ export const Header: React.FC<HeaderProps> = ({
               alignItems: 'center',
               border: '2px solid #000000',
               backgroundColor: '#ffffff',
-              boxShadow: isGaming || isCinema ? 'none' : isCosplay ? '4px 4px 0px #121212' : isAnime ? '4px 4px 0px #84cc16' : '3px 3px 0px #000000',
+              boxShadow: isGaming || isCinema ? 'none' : isCosplay ? '4px 4px 0px #121212' : isAnime ? '4px 4px 0px #84cc16' : isComics ? '4px 4px 0px #000000' : '3px 3px 0px #000000',
               padding: '6px 12px',
               borderRadius: '0px',
             }}
@@ -665,7 +665,7 @@ export const Header: React.FC<HeaderProps> = ({
                 fontFamily: isCosplay ? "var(--font-outfit), 'Outfit', sans-serif" : "var(--font-jetbrains), var(--font-mono), 'JetBrains Mono', monospace",
                 fontSize: '11px',
                 fontWeight: 900,
-                color: isGaming ? '#000000' : isCinema ? '#FF3000' : isCosplay ? '#D02020' : isAnime ? '#65a30d' : '#d91470',
+                color: isGaming ? '#000000' : isCinema ? '#FF3000' : isCosplay ? '#D02020' : isAnime ? '#65a30d' : isComics ? '#ef4444' : '#d91470',
                 marginRight: '8px',
                 userSelect: 'none',
               }}
@@ -677,7 +677,7 @@ export const Header: React.FC<HeaderProps> = ({
               id="desktop-header-search"
               aria-label="Search albums, artists, or tours"
               type="text"
-              placeholder={isManga ? "MANGA, TANKŌBON, AUTHOR, ARC..." : isCinema ? "70MM ARCHIVE, AUTEUR, RESTORATIONS, CRITERION..." : isCosplay ? "BAUHAUS COSPLAY, ATELIER PROPS, EXPO..." : isAnime ? "SHONEN ANIME, PEDIDO STREETWEAR, OSTS..." : "ARTIST, ALBUM, ARCHIVE..."}
+              placeholder={isManga ? "MANGA, TANKŌBON, AUTHOR, ARC..." : isCinema ? "70MM ARCHIVE, AUTEUR, RESTORATIONS, CRITERION..." : isCosplay ? "BAUHAUS COSPLAY, ATELIER PROPS, EXPO..." : isAnime ? "SHONEN ANIME, PEDIDO STREETWEAR, OSTS..." : isComics ? "COMICS, HEROES, VARIANT COVERS, GRAPHIC NOVELS..." : "ARTIST, ALBUM, ARCHIVE..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
@@ -1027,9 +1027,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <Link
                   key={tab.label}
                   href={targetHref}
+                  data-active={isActive ? "true" : undefined}
                   style={{
                     fontFamily: subnavTheme.tabFont,
-                    fontSize: '12px',
+                    fontSize: isComics ? '15px' : '12px',
                     fontWeight: isActive ? subnavTheme.tabActiveWeight : subnavTheme.tabFontWeight,
                     letterSpacing: subnavTheme.tabLetterSpacing,
                     textTransform: 'uppercase',
@@ -1042,7 +1043,7 @@ export const Header: React.FC<HeaderProps> = ({
                     borderBottom: isActive ? subnavTheme.tabActiveBorder : '3px solid transparent',
                     textDecoration: 'none',
                   }}
-                  className="hover:opacity-70"
+                  className={`header-nav-link hover:opacity-70 ${isActive ? 'active' : ''}`}
                 >
                   {tab.label}
                 </Link>
