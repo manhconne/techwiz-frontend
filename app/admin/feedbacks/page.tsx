@@ -34,6 +34,7 @@ import {
   SlidersHorizontal,
   Flame,
   FileText,
+  WifiOff,
 } from 'lucide-react';
 
 export interface FeedbackUser {
@@ -55,58 +56,7 @@ export interface AdminFeedbackItem {
   [key: string]: any;
 }
 
-// Fallback demo feedbacks
-const FALLBACK_FEEDBACKS: AdminFeedbackItem[] = [
-  {
-    id: 'fb_101',
-    user: { id: 'usr_001', name: 'User C', email: 'user.c@gmail.com' },
-    type: 'bug',
-    title: 'Lỗi thanh toán MoMo không tự động cập nhật vé',
-    status: 'Open',
-    created_at: '2026-09-26T14:20:00Z',
-    content: 'Sau khi quét mã QR thanh toán MoMo thành công và trừ tiền ví, màn hình quay lại trang chủ nhưng không thấy hiển thị mã vé QR trong mục Vé của tôi.',
-    screenshot_url: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 'fb_102',
-    user: { id: 'usr_002', name: 'Dang Minh Tuan', email: 'tuan.dang@fandom.vn' },
-    type: 'suggestion',
-    title: 'Đề xuất thêm bộ lọc sự kiện theo khoảng giá vé',
-    status: 'In_Progress',
-    created_at: '2026-09-25T10:15:00Z',
-    content: 'Hiện tại trang danh sách sự kiện chỉ lọc theo địa điểm và danh mục. Nếu có thêm thanh kéo chọn mức giá vé min-max (ví dụ dưới 200k, 200k-500k) thì trải nghiệm tìm kiếm sẽ tiện hơn rất nhiều.',
-  },
-  {
-    id: 'fb_103',
-    user: { id: 'usr_003', name: 'Hoang Kim Ngan', email: 'ngan.hk@outlook.com' },
-    type: 'query',
-    title: 'Thắc mắc về quy định mang máy ảnh cơ vào Cosplay Expo',
-    status: 'Resolved',
-    created_at: '2026-09-24T16:45:00Z',
-    content: 'Mình mua vé Standard tham gia Cosplay Expo tại SECC, muốn hỏi mang theo máy ảnh DSLR kèm ống kính tele chụp ảnh cosplayer có cần đăng ký thẻ phóng viên tác nghiệp trước không ạ?',
-    response_note: 'Khách tham gia được phép mang máy ảnh cơ cá nhân tự do, chỉ yêu cầu không sử dụng chân máy cồng kềnh (tripod) trong lối đi chính.',
-  },
-  {
-    id: 'fb_104',
-    user: { id: 'usr_004', name: 'Nguyen Thanh Phong', email: 'phong.nt@corp.vn' },
-    type: 'bug',
-    title: 'Nút tải ảnh đại diện nhân vật bị đứng trên trình duyệt Safari iOS',
-    status: 'Open',
-    created_at: '2026-09-26T18:10:00Z',
-    content: 'Khi bấm vào icon tải ảnh avatar nhân vật trên iPhone Safari 17.4, popup chọn ảnh từ thư viện không hiện lên.',
-    screenshot_url: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 'fb_105',
-    user: { id: 'usr_005', name: 'Bui Gia Huy', email: 'huy.bg@gmail.com' },
-    type: 'suggestion',
-    title: 'Hỗ trợ thanh toán bằng Apple Pay & Google Wallet',
-    status: 'Closed',
-    created_at: '2026-09-20T09:30:00Z',
-    content: 'Mong muốn hệ thống tích hợp trực tiếp thanh toán Apple Pay trên trình duyệt Safari để mua vé nhanh chóng 1 chạm không cần nhập thông tin thẻ.',
-    response_note: 'Cảm ơn bạn đã đóng góp. Tính năng Apple Pay đã được đưa vào lộ trình phát triển quý 4/2026.',
-  },
-];
+
 
 export default function AdminFeedbacksPage() {
   const { language } = useAdminLanguage();
@@ -120,6 +70,7 @@ export default function AdminFeedbacksPage() {
   const [feedbacks, setFeedbacks] = useState<AdminFeedbackItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isConnectionError, setIsConnectionError] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [apiSuccess, setApiSuccess] = useState<string | null>(null);
 
@@ -174,6 +125,7 @@ export default function AdminFeedbacksPage() {
   const fetchFeedbacks = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
+    setIsConnectionError(false);
 
     try {
       const token = getAccessToken();
@@ -204,29 +156,15 @@ export default function AdminFeedbacksPage() {
         setTotalCount(json.meta?.total || json.total || rawData.length);
       } else {
         setFeedbacks([]);
+        setTotalCount(0);
       }
       setApiError(null);
+      setIsConnectionError(false);
     } catch (err: any) {
-      console.warn('API /api/v1/admin/feedbacks offline, using demo data:', err);
-      let filtered = [...FALLBACK_FEEDBACKS];
-      if (typeFilter !== 'all') {
-        filtered = filtered.filter((f) => (f.type || '').toLowerCase() === typeFilter.toLowerCase());
-      }
-      if (statusFilter !== 'All') {
-        filtered = filtered.filter((f) => (f.status || '').toLowerCase() === statusFilter.toLowerCase());
-      }
-      if (searchTerm.trim()) {
-        const q = searchTerm.toLowerCase();
-        filtered = filtered.filter(
-          (f) =>
-            f.title.toLowerCase().includes(q) ||
-            f.id.toLowerCase().includes(q) ||
-            getUserName(f.user).toLowerCase().includes(q) ||
-            (f.content && f.content.toLowerCase().includes(q))
-        );
-      }
-      setFeedbacks(filtered);
-      setTotalCount(filtered.length);
+      console.warn('API /api/v1/admin/feedbacks offline or error:', err);
+      setFeedbacks([]);
+      setTotalCount(0);
+      setIsConnectionError(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -430,36 +368,56 @@ export default function AdminFeedbacksPage() {
           activeTab="feedbacks"
         />
 
-        {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+        {/* BREADCRUMB & TOP ACTIONS HEADER */}
+        <div className="p-6 pb-0">
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-indigo-600 font-semibold">
-                  {isVi ? 'Phản hồi & Báo lỗi (Feedback & Support)' : 'Feedback & Support'}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Phản hồi & Báo lỗi' : 'Feedback & Support'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 shadow-xs">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
                   <LifeBuoy className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Quản Lý Ý Kiến, Thắc Mắc & Báo Lỗi' : 'User Feedback & Bug Tracking'}</span>
-                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                   {totalCountAll} {isVi ? 'phiếu' : 'tickets'}
                 </span>
               </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Tiếp nhận phản hồi người dùng, phân loại báo lỗi hệ thống và cập nhật trạng thái xử lý.'
+                  : 'Receive user feedback, categorize bug reports, and respond to support tickets.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
                 onClick={() => fetchFeedbacks(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
-                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
               </button>
             </div>
           </div>
@@ -492,7 +450,50 @@ export default function AdminFeedbacksPage() {
 
         {/* CONTENT BODY */}
         <div className="p-6 space-y-6">
-          {/* STATS OVERVIEW CARDS */}
+          {loading ? (
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
+              <p className="text-xs text-slate-500">{isVi ? 'Đang tải phản hồi khách hàng...' : 'Loading feedbacks...'}</p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => fetchFeedbacks(true)}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* STATS OVERVIEW CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
               <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
@@ -753,6 +754,8 @@ export default function AdminFeedbacksPage() {
               </button>
             </div>
           </div>
+        </>
+        )}
         </div>
       </div>
 

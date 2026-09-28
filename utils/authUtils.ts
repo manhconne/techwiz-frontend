@@ -1,3 +1,5 @@
+import { isBypassAdminEnabled } from '../config/adminConfig';
+
 export function parseJwt(token: string): any {
   try {
     if (!token || typeof token !== 'string') return null;
@@ -25,6 +27,7 @@ export function getAccessToken(): string {
 }
 
 export function checkIsAdmin(user?: any): boolean {
+  if (isBypassAdminEnabled()) return true;
   if (typeof window === 'undefined') return false;
 
   const adminEmails = ['lumanhgioi.vn@gmail.com', 'admin@fanhubplus.com'];

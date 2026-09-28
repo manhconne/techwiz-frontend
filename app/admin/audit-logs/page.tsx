@@ -33,6 +33,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
+  WifiOff,
 } from 'lucide-react';
 
 export interface AdminAuditLogItem {
@@ -46,63 +47,7 @@ export interface AdminAuditLogItem {
   [key: string]: any;
 }
 
-// Fallback demo audit logs
-const FALLBACK_LOGS: AdminAuditLogItem[] = [
-  {
-    id: 'log_001',
-    actor: 'Admin Van Gioi',
-    action: 'Ban_User',
-    target: 'usr_89104',
-    timestamp: '2026-09-27T08:00:00Z',
-    ip: '14.161.45.12',
-    details: 'Khóa tài khoản vĩnh viễn do spam bình luận lừa đảo và vi phạm điều khoản cộng đồng.',
-  },
-  {
-    id: 'log_002',
-    actor: 'Admin Minh Anh',
-    action: 'Approve_Event',
-    target: 'evt_001',
-    timestamp: '2026-09-27T07:45:00Z',
-    ip: '113.190.22.8',
-    details: 'Phê duyệt sự kiện Cosplay Expo 2026 sau khi thẩm định hồ sơ giấy phép địa điểm SECC.',
-  },
-  {
-    id: 'log_003',
-    actor: 'Admin Van Gioi',
-    action: 'Process_Refund',
-    target: 'ref_003',
-    timestamp: '2026-09-26T16:30:00Z',
-    ip: '14.161.45.12',
-    details: 'Duyệt hoàn tiền 300,000 VND cho đơn vé bk_88992 do ban tổ chức hủy chương trình.',
-  },
-  {
-    id: 'log_004',
-    actor: 'SuperAdmin Hoang',
-    action: 'Update_Settings',
-    target: 'system_config',
-    timestamp: '2026-09-26T14:15:00Z',
-    ip: '42.115.89.90',
-    details: 'Cập nhật phí hoa hồng nền tảng thành 5.0% và giới hạn dung lượng upload 25MB.',
-  },
-  {
-    id: 'log_005',
-    actor: 'Admin Minh Anh',
-    action: 'Reject_Event',
-    target: 'evt_005',
-    timestamp: '2026-09-25T11:20:00Z',
-    ip: '113.190.22.8',
-    details: 'Từ chối sự kiện Đêm Nhạc Ngoài Trời do chưa có phương án phòng cháy chữa cháy nến thật.',
-  },
-  {
-    id: 'log_006',
-    actor: 'Admin Van Gioi',
-    action: 'Delete_Content',
-    target: 'post_5512',
-    timestamp: '2026-09-25T09:10:00Z',
-    ip: '14.161.45.12',
-    details: 'Xóa bài viết chứa hình ảnh bản quyền chưa được cấp phép phát hành.',
-  },
-];
+
 
 const LOG_ACTIONS = [
   'All',
@@ -127,6 +72,7 @@ export default function AdminAuditLogsPage() {
   const [logs, setLogs] = useState<AdminAuditLogItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isConnectionError, setIsConnectionError] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
   // Filters & Pagination: ?actor_id=...&action=Ban_User&from=...&to=...&page=1&limit=20
@@ -152,6 +98,7 @@ export default function AdminAuditLogsPage() {
   const fetchAuditLogs = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
+    setIsConnectionError(false);
 
     try {
       const token = getAccessToken();
@@ -183,27 +130,15 @@ export default function AdminAuditLogsPage() {
         setTotalCount(json.meta?.total || json.total || rawData.length);
       } else {
         setLogs([]);
+        setTotalCount(0);
       }
       setApiError(null);
+      setIsConnectionError(false);
     } catch (err: any) {
-      console.warn('API /api/v1/admin/audit-logs offline, using demo logs:', err);
-      let filtered = [...FALLBACK_LOGS];
-      if (actionFilter !== 'All') {
-        filtered = filtered.filter(
-          (l) => (l.action || '').toLowerCase() === actionFilter.toLowerCase()
-        );
-      }
-      if (actorQuery.trim()) {
-        const q = actorQuery.toLowerCase();
-        filtered = filtered.filter(
-          (l) =>
-            getActorName(l.actor).toLowerCase().includes(q) ||
-            l.target.toLowerCase().includes(q) ||
-            l.ip.includes(q)
-        );
-      }
-      setLogs(filtered);
-      setTotalCount(filtered.length);
+      console.warn('API /api/v1/admin/audit-logs offline or error:', err);
+      setLogs([]);
+      setTotalCount(0);
+      setIsConnectionError(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -293,36 +228,56 @@ export default function AdminAuditLogsPage() {
           activeTab="audit-logs"
         />
 
-        {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+        {/* BREADCRUMB & TOP ACTIONS HEADER */}
+        <div className="p-6 pb-0">
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-indigo-600 font-medium">
-                  {isVi ? 'Nhật ký Kiểm toán (Audit Logs)' : 'Security Audit Logs'}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Nhật ký Kiểm toán' : 'Audit Logs'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
                   <History className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Nhật Ký Thao Tác Quản Trị Hệ Thống' : 'Admin Activity & Security Logs'}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                   {logs.length} {isVi ? 'bản ghi' : 'events'}
                 </span>
               </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Theo dõi toàn bộ lịch sử thao tác của các tài khoản quản trị viên, địa chỉ IP và thời gian.'
+                  : 'Track all administrator operations, IP addresses, and activity timestamps.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
                 onClick={() => fetchAuditLogs(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
-                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
               </button>
             </div>
           </div>
@@ -330,7 +285,50 @@ export default function AdminAuditLogsPage() {
 
         {/* CONTENT BODY */}
         <div className="p-6 space-y-6">
-          {/* FILTER TOOLBAR: ?actor_id=...&action=Ban_User&from=...&to=... */}
+          {loading ? (
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
+              <p className="text-xs text-slate-500">{isVi ? 'Đang tải nhật ký kiểm toán...' : 'Loading audit logs...'}</p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => fetchAuditLogs(true)}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* FILTER TOOLBAR: ?actor_id=...&action=Ban_User&from=...&to=... */}
           <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
               {/* Search actor or target */}
@@ -522,6 +520,8 @@ export default function AdminAuditLogsPage() {
               </button>
             </div>
           </div>
+        </>
+        )}
         </div>
       </div>
 

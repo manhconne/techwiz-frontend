@@ -45,94 +45,6 @@ export interface AdminUserItem {
   [key: string]: any;
 }
 
-// Fallback demo users for offline / preview mode
-const FALLBACK_USERS: AdminUserItem[] = [
-  {
-    id: 'usr_001',
-    name: 'Nguyễn Văn Admin',
-    fullName: 'Nguyễn Văn Admin',
-    username: 'admin_chief',
-    email: 'admin@fanhub.com',
-    role: 'Admin',
-    status: 'active',
-    createdAt: '2026-08-15 08:30',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
-    phone: '+84 901 234 567',
-  },
-  {
-    id: 'usr_002',
-    name: 'Lê Hoàng Nam',
-    fullName: 'Lê Hoàng Nam',
-    username: 'nam_event_owner',
-    email: 'nam.le@fandomfest.vn',
-    role: 'EventOwner',
-    status: 'active',
-    createdAt: '2026-09-01 10:15',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
-    phone: '+84 912 345 678',
-  },
-  {
-    id: 'usr_003',
-    name: 'Trần Thị Mai',
-    fullName: 'Trần Thị Mai',
-    username: 'mai_moderator',
-    email: 'mai.tran@fanhub.com',
-    role: 'Moderator',
-    status: 'active',
-    createdAt: '2026-09-05 14:20',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80',
-    phone: '+84 987 654 321',
-  },
-  {
-    id: 'usr_004',
-    name: 'Phạm Minh Tuấn',
-    fullName: 'Phạm Minh Tuấn',
-    username: 'tuan_otaku',
-    email: 'tuan.pham@gmail.com',
-    role: 'User',
-    status: 'active',
-    createdAt: '2026-09-10 16:45',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80',
-    phone: '+84 933 112 233',
-  },
-  {
-    id: 'usr_005',
-    name: 'Spammer Bot V2',
-    fullName: 'Spammer Bot V2',
-    username: 'spammer_99',
-    email: 'bot@spamattack.xyz',
-    role: 'User',
-    status: 'banned',
-    createdAt: '2026-09-18 22:05',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80',
-    phone: '+84 999 888 777',
-  },
-  {
-    id: 'usr_006',
-    name: 'Đỗ Thảo Linh',
-    fullName: 'Đỗ Thảo Linh',
-    username: 'linh_kpop',
-    email: 'thaolinh@gmail.com',
-    role: 'User',
-    status: 'active',
-    createdAt: '2026-09-22 09:12',
-    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80',
-    phone: '+84 908 776 554',
-  },
-  {
-    id: 'usr_007',
-    name: 'Hoàng Anh Dũng',
-    fullName: 'Hoàng Anh Dũng',
-    username: 'dung_esports',
-    email: 'dung.esports@vng.vn',
-    role: 'EventOwner',
-    status: 'active',
-    createdAt: '2026-09-23 11:30',
-    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80',
-    phone: '+84 944 556 677',
-  },
-];
-
 export interface ApiResponseMeta {
   total: number;
   page: number;
@@ -146,9 +58,9 @@ export default function AdminUsersPage() {
 
   const isVi = language === 'vi';
 
-  // API State
-  const [users, setUsers] = useState<AdminUserItem[]>(FALLBACK_USERS);
-  const [meta, setMeta] = useState<ApiResponseMeta>({ total: FALLBACK_USERS.length, page: 1, limit: 20 });
+  // API State (Initialized empty - no hardcoded mock sample users)
+  const [users, setUsers] = useState<AdminUserItem[]>([]);
+  const [meta, setMeta] = useState<ApiResponseMeta>({ total: 0, page: 1, limit: 20 });
   const [isLoading, setIsLoading] = useState(true);
   const [isConnectionError, setIsConnectionError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -195,15 +107,17 @@ export default function AdminUsersPage() {
     const params = new URLSearchParams();
     params.set('page', String(page));
     params.set('limit', String(limit));
-    params.set('sort', sort);
     if (searchQuery.trim()) {
       params.set('search', searchQuery.trim());
     }
+    if (roleFilter !== 'all') {
+      params.set('role', roleFilter);
+    }
+    if (statusFilter !== 'all') {
+      params.set('status', statusFilter);
+    }
 
-    const apiBase =
-      (typeof window !== 'undefined' &&
-        (process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || process.env.NEXT_PUBLIC_API_URL)) ||
-      'http://localhost:5001';
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
     const apiUrl = `${apiBase}/api/v1/admin/users?${params.toString()}`;
 
     try {
@@ -214,54 +128,28 @@ export default function AdminUsersPage() {
 
       if (response.ok) {
         const resData = await response.json();
-        const rawUsers = resData && Array.isArray(resData.data) ? resData.data : Array.isArray(resData) ? resData : null;
+        const rawUsers = resData && Array.isArray(resData.data) ? resData.data : Array.isArray(resData) ? resData : [];
 
-        if (rawUsers && rawUsers.length > 0) {
-          setUsers(rawUsers);
-          setMeta({
-            total: Number(resData.meta?.total) || rawUsers.length,
-            page: Number(resData.meta?.page) || page,
-            limit: Number(resData.meta?.limit) || limit,
-          });
-          setIsConnectionError(false);
-          return;
-        }
+        setUsers(rawUsers);
+        setMeta({
+          total: Number(resData.meta?.total) || rawUsers.length,
+          page: Number(resData.meta?.page) || page,
+          limit: Number(resData.meta?.limit) || limit,
+        });
+        setIsConnectionError(false);
+      } else {
+        setUsers([]);
+        setMeta({ total: 0, page: 1, limit });
+        setIsConnectionError(true);
       }
     } catch (err: any) {
-      console.warn('Backend API /api/v1/admin/users offline, using realistic demo users:', err);
+      console.warn('Backend API /api/v1/admin/users offline:', err);
+      setUsers([]);
+      setMeta({ total: 0, page: 1, limit });
+      setIsConnectionError(true);
     } finally {
       setIsLoading(false);
     }
-
-    // Fallback demo users if backend is offline or returns empty
-    let filteredFallback = [...FALLBACK_USERS];
-    if (roleFilter !== 'all') {
-      filteredFallback = filteredFallback.filter(
-        (u) => (u.role || '').toLowerCase() === roleFilter.toLowerCase()
-      );
-    }
-    if (statusFilter !== 'all') {
-      filteredFallback = filteredFallback.filter(
-        (u) => (u.status || '').toLowerCase() === statusFilter.toLowerCase()
-      );
-    }
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      filteredFallback = filteredFallback.filter(
-        (u) =>
-          (u.name || '').toLowerCase().includes(q) ||
-          (u.email || '').toLowerCase().includes(q) ||
-          (u.username || '').toLowerCase().includes(q)
-      );
-    }
-
-    setUsers(filteredFallback);
-    setMeta({
-      total: filteredFallback.length,
-      page: 1,
-      limit: limit,
-    });
-    setIsConnectionError(false);
   }, [page, limit, sort, searchQuery, roleFilter, statusFilter]);
 
   // Trigger fetch on query param changes
@@ -416,134 +304,98 @@ export default function AdminUsersPage() {
             </div>
           )}
 
-          {/* Top Title & Route Breadcrumb */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800 mb-3">
-            <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
+          {/* Top Title & Route Breadcrumb Header (Space-Between Flex Row) */}
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs mb-6 w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <span>{'Admin'}</span>
                 <span>/</span>
-                <span className="text-indigo-600 dark:text-indigo-400 font-bold">{'User Management'}</span>
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Quản lý người dùng' : 'User Management'}
+                </span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
-                <Users className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-                <span>{'User Management'}</span>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
+                  <Users className="w-5 h-5" />
+                </div>
+                <span>{isVi ? 'Quản lý người dùng' : 'User Management'}</span>
               </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                {'API Endpoints:'} <code className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-slate-700 dark:text-slate-300 font-mono">GET /api/v1/admin/users</code> | <code className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-slate-700 dark:text-slate-300 font-mono">PUT /api/v1/admin/users/{'{id}'}/ban</code>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Quản lý hệ thống tài khoản người dùng, phân quyền truy cập và kiểm soát trạng thái.'
+                  : 'Manage user accounts, roles, access permissions, and account statuses.'}
               </p>
             </div>
 
-            {/* Quick Action Buttons */}
-            <div className="flex items-center gap-2.5 flex-wrap">
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
                 type="button"
                 onClick={fetchUsers}
                 disabled={isLoading}
                 style={{
-                  borderRadius: '8px',
+                  borderRadius: '12px',
                   backgroundColor: '#ffffff',
                   color: '#334155',
                   border: '1px solid #cbd5e1',
-                  padding: '8px 14px',
+                  padding: '9px 16px',
                   fontWeight: 700,
                   fontSize: '12px',
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '6px',
+                  gap: '8px',
+                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
                 }}
-                title={'Reload users from backend API'}
+                className="hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700/80 transition-all"
+                title={isVi ? 'Làm mới danh sách' : 'Refresh user list'}
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-indigo-600' : ''}`} />
-                <span>{'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-indigo-600' : ''}`} />
+                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
               </button>
-
             </div>
           </div>
 
-          {/* Connection Error Banner */}
-          {isConnectionError && (
-            <div
-              style={{ borderRadius: '10px' }}
-              className="p-4 mb-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs animate-in fade-in duration-200"
-            >
-              <div className="flex items-start sm:items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                  <WifiOff className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="font-bold text-sm flex items-center gap-2">
-                    <span>{'Connection Error'}</span>
-                    <span className="text-[11px] font-normal px-2 py-0.5 bg-amber-200/60 dark:bg-amber-800/60 rounded text-amber-800 dark:text-amber-300">
-                      {'HTTP / Network'}
-                    </span>
-                  </div>
-                  <p className="text-xs text-amber-800/80 dark:text-amber-300/80 mt-0.5">
-                    {'Could not connect to backend server at /api/v1/admin/users. When deployed alongside the backend, data will sync automatically.'}
-                  </p>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                <button
-                  type="button"
-                  onClick={fetchUsers}
-                  style={{
-                    borderRadius: '6px',
-                    backgroundColor: '#d97706',
-                    color: '#ffffff',
-                    border: 'none',
-                    padding: '6px 14px',
-                    fontWeight: 700,
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {'Retry Connection'}
-                </button>
-
-              </div>
-            </div>
-          )}
 
           {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
               <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider">{'TOTAL USERS'}</span>
+                <span className="text-xs font-bold uppercase tracking-wider">{isVi ? 'TỔNG NGƯỜI DÙNG' : 'TOTAL USERS'}</span>
                 <Users className="w-4 h-4 text-indigo-500" />
               </div>
               <div className="text-2xl font-black text-slate-900 dark:text-white">
                 {meta.total || users.length}
               </div>
-              <div className="text-[11px] text-slate-400 mt-1">{'From API response meta.total'}</div>
+              <div className="text-[11px] text-slate-400 mt-1">{isVi ? 'Từ phản hồi API meta.total' : 'From API response meta.total'}</div>
             </div>
 
             <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
               <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider">{'ADMINISTRATORS'}</span>
+                <span className="text-xs font-bold uppercase tracking-wider">{isVi ? 'QUẢN TRỊ VIÊN' : 'ADMINISTRATORS'}</span>
                 <Shield className="w-4 h-4 text-amber-500" />
               </div>
               <div className="text-2xl font-black text-slate-900 dark:text-white">
                 {filteredUsers.filter((u) => (u.role || '').toLowerCase() === 'admin').length}
               </div>
-              <div className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1">{'Full privileged access'}</div>
+              <div className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1">{isVi ? 'Quyền truy cập cao nhất' : 'Full privileged access'}</div>
             </div>
 
             <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
               <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider">{'BANNED ACCOUNTS'}</span>
+                <span className="text-xs font-bold uppercase tracking-wider">{isVi ? 'TÀI KHOẢN BỊ KHÓA' : 'BANNED ACCOUNTS'}</span>
                 <Ban className="w-4 h-4 text-rose-500" />
               </div>
               <div className="text-2xl font-black text-rose-600 dark:text-rose-400">
                 {filteredUsers.filter((u) => (u.status || '').toLowerCase() === 'banned' || (u.status || '').toLowerCase() === 'locked').length}
               </div>
-              <div className="text-[11px] text-slate-400 mt-1">{'Login blocked'}</div>
+              <div className="text-[11px] text-slate-400 mt-1">{isVi ? 'Đã bị chặn đăng nhập' : 'Login blocked'}</div>
             </div>
 
             <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
               <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider">{'API STATUS'}</span>
+                <span className="text-xs font-bold uppercase tracking-wider">{isVi ? 'TRẠNG THÁI API' : 'API STATUS'}</span>
                 {isConnectionError ? (
                   <WifiOff className="w-4 h-4 text-rose-500" />
                 ) : (
@@ -551,27 +403,27 @@ export default function AdminUsersPage() {
                 )}
               </div>
               <div className={`text-base font-bold ${isConnectionError ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
-                {isConnectionError ? ('Connection Error') : ('Connected')}
+                {isConnectionError ? (isVi ? 'Lỗi kết nối' : 'Connection Error') : (isVi ? 'Đã kết nối' : 'Connected')}
               </div>
               <div className="text-[11px] text-slate-400 mt-1">
-                {isConnectionError ? ('Awaiting backend deployment') : ('JWT Authentication OK')}
+                {isConnectionError ? (isVi ? 'Chờ máy chủ hoạt động' : 'Awaiting backend deployment') : (isVi ? 'Xác thực JWT hợp lệ' : 'JWT Authentication OK')}
               </div>
             </div>
           </div>
 
           {/* Filter, Search & Sort Toolbar */}
-          <div className="p-4 mb-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs space-y-3">
+          <div className="p-4 mb-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs space-y-3">
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
               {/* Search input */}
               <div className="relative flex-1">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
-                  placeholder={'Search users by name, email, title or ID...'}
+                  placeholder={isVi ? 'Tìm kiếm theo tên, email hoặc mã ID...' : 'Search users by name, email, or ID...'}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{ borderRadius: '8px' }}
-                  className="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 transition-colors"
+                  style={{ borderRadius: '12px' }}
+                  className="w-full pl-11 pr-4 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 transition-colors"
                 />
               </div>
 
@@ -586,31 +438,31 @@ export default function AdminUsersPage() {
                       setSort(e.target.value);
                       setPage(1);
                     }}
-                    style={{ borderRadius: '6px' }}
-                    className="p-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none"
+                    style={{ borderRadius: '12px' }}
+                    className="p-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none"
                   >
-                    <option value="newest">{'Newest first (newest)'}</option>
-                    <option value="oldest">{'Oldest first (oldest)'}</option>
-                    <option value="name_asc">{'Name (A-Z)'}</option>
-                    <option value="name_desc">{'Name (Z-A)'}</option>
+                    <option value="newest">{isVi ? 'Mới nhất trước (newest)' : 'Newest first (newest)'}</option>
+                    <option value="oldest">{isVi ? 'Cũ nhất trước (oldest)' : 'Oldest first (oldest)'}</option>
+                    <option value="name_asc">{isVi ? 'Tên (A-Z)' : 'Name (A-Z)'}</option>
+                    <option value="name_desc">{isVi ? 'Tên (Z-A)' : 'Name (Z-A)'}</option>
                   </select>
                 </div>
 
                 {/* Limit selector: ?limit=20 */}
                 <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
-                  <span className="text-slate-400">{'Show:'}</span>
+                  <span className="text-slate-400">{isVi ? 'Hiển thị:' : 'Show:'}</span>
                   <select
                     value={limit}
                     onChange={(e) => {
                       setLimit(Number(e.target.value));
                       setPage(1);
                     }}
-                    style={{ borderRadius: '6px' }}
-                    className="p-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none"
+                    style={{ borderRadius: '12px' }}
+                    className="p-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none"
                   >
-                    <option value={10}>10 {'/ page'}</option>
-                    <option value={20}>20 {'/ page (default)'}</option>
-                    <option value={50}>50 {'/ page'}</option>
+                    <option value={10}>10 {isVi ? '/ trang' : '/ page'}</option>
+                    <option value={20}>20 {isVi ? '/ trang (mặc định)' : '/ page (default)'}</option>
+                    <option value={50}>50 {isVi ? '/ trang' : '/ page'}</option>
                   </select>
                 </div>
 
@@ -618,25 +470,25 @@ export default function AdminUsersPage() {
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
-                  style={{ borderRadius: '6px' }}
-                  className="p-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none"
+                  style={{ borderRadius: '12px' }}
+                  className="p-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none"
                 >
-                  <option value="all">{'All Roles'}</option>
-                  <option value="admin">{'Administrator (Admin)'}</option>
-                  <option value="registered">{'Registered Member'}</option>
+                  <option value="all">{isVi ? 'Tất cả vai trò' : 'All Roles'}</option>
+                  <option value="admin">{isVi ? 'Quản trị viên (Admin)' : 'Administrator (Admin)'}</option>
+                  <option value="registered">{isVi ? 'Thành viên (Member)' : 'Registered Member'}</option>
                 </select>
 
                 {/* Status filter */}
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  style={{ borderRadius: '6px' }}
-                  className="p-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none"
+                  style={{ borderRadius: '12px' }}
+                  className="p-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none"
                 >
-                  <option value="all">{'All Status'}</option>
-                  <option value="active">{'Active'}</option>
-                  <option value="inactive">{'Pending'}</option>
-                  <option value="banned">{'Banned'}</option>
+                  <option value="all">{isVi ? 'Tất cả trạng thái' : 'All Status'}</option>
+                  <option value="active">{isVi ? 'Hoạt động (Active)' : 'Active'}</option>
+                  <option value="inactive">{isVi ? 'Chờ duyệt (Pending)' : 'Pending'}</option>
+                  <option value="banned">{isVi ? 'Bị khóa (Banned)' : 'Banned'}</option>
                 </select>
               </div>
             </div>
@@ -647,7 +499,9 @@ export default function AdminUsersPage() {
             {isLoading ? (
               <div className="py-20 flex flex-col items-center justify-center gap-3">
                 <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin" />
-                <p className="text-sm font-semibold text-slate-500">{'Loading user catalog from server...'}</p>
+                <p className="text-sm font-semibold text-slate-500">
+                  {isVi ? 'Đang tải danh sách người dùng từ máy chủ...' : 'Loading user catalog from server...'}
+                </p>
               </div>
             ) : filteredUsers.length === 0 ? (
               <div className="py-16 px-4 text-center">
@@ -657,10 +511,12 @@ export default function AdminUsersPage() {
                       <WifiOff className="w-6 h-6" />
                     </div>
                     <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
-                      {'Connection Error'}
+                      {isVi ? 'Lỗi kết nối máy chủ' : 'Connection Error'}
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {'Could not load user list from backend API (/api/v1/admin/users). Once deployed, the frontend will connect and sync automatically.'}
+                      {isVi
+                        ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                        : 'Could not connect to backend server. When deployed alongside backend, data will sync automatically.'}
                     </p>
                     <div className="flex items-center gap-2 mt-2">
                       <button
@@ -677,16 +533,19 @@ export default function AdminUsersPage() {
                           cursor: 'pointer',
                         }}
                       >
-                        {'Retry Connection'}
+                        {isVi ? 'Thử kết nối lại' : 'Retry Connection'}
                       </button>
-
                     </div>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center gap-2 text-slate-400">
                     <Users className="w-8 h-8 stroke-1" />
-                    <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">{'No matching users found'}</p>
-                    <p className="text-xs">{'Try adjusting your search terms or filter settings.'}</p>
+                    <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
+                      {isVi ? 'Không tìm thấy người dùng nào phù hợp' : 'No matching users found'}
+                    </p>
+                    <p className="text-xs">
+                      {isVi ? 'Thử điều chỉnh từ khóa tìm kiếm hoặc bộ lọc.' : 'Try adjusting your search terms or filter settings.'}
+                    </p>
                   </div>
                 )}
               </div>
@@ -695,23 +554,23 @@ export default function AdminUsersPage() {
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
                     <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 font-bold uppercase tracking-wider text-[11px]">
-                      <th className="py-3 px-4">{'USER / TITLE'}</th>
-                      <th className="py-3 px-4">{'USER ID'}</th>
-                      <th className="py-3 px-4">{'EMAIL / CONTACT'}</th>
-                      <th className="py-3 px-4">{'ROLE'}</th>
-                      <th className="py-3 px-4">{'STATUS'}</th>
-                      <th className="py-3 px-4">{'JOIN DATE'}</th>
-                      <th className="py-3 px-4 text-right">{'ACTIONS'}</th>
+                      <th className="py-3 px-4">{isVi ? 'NGƯỜI DÙNG' : 'USER / TITLE'}</th>
+                      <th className="py-3 px-4">{isVi ? 'MÃ ID' : 'USER ID'}</th>
+                      <th className="py-3 px-4">{isVi ? 'EMAIL / LIÊN HỆ' : 'EMAIL / CONTACT'}</th>
+                      <th className="py-3 px-4">{isVi ? 'VAI TRÒ' : 'ROLE'}</th>
+                      <th className="py-3 px-4">{isVi ? 'TRẠNG THÁI' : 'STATUS'}</th>
+                      <th className="py-3 px-4">{isVi ? 'NGÀY THAM GIA' : 'JOIN DATE'}</th>
+                      <th className="py-3 px-4 text-right">{isVi ? 'THAO TÁC' : 'ACTIONS'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                     {filteredUsers.map((item, idx) => {
-                      const displayTitle = item.title || item.name || item.fullName || `User #${item.id}`;
-                      const email = item.email || (item.id ? `user_${item.id}@fanhub.com` : 'Not provided');
+                      const displayTitle = item.full_name || item.fullName || item.name || item.title || `User #${item.id}`;
+                      const email = item.email || (item.id ? `user_${item.id}@fanhub.com` : (isVi ? 'Chưa cung cấp' : 'Not provided'));
                       const role = (item.role || 'registered').toLowerCase();
                       const status = (item.status || 'active').toLowerCase();
-                      const rawDate = item.createdAt || item.created_at || '2026-09-25';
-                      const formattedDate = new Date(rawDate).toLocaleDateString('en-US', {
+                      const rawDate = item.created_at || item.createdAt || '2026-09-01';
+                      const formattedDate = new Date(rawDate).toLocaleDateString(isVi ? 'vi-VN' : 'en-US', {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric',
@@ -764,7 +623,7 @@ export default function AdminUsersPage() {
                               type="button"
                               onClick={() => handleCopyId(item.id)}
                               className="inline-flex items-center gap-1 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer bg-transparent border-0 p-0"
-                              title="Copy ID"
+                              title={isVi ? 'Sao chép mã ID' : 'Copy ID'}
                             >
                               <span>{String(item.id)}</span>
                               <Copy className="w-3 h-3 opacity-60 hover:opacity-100" />
@@ -787,7 +646,7 @@ export default function AdminUsersPage() {
                                 className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-black uppercase bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-300 dark:border-amber-700"
                               >
                                 <Shield className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-                                <span>{'Admin'}</span>
+                                <span>{isVi ? 'Quản trị' : 'Admin'}</span>
                               </span>
                             ) : (
                               <span
@@ -795,7 +654,7 @@ export default function AdminUsersPage() {
                                 className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold uppercase bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                               >
                                 <UserCheck className="w-3 h-3 text-slate-500" />
-                                <span>{'Member'}</span>
+                                <span>{isVi ? 'Thành viên' : 'Member'}</span>
                               </span>
                             )}
                           </td>
@@ -808,7 +667,7 @@ export default function AdminUsersPage() {
                                 className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-black text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/80 border border-rose-200 dark:border-rose-800"
                               >
                                 <Ban className="w-3 h-3 text-rose-500" />
-                                <span>{'BANNED'}</span>
+                                <span>{isVi ? 'BỊ KHÓA' : 'BANNED'}</span>
                               </span>
                             ) : isActive ? (
                               <span
@@ -816,14 +675,14 @@ export default function AdminUsersPage() {
                                 className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800"
                               >
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                <span>{'Active'}</span>
+                                <span>{isVi ? 'Hoạt động' : 'Active'}</span>
                               </span>
                             ) : (
                               <span
                                 style={{ borderRadius: '6px' }}
                                 className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                               >
-                                <span>{'Pending'}</span>
+                                <span>{isVi ? 'Chờ duyệt' : 'Pending'}</span>
                               </span>
                             )}
                           </td>
@@ -858,14 +717,14 @@ export default function AdminUsersPage() {
                                     opacity: isProcessingThis ? 0.6 : 1,
                                     transition: 'all 0.15s ease',
                                   }}
-                                  title={'Unban this user'}
+                                  title={isVi ? 'Mở khóa tài khoản' : 'Unban this user'}
                                 >
                                   {isProcessingThis ? (
                                     <RefreshCw className="w-3 h-3 animate-spin text-white" />
                                   ) : (
                                     <Unlock className="w-3 h-3 text-white" />
                                   )}
-                                  <span style={{ color: '#ffffff' }}>{'Unban'}</span>
+                                  <span style={{ color: '#ffffff' }}>{isVi ? 'Bỏ khóa' : 'Unban'}</span>
                                 </button>
                               ) : (
                                 <button
@@ -888,14 +747,14 @@ export default function AdminUsersPage() {
                                     opacity: isProcessingThis ? 0.6 : 1,
                                     transition: 'all 0.15s ease',
                                   }}
-                                  title={'Ban this user account'}
+                                  title={isVi ? 'Khóa tài khoản này' : 'Ban this user account'}
                                 >
                                   {isProcessingThis ? (
                                     <RefreshCw className="w-3 h-3 animate-spin text-white" />
                                   ) : (
                                     <Ban className="w-3 h-3 text-white" />
                                   )}
-                                  <span style={{ color: '#ffffff' }}>{'Ban'}</span>
+                                  <span style={{ color: '#ffffff' }}>{isVi ? 'Khóa' : 'Ban'}</span>
                                 </button>
                               )}
 
@@ -915,7 +774,7 @@ export default function AdminUsersPage() {
                                   border: '1px solid #cbd5e1',
                                   cursor: 'pointer',
                                 }}
-                                title={'View User Details'}
+                                title={isVi ? 'Xem chi tiết người dùng' : 'View User Details'}
                               >
                                 <Eye className="w-4 h-4" />
                               </button>
@@ -932,7 +791,7 @@ export default function AdminUsersPage() {
             {/* Pagination Controls */}
             <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
               <div>
-                {'Showing '}
+                {isVi ? 'Hiển thị ' : 'Showing '}
                 <strong className="text-slate-800 dark:text-slate-200">
                   {filteredUsers.length > 0 ? (page - 1) * limit + 1 : 0}
                 </strong>{' '}
@@ -940,11 +799,11 @@ export default function AdminUsersPage() {
                 <strong className="text-slate-800 dark:text-slate-200">
                   {Math.min(page * limit, meta.total || filteredUsers.length)}
                 </strong>{' '}
-                {'of '}
+                {isVi ? ' trong tổng số ' : 'of '}
                 <strong className="text-slate-800 dark:text-slate-200">
                   {meta.total || filteredUsers.length}
                 </strong>{' '}
-                {'users'}
+                {isVi ? 'người dùng' : 'users'}
               </div>
 
               <div className="flex items-center gap-1.5">
@@ -967,11 +826,11 @@ export default function AdminUsersPage() {
                   }}
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
-                  <span>{'Previous'}</span>
+                  <span>{isVi ? 'Trước' : 'Previous'}</span>
                 </button>
 
                 <div className="px-3 py-1.5 font-bold text-slate-800 dark:text-slate-200">
-                  {'Page'} {page} / {totalPages}
+                  {isVi ? 'Trang' : 'Page'} {page} / {totalPages}
                 </div>
 
                 <button
@@ -992,7 +851,7 @@ export default function AdminUsersPage() {
                     fontWeight: 600,
                   }}
                 >
-                  <span>{'Next'}</span>
+                  <span>{isVi ? 'Sau' : 'Next'}</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -1034,7 +893,7 @@ export default function AdminUsersPage() {
           >
             {(() => {
               const isBanned = (confirmActionUser.status || '').toLowerCase() === 'banned' || (confirmActionUser.status || '').toLowerCase() === 'locked';
-              const userName = confirmActionUser.title || confirmActionUser.name || `User #${confirmActionUser.id}`;
+              const userName = confirmActionUser.full_name || confirmActionUser.fullName || confirmActionUser.name || confirmActionUser.title || `User #${confirmActionUser.id}`;
 
               return (
                 <div className="space-y-4">
@@ -1056,20 +915,35 @@ export default function AdminUsersPage() {
                     </div>
                     <div>
                       <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                        {isBanned ? ('Confirm Account Unban') : ('Confirm Account Ban')}
+                        {isBanned
+                          ? (isVi ? 'Xác nhận mở khóa tài khoản' : 'Confirm Account Unban')
+                          : (isVi ? 'Xác nhận khóa tài khoản' : 'Confirm Account Ban')}
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
                         {isBanned
-                          ? (`Are you sure you want to unban ${userName}? The user will regain normal login and purchasing privileges.`)
-                          : (`Are you sure you want to ban ${userName}? When banned, this user will be immediately blocked from logging in.`)}
+                          ? (isVi
+                            ? `Bạn có chắc chắn muốn mở khóa cho tài khoản ${userName}? Người dùng sẽ khôi phục quyền truy cập bình thường.`
+                            : `Are you sure you want to unban ${userName}? The user will regain normal login and purchasing privileges.`)
+                          : (isVi
+                            ? `Bạn có chắc chắn muốn khóa tài khoản ${userName}? Khi bị khóa, tài khoản này sẽ ngay lập tức bị chặn đăng nhập.`
+                            : `Are you sure you want to ban ${userName}? When banned, this user will be immediately blocked from logging in.`)}
                       </p>
                     </div>
                   </div>
 
-                  <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-lg text-xs space-y-1 font-mono">
-                    <div className="text-slate-500">{'API Endpoint:'} <span className="text-indigo-600 dark:text-indigo-400 font-bold">PUT /api/v1/admin/users/{confirmActionUser.id}/ban</span></div>
-                    <div className="text-slate-500">{'User:'} <span className="text-slate-800 dark:text-slate-200 font-sans font-semibold">{userName}</span></div>
-                    <div className="text-slate-500">{'Email:'} <span className="text-slate-800 dark:text-slate-200 font-sans">{confirmActionUser.email || 'N/A'}</span></div>
+                  <div className="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl text-xs space-y-1.5 border border-slate-200/60 dark:border-slate-700/60">
+                    <div className="text-slate-500 flex items-center justify-between">
+                      <span>{isVi ? 'Tài khoản:' : 'Target User:'}</span>
+                      <span className="text-slate-900 dark:text-slate-100 font-semibold">{userName}</span>
+                    </div>
+                    <div className="text-slate-500 flex items-center justify-between">
+                      <span>{'Email:'}</span>
+                      <span className="text-slate-700 dark:text-slate-300">{confirmActionUser.email || 'N/A'}</span>
+                    </div>
+                    <div className="text-slate-500 flex items-center justify-between">
+                      <span>{isVi ? 'Mã ID:' : 'User ID:'}</span>
+                      <span className="font-mono text-slate-700 dark:text-slate-300">{confirmActionUser.id}</span>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
@@ -1088,7 +962,7 @@ export default function AdminUsersPage() {
                         transition: 'background-color 0.15s',
                       }}
                     >
-                      {'Cancel'}
+                      {isVi ? 'Hủy bỏ' : 'Cancel'}
                     </button>
                     <button
                       type="button"
@@ -1113,7 +987,9 @@ export default function AdminUsersPage() {
                         <RefreshCw className="w-3.5 h-3.5 animate-spin text-white" />
                       )}
                       <span style={{ color: '#ffffff' }}>
-                        {isBanned ? ('Confirm Unban') : ('Confirm Ban')}
+                        {isBanned
+                          ? (isVi ? 'Xác nhận mở khóa' : 'Confirm Unban')
+                          : (isVi ? 'Xác nhận khóa' : 'Confirm Ban')}
                       </span>
                     </button>
                   </div>
@@ -1157,17 +1033,18 @@ export default function AdminUsersPage() {
           >
             {(() => {
               const isBanned = (selectedUser.status || '').toLowerCase() === 'banned' || (selectedUser.status || '').toLowerCase() === 'locked';
+              const userName = selectedUser.full_name || selectedUser.fullName || selectedUser.name || selectedUser.title || `User #${selectedUser.id}`;
 
               return (
                 <>
                   <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-black text-sm flex items-center justify-center uppercase">
-                        {(selectedUser.title || selectedUser.name || 'U').charAt(0)}
+                        {userName.charAt(0)}
                       </div>
                       <div>
                         <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                          {selectedUser.title || selectedUser.name || `User #${selectedUser.id}`}
+                          {userName}
                         </h3>
                         <p className="text-xs text-slate-400 font-mono">ID: {String(selectedUser.id)}</p>
                       </div>
@@ -1194,41 +1071,55 @@ export default function AdminUsersPage() {
                   </div>
 
                   <div className="py-4 space-y-3 text-xs">
-                    <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                    <div className="grid grid-cols-2 gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
                       <div>
-                        <span className="text-slate-400 block text-[11px]">Email:</span>
+                        <span className="text-slate-400 block text-[11px] font-semibold uppercase tracking-wider mb-1">
+                          {isVi ? 'Mã ID:' : 'User ID:'}
+                        </span>
+                        <span className="font-mono font-bold text-slate-800 dark:text-slate-200 bg-slate-200/60 dark:bg-slate-700/60 px-2 py-0.5 rounded text-[11px]">
+                          {String(selectedUser.id)}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[11px] font-semibold uppercase tracking-wider mb-1">
+                          {isVi ? 'Họ và tên:' : 'Full Name:'}
+                        </span>
+                        <span className="font-bold text-slate-900 dark:text-white">
+                          {userName}
+                        </span>
+                      </div>
+                      <div className="col-span-2 sm:col-span-1">
+                        <span className="text-slate-400 block text-[11px] font-semibold uppercase tracking-wider mb-1">
+                          {isVi ? 'Địa chỉ Email:' : 'Email Address:'}
+                        </span>
+                        <span className="font-semibold text-slate-700 dark:text-slate-200 break-all">
+                          {selectedUser.email || 'N/A'}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[11px] font-semibold uppercase tracking-wider mb-1">
+                          {isVi ? 'Vai trò:' : 'Role:'}
+                        </span>
+                        <span className="font-bold uppercase text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded text-[11px] border border-indigo-200 dark:border-indigo-800 inline-block">
+                          {selectedUser.role || 'User'}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[11px] font-semibold uppercase tracking-wider mb-1">
+                          {isVi ? 'Trạng thái:' : 'Status:'}
+                        </span>
+                        <span className={`font-bold px-2 py-0.5 rounded text-[11px] inline-block ${isBanned ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 border border-rose-200' : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 border border-emerald-200'}`}>
+                          {isBanned ? (isVi ? 'BỊ KHÓA' : 'BANNED') : (isVi ? 'Hoạt động' : (selectedUser.status || 'Active'))}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[11px] font-semibold uppercase tracking-wider mb-1">
+                          {isVi ? 'Ngày khởi tạo:' : 'Created At:'}
+                        </span>
                         <span className="font-semibold text-slate-700 dark:text-slate-200">
-                          {selectedUser.email || 'user_' + selectedUser.id + '@fanhub.com'}
+                          {selectedUser.created_at || selectedUser.createdAt || 'N/A'}
                         </span>
                       </div>
-                      <div>
-                        <span className="text-slate-400 block text-[11px]">{'Role:'}</span>
-                        <span className="font-bold uppercase text-indigo-600 dark:text-indigo-400">
-                          {selectedUser.role || 'registered'}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-slate-400 block text-[11px]">{'Status:'}</span>
-                        <span className={`font-bold ${isBanned ? 'text-rose-600' : 'text-emerald-600'}`}>
-                          {isBanned ? ('BANNED') : ((selectedUser.status || 'Active'))}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-slate-400 block text-[11px]">{'Joined Date:'}</span>
-                        <span className="font-semibold text-slate-700 dark:text-slate-200">
-                          {new Date(selectedUser.createdAt || '2026-09-25').toLocaleDateString('en-US')}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Raw Payload Preview from API */}
-                    <div className="pt-2">
-                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
-                        {'Raw Backend API Payload (JSON):'}
-                      </span>
-                      <pre className="p-3 bg-slate-900 text-sky-300 font-mono text-[11px] rounded-lg overflow-x-auto max-h-[150px]">
-                        {JSON.stringify(selectedUser, null, 2)}
-                      </pre>
                     </div>
                   </div>
 
@@ -1255,7 +1146,7 @@ export default function AdminUsersPage() {
                           }}
                         >
                           <Unlock className="w-3.5 h-3.5 text-white" />
-                          <span style={{ color: '#ffffff' }}>{'Unban this user'}</span>
+                          <span style={{ color: '#ffffff' }}>{isVi ? 'Mở khóa tài khoản này' : 'Unban this user'}</span>
                         </button>
                       ) : (
                         <button
@@ -1277,7 +1168,7 @@ export default function AdminUsersPage() {
                           }}
                         >
                           <Ban className="w-3.5 h-3.5 text-white" />
-                          <span style={{ color: '#ffffff' }}>{'Ban this user'}</span>
+                          <span style={{ color: '#ffffff' }}>{isVi ? 'Khóa tài khoản này' : 'Ban this user'}</span>
                         </button>
                       )}
                     </div>
@@ -1296,7 +1187,7 @@ export default function AdminUsersPage() {
                         cursor: 'pointer',
                       }}
                     >
-                      {'Close'}
+                      {isVi ? 'Đóng' : 'Close'}
                     </button>
                   </div>
                 </>

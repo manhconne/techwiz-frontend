@@ -30,6 +30,7 @@ import {
   ShieldCheck,
   ArrowUpDown,
   Download,
+  WifiOff,
 } from 'lucide-react';
 
 export interface AdminTransactionItem {
@@ -44,69 +45,7 @@ export interface AdminTransactionItem {
   [key: string]: any;
 }
 
-// Fallback demo transactions
-const FALLBACK_TRANSACTIONS: AdminTransactionItem[] = [
-  {
-    id: 'tx_98124',
-    user: 'Nguyen Van A',
-    amount: 250000,
-    provider: 'VNPay',
-    merchant_ref: 'ORD_12345',
-    status: 'Success',
-    created_at: '2026-09-26T14:32:00Z',
-    payment_method: 'VNPay QR',
-  },
-  {
-    id: 'tx_98125',
-    user: 'Le Thi Thu Ha',
-    amount: 1500000,
-    provider: 'Momo',
-    merchant_ref: 'ORD_12346',
-    status: 'Success',
-    created_at: '2026-09-26T15:10:00Z',
-    payment_method: 'Ví MoMo',
-  },
-  {
-    id: 'tx_98126',
-    user: 'Tran Dinh Quang',
-    amount: 500000,
-    provider: 'VNPay',
-    merchant_ref: 'ORD_12347',
-    status: 'Pending',
-    created_at: '2026-09-26T16:05:00Z',
-    payment_method: 'ATM Nội địa',
-  },
-  {
-    id: 'tx_98127',
-    user: 'Pham Minh Hoang',
-    amount: 850000,
-    provider: 'ZaloPay',
-    merchant_ref: 'ORD_12348',
-    status: 'Success',
-    created_at: '2026-09-26T16:45:00Z',
-    payment_method: 'ZaloPay QR',
-  },
-  {
-    id: 'tx_98128',
-    user: 'Vuong Quoc Bao',
-    amount: 3200000,
-    provider: 'VietQR',
-    merchant_ref: 'ORD_12349',
-    status: 'Success',
-    created_at: '2026-09-27T08:12:00Z',
-    payment_method: 'Chuyển khoản VietQR Pro',
-  },
-  {
-    id: 'tx_98129',
-    user: 'Dang Thi Mai',
-    amount: 450000,
-    provider: 'VNPay',
-    merchant_ref: 'ORD_12350',
-    status: 'Failed',
-    created_at: '2026-09-27T09:20:00Z',
-    payment_method: 'Thẻ Quốc tế Visa/Master',
-  },
-];
+
 
 export default function AdminTransactionsPage() {
   const { language } = useAdminLanguage();
@@ -120,6 +59,7 @@ export default function AdminTransactionsPage() {
   const [transactions, setTransactions] = useState<AdminTransactionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isConnectionError, setIsConnectionError] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
   // Filters & Pagination: ?provider=VNPay&status=Success&page=1&limit=20
@@ -155,6 +95,7 @@ export default function AdminTransactionsPage() {
   const fetchTransactions = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
+    setIsConnectionError(false);
 
     try {
       const token = getAccessToken();
@@ -185,32 +126,15 @@ export default function AdminTransactionsPage() {
         setTotalCount(json.meta?.total || json.total || rawData.length);
       } else {
         setTransactions([]);
+        setTotalCount(0);
       }
       setApiError(null);
+      setIsConnectionError(false);
     } catch (err: any) {
-      console.warn('API /api/v1/admin/transactions offline, using demo transactions:', err);
-      let filtered = [...FALLBACK_TRANSACTIONS];
-      if (providerFilter) {
-        filtered = filtered.filter(
-          (t) => (t.provider || '').toLowerCase() === providerFilter.toLowerCase()
-        );
-      }
-      if (statusFilter) {
-        filtered = filtered.filter(
-          (t) => (t.status || '').toLowerCase() === statusFilter.toLowerCase()
-        );
-      }
-      if (searchTerm.trim()) {
-        const q = searchTerm.toLowerCase();
-        filtered = filtered.filter(
-          (t) =>
-            t.merchant_ref.toLowerCase().includes(q) ||
-            t.id.toLowerCase().includes(q) ||
-            getUserName(t.user).toLowerCase().includes(q)
-        );
-      }
-      setTransactions(filtered);
-      setTotalCount(filtered.length);
+      console.warn('API /api/v1/admin/transactions offline or error:', err);
+      setTransactions([]);
+      setTotalCount(0);
+      setIsConnectionError(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -302,36 +226,56 @@ export default function AdminTransactionsPage() {
           activeTab="transactions"
         />
 
-        {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+        {/* BREADCRUMB & TOP ACTIONS HEADER */}
+        <div className="p-6 pb-0">
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-indigo-600 font-medium">
-                  {isVi ? 'Lịch sử Giao dịch (Transactions)' : 'Transaction History'}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Lịch sử Giao dịch' : 'Transaction History'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
                   <Receipt className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Nhật Ký Giao Dịch & Cổng Thanh Toán' : 'Transaction Logs & Gateways'}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                   {transactions.length} {isVi ? 'giao dịch' : 'records'}
                 </span>
               </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Theo dõi nhật ký các giao dịch thanh toán vé, nạp ví và trạng thái đối soát cổng.'
+                  : 'Monitor ticket payment logs, wallet top-ups, and gateway reconciliation status.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
                 onClick={() => fetchTransactions(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
-                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
               </button>
             </div>
           </div>
@@ -339,7 +283,50 @@ export default function AdminTransactionsPage() {
 
         {/* CONTENT BODY */}
         <div className="p-6 space-y-6">
-          {/* STATS OVERVIEW */}
+          {loading ? (
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
+              <p className="text-xs text-slate-500">{isVi ? 'Đang tải danh sách giao dịch...' : 'Loading transactions...'}</p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => fetchTransactions(true)}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* STATS OVERVIEW */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
               <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
@@ -573,6 +560,8 @@ export default function AdminTransactionsPage() {
               </button>
             </div>
           </div>
+        </>
+        )}
         </div>
       </div>
 

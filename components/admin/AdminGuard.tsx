@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ShieldAlert, ArrowLeft, LogOut, Lock, RefreshCw, User } from 'lucide-react';
 import { checkIsAdmin, getAccessToken } from '../../utils/authUtils';
 import { useAuth } from '../../context/AuthContext';
+import { isBypassAdminEnabled } from '../../config/adminConfig';
 
 export const AdminGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
@@ -15,6 +16,12 @@ export const AdminGuard: React.FC<{ children: React.ReactNode }> = ({ children }
 
   useEffect(() => {
     const verifyAccess = () => {
+      if (isBypassAdminEnabled()) {
+        setIsAuthorized(true);
+        setIsChecking(false);
+        return;
+      }
+
       const hasToken = !!getAccessToken();
       const isAdmin = checkIsAdmin(user);
 
@@ -131,5 +138,20 @@ export const AdminGuard: React.FC<{ children: React.ReactNode }> = ({ children }
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {isBypassAdminEnabled() && (
+        <div className="bg-amber-500/10 border-b border-amber-500/30 text-amber-300 px-4 py-2 text-xs font-mono flex items-center justify-between z-50 relative">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+            <span>
+              <strong>[DEV MODE]</strong> Chế độ Bypass Kiểm Tra Admin đang <strong>BẬT</strong> (<code className="bg-amber-950/60 px-1 py-0.5 rounded text-amber-200">config/adminConfig.ts</code> = <code className="text-emerald-400 font-bold">'on'</code>)
+            </span>
+          </div>
+          <span className="text-[11px] text-amber-400/80 hidden sm:inline">Truy cập tất cả trang Quản trị không cần Token/Role API</span>
+        </div>
+      )}
+      {children}
+    </>
+  );
 };

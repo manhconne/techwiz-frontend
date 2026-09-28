@@ -30,6 +30,7 @@ import {
   Building2,
   ChevronRight,
   ExternalLink,
+  WifiOff,
 } from 'lucide-react';
 
 export interface FinancialBreakdownItem {
@@ -47,42 +48,6 @@ export interface FinancialReportData {
   meta?: any;
 }
 
-// Fallback demo financial data
-const FALLBACK_REPORT: FinancialReportData = {
-  total_volume: 450000000,
-  commission_earned: 22500000,
-  breakdown: [
-    {
-      event_id: 'evt_001',
-      event_title: 'Cosplay Expo 2026 - Vietnam Fandom Fest',
-      tickets_sold: 450,
-      revenue: 120000000,
-      commission: 6000000,
-    },
-    {
-      event_id: 'evt_002',
-      event_title: 'K-POP Symphony World Tour Hanoi Stage',
-      tickets_sold: 820,
-      revenue: 210000000,
-      commission: 10500000,
-    },
-    {
-      event_id: 'evt_003',
-      event_title: 'Giải Đấu MOBA Champions Cup 2026',
-      tickets_sold: 340,
-      revenue: 75000000,
-      commission: 3750000,
-    },
-    {
-      event_id: 'evt_004',
-      event_title: 'Hội Chợ Truyện Tranh & Manga Festival',
-      tickets_sold: 560,
-      revenue: 45000000,
-      commission: 2250000,
-    },
-  ],
-};
-
 export default function AdminFinancialPage() {
   const { language } = useAdminLanguage();
   const isVi = language === 'vi';
@@ -97,9 +62,10 @@ export default function AdminFinancialPage() {
   const [groupBy, setGroupBy] = useState<'event' | 'month' | 'category'>('event');
 
   // Report State
-  const [report, setReport] = useState<FinancialReportData>(FALLBACK_REPORT);
+  const [report, setReport] = useState<FinancialReportData>({ total_volume: 0, commission_earned: 0, breakdown: [] });
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isConnectionError, setIsConnectionError] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -120,6 +86,7 @@ export default function AdminFinancialPage() {
   const fetchReport = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
+    setIsConnectionError(false);
 
     try {
       const token = getAccessToken();
@@ -153,9 +120,11 @@ export default function AdminFinancialPage() {
         });
       }
       setApiError(null);
+      setIsConnectionError(false);
     } catch (err: any) {
-      console.warn('API /api/v1/admin/financial/reports offline, using fallback report:', err);
-      setReport(FALLBACK_REPORT);
+      console.warn('API /api/v1/admin/financial/reports offline or error:', err);
+      setReport({ total_volume: 0, commission_earned: 0, breakdown: [] });
+      setIsConnectionError(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -215,43 +184,76 @@ export default function AdminFinancialPage() {
           activeTab="financial"
         />
 
-        {/* BREADCRUMB & TOP ACTIONS */}
-        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+        {/* BREADCRUMB & TOP ACTIONS HEADER */}
+        <div className="p-6 pb-0">
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-indigo-600 font-medium">
-                  {isVi ? 'Báo cáo Tài chính (Financial Reports)' : 'Financial Reports'}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Báo cáo Tài chính' : 'Financial Reports'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
                   <TrendingUp className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Doanh Thu & Hoa Hồng Nền Tảng' : 'Platform Financial & Revenue'}</span>
               </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Theo dõi tổng doanh số bán vé, hoa hồng chiết khấu nền tảng và dòng tiền thực nhận.'
+                  : 'Track total ticket volume, platform commission fee, and net payouts.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
                 onClick={() => fetchReport(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
-                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
               </button>
-
               <button
+                type="button"
                 onClick={() => {
                   alert(isVi ? 'Đang xuất file báo cáo tài chính Excel/CSV...' : 'Exporting financial data...');
                 }}
-                className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#4f46e5',
+                  color: '#ffffff',
+                  padding: '9px 18px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  border: 'none',
+                }}
+                className="hover:bg-indigo-700 transition-colors shadow-2xs"
               >
-                <Download className="w-3.5 h-3.5" />
-                <span>{isVi ? 'Xuất báo cáo' : 'Export'}</span>
+                <Download className="w-4 h-4" />
+                <span>{isVi ? 'XUẤT BÁO CÁO' : 'EXPORT REPORT'}</span>
               </button>
             </div>
           </div>
@@ -259,7 +261,50 @@ export default function AdminFinancialPage() {
 
         {/* CONTENT BODY */}
         <div className="p-6 space-y-6">
-          {/* DATE RANGE FILTER TOOLBAR: ?from=...&to=...&group_by=event */}
+          {loading ? (
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
+              <p className="text-xs text-slate-500">{isVi ? 'Đang tải báo cáo tài chính...' : 'Loading financial report...'}</p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => fetchReport(true)}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* DATE RANGE FILTER TOOLBAR: ?from=...&to=...&group_by=event */}
           <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3 text-xs">
               <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
@@ -478,6 +523,8 @@ export default function AdminFinancialPage() {
               </table>
             </div>
           </div>
+        </>
+        )}
         </div>
       </div>
     </div>

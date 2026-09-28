@@ -2329,8 +2329,8 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={toggleFontSize}
                   style={{ borderRadius: '0px' }}
                   className={`w-10 h-9 flex items-center justify-center border border-black text-xs font-mono font-bold cursor-pointer transition-colors duration-100 ${isLargeFont
-                      ? 'bg-black text-white'
-                      : 'bg-white text-black hover:bg-black hover:text-white'
+                    ? 'bg-black text-white'
+                    : 'bg-white text-black hover:bg-black hover:text-white'
                     }`}
                   title={isLargeFont ? 'Reduce font size' : 'Increase font size'}
                 >
