@@ -2446,12 +2446,12 @@
 }
 [data-fandom-theme="gaming"] .header-subnav,
 [data-fandom-theme="gaming"] .desktop-subnav {
-  background: #0a0a0f !important;
-  border-top: 2px solid #00f0ff !important;
-  border-bottom: 4px solid #00ff66 !important;
+  background: #FFFFFF !important;
+  border-top: 1px solid #E5E5E5 !important;
+  border-bottom: 4px solid #000000 !important;
 }
 [data-fandom-theme="gaming"] .header-nav-link {
-  color: #94a3b8 !important;
+  color: #000000 !important;
   font-family: var(--font-jetbrains), monospace !important;
   font-size: 12px !important;
   font-weight: 700 !important;
@@ -2460,15 +2460,14 @@
   text-decoration: none !important;
 }
 [data-fandom-theme="gaming"] .header-nav-link:hover {
-  color: #00ff66 !important;
-  text-shadow: 0 0 8px rgba(0, 255, 102, 0.6) !important;
-  text-decoration: none !important;
+  color: #000000 !important;
+  text-decoration: underline !important;
 }
 [data-fandom-theme="gaming"] .header-allmd-btn {
-  background: #00ff66 !important;
-  color: #000000 !important;
-  border: 2px solid #00ff66 !important;
-  box-shadow: 0 0 10px rgba(0, 255, 102, 0.4) !important;
+  background: #000000 !important;
+  color: #FFFFFF !important;
+  border: 2px solid #000000 !important;
+  box-shadow: none !important;
   border-radius: 0px !important;
   font-family: var(--font-jetbrains), monospace !important;
   text-transform: uppercase !important;
@@ -2477,10 +2476,8 @@
   transition: all 100ms ease !important;
 }
 [data-fandom-theme="gaming"] .header-allmd-btn:hover {
-  background: #00f0ff !important;
+  background: #FFFFFF !important;
   color: #000000 !important;
-  border-color: #00f0ff !important;
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.6) !important;
 }
 
 /* ==========================================================================

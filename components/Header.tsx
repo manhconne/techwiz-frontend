@@ -9,7 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { useDomainTheme } from '../context/DomainContext';
 import { NotificationDropdown } from './NotificationDropdown';
 import { PersonalDashboardModal } from './PersonalDashboardModal';
-import { getActiveFandomTheme, persistFandomTheme } from '../utils/fandomTheme';
+import { getActiveFandomTheme } from '../utils/fandomTheme';
 import {
   Menu,
   Search,
@@ -136,7 +136,6 @@ export const Header: React.FC<HeaderProps> = ({
   const isCinema = effectiveTheme === 'cinema' || pathname?.startsWith('/cinema');
   const isComics = effectiveTheme === 'comics' || pathname?.startsWith('/comics');
   const isTvShows = effectiveTheme === 'tv' || pathname?.startsWith('/tv');
-  const isKpop = effectiveTheme === 'kpop' || pathname?.startsWith('/kpop');
 
   const loginTheme = React.useMemo(() => {
     if (isManga) {
@@ -310,19 +309,19 @@ export const Header: React.FC<HeaderProps> = ({
   const subnavTheme = React.useMemo(() => {
     if (isGaming) {
       return {
-        barBg: '#0a0a0f',
-        barBorder: 'border-t-2 border-[#00f0ff] border-b-4 border-[#00ff66]',
-        btnBg: '#00ff66',
-        btnColor: '#000000',
-        btnBorder: '2px solid #00ff66',
+        barBg: '#ffffff',
+        barBorder: 'border-t-2 border-black border-b-4 border-black',
+        btnBg: '#000000',
+        btnColor: '#ffffff',
+        btnBorder: '2px solid #000000',
         btnRadius: '0px',
-        btnShadow: '0 0 10px rgba(0, 255, 102, 0.4)',
+        btnShadow: 'none',
         btnFont: "'JetBrains Mono', monospace",
-        btnLabel: '★ GAMING ARENA MD',
+        btnLabel: '★ GAMING MD',
         tabFont: "'JetBrains Mono', monospace",
-        tabColor: '#94a3b8',
-        tabActiveColor: '#00ff66',
-        tabActiveBorder: '3px solid #00ff66',
+        tabColor: '#000000',
+        tabActiveColor: '#000000',
+        tabActiveBorder: '3px solid #000000',
         tabLetterSpacing: '0.12em',
         tabFontWeight: 600,
         tabActiveWeight: 900,
@@ -336,11 +335,11 @@ export const Header: React.FC<HeaderProps> = ({
         btnBg: '#ff4d4d',
         btnColor: '#ffffff',
         btnBorder: '2px solid #2d2d2d',
-        btnRadius: '255px 15px 225px 15px/15px 225px 15px 255px',
+        btnRadius: '6px',
         btnShadow: '3px 3px 0px #2d2d2d',
-        btnFont: "'Patrick Hand', 'Kalam', cursive, sans-serif",
-        btnLabel: '★ MANGA GUILD MD',
-        tabFont: "'Patrick Hand', 'Kalam', cursive, sans-serif",
+        btnFont: "'Kalam', cursive, sans-serif",
+        btnLabel: '★ MANGA MD',
+        tabFont: "'Kalam', cursive, sans-serif",
         tabColor: '#2d2d2d',
         tabActiveColor: '#ff4d4d',
         tabActiveBorder: '3px solid #ff4d4d',
@@ -352,19 +351,19 @@ export const Header: React.FC<HeaderProps> = ({
     }
     if (isAnime) {
       return {
-        barBg: '#ecfccb',
-        barBorder: 'border-t-2 border-black border-b-4 border-[#84cc16]',
-        btnBg: '#a3e635',
+        barBg: '#ffffff',
+        barBorder: 'border-t-2 border-black border-b-4 border-black',
+        btnBg: '#ccff00',
         btnColor: '#000000',
         btnBorder: '2px solid #000000',
         btnRadius: '0px',
         btnShadow: '3px 3px 0px #000000',
         btnFont: "'Space Grotesk', sans-serif",
-        btnLabel: '★ SAKUGA VAULT MD',
+        btnLabel: '★ SAKUGA MD',
         tabFont: "'Space Grotesk', sans-serif",
         tabColor: '#000000',
-        tabActiveColor: '#4d7c0f',
-        tabActiveBorder: '3px solid #65a30d',
+        tabActiveColor: '#000000',
+        tabActiveBorder: '3px solid #ccff00',
         tabLetterSpacing: '0.1em',
         tabFontWeight: 700,
         tabActiveWeight: 900,
@@ -373,16 +372,16 @@ export const Header: React.FC<HeaderProps> = ({
     }
     if (isComics) {
       return {
-        barBg: '#fef9c3',
-        barBorder: 'border-t-2 border-black border-b-4 border-[#ef4444]',
-        btnBg: '#ef4444',
-        btnColor: '#ffffff',
+        barBg: '#fffdf0',
+        barBorder: 'border-t-2 border-black border-b-4 border-black',
+        btnBg: '#ffd60a',
+        btnColor: '#000000',
         btnBorder: '2px solid #000000',
         btnRadius: '0px',
-        btnShadow: '3px 3px 0px #000000',
-        btnFont: "'Bangers', 'Space Grotesk', cursive, sans-serif",
-        btnLabel: '★ HERO ARCHIVE MD',
-        tabFont: "'Bangers', 'Space Grotesk', cursive, sans-serif",
+        btnShadow: '3px 3px 0px #ef4444',
+        btnFont: "'Bangers', 'Space Grotesk', sans-serif",
+        btnLabel: '★ COMICS MD',
+        tabFont: "'Bangers', 'Space Grotesk', sans-serif",
         tabColor: '#000000',
         tabActiveColor: '#ef4444',
         tabActiveBorder: '3px solid #ef4444',
@@ -400,12 +399,12 @@ export const Header: React.FC<HeaderProps> = ({
         btnColor: '#09090b',
         btnBorder: '1px solid #d4af37',
         btnRadius: '0px',
-        btnShadow: '0 0 10px rgba(212,175,55,0.3)',
+        btnShadow: 'none',
         btnFont: "'Playfair Display', Georgia, serif",
         btnLabel: '★ 70MM CINEMA MD',
         tabFont: "'Playfair Display', Georgia, serif",
         tabColor: 'rgba(255,255,255,0.75)',
-        tabActiveColor: '#d4af37',
+        tabActiveColor: '#ffffff',
         tabActiveBorder: '3px solid #d4af37',
         tabLetterSpacing: '0.15em',
         tabFontWeight: 600,
@@ -437,14 +436,14 @@ export const Header: React.FC<HeaderProps> = ({
     if (isCosplay) {
       return {
         barBg: '#ffffff',
-        barBorder: 'border-t-2 border-black border-b-4 border-[#D02020]',
+        barBorder: 'border-t-2 border-black border-b-4 border-black',
         btnBg: '#D02020',
         btnColor: '#ffffff',
         btnBorder: '2px solid #000000',
         btnRadius: '0px',
         btnShadow: '3px 3px 0px #000000',
         btnFont: "'Outfit', var(--font-sans), sans-serif",
-        btnLabel: '★ BAUHAUS COSPLAY MD',
+        btnLabel: '★ BAUHAUS MD',
         tabFont: "'Outfit', var(--font-sans), sans-serif",
         tabColor: '#000000',
         tabActiveColor: '#D02020',
@@ -455,32 +454,11 @@ export const Header: React.FC<HeaderProps> = ({
         fandomQuery: 'cosplay',
       };
     }
-    if (isKpop) {
-      return {
-        barBg: '#ffffff',
-        barBorder: 'border-t border-black border-b-4 border-black',
-        btnBg: '#ff2e93',
-        btnColor: '#ffffff',
-        btnBorder: '2px solid #000000',
-        btnRadius: '0px',
-        btnShadow: '3px 3px 0px #000000',
-        btnFont: "var(--font-jetbrains), var(--font-mono), monospace",
-        btnLabel: '★ K-POP UNIVERSE MD',
-        tabFont: "var(--font-mono), monospace",
-        tabColor: '#000000',
-        tabActiveColor: '#ff2e93',
-        tabActiveBorder: '3px solid #ff2e93',
-        tabLetterSpacing: '0.12em',
-        tabFontWeight: 600,
-        tabActiveWeight: 800,
-        fandomQuery: 'kpop',
-      };
-    }
-    // Default / All Fandoms (effectiveTheme === 'all')
+    // Default / K-Pop
     return {
       barBg: '#ffffff',
       barBorder: 'border-t border-black border-b-4 border-black',
-      btnBg: '#000000',
+      btnBg: '#ff2e93',
       btnColor: '#ffffff',
       btnBorder: '2px solid #000000',
       btnRadius: '0px',
@@ -489,14 +467,14 @@ export const Header: React.FC<HeaderProps> = ({
       btnLabel: '★ ALL MD',
       tabFont: "var(--font-mono), monospace",
       tabColor: '#000000',
-      tabActiveColor: '#000000',
-      tabActiveBorder: '3px solid #000000',
+      tabActiveColor: '#ff2e93',
+      tabActiveBorder: '3px solid #ff2e93',
       tabLetterSpacing: '0.12em',
       tabFontWeight: 600,
       tabActiveWeight: 800,
-      fandomQuery: 'all',
+      fandomQuery: 'kpop',
     };
-  }, [isGaming, isManga, isAnime, isComics, isCinema, isTvShows, isCosplay, isKpop]);
+  }, [isGaming, isManga, isAnime, isComics, isCinema, isTvShows, isCosplay]);
 
   const SUBNAV_TABS = React.useMemo(() => [
     { label: 'ARTIST', href: '/artist' },
@@ -508,10 +486,8 @@ export const Header: React.FC<HeaderProps> = ({
   ], []);
 
   const getTabHref = React.useCallback((baseHref: string) => {
-    const q = (subnavTheme.fandomQuery && subnavTheme.fandomQuery !== 'all')
-      ? subnavTheme.fandomQuery
-      : (effectiveTheme && effectiveTheme !== 'all' ? effectiveTheme : '');
-    if (q) {
+    const q = subnavTheme.fandomQuery || effectiveTheme;
+    if (q && q !== 'all') {
       return `${baseHref}?fandom=${q}`;
     }
     return baseHref;
@@ -600,23 +576,23 @@ export const Header: React.FC<HeaderProps> = ({
       el.scrollIntoView({ behavior: 'smooth' });
     } else {
       if (id === 'tours') {
-        window.location.href = getTabHref('/event');
+        window.location.href = '/event';
       } else {
-        window.location.href = getTabHref(`/#${id}`);
+        window.location.href = `/#${id}`;
       }
     }
   };
 
   const allMdItems = [
-    { label: 'EVENT & TICKETS', icon: Ticket, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/event'); } },
-    { label: 'CD, DVD & VINYL', icon: Disc, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/cd-dvd-book'); } },
-    { label: 'OFFICIAL MD GOODS', icon: ShoppingBag, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/md'); } },
-    { label: "SEASON'S GREETINGS", icon: Gift, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/cd-dvd-book'); } },
+    { label: 'EVENT & TICKETS', icon: Ticket, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/event'; } },
+    { label: 'CD, DVD & VINYL', icon: Disc, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/cd-dvd-book'; } },
+    { label: 'OFFICIAL MD GOODS', icon: ShoppingBag, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
+    { label: "SEASON'S GREETINGS", icon: Gift, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/cd-dvd-book'; } },
     { label: 'CUSTOM GOODS ZONE', icon: Palette, action: () => { setIsAllMdDropdownOpen(false); setIsCustomZoneOpen(true); } },
-    { label: 'DUCKJIL FANDOM HUB', icon: Heart, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/artist'); } },
-    { label: 'ALLMD BEAUTY & CARE', icon: Sparkles, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/md'); } },
-    { label: 'B2B / BULK ORDER', icon: Building2, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/b2b'); } },
-    { label: 'MULTIMEDIA CENTER', icon: Tv, action: () => { setIsAllMdDropdownOpen(false); window.location.href = getTabHref('/multimedia'); } },
+    { label: 'DUCKJIL FANDOM HUB', icon: Heart, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/artist'; } },
+    { label: 'ALLMD BEAUTY & CARE', icon: Sparkles, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/md'; } },
+    { label: 'B2B / BULK ORDER', icon: Building2, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/b2b'; } },
+    { label: 'MULTIMEDIA CENTER', icon: Tv, action: () => { setIsAllMdDropdownOpen(false); window.location.href = '/multimedia'; } },
   ];
 
   return (
@@ -912,62 +888,6 @@ export const Header: React.FC<HeaderProps> = ({
                     </button>
                   </div>
 
-                  {/* Fandom Universes Quick Switcher */}
-                  <div className="pb-3 mb-3 border-b border-black">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-[10px] font-black uppercase tracking-widest text-neutral-500">
-                        FANDOM UNIVERSE STYLE
-                      </span>
-                      <span className="font-mono text-[9px] px-1.5 py-0.5 bg-black text-white font-bold uppercase">
-                        {effectiveTheme}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-1.5">
-                      {[
-                        { key: 'all', label: 'All', color: '#000000', cat: 'all' },
-                        { key: 'kpop', label: 'K-Pop', color: '#ff2e93', cat: 'K-Pop' },
-                        { key: 'gaming', label: 'Gaming', color: '#00ff66', cat: 'Gaming' },
-                        { key: 'manga', label: 'Manga', color: '#ff4d4d', cat: 'Manga' },
-                        { key: 'anime', label: 'Anime', color: '#a3e635', cat: 'Anime' },
-                        { key: 'cosplay', label: 'Cosplay', color: '#D02020', cat: 'Cosplay' },
-                        { key: 'comics', label: 'Comics', color: '#ef4444', cat: 'Comics' },
-                        { key: 'cinema', label: 'Cinema', color: '#d4af37', cat: 'Movies' },
-                        { key: 'tv', label: 'TV Shows', color: '#8b5cf6', cat: 'TV Shows' },
-                      ].map(fandom => {
-                        const isCurrent = effectiveTheme === fandom.key;
-                        return (
-                          <button
-                            key={fandom.key}
-                            type="button"
-                            onClick={() => {
-                              setIsAllMdDropdownOpen(false);
-                              if (typeof window !== 'undefined') {
-                                persistFandomTheme(fandom.key, fandom.cat);
-                                const url = new URL(window.location.href);
-                                if (fandom.key !== 'all') {
-                                  url.searchParams.set('fandom', fandom.key);
-                                } else {
-                                  url.searchParams.delete('fandom');
-                                  url.searchParams.delete('category');
-                                }
-                                window.location.href = url.toString();
-                              }
-                            }}
-                            className="px-1.5 py-1.5 text-[10px] font-mono font-bold uppercase text-center border border-black cursor-pointer transition-colors"
-                            style={{
-                              backgroundColor: isCurrent ? (fandom.color === '#00ff66' ? '#000' : fandom.color) : '#fff',
-                              color: isCurrent ? (fandom.color === '#00ff66' ? '#00ff66' : fandom.key === 'anime' ? '#000' : '#fff') : '#000',
-                              borderColor: isCurrent ? fandom.color : '#000',
-                            }}
-                          >
-                            {isCurrent && <span className="mr-0.5">★</span>}
-                            {fandom.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
                   {/* Category Items with Library Icons */}
                   <div className="flex flex-col gap-1">
                     {allMdItems.map((item, idx) => {
@@ -1108,7 +1028,7 @@ export const Header: React.FC<HeaderProps> = ({
                     borderBottom: isActive ? subnavTheme.tabActiveBorder : '3px solid transparent',
                     textDecoration: 'none',
                   }}
-                  className="header-subnav-tab header-nav-link hover:opacity-70"
+                  className="hover:opacity-70"
                 >
                   {tab.label}
                 </Link>

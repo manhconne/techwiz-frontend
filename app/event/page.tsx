@@ -86,7 +86,7 @@ export default function EventPage() {
         />
 
         {/* Location-Aware Event Radar & Calendar Explorer (GPS, Map, Radius & Directions) */}
-        <LocationAwareEventExplorer activeCategory={category} />
+        <LocationAwareEventExplorer />
 
         {/* Tour Calendar Component with Category Filtering, VIP Passes & Live RSVP */}
         <TourCalendar activeCategory={category} />

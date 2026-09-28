@@ -47,8 +47,6 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
     if (th === 'gaming') return 'Gaming';
     if (th === 'cinema') return 'Movies';
     if (th === 'tv') return 'TV Shows';
-    if (th === 'cosplay') return 'Cosplay';
-    if (th === 'kpop') return 'K-Pop';
     return 'all';
   });
 
@@ -56,17 +54,6 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
     const handleThemeChange = (e: any) => {
       if (e?.detail?.category) {
         setInternalCategory(e.detail.category);
-      } else if (e?.detail?.theme) {
-        const th = e.detail.theme;
-        if (th === 'manga') setInternalCategory('Manga');
-        else if (th === 'anime') setInternalCategory('Anime');
-        else if (th === 'comics') setInternalCategory('Comics');
-        else if (th === 'gaming') setInternalCategory('Gaming');
-        else if (th === 'cinema') setInternalCategory('Movies');
-        else if (th === 'tv') setInternalCategory('TV Shows');
-        else if (th === 'cosplay') setInternalCategory('Cosplay');
-        else if (th === 'kpop') setInternalCategory('K-Pop');
-        else setInternalCategory('all');
       }
     };
     if (typeof window !== 'undefined') {

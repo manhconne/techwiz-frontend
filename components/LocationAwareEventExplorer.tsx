@@ -44,13 +44,7 @@ import {
   calculateDistanceKm 
 } from '../data/locationEventsData';
 
-export interface LocationAwareEventExplorerProps {
-  activeCategory?: string;
-}
-
-export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProps> = ({
-  activeCategory = 'all'
-}) => {
+export const LocationAwareEventExplorer: React.FC = () => {
   const { formatPrice } = useCartWishlist();
 
   // User location state
@@ -72,16 +66,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
   // Filter states
   const [selectedCity, setSelectedCity] = useState<string>('Hanoi');
   const [selectedType, setSelectedType] = useState<string>('all');
-  const [selectedCategory, setSelectedCategory] = useState<string>(() => {
-    return activeCategory || 'all';
-  });
-
-  useEffect(() => {
-    if (activeCategory) {
-      setSelectedCategory(activeCategory);
-    }
-  }, [activeCategory]);
-
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [maxRadiusKm, setMaxRadiusKm] = useState<number>(50); // 10, 35, 100, 500, 5000 (all)
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<'map' | 'calendar' | 'list'>('map');

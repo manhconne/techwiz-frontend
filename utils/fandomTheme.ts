@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 
 export const getFandomCategoryFromTheme = (theme: string): string => {
   const t = (theme || '').toLowerCase();
-  if (t === 'all') return 'all';
   if (t === 'manga') return 'Manga';
   if (t === 'anime') return 'Anime';
   if (t === 'cosplay') return 'Cosplay';
@@ -10,13 +9,11 @@ export const getFandomCategoryFromTheme = (theme: string): string => {
   if (t === 'comics' || t === 'comic') return 'Comics';
   if (t === 'cinema' || t === 'movie' || t === 'movies') return 'Movies';
   if (t === 'tv') return 'TV Shows';
-  if (t === 'kpop' || t === 'k-pop') return 'K-Pop';
-  return 'all';
+  return 'K-Pop';
 };
 
 export const getFandomThemeKeyFromCategory = (cat: string): string => {
   const c = (cat || '').toLowerCase();
-  if (c === 'all' || c.includes('all fandom')) return 'all';
   if (c.includes('manga')) return 'manga';
   if (c.includes('anime')) return 'anime';
   if (c.includes('cosplay')) return 'cosplay';
@@ -24,15 +21,13 @@ export const getFandomThemeKeyFromCategory = (cat: string): string => {
   if (c.includes('comic')) return 'comics';
   if (c.includes('movie') || c.includes('cinema')) return 'cinema';
   if (c.includes('tv')) return 'tv';
-  if (c.includes('kpop') || c.includes('k-pop')) return 'kpop';
-  return 'all';
+  return 'kpop';
 };
 
 export const getActiveFandomTheme = (propsTheme?: string, propsCategory?: string): string => {
   // 1. Check direct category prop
-  if (propsCategory) {
+  if (propsCategory && propsCategory !== 'all') {
     const cat = propsCategory.toLowerCase();
-    if (cat === 'all' || cat.includes('all fandom')) return 'all';
     if (cat.includes('manga')) return 'manga';
     if (cat.includes('anime')) return 'anime';
     if (cat.includes('cosplay')) return 'cosplay';
@@ -44,9 +39,8 @@ export const getActiveFandomTheme = (propsTheme?: string, propsCategory?: string
   }
 
   // 2. Check direct themeKey prop
-  if (propsTheme) {
+  if (propsTheme && propsTheme !== 'all') {
     const th = propsTheme.toLowerCase();
-    if (th === 'all') return 'all';
     if (th.includes('manga')) return 'manga';
     if (th.includes('anime')) return 'anime';
     if (th.includes('cosplay')) return 'cosplay';
@@ -61,7 +55,6 @@ export const getActiveFandomTheme = (propsTheme?: string, propsCategory?: string
     // 3. Check URL query params (?category=manga or ?fandom=manga)
     const params = new URLSearchParams(window.location.search);
     const catParam = (params.get('category') || params.get('fandom') || '').toLowerCase();
-    if (catParam === 'all') return 'all';
     if (catParam.includes('manga')) return 'manga';
     if (catParam.includes('anime')) return 'anime';
     if (catParam.includes('cosplay')) return 'cosplay';
@@ -74,9 +67,8 @@ export const getActiveFandomTheme = (propsTheme?: string, propsCategory?: string
     // 4. Check localStorage persistent category selection
     try {
       const stored = localStorage.getItem('fanhub_fandom_theme') || localStorage.getItem('fanhub_fandom_category');
-      if (stored) {
+      if (stored && stored !== 'all') {
         const st = stored.toLowerCase();
-        if (st === 'all') return 'all';
         if (st.includes('manga')) return 'manga';
         if (st.includes('anime')) return 'anime';
         if (st.includes('cosplay')) return 'cosplay';
@@ -90,9 +82,8 @@ export const getActiveFandomTheme = (propsTheme?: string, propsCategory?: string
 
     // 5. Check document attribute
     const domTheme = document.body?.getAttribute('data-fandom-theme') || document.documentElement?.getAttribute('data-fandom-theme');
-    if (domTheme) {
+    if (domTheme && domTheme !== 'all') {
       const dt = domTheme.toLowerCase();
-      if (dt === 'all') return 'all';
       if (dt.includes('manga')) return 'manga';
       if (dt.includes('anime')) return 'anime';
       if (dt.includes('cosplay')) return 'cosplay';
@@ -111,10 +102,9 @@ export const getActiveFandomTheme = (propsTheme?: string, propsCategory?: string
     if (pathname.includes('/comic')) return 'comics';
     if (pathname.includes('/cosplay')) return 'cosplay';
     if (pathname.includes('/cinema') || pathname.includes('/movie')) return 'cinema';
-    if (pathname.includes('/tv')) return 'tv';
   }
 
-  return 'all';
+  return 'kpop';
 };
 
 export const persistFandomTheme = (theme: string, category?: string) => {
@@ -149,7 +139,7 @@ export function useActiveFandom(initialTheme?: string, initialCategory?: string)
     sync();
 
     const handleCustomChange = (e: any) => {
-      if (e?.detail?.theme) {
+      if (e?.detail?.theme && e.detail.theme !== 'all') {
         const nextTheme = e.detail.theme;
         const nextCategory = e.detail.category || getFandomCategoryFromTheme(nextTheme);
         setThemeKey(nextTheme);
@@ -171,12 +161,7 @@ export function useActiveFandom(initialTheme?: string, initialCategory?: string)
     persistFandomTheme(key, cat);
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
-      if (key && key !== 'all') {
-        url.searchParams.set('fandom', key);
-      } else {
-        url.searchParams.delete('fandom');
-        url.searchParams.delete('category');
-      }
+      url.searchParams.set('fandom', key);
       window.history.replaceState({}, '', url.toString());
     }
   }, []);

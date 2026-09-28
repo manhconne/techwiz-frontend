@@ -29,22 +29,72 @@ import { SitemapSection } from '../components/SitemapSection';
 // import { TestConnection } from '../components/TestConnection';
 import { Album, FandomCategoryKey } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
-import { useActiveFandom } from '../utils/fandomTheme';
+import { persistFandomTheme } from '../utils/fandomTheme';
 
 export default function Home({ initialCategory = 'all' }: { initialCategory?: FandomCategoryKey | 'all' } = {}) {
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedArtistFilter, setSelectedArtistFilter] = useState('all');
+  const [selectedFandomCategory, setSelectedFandomCategory] = useState<FandomCategoryKey | 'all'>(initialCategory);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   const { setIsCartOpen, setIsWishlistOpen } = useCartWishlist();
-  const { themeKey, category, changeFandom } = useActiveFandom(
-    initialCategory !== 'all' ? initialCategory : undefined
-  );
 
-  const selectedFandomCategory = category as FandomCategoryKey | 'all';
-  const fandomThemeKey = themeKey;
+  // Check URL query params on mount for direct category access (e.g. ?category=kpop or ?category=manga)
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const catParam = params.get('category') || params.get('fandom');
+      if (catParam) {
+        const lower = catParam.toLowerCase();
+        if (lower === 'kpop' || lower === 'k-pop') {
+          setSelectedFandomCategory('K-Pop');
+        } else if (lower === 'manga') {
+          setSelectedFandomCategory('Manga');
+        } else if (lower === 'anime') {
+          setSelectedFandomCategory('Anime');
+        } else if (lower === 'cosplay') {
+          setSelectedFandomCategory('Cosplay');
+        } else if (lower === 'gaming') {
+          setSelectedFandomCategory('Gaming');
+        } else if (lower === 'comics') {
+          setSelectedFandomCategory('Comics');
+        } else if (lower === 'cinema' || lower === 'movies') {
+          setSelectedFandomCategory('Movies');
+        } else if (lower === 'tv' || lower === 'tv-shows' || lower === 'tvshows' || lower === 'tv shows') {
+          setSelectedFandomCategory('TV Shows');
+        }
+      } else {
+        try {
+          const stored = localStorage.getItem('fanhub_fandom_category');
+          if (stored) {
+            setSelectedFandomCategory(stored as any);
+          }
+        } catch { }
+      }
+    }
+  }, []);
+
+  // Map selectedFandomCategory to theme attribute key
+  const fandomThemeKey = React.useMemo(() => {
+    switch (selectedFandomCategory) {
+      case 'K-Pop': return 'kpop';
+      case 'Anime': return 'anime';
+      case 'Cosplay': return 'cosplay';
+      case 'Gaming': return 'gaming';
+      case 'Comics': return 'comics';
+      case 'Manga': return 'manga';
+      case 'Movies': return 'cinema';
+      case 'TV Shows': return 'tv';
+      default: return 'all';
+    }
+  }, [selectedFandomCategory]);
+
+  // Synchronize full-page DOM theme attributes and persist when fandom category changes
+  React.useEffect(() => {
+    persistFandomTheme(fandomThemeKey, selectedFandomCategory);
+  }, [fandomThemeKey, selectedFandomCategory]);
 
   const handleSelectArtistFromProfiles = (artistId: string) => {
     setSelectedArtistFilter(artistId);
@@ -83,7 +133,7 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
         {/* 1. Global Fandom Events Showcase Carousel Banner (Top of Homepage with Category Dock) */}
         <EventHeroBanner 
           activeCategory={selectedFandomCategory}
-          onSelectCategory={(cat) => changeFandom(cat)}
+          onSelectCategory={(cat) => setSelectedFandomCategory(cat)}
         />
 
         {selectedFandomCategory === 'Manga' ? (
@@ -139,7 +189,7 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
               <UpcomingReleasesAndArticles 
                 initialCategory={selectedFandomCategory}
                 fandomCategory={selectedFandomCategory}
-                onSelectCategory={(cat) => changeFandom(cat)}
+                onSelectCategory={(cat) => setSelectedFandomCategory(cat)}
               />
             </div>
 
