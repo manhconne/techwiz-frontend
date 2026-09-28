@@ -45,6 +45,7 @@ import {
   Tv,
   Heart,
   Compass,
+  LogOut,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -788,11 +789,11 @@ export const Header: React.FC<HeaderProps> = ({
           {/* User Account / Login Button */}
           {isLoggedIn ? (
             <button
-              onClick={() => setIsDashboardOpen(true)}
+              onClick={() => setIsAuthModalOpen(true)}
               className={`header-action-btn flex items-center justify-center px-3 py-1.5 border-2 border-black cursor-pointer font-black uppercase transition-colors duration-100 h-8 sm:h-9 min-h-[44px] sm:min-h-[36px] text-xs ${isGaming ? 'bg-white hover:bg-black hover:text-white text-black shadow-none' : isCinema ? 'bg-white hover:bg-[#FF3000] hover:text-white text-black shadow-none' : 'text-black bg-[#c084fc] hover:bg-[#d8b4fe] shadow-[2px_2px_0px_#000000]'}`}
               style={{ borderRadius: '0px' }}
-              title={`${user.name} - Dashboard`}
-              aria-label={`User Account Dashboard for ${user.name}`}
+              title={`${user.name} - Profile`}
+              aria-label={`User Account Profile for ${user.name}`}
               type="button"
             >
               <User className="w-3.5 h-3.5 mr-1" />
@@ -1403,131 +1404,243 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             {isLoggedIn ? (
-              /* LOGGED IN USER PROFILE CARD */
-              <div>
-                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
+              /* LOGGED IN USER PROFILE CARD — Fully themed to match category style */
+              <div style={{ fontFamily: loginTheme.fontFamily }}>
+                {/* Category Header Badge & Title */}
+                <div style={{ textAlign: 'center', marginBottom: '18px' }}>
+                  <div
                     style={{
-                      width: '72px',
-                      height: '72px',
-                      borderRadius: '50%',
-                      margin: '0 auto 12px auto',
-                      objectFit: 'cover',
-                      border: '3px solid var(--color-primary)',
-                      boxShadow: 'var(--shadow-md)'
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '4px 12px',
+                      backgroundColor: loginTheme.accentColor,
+                      color: isCinema || isAnime ? '#000000' : '#ffffff',
+                      fontSize: '10px',
+                      fontWeight: 900,
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      border: loginTheme.inputBorder,
+                      borderRadius: loginTheme.inputRadius,
+                      marginBottom: '14px',
+                      boxShadow: loginTheme.primaryBtnShadow !== 'none' ? '2px 2px 0px rgba(0,0,0,0.2)' : 'none',
                     }}
-                  />
-                  <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px 0' }}>
+                  >
+                    <Sparkles style={{ width: '12px', height: '12px' }} />
+                    <span>
+                      {isManga
+                        ? 'MANGA GUILD PASSPORT'
+                        : isAnime
+                        ? 'SAKUGA VAULT OTACRED'
+                        : isComics
+                        ? 'HERO SECRET IDENTITY'
+                        : isGaming
+                        ? 'ARENA PLAYER DOSSIER'
+                        : isCinema
+                        ? 'CINEMA 70MM PATRON GUILD'
+                        : isTvShows
+                        ? 'TV BROADCAST SUBSCRIBER'
+                        : isCosplay
+                        ? 'BAUHAUS ATELIER RUNWAY'
+                        : 'FAN HUB PLUS PROFILE'}
+                    </span>
+                  </div>
+
+                  {/* Avatar with dynamic frame */}
+                  <div style={{ position: 'relative', display: 'inline-block', margin: '0 auto 10px auto' }}>
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      style={{
+                        width: '78px',
+                        height: '78px',
+                        borderRadius: isManga
+                          ? '120px 8px 110px 8px/8px 110px 8px 120px'
+                          : isAnime || isComics || isGaming
+                          ? '0px'
+                          : '50%',
+                        objectFit: 'cover',
+                        border: loginTheme.primaryBtnBorder,
+                        boxShadow: loginTheme.primaryBtnShadow !== 'none' ? loginTheme.primaryBtnShadow : '0 4px 12px rgba(0,0,0,0.15)',
+                        backgroundColor: '#ffffff',
+                        display: 'block',
+                      }}
+                    />
+                  </div>
+
+                  <h3
+                    style={{
+                      fontSize: '20px',
+                      fontWeight: 900,
+                      color: loginTheme.textColor,
+                      margin: '0 0 4px 0',
+                      letterSpacing: '-0.01em',
+                      fontFamily: loginTheme.fontFamily,
+                    }}
+                  >
                     {user.name}
                   </h3>
-                  <p style={{ fontSize: '12px', color: 'var(--color-primary)', fontWeight: 600, margin: 0 }}>
+                  <p
+                    style={{
+                      fontSize: '12px',
+                      color: loginTheme.subtitleColor,
+                      fontWeight: 700,
+                      margin: 0,
+                    }}
+                  >
                     {user.email}
                   </p>
                 </div>
 
+                {/* Info Card Container */}
                 <div
                   style={{
                     padding: '12px 14px',
-                    backgroundColor: 'var(--bg-body)',
-                    borderRadius: 'var(--radius)',
-                    border: '1px solid var(--border-color)',
+                    backgroundColor: loginTheme.inputBg,
+                    borderRadius: loginTheme.inputRadius,
+                    border: loginTheme.inputBorder,
                     fontSize: '12px',
-                    marginBottom: '20px'
+                    marginBottom: '18px',
+                    color: loginTheme.inputColor,
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Role:</span>
-                    <span style={{ fontWeight: 800, textTransform: 'uppercase', color: 'var(--color-primary)' }}>
-                      {user.role}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ opacity: 0.7, fontWeight: 700, fontSize: '11px', textTransform: 'uppercase' }}>ROLE / STATUS:</span>
+                    <span
+                      style={{
+                        fontWeight: 900,
+                        textTransform: 'uppercase',
+                        color: loginTheme.accentColor,
+                        letterSpacing: '0.04em',
+                      }}
+                    >
+                      {user.role === 'admin' ? '★ SYSTEM ADMINISTRATOR' : '★ VIP MEMBER'}
                     </span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Fandom:</span>
-                    <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
-                      {user.favoriteFandoms.join(', ')}
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ opacity: 0.7, fontWeight: 700, fontSize: '11px', textTransform: 'uppercase' }}>ACTIVE DOMAIN:</span>
+                    <span style={{ fontWeight: 800, color: loginTheme.textColor, textTransform: 'uppercase' }}>
+                      {effectiveTheme || 'GLOBAL'}
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ opacity: 0.7, fontWeight: 700, fontSize: '11px', textTransform: 'uppercase' }}>FANDOMS:</span>
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        color: loginTheme.textColor,
+                        maxWidth: '210px',
+                        textAlign: 'right',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {user.favoriteFandoms && user.favoriteFandoms.length > 0
+                        ? user.favoriteFandoms.join(', ')
+                        : 'Official Fan'}
                     </span>
                   </div>
                 </div>
 
-                {/* Dashboard Button */}
-                <button
-                  onClick={() => {
-                    setIsAuthModalOpen(false);
-                    setIsDashboardOpen(true);
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '11px',
-                    backgroundColor: '#0f172a',
-                    color: '#ffffff',
-                    fontSize: '13px',
-                    fontWeight: 800,
-                    borderRadius: 'var(--radius)',
-                    border: 'none',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    marginBottom: '10px'
-                  }}
-                  type="button"
-                >
-                  <Sparkles style={{ width: '16px', height: '16px', color: '#f59e0b' }} />
-                  Open Personal Dashboard (Activity & Fandom)
-                </button>
-
-                {user.role === 'admin' && (
+                {/* Themed Buttons */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {/* Dashboard Button */}
                   <button
                     onClick={() => {
                       setIsAuthModalOpen(false);
-                      onOpenAdmin();
+                      setIsDashboardOpen(true);
                     }}
                     style={{
                       width: '100%',
-                      padding: '11px',
-                      backgroundColor: 'var(--color-gold)',
-                      color: '#ffffff',
-                      fontSize: '13px',
-                      fontWeight: 700,
-                      borderRadius: 'var(--radius)',
-                      border: 'none',
+                      padding: '11px 16px',
+                      backgroundColor: loginTheme.primaryBtnBg,
+                      color: loginTheme.primaryBtnColor,
+                      fontSize: '12px',
+                      fontWeight: 900,
+                      letterSpacing: '0.05em',
+                      textTransform: 'uppercase',
+                      borderRadius: loginTheme.primaryBtnRadius,
+                      border: loginTheme.primaryBtnBorder,
+                      boxShadow: loginTheme.primaryBtnShadow,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '8px',
-                      marginBottom: '10px'
+                      fontFamily: loginTheme.fontFamily,
+                      transition: 'all 0.1s ease',
                     }}
                     type="button"
                   >
-                    <ShieldCheck style={{ width: '16px', height: '16px' }} />
-                    Open Admin Dashboard
+                    <Sparkles style={{ width: '15px', height: '15px' }} />
+                    <span>OPEN PERSONAL DASHBOARD</span>
                   </button>
-                )}
 
-                <button
-                  onClick={() => {
-                    logout();
-                    setIsAuthModalOpen(false);
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '11px',
-                    backgroundColor: '#fef2f2',
-                    color: '#dc2626',
-                    fontSize: '13px',
-                    fontWeight: 700,
-                    borderRadius: 'var(--radius)',
-                    border: '1px solid #fecaca',
-                    cursor: 'pointer'
-                  }}
-                  type="button"
-                >
-                  Sign Out
-                </button>
+                  {user.role === 'admin' && (
+                    <button
+                      onClick={() => {
+                        setIsAuthModalOpen(false);
+                        onOpenAdmin();
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        backgroundColor: '#000000',
+                        color: '#ffd60a',
+                        fontSize: '12px',
+                        fontWeight: 800,
+                        letterSpacing: '0.04em',
+                        borderRadius: loginTheme.primaryBtnRadius,
+                        border: loginTheme.primaryBtnBorder,
+                        boxShadow: loginTheme.primaryBtnShadow,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        fontFamily: loginTheme.fontFamily,
+                      }}
+                      type="button"
+                    >
+                      <ShieldCheck style={{ width: '15px', height: '15px' }} />
+                      <span>ADMIN MANAGEMENT PANEL</span>
+                    </button>
+                  )}
+
+                  {/* Sign Out Button */}
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsAuthModalOpen(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '9px 14px',
+                      backgroundColor: 'transparent',
+                      color: isCinema ? '#f87171' : '#b91c1c',
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      letterSpacing: '0.05em',
+                      textTransform: 'uppercase',
+                      borderRadius: loginTheme.primaryBtnRadius,
+                      border: loginTheme.inputBorder,
+                      cursor: 'pointer',
+                      fontFamily: loginTheme.fontFamily,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      marginTop: '2px',
+                    }}
+                    type="button"
+                  >
+                    <LogOut style={{ width: '13px', height: '13px' }} />
+                    <span>SIGN OUT</span>
+                  </button>
+                </div>
               </div>
             ) : (
               /* SIGN IN / SIGN UP FORM MODAL */
