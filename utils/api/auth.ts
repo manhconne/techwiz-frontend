@@ -1,3 +1,5 @@
+import { clearAllAuthData } from '../authUtils';
+
 export const IDENTITY_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL || 'http://localhost:8080';
 
 export const authApi = {
@@ -22,6 +24,9 @@ export const authApi = {
       method: 'GET',
       headers: { 'Authorization': `Bearer ${token}` }
     });
+    if (res.status === 401 || res.status === 403) {
+      clearAllAuthData();
+    }
     return res.json();
   }
-};
+};

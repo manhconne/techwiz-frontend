@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserProfile } from '../types';
+import { clearAllAuthData, getAccessToken } from '../utils/authUtils';
 
 export interface UserActivity {
   id: string;
@@ -48,9 +49,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activities, setActivities] = useState<UserActivity[]>(initialActivities);
 
+  const logout = () => {
+    setUser(defaultGuestUser);
+    setIsLoggedIn(false);
+    clearAllAuthData();
+  };
+
   useEffect(() => {
     const fetchMe = async () => {
-      const token = localStorage.getItem('access_token');
+      const token = getAccessToken();
       if (token) {
         try {
           const res = await fetch('/api/v1/auth/me', {
@@ -58,14 +65,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               'Authorization': `Bearer ${token}`
             }
           });
+
+          // Nếu API /api/v1/auth/me trả về 401 Unauthorized -> nick bị văng, phải xóa hết cookie và đăng xuất
+          if (res.status === 401 || res.status === 403) {
+            logout();
+            return;
+          }
+
           const text = await res.text();
           const data = text ? JSON.parse(text) : {};
           if (res.ok && data.data) {
             const userData = data.data;
-            const role = (userData.roles && userData.roles.includes('Admin')) ? 'admin' : 'registered';
+            const role = (
+              (userData.roles && Array.isArray(userData.roles) && userData.roles.some((r: string) => String(r).toLowerCase() === 'admin')) ||
+              (userData.role && String(userData.role).toLowerCase() === 'admin')
+            ) ? 'admin' : 'registered';
+
             const loggedInUser: UserProfile = {
               id: userData.id,
-              name: userData.firstName + ' ' + userData.lastName,
+              name: ((userData.firstName || '') + ' ' + (userData.lastName || userData.name || '')).trim() || userData.email || 'User',
               email: userData.email,
               role: role,
               avatar: userData.avatarUrl || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
@@ -74,6 +92,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             };
             setUser(loggedInUser);
             setIsLoggedIn(true);
+            try {
+              localStorage.setItem('kpop_user', JSON.stringify(loggedInUser));
+            } catch { }
             return;
           }
         } catch (err) {
@@ -81,7 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       }
 
-      // Fallback to localStorage if no token or API failed
+      // Fallback to localStorage ONLY if no token or non-401 fetch error
       const saved = localStorage.getItem('kpop_user');
       if (saved) {
         try {
@@ -147,15 +168,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, 4000);
   };
 
-  const logout = () => {
-    setUser(defaultGuestUser);
-    setIsLoggedIn(false);
-    localStorage.removeItem('kpop_user');
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;';
-    document.cookie = 'refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;';
-  };
 
   const updateProfile = (data: Partial<UserProfile>) => {
     setUser((prev) => {

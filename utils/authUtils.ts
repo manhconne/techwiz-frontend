@@ -26,28 +26,52 @@ export function getAccessToken(): string {
   return localStorage.getItem('access_token') || localStorage.getItem('token') || '';
 }
 
+export function clearAllAuthData(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem('kpop_user');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('kpop_user_activities');
+  } catch { }
+
+  if (typeof document !== 'undefined') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i];
+      const eqPos = cookie.indexOf('=');
+      const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+      if (name) {
+        document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
+        document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${window.location.hostname};`;
+        const hostParts = window.location.hostname.split('.');
+        if (hostParts.length > 1) {
+          const rootDomain = hostParts.slice(-2).join('.');
+          document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.${rootDomain};`;
+        }
+      }
+    }
+  }
+}
+
 export function checkIsAdmin(user?: any): boolean {
   if (isBypassAdminEnabled()) return true;
   if (typeof window === 'undefined') return false;
 
-  const adminEmails = ['lumanhgioi.vn@gmail.com', 'admin@fanhubplus.com'];
-
+  // 1. If user object is provided from AuthContext
   if (user) {
-    if (user.role === 'admin' || user.role === 'Admin') return true;
+    const roleStr = String(user.role || '').toLowerCase();
+    if (roleStr === 'admin') return true;
     if (Array.isArray(user.roles) && user.roles.some((r: string) => String(r).toLowerCase() === 'admin')) return true;
-    if (user.email && (adminEmails.includes(user.email.toLowerCase()) || user.email.toLowerCase().includes('admin'))) return true;
+    
+    // If user object is loaded and is not admin (e.g. registered, user, visitor), return false immediately
+    if (user.role && user.role !== 'visitor') {
+      return false;
+    }
   }
 
-  try {
-    const saved = localStorage.getItem('kpop_user');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed.role === 'admin' || parsed.role === 'Admin') return true;
-      if (Array.isArray(parsed.roles) && parsed.roles.some((r: string) => String(r).toLowerCase() === 'admin')) return true;
-      if (parsed.email && (adminEmails.includes(parsed.email.toLowerCase()) || parsed.email.toLowerCase().includes('admin'))) return true;
-    }
-  } catch { }
-
+  // 2. Check JWT Token claims if user is not in state
   const token = getAccessToken();
   if (token) {
     const payload = parseJwt(token);
@@ -67,5 +91,16 @@ export function checkIsAdmin(user?: any): boolean {
     }
   }
 
+  // 3. Check saved user in localStorage as fallback
+  try {
+    const saved = localStorage.getItem('kpop_user');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (String(parsed.role || '').toLowerCase() === 'admin') return true;
+      if (Array.isArray(parsed.roles) && parsed.roles.some((r: string) => String(r).toLowerCase() === 'admin')) return true;
+    }
+  } catch { }
+
   return false;
 }
+
