@@ -44,8 +44,47 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
   // Filters & Search
   const [selectedFormat, setSelectedFormat] = useState<MediaType | 'all'>('all');
   const [selectedUniverse, setSelectedUniverse] = useState<FandomCategory | 'all'>('all');
+  const [selectedArtist, setSelectedArtist] = useState<string>('');
+  const [selectedArtistLabel, setSelectedArtistLabel] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'views' | 'rating' | 'newest' | 'duration'>('views');
+
+  // Handle category selection with auto-trailer playback
+  const handleSelectUniverse = (cat: FandomCategory | 'all') => {
+    setSelectedUniverse(cat);
+    setSelectedArtist('');
+    setSelectedArtistLabel('');
+    if (cat !== 'all') {
+      const firstMatch =
+        mediaList.find((m) => (m.category === cat || (cat === 'Cinema' && m.category === 'Movies')) && m.type === 'trailer') ||
+        mediaList.find((m) => m.category === cat || (cat === 'Cinema' && m.category === 'Movies'));
+      if (firstMatch) {
+        setActiveMediaId(firstMatch.id);
+      }
+    }
+  };
+
+  // Handle artist/music group selection with auto-trailer playback
+  const handleSelectArtist = (artistQuery: string, artistLabel: string) => {
+    setSelectedArtist(artistQuery);
+    setSelectedArtistLabel(artistLabel);
+    if (artistQuery) {
+      const q = artistQuery.toLowerCase();
+      const matchedItem =
+        mediaList.find((m) => {
+          const matchCat = selectedUniverse === 'all' || m.category === selectedUniverse || (selectedUniverse === 'Cinema' && m.category === 'Movies');
+          const matchArt = m.artist.toLowerCase().includes(q) || m.tags.some((t) => t.toLowerCase().includes(q)) || m.title.toLowerCase().includes(q);
+          return matchCat && matchArt && m.type === 'trailer';
+        }) ||
+        mediaList.find((m) => {
+          const matchCat = selectedUniverse === 'all' || m.category === selectedUniverse || (selectedUniverse === 'Cinema' && m.category === 'Movies');
+          return matchCat && (m.artist.toLowerCase().includes(q) || m.tags.some((t) => t.toLowerCase().includes(q)) || m.title.toLowerCase().includes(q));
+        });
+      if (matchedItem) {
+        setActiveMediaId(matchedItem.id);
+      }
+    }
+  };
 
   // Synchronize category filter with active fandom category
   useEffect(() => {
@@ -65,7 +104,8 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
 
       if (matched) {
         setSelectedUniverse(matched);
-        const firstMatch = mediaList.find((m) => m.category === matched);
+        setSelectedArtist('');
+        const firstMatch = mediaList.find((m) => m.category === matched && m.type === 'trailer') || mediaList.find((m) => m.category === matched);
         if (firstMatch) {
           setActiveMediaId(firstMatch.id);
         }
@@ -342,7 +382,20 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
     return mediaList
       .filter((item) => {
         if (selectedFormat !== 'all' && item.type !== selectedFormat) return false;
-        if (selectedUniverse !== 'all' && item.category !== selectedUniverse) return false;
+        if (selectedUniverse !== 'all') {
+          const matchCat =
+            item.category === selectedUniverse ||
+            (selectedUniverse === 'Cinema' && item.category === 'Movies') ||
+            (selectedUniverse === 'Movies' && item.category === 'Cinema');
+          if (!matchCat) return false;
+        }
+        if (selectedArtist) {
+          const q = selectedArtist.toLowerCase();
+          const matchArtist = item.artist.toLowerCase().includes(q);
+          const matchTags = item.tags.some((t) => t.toLowerCase().includes(q));
+          const matchTitle = item.title.toLowerCase().includes(q);
+          if (!matchArtist && !matchTags && !matchTitle) return false;
+        }
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase();
           const matchTitle = item.title.toLowerCase().includes(q);
@@ -358,7 +411,7 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
         if (sortBy === 'duration') return b.durationSeconds - a.durationSeconds;
         return 0;
       });
-  }, [mediaList, selectedFormat, selectedUniverse, searchQuery, sortBy]);
+  }, [mediaList, selectedFormat, selectedUniverse, selectedArtist, searchQuery, sortBy]);
 
   // Format Helper Labels
   const getFormatLabel = (type: MediaType) => {
@@ -460,11 +513,13 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
           <MultimediaFilterBar
             selectedFormat={selectedFormat}
             selectedUniverse={selectedUniverse}
+            selectedArtist={selectedArtist}
             searchQuery={searchQuery}
             sortBy={sortBy}
             mediaList={mediaList}
             onSelectFormat={setSelectedFormat}
-            onSelectUniverse={setSelectedUniverse}
+            onSelectUniverse={handleSelectUniverse}
+            onSelectArtist={handleSelectArtist}
             onSearchChange={setSearchQuery}
             onSortChange={setSortBy}
           />
@@ -487,6 +542,8 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
             onResetFilters={() => {
               setSelectedFormat('all');
               setSelectedUniverse('all');
+              setSelectedArtist('');
+              setSelectedArtistLabel('');
               setSearchQuery('');
             }}
             getFormatLabel={getFormatLabel}

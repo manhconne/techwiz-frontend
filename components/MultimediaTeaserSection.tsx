@@ -42,7 +42,7 @@ export const MultimediaTeaserSection: React.FC = () => {
                 style={{ borderRadius: '0px' }}
                 className="px-2.5 py-1 bg-[#fefce8] text-black border-2 border-black font-black uppercase shadow-[2px_2px_0px_#000]"
               >
-                ★ 12 TITLES
+                ★ {INITIAL_MEDIA_ITEMS.length} TITLES
               </span>
               <span 
                 style={{ borderRadius: '0px' }}

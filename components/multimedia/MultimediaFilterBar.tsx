@@ -1,16 +1,19 @@
 'use client';
 
 import React from 'react';
-import { MediaType, FandomCategory, MediaItem } from '../../data/multimediaData';
+import { MediaType, FandomCategory, MediaItem, CATEGORY_ARTISTS_MAP } from '../../data/multimediaData';
+import { Sparkles, Music, Star, Flame, BookOpen, Gamepad2, Zap, Film, Tv, Scissors, Users } from 'lucide-react';
 
 interface MultimediaFilterBarProps {
   selectedFormat: MediaType | 'all';
   selectedUniverse: FandomCategory | 'all';
+  selectedArtist: string;
   searchQuery: string;
   sortBy: 'views' | 'rating' | 'newest' | 'duration';
   mediaList: MediaItem[];
   onSelectFormat: (fmt: MediaType | 'all') => void;
   onSelectUniverse: (cat: FandomCategory | 'all') => void;
+  onSelectArtist: (artistQuery: string, artistLabel: string) => void;
   onSearchChange: (q: string) => void;
   onSortChange: (sort: 'views' | 'rating' | 'newest' | 'duration') => void;
 }
@@ -18,16 +21,19 @@ interface MultimediaFilterBarProps {
 export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
   selectedFormat,
   selectedUniverse,
+  selectedArtist,
   searchQuery,
   sortBy,
   mediaList,
   onSelectFormat,
   onSelectUniverse,
+  onSelectArtist,
   onSearchChange,
   onSortChange,
 }) => {
+  // Format tabs
   const formatTabs = [
-    { id: 'all' as const, label: 'ALL MEDIA', count: mediaList.length },
+    { id: 'all' as const, label: 'TẤT CẢ MEDIA', count: mediaList.length },
     { id: 'trailer' as const, label: 'TRAILERS & MV', count: mediaList.filter((m) => m.type === 'trailer').length },
     { id: 'video' as const, label: 'ORIGINAL SHOWS', count: mediaList.filter((m) => m.type === 'video').length },
     { id: 'podcast' as const, label: 'PODCAST RADIO', count: mediaList.filter((m) => m.type === 'podcast').length },
@@ -35,100 +41,208 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
     { id: 'soundtrack' as const, label: 'SOUNDTRACK OST', count: mediaList.filter((m) => m.type === 'soundtrack').length },
   ];
 
-  const universeChips: { id: FandomCategory | 'all'; label: string }[] = [
-    { id: 'all', label: 'ALL SECTORS' },
-    { id: 'Gaming', label: 'GAMING ARENA' },
-    { id: 'Manga', label: 'MANGA GUILD' },
-    { id: 'Anime', label: 'SAKUGA ANIME' },
-    { id: 'Cosplay', label: 'COSPLAY ATELIER' },
-    { id: 'Comics', label: 'COMICS' },
-    { id: 'Cinema', label: 'CINEMA 70MM' },
-    { id: 'TV Shows', label: 'TV SHOWS' },
-    { id: 'K-Pop', label: 'K-POP' },
-    { id: 'V-Pop', label: 'V-POP' },
+  // Persistent Category List across all tabs
+  const universeCategories: { id: FandomCategory | 'all'; label: string; icon: any }[] = [
+    { id: 'all', label: 'ALL UNIVERSE', icon: Sparkles },
+    { id: 'K-Pop', label: 'K-POP', icon: Music },
+    { id: 'V-Pop', label: 'V-POP', icon: Star },
+    { id: 'Anime', label: 'ANIME', icon: Flame },
+    { id: 'Manga', label: 'MANGA', icon: BookOpen },
+    { id: 'Gaming', label: 'GAMING ARENA', icon: Gamepad2 },
+    { id: 'Comics', label: 'COMICS', icon: Zap },
+    { id: 'Cinema', label: 'CINEMA / MOVIES', icon: Film },
+    { id: 'TV Shows', label: 'TV SHOWS', icon: Tv },
+    { id: 'Cosplay', label: 'COSPLAY', icon: Scissors },
   ];
 
+  // Dynamic Artist / Music Group List based on selected category
+  const activeArtistList = React.useMemo(() => {
+    if (selectedUniverse === 'all') {
+      return [
+        { label: 'Tất cả Nhóm nhạc & Nghệ sĩ', query: '' },
+        { label: 'NewJeans', query: 'NewJeans' },
+        { label: 'BLACKPINK', query: 'BLACKPINK' },
+        { label: 'BTS', query: 'BTS' },
+        { label: 'SEVENTEEN', query: 'SEVENTEEN' },
+        { label: 'aespa', query: 'aespa' },
+        { label: 'Anh Trai Say Hi', query: 'Say Hi' },
+        { label: 'Sơn Tùng M-TP', query: 'Son Tung' },
+        { label: 'Demon Slayer', query: 'Demon Slayer' },
+        { label: 'One Piece', query: 'One Piece' },
+        { label: 'T1 & Faker', query: 'Faker' },
+      ];
+    }
+    return CATEGORY_ARTISTS_MAP[selectedUniverse] || [
+      { label: `Tất cả ${selectedUniverse}`, query: '' },
+    ];
+  }, [selectedUniverse]);
+
   return (
-    <div className="flex flex-col gap-8 sm:gap-10 font-mono text-xs">
-      {/* Section Divider with Accent */}
-      <div className="flex items-center gap-3 pb-4 border-b-4 border-black dark:border-[#2a364f]">
-        <span className="w-3 h-3 bg-[#ff2e93] border-2 border-black dark:border-[#2a364f]" />
-        <span className="w-10 h-[3px] bg-[#00f0ff]" />
-        <span className="w-3 h-3 bg-[#ffd60a] border-2 border-black dark:border-[#2a364f]" />
-        <span className="font-mono font-black uppercase tracking-widest text-black dark:text-[#f8fafc] text-[11px]">
-          MULTI-FORMAT FILTER CONTROL STATION
-        </span>
-      </div>
+    <div className="flex flex-col gap-6 sm:gap-8 font-mono text-xs select-none">
 
-      {/* 1. Format Tabs Bar */}
-      <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none">
-        {formatTabs.map((tab) => {
-          const isActive = selectedFormat === tab.id;
-
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => onSelectFormat(tab.id)}
-              style={{ borderRadius: '0px' }}
-              className={`px-4 py-2.5 font-mono text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer border-2 border-black dark:border-[#334155] ${
-                isActive
-                  ? 'bg-[#ff2e93] text-white shadow-[3px_3px_0px_#000000] dark:shadow-none translate-x-[-1px] translate-y-[-1px]'
-                  : 'bg-white text-black hover:bg-[#fefce8] dark:bg-[#1e293b] dark:text-[#f8fafc] dark:hover:bg-[#2a364f] shadow-[2px_2px_0px_#000000] dark:shadow-none'
-              }`}
-            >
-              <span>{tab.label}</span>
-              <span className={`ml-2 px-1.5 py-0.2 border border-black dark:border-[#334155] text-[10px] ${
-                isActive ? 'bg-black text-[#ffd60a] dark:bg-black dark:text-[#ffd60a]' : 'bg-[#ffd60a] text-black'
-              }`}>
-                {tab.count}
+      {/* ========================================================= */}
+      {/* 1. PERSISTENT CATEGORY SWITCHER BAR FOR ALL TABS          */}
+      {/* ========================================================= */}
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between pb-2 border-b-2 border-black dark:border-[#2a364f]">
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 bg-[#ff2e93] border-2 border-black dark:border-[#2a364f]" />
+            <span className="w-8 h-[3px] bg-[#00f0ff]" />
+            <span className="w-3 h-3 bg-[#ffd60a] border-2 border-black dark:border-[#2a364f]" />
+            <h3 className="font-mono font-black uppercase tracking-widest text-black dark:text-[#f8fafc] text-xs sm:text-sm flex items-center gap-2">
+              <span>THANH CHUYỂN DANH MỤC VŨ TRỤ // SECTORS</span>
+              <span className="text-[10px] px-2 py-0.5 bg-[#ffd60a] text-black border border-black font-mono">
+                {selectedUniverse === 'all' ? 'TẤT CẢ' : selectedUniverse.toUpperCase()}
               </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* 2. Universe Category Pills & Search Bar */}
-      <div 
-        style={{ borderRadius: '0px' }}
-        className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-4 sm:p-5 border-2 border-black dark:border-[#2a364f] bg-white text-black dark:bg-[#131b2e] dark:text-[#f8fafc] shadow-[4px_4px_0px_#000000] dark:shadow-none"
-      >
-        {/* Sector Universe Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-          <span className="font-mono font-black uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mr-1 text-[11px]">
-            SECTOR //
+            </h3>
+          </div>
+          <span className="text-[11px] text-neutral-500 font-bold hidden sm:inline">
+            Ấn vào danh mục để xem trailer &amp; video tương ứng
           </span>
-          {universeChips.map((uni) => {
+        </div>
+
+        {/* Category Pills Slider */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {universeCategories.map((uni) => {
+            const Icon = uni.icon;
             const isActive = selectedUniverse === uni.id;
+            const countInCat =
+              uni.id === 'all'
+                ? mediaList.length
+                : mediaList.filter((m) => m.category === uni.id || (uni.id === 'Cinema' && m.category === 'Movies')).length;
+
             return (
               <button
                 key={uni.id}
                 type="button"
-                onClick={() => onSelectUniverse(uni.id)}
+                onClick={() => {
+                  onSelectUniverse(uni.id);
+                  onSelectArtist('', ''); // reset artist when switching category
+                }}
                 style={{ borderRadius: '0px' }}
-                className={`px-3 py-1 font-mono text-[11px] font-black uppercase tracking-wider cursor-pointer border-2 transition-all ${
+                className={`flex items-center gap-2 px-3.5 py-2 font-mono text-xs font-black uppercase tracking-wider cursor-pointer border-2 transition-all whitespace-nowrap ${
                   isActive
-                    ? 'bg-black text-[#ffd60a] border-black dark:border-[#ffd60a] shadow-[2px_2px_0px_#000000] dark:shadow-none'
-                    : 'bg-white text-black border-neutral-300 hover:border-black hover:bg-[#fefce8] dark:bg-[#1e293b] dark:text-[#f8fafc] dark:border-[#334155] dark:hover:bg-[#2a364f]'
+                    ? 'bg-[#ff2e93] text-white border-black shadow-[3px_3px_0px_#000000] -translate-y-0.5'
+                    : 'bg-white text-black border-black hover:bg-[#fff9db] dark:bg-[#1e293b] dark:text-[#f8fafc] dark:border-[#334155] dark:hover:bg-[#2a364f] shadow-[2px_2px_0px_#000000]'
                 }`}
               >
-                {uni.label}
+                <Icon className="w-3.5 h-3.5" />
+                <span>{uni.label}</span>
+                <span
+                  className={`px-1.5 py-0.2 text-[10px] font-mono border border-black ${
+                    isActive ? 'bg-[#ffd60a] text-black' : 'bg-neutral-100 text-neutral-800'
+                  }`}
+                >
+                  {countInCat}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* 2. MUSIC GROUPS & ARTISTS SELECTOR DOCK                   */}
+      {/* ========================================================= */}
+      <div
+        style={{ borderRadius: '0px' }}
+        className="p-3.5 sm:p-4 bg-[#f8fafc] dark:bg-[#0f172a] border-2 border-black dark:border-[#334155] shadow-[3px_3px_0px_#000000] flex flex-col gap-2.5"
+      >
+        <div className="flex items-center justify-between text-[11px] font-black uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-black dark:text-[#f8fafc]">
+            <Users className="w-3.5 h-3.5 text-[#ff2e93]" />
+            <span>NHÓM NHẠC &amp; NGHỆ SĨ ({selectedUniverse === 'all' ? 'TỔNG HỢP' : selectedUniverse.toUpperCase()}):</span>
+          </div>
+          {selectedArtist && (
+            <button
+              onClick={() => onSelectArtist('', '')}
+              className="text-[#ff2e93] hover:underline cursor-pointer"
+            >
+              [XÓA LỌC NGHỆ SĨ]
+            </button>
+          )}
+        </div>
+
+        {/* Artist Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {activeArtistList.map((artist) => {
+            const isSelected = selectedArtist.toLowerCase() === artist.query.toLowerCase();
+            const matchingCount =
+              artist.query === ''
+                ? (selectedUniverse === 'all' ? mediaList.length : mediaList.filter((m) => m.category === selectedUniverse).length)
+                : mediaList.filter((m) => {
+                    const matchCat = selectedUniverse === 'all' || m.category === selectedUniverse;
+                    const q = artist.query.toLowerCase();
+                    const matchArt = m.artist.toLowerCase().includes(q) || m.tags.some((t) => t.toLowerCase().includes(q)) || m.title.toLowerCase().includes(q);
+                    return matchCat && matchArt;
+                  }).length;
+
+            return (
+              <button
+                key={artist.label}
+                type="button"
+                onClick={() => onSelectArtist(artist.query, artist.label)}
+                style={{ borderRadius: '0px' }}
+                className={`px-3 py-1.5 font-mono text-[11px] font-black uppercase tracking-wider cursor-pointer border-2 transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  isSelected
+                    ? 'bg-black text-[#ccff00] border-black shadow-[2px_2px_0px_#000000] dark:bg-[#ccff00] dark:text-black'
+                    : 'bg-white text-black border-black/60 hover:border-black hover:bg-[#fefce8] dark:bg-[#1e293b] dark:text-[#f8fafc] shadow-[1px_1px_0px_#000000]'
+                }`}
+              >
+                <span>{artist.label}</span>
+                <span className={`px-1 text-[9px] border border-black ${
+                  isSelected ? 'bg-[#ffd60a] text-black' : 'bg-slate-200 text-slate-800'
+                }`}>
+                  {matchingCount}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* 3. FORMAT TABS BAR (Trailers, Shows, Podcasts, etc.)     */}
+      {/* ========================================================= */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-2">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+          {formatTabs.map((tab) => {
+            const isActive = selectedFormat === tab.id;
+
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => onSelectFormat(tab.id)}
+                style={{ borderRadius: '0px' }}
+                className={`px-3.5 py-2 font-mono text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer border-2 border-black dark:border-[#334155] ${
+                  isActive
+                    ? 'bg-black text-[#ffd60a] shadow-[2px_2px_0px_#000000] -translate-y-0.5'
+                    : 'bg-white text-black hover:bg-[#fefce8] dark:bg-[#1e293b] dark:text-[#f8fafc] shadow-[1px_1px_0px_#000000]'
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className={`ml-1.5 px-1.5 py-0.2 border border-black text-[10px] ${
+                  isActive ? 'bg-[#ffd60a] text-black' : 'bg-neutral-200 text-neutral-800'
+                }`}>
+                  {tab.count}
+                </span>
               </button>
             );
           })}
         </div>
 
         {/* Search Input & Sort Dropdown */}
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1 md:w-64">
+        <div className="flex items-center gap-2.5">
+          <div className="relative flex-1 sm:w-64">
             <input
               type="text"
-              placeholder="[//] SEARCH ARCHIVE..."
+              placeholder="[//] TÌM TRAILER, VIDEO..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               style={{ borderRadius: '0px' }}
               aria-label="Search multimedia archive"
-              className="w-full px-3 py-1.5 border-2 border-black dark:border-[#334155] text-xs font-mono font-bold uppercase bg-white dark:bg-[#0f172a] text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-[#ff2e93] shadow-[2px_2px_0px_#000000] dark:shadow-none"
+              className="w-full px-3 py-1.5 border-2 border-black dark:border-[#334155] text-xs font-mono font-bold uppercase bg-white dark:bg-[#0f172a] text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-[#ff2e93] shadow-[2px_2px_0px_#000000]"
             />
           </div>
 
@@ -137,14 +251,15 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
             onChange={(e) => onSortChange(e.target.value as any)}
             style={{ borderRadius: '0px' }}
             aria-label="Sort multimedia clips"
-            className="border-2 border-black dark:border-[#334155] bg-white dark:bg-[#0f172a] text-black dark:text-white px-3 py-1.5 text-xs font-mono font-black uppercase cursor-pointer focus:outline-none shadow-[2px_2px_0px_#000000] dark:shadow-none hover:bg-[#fefce8] dark:hover:bg-[#1e293b]"
+            className="border-2 border-black dark:border-[#334155] bg-white dark:bg-[#0f172a] text-black dark:text-white px-2.5 py-1.5 text-xs font-mono font-black uppercase cursor-pointer focus:outline-none shadow-[2px_2px_0px_#000000] hover:bg-[#fefce8]"
           >
-            <option value="views">MOST VIEWED</option>
-            <option value="rating">HIGHEST RATED</option>
-            <option value="duration">LONGEST PLAY</option>
+            <option value="views">LƯỢT XEM CAO</option>
+            <option value="rating">ĐÁNH GIÁ CAO</option>
+            <option value="duration">THỜI LƯỢNG DÀI</option>
           </select>
         </div>
       </div>
+
     </div>
   );
 };

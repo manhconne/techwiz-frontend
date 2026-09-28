@@ -781,5 +781,288 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       { time: '38:00', seconds: 2280, title: 'Grand Finale & Standing Ovation' }
     ],
     tags: ['Genshin Impact', 'HoYo-MiX', 'Gaming', 'Concert 4K', 'Symphony']
+  },
+
+  // 19. TRAILER: BLACKPINK - BORN PINK World Tour Finale 4K Trailer
+  {
+    id: 'media-blackpink-1',
+    title: "BLACKPINK (블랙핑크) - 'BORN PINK' World Tour Finale Stadium 4K Trailer",
+    subtitle: 'Official World Tour Encore Concert Movie & Stage Teaser • YG Entertainment',
+    artist: 'BLACKPINK',
+    agency: 'YG Entertainment',
+    type: 'trailer',
+    category: 'K-Pop',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/gQlMMD8auMs?autoplay=1&mute=0',
+    duration: '03:15',
+    durationSeconds: 195,
+    views: 38400000,
+    releaseDate: '10/08/2024',
+    description: 'High-octane stadium concert trailer featuring Jennie, Jisoo, Rosé, and Lisa across sold-out nights with laser pyrotechnics and iconic choreographies.',
+    qualityBadge: '4K DOLBY VISION • THEATRICAL',
+    rating: {
+      average: 5.0,
+      count: 62000,
+      distribution: { 5: 96, 4: 3, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1450000,
+      thumbsDown: 1100,
+    },
+    chapters: [
+      { time: '00:00', seconds: 0, title: 'Stadium pyrotechnics & Pink Venom intro' },
+      { time: '01:10', seconds: 70, title: 'Solo member highlights & crowd energy' },
+      { time: '02:30', seconds: 150, title: 'Grand finale: As If It\'s Your Last' }
+    ],
+    tags: ['BLACKPINK', 'BORN PINK', 'BLINK', 'K-Pop', 'Trailer 4K', 'YG Entertainment']
+  },
+
+  // 20. TRAILER: IVE - 'HEYA' Official Comeback Music Video 4K
+  {
+    id: 'media-ive-1',
+    title: "IVE (아이브) - 'HEYA' (해야) Official Comeback Music Video 4K",
+    subtitle: 'Official Concept Film & Visual Comeback • Starship Entertainment',
+    artist: 'IVE',
+    agency: 'Starship Entertainment',
+    type: 'trailer',
+    category: 'K-Pop',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/07EzZB4_dQ0?autoplay=1&mute=0',
+    duration: '03:28',
+    durationSeconds: 208,
+    views: 24200000,
+    releaseDate: '29/04/2024',
+    description: 'Breathtaking oriental aesthetics meeting modern hip-hop beats in IVE explosive visual comeback with Jang Wonyoung and An Yujin.',
+    qualityBadge: '4K HDR • 60FPS',
+    rating: {
+      average: 4.95,
+      count: 31200,
+      distribution: { 5: 92, 4: 6, 3: 2, 2: 0, 1: 0 },
+      thumbsUp: 670000,
+      thumbsDown: 920,
+    },
+    tags: ['IVE', 'HEYA', 'DIVE', 'K-Pop', 'Comeback 4K', 'Starship']
+  },
+
+  // 21. TRAILER: Stray Kids - 'Chk Chk Boom' Official Cinematic MV
+  {
+    id: 'media-straykids-1',
+    title: "Stray Kids (스트레이 키즈) - 'Chk Chk Boom' Official Cinematic MV",
+    subtitle: 'Blockbuster comeback with Hugh Jackman & Ryan Reynolds cameo • JYP',
+    artist: 'Stray Kids',
+    agency: 'JYP Entertainment',
+    type: 'trailer',
+    category: 'K-Pop',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/0P0aQrlbpJg?autoplay=1&mute=0',
+    duration: '03:40',
+    durationSeconds: 220,
+    views: 45000000,
+    releaseDate: '19/07/2024',
+    description: 'Cinematic Latin-infused hip-hop anthem from 3RACHA, set in New York City with Deadpool and Wolverine guest appearances.',
+    qualityBadge: '4K ULTRA HD • 60FPS',
+    rating: {
+      average: 5.0,
+      count: 78000,
+      distribution: { 5: 97, 4: 2, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1980000,
+      thumbsDown: 1300,
+    },
+    tags: ['Stray Kids', 'Chk Chk Boom', 'STAY', 'K-Pop', 'JYP', 'Deadpool']
+  },
+
+  // 22. TRAILER: Son Tung M-TP - Dung Lam Trai Tim Anh Dau 4K MV
+  {
+    id: 'media-sontung-1',
+    title: "Sơn Tùng M-TP - 'Đừng Làm Trái Tim Anh Đau' Official Music Video 4K",
+    subtitle: 'Top trending #1 blockbuster visual comeback • M-TP Entertainment',
+    artist: 'Son Tung M-TP',
+    agency: 'M-TP Entertainment',
+    type: 'trailer',
+    category: 'V-Pop',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/abPmZCZZrFA?autoplay=1&mute=0',
+    duration: '05:25',
+    durationSeconds: 325,
+    views: 68000000,
+    releaseDate: '08/06/2024',
+    description: 'Joyful, romantic retro office love story MV starring Son Tung M-TP and Pimtha that dominated global YouTube music trending for weeks.',
+    qualityBadge: '4K DCI COLOR MASTER',
+    rating: {
+      average: 5.0,
+      count: 98000,
+      distribution: { 5: 98, 4: 2, 3: 0, 2: 0, 1: 0 },
+      thumbsUp: 2400000,
+      thumbsDown: 1800,
+    },
+    tags: ['Son Tung M-TP', 'SKY', 'V-Pop', 'MV 4K', 'M-TP Entertainment']
+  },
+
+  // 23. VIDEO: Anh Trai Vuot Ngan Chong Gai - Live Stadium 4K
+  {
+    id: 'media-chonggai-1',
+    title: "Anh Trai Vượt Ngàn Chông Gai - 'Trống Cơm' & 'Dòng Máu Lạc Hồng' Live Concert 4K",
+    subtitle: 'Massive 30,000 stadium live performance • Fire & Cultural Heritage',
+    artist: 'Anh Trai Vuot Ngan Chong Gai',
+    agency: 'YAE Entertainment / VTV3',
+    type: 'video',
+    category: 'V-Pop',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/hT_nvWreIhg?autoplay=1&mute=0',
+    duration: '22:40',
+    durationSeconds: 1360,
+    views: 18900000,
+    releaseDate: '19/10/2024',
+    description: 'Monumental red-ocean stadium concert combining traditional Vietnamese folk drums, rock guitars, and contemporary rap from 33 master artists.',
+    qualityBadge: '4K BROADCAST 60FPS',
+    rating: {
+      average: 5.0,
+      count: 54000,
+      distribution: { 5: 96, 4: 3, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1120000,
+      thumbsDown: 950,
+    },
+    tags: ['Anh Trai Vuot Ngan Chong Gai', 'Trong Com', 'V-Pop', 'Concert 4K']
+  },
+
+  // 24. TRAILER: One Piece Egghead Island Climax 4K Trailer
+  {
+    id: 'media-onepiece-1',
+    title: "One Piece 'Egghead Island Arc' - Official Climax Anime Trailer 4K",
+    subtitle: 'Gear 5 Luffy vs Saturn & Kizaru • Toei Animation & Eiichiro Oda',
+    artist: 'One Piece',
+    agency: 'Toei Animation / Shueisha',
+    type: 'trailer',
+    category: 'Manga',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/zSQ48zyWZrY?autoplay=1&mute=0',
+    duration: '02:50',
+    durationSeconds: 170,
+    views: 31200000,
+    releaseDate: '2024-07-07',
+    description: 'The futuristic island of Dr. Vegapunk under Buster Call assault as Luffy activates Sun God Nika in full cinematic Sakuga animation.',
+    qualityBadge: '4K SAKUGA HDR',
+    rating: {
+      average: 5.0,
+      count: 48900,
+      distribution: { 5: 96, 4: 3, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1190000,
+      thumbsDown: 880,
+    },
+    tags: ['One Piece', 'Gear 5', 'Egghead Island', 'Manga', 'Trailer 4K', 'Luffy']
+  },
+
+  // 25. TRAILER: Jujutsu Kaisen Season 3 Culling Game Teaser Trailer 4K
+  {
+    id: 'media-jjk-1',
+    title: "Jujutsu Kaisen Season 3: 'Culling Game Arc' Official Production Teaser 4K",
+    subtitle: 'MAPPA Studio sakuga animation showcase • Shibuya aftermath',
+    artist: 'Jujutsu Kaisen',
+    agency: 'Studio MAPPA / Toho',
+    type: 'trailer',
+    category: 'Anime',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/f9X6GkHnS9E?autoplay=1&mute=0',
+    duration: '02:30',
+    durationSeconds: 150,
+    views: 36700000,
+    releaseDate: '2024-08-25',
+    description: 'Official MAPPA production preview of the deadly Culling Game ritual orchestrated by Kenjaku, starring Yuta Okkotsu and Yuji Itadori.',
+    qualityBadge: '4K MAPPA MASTER',
+    rating: {
+      average: 4.98,
+      count: 52100,
+      distribution: { 5: 95, 4: 4, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1340000,
+      thumbsDown: 910,
+    },
+    tags: ['Jujutsu Kaisen', 'MAPPA', 'Culling Game', 'Anime', 'Trailer 4K', 'Gojo']
+  },
+
+  // 26. TRAILER: Christopher Nolan 70mm IMAX Suite 4K
+  {
+    id: 'media-nolan-1',
+    title: "Christopher Nolan & Hans Zimmer: The 70mm IMAX Retrospective & Suite 4K",
+    subtitle: 'Oppenheimer, Interstellar & Inception Theatrical Symphony Suite',
+    artist: 'Christopher Nolan',
+    agency: 'Syncopy / Universal Pictures',
+    type: 'trailer',
+    category: 'Cinema',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/kPa7bsKwL-8?autoplay=1&mute=0',
+    duration: '05:10',
+    durationSeconds: 310,
+    views: 29800000,
+    releaseDate: '2024-06-15',
+    description: 'A monument to photochemical 70mm analog film craft with the titanic musical scores of Ludwig Göransson and Hans Zimmer.',
+    qualityBadge: '70MM IMAX 4K DCI',
+    rating: {
+      average: 5.0,
+      count: 41200,
+      distribution: { 5: 97, 4: 2, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 980000,
+      thumbsDown: 650,
+    },
+    tags: ['Christopher Nolan', 'Oppenheimer', 'Interstellar', 'Hans Zimmer', 'Cinema 70mm']
   }
 ];
+
+export const CATEGORY_ARTISTS_MAP: Record<string, { label: string; query: string }[]> = {
+  'K-Pop': [
+    { label: 'Tất cả K-Pop', query: '' },
+    { label: 'NewJeans', query: 'NewJeans' },
+    { label: 'BLACKPINK', query: 'BLACKPINK' },
+    { label: 'BTS', query: 'BTS' },
+    { label: 'SEVENTEEN', query: 'SEVENTEEN' },
+    { label: 'aespa', query: 'aespa' },
+    { label: 'IVE', query: 'IVE' },
+    { label: 'Stray Kids', query: 'Stray Kids' },
+  ],
+  'V-Pop': [
+    { label: 'Tất cả V-Pop', query: '' },
+    { label: 'Say Hi All-Stars', query: 'Say Hi' },
+    { label: 'Anh Trai Vượt Ngàn Chông Gai', query: 'Chong Gai' },
+    { label: 'Sơn Tùng M-TP', query: 'Son Tung' },
+  ],
+  'Anime': [
+    { label: 'Tất cả Anime', query: '' },
+    { label: 'Demon Slayer', query: 'Demon Slayer' },
+    { label: 'Jujutsu Kaisen', query: 'Jujutsu' },
+    { label: 'Solo Leveling', query: 'Solo Leveling' },
+  ],
+  'Manga': [
+    { label: 'Tất cả Manga', query: '' },
+    { label: 'One Piece', query: 'One Piece' },
+    { label: 'Chainsaw Man', query: 'Chainsaw Man' },
+    { label: 'Berserk', query: 'Berserk' },
+  ],
+  'Gaming': [
+    { label: 'Tất cả Gaming', query: '' },
+    { label: 'T1 & Faker', query: 'Faker' },
+    { label: 'Genshin Impact', query: 'Genshin' },
+    { label: 'Black Myth: Wukong', query: 'Wukong' },
+  ],
+  'Comics': [
+    { label: 'Tất cả Comics', query: '' },
+    { label: 'Spider-Man & Spider-Verse', query: 'Spider' },
+  ],
+  'Cinema': [
+    { label: 'Tất cả Cinema', query: '' },
+    { label: 'Christopher Nolan', query: 'Christopher Nolan' },
+    { label: 'Lady Gaga & Bruno Mars', query: 'Bruno Mars' },
+    { label: 'Queen of Tears OST', query: 'Queen of Tears' },
+  ],
+  'Movies': [
+    { label: 'Tất cả Movies', query: '' },
+    { label: 'Christopher Nolan', query: 'Christopher Nolan' },
+    { label: 'Lady Gaga & Bruno Mars', query: 'Bruno Mars' },
+    { label: 'Queen of Tears OST', query: 'Queen of Tears' },
+  ],
+  'TV Shows': [
+    { label: 'Tất cả TV Shows', query: '' },
+    { label: 'Stranger Things', query: 'Stranger Things' },
+  ],
+  'Cosplay': [
+    { label: 'Tất cả Cosplay', query: '' },
+    { label: 'World Cosplay Summit', query: 'Cosplay' },
+  ],
+};
+
