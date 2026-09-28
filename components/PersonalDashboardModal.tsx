@@ -31,6 +31,9 @@ import {
   Layers,
   Settings,
   Plus,
+  Search,
+  Filter,
+  CheckCircle2,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCartWishlist } from '../context/CartWishlistContext';
@@ -42,6 +45,15 @@ interface PersonalDashboardModalProps {
   onClose: () => void;
 }
 
+export interface FandomOption {
+  id: string;
+  name: string;
+  tag: string; // Category: 'K-Pop' | 'V-Pop' | 'Anime' | 'Manga' | 'Gaming' | 'Comics' | 'Movies' | 'TV Shows' | 'Cosplay'
+  color: string;
+  description?: string;
+  isCustom?: boolean;
+}
+
 const AVATAR_PRESETS = [
   'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
@@ -51,17 +63,83 @@ const AVATAR_PRESETS = [
   'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
 ];
 
-const ALL_FANDOM_OPTIONS = [
-  { id: 'bunnies', name: 'Bunnies (NewJeans)', tag: 'K-Pop', color: '#ff2e93' },
-  { id: 'blink', name: 'BLINK (BLACKPINK)', tag: 'K-Pop', color: '#ec4899' },
-  { id: 'army', name: 'A.R.M.Y (BTS)', tag: 'K-Pop', color: '#8b5cf6' },
-  { id: 'carat', name: 'CARAT (SEVENTEEN)', tag: 'K-Pop', color: '#06b6d4' },
-  { id: 'stay', name: 'STAY (Stray Kids)', tag: 'K-Pop', color: '#84cc16' },
-  { id: 'my', name: 'MY (aespa)', tag: 'K-Pop', color: '#6366f1' },
-  { id: 'dive', name: 'DIVE (IVE)', tag: 'K-Pop', color: '#f97316' },
-  { id: 'vpop', name: 'FC Anh Trai Say Hi', tag: 'V-Pop', color: '#10b981' },
-  { id: 'anime', name: 'Demon Slayer & Anime Otaku', tag: 'Anime', color: '#ef4444' },
-  { id: 'gaming', name: 'T1 & League of Legends', tag: 'Gaming', color: '#0284c7' },
+const FANDOM_CATEGORIES = [
+  'All',
+  'K-Pop',
+  'V-Pop',
+  'Anime',
+  'Manga',
+  'Gaming',
+  'Comics',
+  'Movies',
+  'TV Shows',
+  'Cosplay',
+];
+
+const DEFAULT_FANDOM_OPTIONS: FandomOption[] = [
+  // K-Pop
+  { id: 'bunnies', name: 'Bunnies (NewJeans)', tag: 'K-Pop', color: '#ff2e93', description: 'Official NewJeans Tokki Club & Y2K aesthetic universe' },
+  { id: 'blink', name: 'BLINK (BLACKPINK)', tag: 'K-Pop', color: '#ec4899', description: 'Born Pink Stadium Worldwide Fandom' },
+  { id: 'army', name: 'A.R.M.Y (BTS)', tag: 'K-Pop', color: '#8b5cf6', description: 'Global 21st-Century Pop Icon Fanbase' },
+  { id: 'carat', name: 'CARAT (SEVENTEEN)', tag: 'K-Pop', color: '#06b6d4', description: 'Diamond Stage & Right Here World Tour Stan' },
+  { id: 'stay', name: 'STAY (Stray Kids)', tag: 'K-Pop', color: '#84cc16', description: 'Dominate World Tour & 5-STAR Worldwide Stan' },
+  { id: 'my', name: 'MY (aespa)', tag: 'K-Pop', color: '#6366f1', description: 'Kwangya & Synk Metaverse Explorers' },
+  { id: 'dive', name: 'DIVE (IVE)', tag: 'K-Pop', color: '#f97316', description: 'Show What I Have World Tour Community' },
+
+  // V-Pop
+  { id: 'sayhi', name: 'SayHi Believers (Anh Trai Say Hi)', tag: 'V-Pop', color: '#10b981', description: 'Sold-out stadium live concert phenomenon' },
+  { id: 'chonggai', name: 'Chong Gai Fandom Club (Anh Trai Vuot Ngan Chong Gai)', tag: 'V-Pop', color: '#f43f5e', description: 'Fire & Heritage Vietnam Stadium Tour' },
+  { id: 'sky', name: 'SKY (Son Tung M-TP)', tag: 'V-Pop', color: '#3b82f6', description: 'Top-tier V-Pop icon Sky Tour arena fanbase' },
+
+  // Anime
+  { id: 'demon-slayer', name: 'Demon Slayer Corps (Kimetsu no Yaiba)', tag: 'Anime', color: '#ef4444', description: 'Hashira Training & Infinity Castle Arc' },
+  { id: 'jjk', name: 'Jujutsu Sorcerers (Jujutsu Kaisen)', tag: 'Anime', color: '#6366f1', description: 'MAPPA Tokyo Jujutsu High Alliance' },
+  { id: 'conan', name: 'Conan Global Fanclub (Detective Conan)', tag: 'Anime', color: '#0284c7', description: 'Black Iron Submarine & Detective League' },
+
+  // Manga
+  { id: 'straw-hats', name: 'Straw Hat Pirates (One Piece)', tag: 'Manga', color: '#eab308', description: 'Grand Line & Egghead Island Nakama (Eiichiro Oda)' },
+  { id: 'survey-corps', name: 'Survey Corps (Attack on Titan)', tag: 'Manga', color: '#15803d', description: 'Wings of Freedom & Eren Yeager Legacy' },
+  { id: 'hunter-assoc', name: 'Hunter Association (Hunter x Hunter)', tag: 'Manga', color: '#059669', description: 'Nen Masters & Dark Continent Explorers' },
+
+  // Gaming
+  { id: 't1', name: 'T1 Fandom & Faker (LoL)', tag: 'Gaming', color: '#dc2626', description: '5-Time World Champions & Unkillable Demon King' },
+  { id: 'teyvat', name: 'Travelers of Teyvat (Genshin Impact)', tag: 'Gaming', color: '#06b6d4', description: 'HoYoverse & Symphony of Teyvat' },
+  { id: 'sentinels', name: 'Sentinels & VCT Champions (Valorant)', tag: 'Gaming', color: '#f43f5e', description: 'Tactical FPS Champions & Esports Guild' },
+
+  // Comics
+  { id: 'web-heads', name: 'Web-Heads & Marvel Multiverse', tag: 'Comics', color: '#e11d48', description: 'Spider-Man, Miles Morales & Marvel Comics' },
+  { id: 'gotham', name: 'Gotham Knights & Bat-Family (DC)', tag: 'Comics', color: '#1e293b', description: 'Detective Comics & Dark Knight Legends' },
+  { id: 'avengers', name: 'Avengers Initiative (Marvel)', tag: 'Comics', color: '#2563eb', description: 'Earth Mightiest Heroes & Secret Wars' },
+
+  // Movies
+  { id: 'cinephiles', name: 'Auteur Cinephiles & 70mm Purists', tag: 'Movies', color: '#d97706', description: 'Christopher Nolan, Hans Zimmer & IMAX 70mm' },
+  { id: 'fremen', name: 'Dune Fremen Brotherhood', tag: 'Movies', color: '#ca8a04', description: 'Denis Villeneuve Arrakis Desert Alliance' },
+  { id: 'ghibli', name: 'Studio Ghibli Dreamers', tag: 'Movies', color: '#14b8a6', description: 'Hayao Miyazaki & Spirited Fantasy Lovers' },
+
+  // TV Shows
+  { id: 'hellfire', name: 'The Hellfire Club (Stranger Things)', tag: 'TV Shows', color: '#ef4444', description: 'Hawkins 1980s D&D Campaign & Upside Down' },
+  { id: 'dragon-loyalists', name: 'House of the Dragon Loyalists', tag: 'TV Shows', color: '#7f1d1d', description: 'Targaryen Blood & Fire Westeros Faction' },
+  { id: 'continental', name: 'The Continental Guild (John Wick)', tag: 'TV Shows', color: '#475569', description: 'High Table & Neo-Noir Cinema Fandom' },
+
+  // Cosplay
+  { id: 'constructivists', name: 'Constructivists (Bauhaus Modernist)', tag: 'Cosplay', color: '#ea580c', description: 'Avant-Garde Theatrical Cosplay Atelier' },
+  { id: 'cyberpunk-cos', name: 'Cyberpunk Street Runners', tag: 'Cosplay', color: '#06b6d4', description: 'Neo-Tokyo LED & High-Tech Armor Crafters' },
+  { id: 'harajuku', name: 'Harajuku Gothic & Lolita League', tag: 'Cosplay', color: '#be185d', description: 'Tokyo Street Fashion & Themed Subculture' },
+];
+
+const PRESET_COLOR_SWATCHES = [
+  '#ff2e93',
+  '#ec4899',
+  '#8b5cf6',
+  '#6366f1',
+  '#3b82f6',
+  '#06b6d4',
+  '#10b981',
+  '#84cc16',
+  '#eab308',
+  '#f97316',
+  '#ef4444',
+  '#1e293b',
 ];
 
 export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ isOpen, onClose }) => {
@@ -75,7 +153,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
   const [selectedAvatar, setSelectedAvatar] = useState(user.avatar);
   const [customAvatarUrl, setCustomAvatarUrl] = useState('');
   const [editBio, setEditBio] = useState('Music lover, photocard collector, and passionate concert enthusiast!');
-  const [saveToast, setSaveToast] = useState(false);
+  const [saveToast, setSaveToast] = useState<{ message: string } | null>(null);
 
   // Sync state if user changes
   useEffect(() => {
@@ -83,8 +161,105 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
     setSelectedAvatar(user.avatar);
   }, [user]);
 
+  // Fandom Management State (Categories & Custom Creation)
+  const [selectedFandomCategory, setSelectedFandomCategory] = useState<string>('All');
+  const [fandomSearchQuery, setFandomSearchQuery] = useState('');
+  const [isCreatingFandom, setIsCreatingFandom] = useState(false);
+  const [newFandomName, setNewFandomName] = useState('');
+  const [newFandomCategory, setNewFandomCategory] = useState<string>('K-Pop');
+  const [newFandomColor, setNewFandomColor] = useState('#ff2e93');
+  const [newFandomDesc, setNewFandomDesc] = useState('');
+
+  // Load user custom fandoms from localStorage
+  const [customFandoms, setCustomFandoms] = useState<FandomOption[]>(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_custom_fandoms');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const allFandomsList = useMemo(() => {
+    return [...customFandoms, ...DEFAULT_FANDOM_OPTIONS];
+  }, [customFandoms]);
+
+  // Filtered fandoms by category and search
+  const filteredFandoms = useMemo(() => {
+    return allFandomsList.filter((fandom) => {
+      const matchesCategory = selectedFandomCategory === 'All' || fandom.tag === selectedFandomCategory;
+      const matchesSearch =
+        fandomSearchQuery.trim() === '' ||
+        fandom.name.toLowerCase().includes(fandomSearchQuery.toLowerCase()) ||
+        fandom.tag.toLowerCase().includes(fandomSearchQuery.toLowerCase()) ||
+        (fandom.description && fandom.description.toLowerCase().includes(fandomSearchQuery.toLowerCase()));
+      return matchesCategory && matchesSearch;
+    });
+  }, [allFandomsList, selectedFandomCategory, fandomSearchQuery]);
+
+  // Handle creation of custom fandom
+  const handleCreateFandom = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedName = newFandomName.trim();
+    if (!trimmedName) return;
+
+    // Check if duplicate
+    const exists = allFandomsList.some(
+      (f) => f.name.toLowerCase() === trimmedName.toLowerCase()
+    );
+    if (exists) {
+      alert(`Fandom "${trimmedName}" already exists!`);
+      return;
+    }
+
+    const created: FandomOption = {
+      id: `custom-${Date.now()}`,
+      name: trimmedName,
+      tag: newFandomCategory,
+      color: newFandomColor,
+      description: newFandomDesc.trim() || `Official community for ${trimmedName} fans.`,
+      isCustom: true,
+    };
+
+    const nextCustomList = [created, ...customFandoms];
+    setCustomFandoms(nextCustomList);
+    try {
+      localStorage.setItem('fanhub_custom_fandoms', JSON.stringify(nextCustomList));
+    } catch {}
+
+    // Automatically follow newly created fandom
+    if (!user.favoriteFandoms.includes(created.name)) {
+      toggleFavoriteFandom(created.name);
+    }
+
+    // Reset creation form
+    setNewFandomName('');
+    setNewFandomDesc('');
+    setIsCreatingFandom(false);
+    setSelectedFandomCategory(newFandomCategory);
+
+    setSaveToast({
+      message: `Fandom "${created.name}" created under ${created.tag} and added to your followed list!`,
+    });
+    setTimeout(() => setSaveToast(null), 3500);
+  };
+
+  const handleDeleteCustomFandom = (fandomId: string, fandomName: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm(`Are you sure you want to delete the custom fandom "${fandomName}"?`)) return;
+
+    const nextCustomList = customFandoms.filter((f) => f.id !== fandomId);
+    setCustomFandoms(nextCustomList);
+    try {
+      localStorage.setItem('fanhub_custom_fandoms', JSON.stringify(nextCustomList));
+    } catch {}
+
+    if (user.favoriteFandoms.includes(fandomName)) {
+      toggleFavoriteFandom(fandomName);
+    }
+  };
+
   // SRS 1.6: Categories of interest & Display preferences
-  const FANDOM_CATEGORIES = ['Anime', 'Gaming', 'Movies', 'TV Shows', 'K-Pop', 'Comics', 'Manga', 'Cosplay'];
   const [selectedInterests, setSelectedInterests] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem('fanhub_user_interests');
@@ -196,8 +371,8 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
   // Personalized Greeting calculation
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
-    if (hour < 12) return { text: 'Good morning', sub: 'Wishing you a high-energy day filled with great music!' };
-    if (hour < 18) return { text: 'Good afternoon', sub: 'Explore the latest events, albums, and comeback drops!' };
+    if (hour < 12) return { text: 'Good morning', sub: 'Wishing you a high-energy day filled with great music and fandom drops!' };
+    if (hour < 18) return { text: 'Good afternoon', sub: 'Explore the latest events, albums, and universe comebacks!' };
     return { text: 'Good evening', sub: 'Unwind with your favorite podcasts, tracks, and live stages after a long day!' };
   }, []);
 
@@ -216,8 +391,8 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
       localStorage.setItem('fanhub_user_pref_font', prefFontSize);
       localStorage.setItem('fanhub_user_pref_landing', prefLanding);
     } catch {}
-    setSaveToast(true);
-    setTimeout(() => setSaveToast(false), 3000);
+    setSaveToast({ message: 'Profile and display preferences have been successfully updated!' });
+    setTimeout(() => setSaveToast(null), 3000);
   };
 
   const totalBookmarks = wishlist.length + articleBookmarks.length + characterBookmarks.length + mediaBookmarks.length;
@@ -359,8 +534,8 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         {/* Toast alert */}
         {saveToast && (
           <div className="mx-6 mt-4 p-3.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold rounded-2xl flex items-center gap-2.5 shadow-sm animate-in fade-in slide-in-from-top-2 duration-200">
-            <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-            <span>Profile and display preferences have been successfully updated!</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>{saveToast.message}</span>
           </div>
         )}
 
@@ -440,33 +615,66 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 <div className="flex items-center justify-between">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
                     <Heart className="w-4 h-4 text-pink-500 fill-pink-500" />
-                    <span>Your Subscribed Fandoms</span>
+                    <span>Your Subscribed Fandoms ({user.favoriteFandoms.length})</span>
                   </h4>
-                  <button
-                    onClick={() => setActiveTab('fandoms')}
-                    className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 flex items-center gap-1 cursor-pointer transition-colors"
-                  >
-                    <span>Manage Fandoms</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setActiveTab('fandoms');
+                        setIsCreatingFandom(true);
+                      }}
+                      className="text-xs font-bold text-pink-600 dark:text-pink-400 hover:text-pink-700 flex items-center gap-1 cursor-pointer transition-colors"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Create Fandom</span>
+                    </button>
+                    <span className="text-slate-300">|</span>
+                    <button
+                      onClick={() => setActiveTab('fandoms')}
+                      className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 flex items-center gap-1 cursor-pointer transition-colors"
+                    >
+                      <span>Browse All</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2.5">
-                  {user.favoriteFandoms.map((fandom, idx) => (
-                    <span
-                      key={idx}
-                      className="px-3.5 py-1.5 bg-pink-50 dark:bg-pink-950/40 text-pink-700 dark:text-pink-300 border border-pink-200/80 dark:border-pink-800/50 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-2xs hover:bg-pink-100/70 transition-colors"
-                    >
-                      <Heart className="w-3 h-3 fill-pink-500 text-pink-500" />
-                      {fandom}
-                    </span>
-                  ))}
+                  {user.favoriteFandoms.length === 0 ? (
+                    <div className="text-xs text-slate-400 py-2">
+                      You haven't followed any fandoms yet. Click below to explore and follow communities across K-Pop, Anime, Gaming, and more!
+                    </div>
+                  ) : (
+                    user.favoriteFandoms.map((fandomName, idx) => {
+                      const matched = allFandomsList.find((f) => f.name === fandomName);
+                      return (
+                        <span
+                          key={idx}
+                          className="px-3.5 py-1.5 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-2xs hover:border-slate-300 transition-colors"
+                        >
+                          <span
+                            className="w-2.5 h-2.5 rounded-full"
+                            style={{ backgroundColor: matched?.color || '#ff2e93' }}
+                          />
+                          {matched?.tag && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.2 bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded">
+                              {matched.tag}
+                            </span>
+                          )}
+                          <span>{fandomName}</span>
+                        </span>
+                      );
+                    })
+                  )}
                   <button
-                    onClick={() => setActiveTab('fandoms')}
+                    onClick={() => {
+                      setActiveTab('fandoms');
+                      setIsCreatingFandom(true);
+                    }}
                     className="px-3 py-1.5 border border-dashed border-slate-300 dark:border-slate-600 hover:border-indigo-500 text-slate-500 hover:text-indigo-600 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <Plus className="w-3 h-3" />
-                    <span>Add Fandom</span>
+                    <span>Tạo Fandom Mới</span>
                   </button>
                 </div>
               </div>
@@ -508,54 +716,296 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
             </div>
           )}
 
-          {/* TAB 2: FANDOMS MANAGEMENT */}
+          {/* TAB 2: FANDOMS MANAGEMENT & CREATION BY CATEGORY */}
           {activeTab === 'fandoms' && (
             <div className="space-y-5">
-              <div>
-                <h4 className="text-base font-extrabold text-slate-900 dark:text-white">Choose Your Favorite Fandoms</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  Toggle the fandoms you care about. Your newsfeed, recommendations, and universe navigation will prioritize content from followed communities.
-                </p>
+              {/* Header and Create Button */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200 dark:border-slate-800">
+                <div>
+                  <h4 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>Fandom Hub by Category</span>
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
+                      {allFandomsList.length} Fandoms
+                    </span>
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Browse official communities by category or create your own custom fandom to follow!
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsCreatingFandom(!isCreatingFandom)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-xs ${
+                    isCreatingFandom
+                      ? 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100'
+                      : 'bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-700 hover:to-pink-700 text-white shadow-indigo-600/20'
+                  }`}
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>{isCreatingFandom ? 'Cancel' : '+ Tạo Fandom Mới'}</span>
+                </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {ALL_FANDOM_OPTIONS.map((item) => {
-                  const isFollowed = user.favoriteFandoms.includes(item.name);
-                  return (
-                    <div
-                      key={item.id}
-                      onClick={() => toggleFavoriteFandom(item.name)}
-                      className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between shadow-xs ${
-                        isFollowed
-                          ? 'bg-indigo-50/70 dark:bg-indigo-950/30 border-indigo-300 dark:border-indigo-700/60 shadow-sm'
-                          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3.5">
-                        <div
-                          className="w-5 h-5 rounded-full ring-2 ring-white dark:ring-slate-800 shadow-xs shrink-0"
-                          style={{ backgroundColor: item.color }}
-                        />
-                        <div>
-                          <h5 className="text-xs font-bold text-slate-900 dark:text-white">{item.name}</h5>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{item.tag}</span>
-                        </div>
+              {/* COLLAPSIBLE FORM: CREATE NEW CUSTOM FANDOM FOR A CATEGORY */}
+              {isCreatingFandom && (
+                <form
+                  onSubmit={handleCreateFandom}
+                  className="p-5 bg-gradient-to-br from-indigo-50/60 via-purple-50/30 to-pink-50/40 dark:from-slate-800 dark:via-indigo-950/30 dark:to-slate-800 rounded-3xl border border-indigo-200 dark:border-indigo-800/60 space-y-4 shadow-sm animate-in fade-in zoom-in-98 duration-200"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center">
+                        <Sparkles className="w-4 h-4" />
                       </div>
+                      <h5 className="text-sm font-extrabold text-slate-900 dark:text-white">
+                        Tạo Fandom Mới Cho Danh Mục
+                      </h5>
+                    </div>
+                    <span className="text-[11px] text-slate-500 font-medium">Auto-synced to your profile</span>
+                  </div>
 
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    {/* Fandom Name */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Tên Fandom *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="VD: MIDZY (ITZY), Solo Leveling Guild..."
+                        value={newFandomName}
+                        onChange={(e) => setNewFandomName(e.target.value)}
+                        required
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                      />
+                    </div>
+
+                    {/* Category Selection */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Danh Mục (Category) *
+                      </label>
+                      <select
+                        value={newFandomCategory}
+                        onChange={(e) => setNewFandomCategory(e.target.value)}
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-900 text-slate-900 dark:text-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                      >
+                        {FANDOM_CATEGORIES.filter((c) => c !== 'All').map((cat) => (
+                          <option key={cat} value={cat}>
+                            {cat}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Fandom Description */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Mô Tả / Slogan Của Fandom
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="VD: Official Global Fandom & Concert Standouts"
+                      value={newFandomDesc}
+                      onChange={(e) => setNewFandomDesc(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                    />
+                  </div>
+
+                  {/* Color Swatch Selector */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                      Màu Đại Diện Của Fandom
+                    </label>
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      {PRESET_COLOR_SWATCHES.map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          onClick={() => setNewFandomColor(color)}
+                          style={{ backgroundColor: color }}
+                          className={`w-7 h-7 rounded-xl transition-all cursor-pointer ${
+                            newFandomColor === color
+                              ? 'ring-4 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-900 scale-110 shadow-md'
+                              : 'opacity-80 hover:opacity-100'
+                          }`}
+                        />
+                      ))}
+                      <div className="flex items-center gap-1.5 ml-2">
+                        <span className="text-[11px] text-slate-500 font-mono">Custom:</span>
+                        <input
+                          type="color"
+                          value={newFandomColor}
+                          onChange={(e) => setNewFandomColor(e.target.value)}
+                          className="w-7 h-7 rounded-lg border-0 cursor-pointer p-0 bg-transparent"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="flex items-center justify-end gap-2.5 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsCreatingFandom(false)}
+                      className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer"
+                    >
+                      Hủy bỏ
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/20 cursor-pointer transition-all"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Tạo &amp; Theo Dõi Fandom</span>
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* CATEGORY FILTER BAR & SEARCH */}
+              <div className="space-y-3">
+                {/* Search input */}
+                <div className="relative">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={fandomSearchQuery}
+                    onChange={(e) => setFandomSearchQuery(e.target.value)}
+                    placeholder="Search fandoms by name, artist, or concept (e.g. One Piece, T1, NewJeans, Spider-Man)..."
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                  {fandomSearchQuery && (
+                    <button
+                      onClick={() => setFandomSearchQuery('')}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+
+                {/* Categories Tabs */}
+                <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
+                  {FANDOM_CATEGORIES.map((cat) => {
+                    const isSelected = selectedFandomCategory === cat;
+                    const countInCat =
+                      cat === 'All'
+                        ? allFandomsList.length
+                        : allFandomsList.filter((f) => f.tag === cat).length;
+                    const followedInCat =
+                      cat === 'All'
+                        ? user.favoriteFandoms.length
+                        : allFandomsList.filter((f) => f.tag === cat && user.favoriteFandoms.includes(f.name)).length;
+
+                    return (
                       <button
+                        key={cat}
                         type="button"
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                          isFollowed
-                            ? 'bg-pink-600 hover:bg-pink-700 text-white shadow-xs'
-                            : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200'
+                        onClick={() => setSelectedFandomCategory(cat)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                          isSelected
+                            ? 'bg-indigo-600 text-white shadow-xs'
+                            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                         }`}
                       >
-                        {isFollowed ? '✓ Following' : '+ Follow'}
+                        <span>{cat}</span>
+                        <span
+                          className={`px-1.5 py-0.2 text-[10px] rounded-full font-bold ${
+                            isSelected
+                              ? 'bg-white/25 text-white'
+                              : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
+                          }`}
+                        >
+                          {followedInCat > 0 ? `${followedInCat}/${countInCat}` : countInCat}
+                        </span>
                       </button>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
+
+              {/* FANDOM CARDS GRID */}
+              {filteredFandoms.length === 0 ? (
+                <div className="py-12 text-center bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 space-y-2">
+                  <Heart className="w-8 h-8 text-slate-300 mx-auto" />
+                  <p className="text-sm font-bold text-slate-800 dark:text-slate-100">No Fandoms Found</p>
+                  <p className="text-xs text-slate-500">
+                    No communities match your current filter or query. You can click '+ Tạo Fandom Mới' to add it!
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {filteredFandoms.map((item) => {
+                    const isFollowed = user.favoriteFandoms.includes(item.name);
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() => toggleFavoriteFandom(item.name)}
+                        className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-2.5 shadow-xs group ${
+                          isFollowed
+                            ? 'bg-indigo-50/70 dark:bg-indigo-950/30 border-indigo-300 dark:border-indigo-700/60 shadow-sm'
+                            : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-start gap-3 min-w-0">
+                            <div
+                              className="w-5 h-5 rounded-full ring-2 ring-white dark:ring-slate-800 shadow-xs shrink-0 mt-0.5"
+                              style={{ backgroundColor: item.color }}
+                            />
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="text-[10px] font-extrabold px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-md uppercase">
+                                  {item.tag}
+                                </span>
+                                {item.isCustom && (
+                                  <span className="text-[9px] font-bold px-1.5 py-0.2 bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 rounded">
+                                    Custom
+                                  </span>
+                                )}
+                              </div>
+                              <h5 className="text-xs font-bold text-slate-900 dark:text-white mt-1 truncate">
+                                {item.name}
+                              </h5>
+                              {item.description && (
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                                  {item.description}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1 shrink-0">
+                            {item.isCustom && (
+                              <button
+                                type="button"
+                                onClick={(e) => handleDeleteCustomFandom(item.id, item.name, e)}
+                                title="Delete custom fandom"
+                                className="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                                isFollowed
+                                  ? 'bg-pink-600 hover:bg-pink-700 text-white shadow-xs'
+                                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200'
+                              }`}
+                            >
+                              {isFollowed ? '✓ Following' : '+ Follow'}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
 
@@ -602,7 +1052,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 <div>
                   <h4 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                     <Bookmark className="w-4 h-4 text-indigo-500" />
-                    <span>Bookmarks & Collector Notes</span>
+                    <span>Bookmarks &amp; Collector Notes</span>
                   </h4>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Centralized hub for all saved albums, dispatches, characters, and streams with personal collector notes.
@@ -1078,7 +1528,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {FANDOM_CATEGORIES.map((cat) => {
+                  {FANDOM_CATEGORIES.filter((c) => c !== 'All').map((cat) => {
                     const isSelected = selectedInterests.includes(cat);
                     return (
                       <button
