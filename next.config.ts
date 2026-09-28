@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const IDENTITY_SERVICE_URL = process.env.IDENTITY_SERVICE_URL || 'http://127.0.0.1:8080';
 const NOTIFICATION_SERVICE_URL = process.env.NOTIFICATION_SERVICE_URL || 'http://127.0.0.1:8080';
+const CHATBOT_SERVICE_URL = process.env.CHATBOT_SERVICE_URL || 'http://127.0.0.1:3005';
 
 const nextConfig: NextConfig = {
   images: {
@@ -25,6 +26,10 @@ const nextConfig: NextConfig = {
       {
         source: '/api/v1/notifications/:path*',
         destination: `${NOTIFICATION_SERVICE_URL}/api/v1/notifications/:path*`,
+      },
+      {
+        source: '/api/v1/chatbot/:path*',
+        destination: `${CHATBOT_SERVICE_URL}/api/v1/chatbot/:path*`,
       },
     ];
   },

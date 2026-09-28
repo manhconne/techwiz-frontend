@@ -154,11 +154,15 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
     setInput('');
 
     try {
-      const res = await fetch("http://localhost:3005/api/v1/chatbot/chat", {
+      const res = await fetch("/api/v1/chatbot/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text })
       });
+      
+      if (!res.ok) {
+        throw new Error(`Chatbot API error: HTTP ${res.status}`);
+      }
       
       const data = await res.json();
       const botMsg: ChatMessage = {
