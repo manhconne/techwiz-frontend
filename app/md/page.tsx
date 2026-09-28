@@ -13,6 +13,7 @@ import { Breadcrumbs } from '../../components/Breadcrumbs';
 import { Footer } from '../../components/Footer';
 import { Album } from '../../types';
 import { useCartWishlist } from '../../context/CartWishlistContext';
+import { useActiveFandom } from '../../utils/fandomTheme';
 import { 
   Sparkles, 
   ShoppingBag, 
@@ -32,7 +33,8 @@ interface MerchItem {
   id: string;
   name: string;
   artist: string;
-  category: 'Lightstick' | 'Apparel' | 'Collectibles' | 'Accessories';
+  category: string;
+  universe: string;
   priceUSD: number;
   priceVND: number;
   image: string;
@@ -43,11 +45,13 @@ interface MerchItem {
 }
 
 const mockMerchList: MerchItem[] = [
+  // ==================== K-POP MERCH ====================
   {
     id: 'md-aespa-ls',
     name: 'aespa Official Lightstick Ver. 2',
     artist: 'aespa',
     category: 'Lightstick',
+    universe: 'K-Pop',
     priceUSD: 55.0,
     priceVND: 1375000,
     image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80',
@@ -61,6 +65,7 @@ const mockMerchList: MerchItem[] = [
     name: 'BTS Official Light Stick: MAP OF THE SOUL SPECIAL EDITION',
     artist: 'BTS',
     category: 'Lightstick',
+    universe: 'K-Pop',
     priceUSD: 62.0,
     priceVND: 1550000,
     image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80',
@@ -74,6 +79,7 @@ const mockMerchList: MerchItem[] = [
     name: 'NewJeans Official Lightstick (Binky Bong Special Pack)',
     artist: 'NewJeans',
     category: 'Lightstick',
+    universe: 'K-Pop',
     priceUSD: 52.0,
     priceVND: 1300000,
     image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
@@ -87,6 +93,7 @@ const mockMerchList: MerchItem[] = [
     name: 'Stray Kids Official Light Stick Ver. 2',
     artist: 'Stray Kids',
     category: 'Lightstick',
+    universe: 'K-Pop',
     priceUSD: 58.0,
     priceVND: 1450000,
     image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
@@ -100,6 +107,7 @@ const mockMerchList: MerchItem[] = [
     name: 'BLACKPINK Official Lightstick Ver. 2 Limited Edition',
     artist: 'BLACKPINK',
     category: 'Lightstick',
+    universe: 'K-Pop',
     priceUSD: 56.0,
     priceVND: 1400000,
     image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80',
@@ -113,6 +121,7 @@ const mockMerchList: MerchItem[] = [
     name: 'NewJeans "Get Up" Y2K Heavyweight Tour Hoodie',
     artist: 'NewJeans',
     category: 'Apparel',
+    universe: 'K-Pop',
     priceUSD: 68.0,
     priceVND: 1700000,
     image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80',
@@ -126,6 +135,7 @@ const mockMerchList: MerchItem[] = [
     name: 'aespa "Armageddon" Cyberpunk Reflective Windbreaker',
     artist: 'aespa',
     category: 'Apparel',
+    universe: 'K-Pop',
     priceUSD: 84.0,
     priceVND: 2100000,
     image: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=600&q=80',
@@ -135,36 +145,41 @@ const mockMerchList: MerchItem[] = [
     features: ['3M Scotchlite Reflective Ink', 'Waterproof Technical Shell', 'Tactical Modular Keyring'],
   },
   {
-    id: 'md-ds-diorama',
-    name: 'Demon Slayer Tanjiro & Rengoku Acrylic Flame Diorama',
-    artist: 'Anime',
-    category: 'Collectibles',
-    priceUSD: 34.0,
-    priceVND: 850000,
-    image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=600&q=80',
-    stock: 20,
-    badge: 'ufotable Certified',
-    description: 'Multi-layered 3D acrylic display diorama capturing the monumental climax battle with transparent flame effects.',
-    features: ['4-Layer Laser Cut Acrylic', 'Gold Foil Embellished Base', 'Original Keyframe Art'],
+    id: 'md-pc-binder',
+    name: 'Fan Hub Plus Holographic Photocard Binder (360 Pockets)',
+    artist: 'Fan Hub Plus',
+    category: 'Accessories',
+    universe: 'K-Pop',
+    priceUSD: 26.0,
+    priceVND: 650000,
+    image: 'https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&w=600&q=80',
+    stock: 40,
+    badge: 'Acid-Free Archival',
+    description: '9-pocket side-loading binder with rainbow holographic hardcover and acid-free non-PVC protective card sleeves.',
+    features: ['360 Total Card Capacity', 'Acid-Free Archival Safe', 'Heavy Duty Zipper Closure'],
   },
+
+  // ==================== GAMING ARENA MERCH ====================
   {
-    id: 'md-op-pass',
-    name: 'One Piece Film: Red Uta World Diva Concert Pass & Lanyard',
-    artist: 'Anime',
-    category: 'Collectibles',
-    priceUSD: 22.0,
-    priceVND: 550000,
-    image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80',
-    stock: 35,
-    badge: 'Toei Animation Official',
-    description: 'Replica metal VIP laminate pass from Elegia concert island with rainbow woven lanyard and Uta music badge.',
-    features: ['Solid Metal Core Pass', 'Holographic Front Foil', 'Heavy Woven Neck Lanyard'],
+    id: 'md-t1-keycaps',
+    name: 'T1 World Champions 2024 Hall of Legends Mechanical Keycap Set',
+    artist: 'T1 Esports',
+    category: 'Peripherals',
+    universe: 'Gaming',
+    priceUSD: 65.0,
+    priceVND: 1625000,
+    image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80',
+    stock: 12,
+    badge: 'Faker 5x Champion Edition',
+    description: '142-key dye-sublimated PBT keycaps in signature red, white, and gold featuring the iconic Hall of Legends crown motif.',
+    features: ['142-Key PBT Dye-Sub', 'Cherry Profile Compatible', 'Commemorative Novelty Keys'],
   },
   {
     id: 'md-er-map',
     name: 'Elden Ring Lands Between Heavy Canvas Cloth Map (24x36")',
-    artist: 'Gaming',
+    artist: 'FromSoftware',
     category: 'Collectibles',
+    universe: 'Gaming',
     priceUSD: 28.0,
     priceVND: 700000,
     image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80',
@@ -176,8 +191,9 @@ const mockMerchList: MerchItem[] = [
   {
     id: 'md-ff-sword',
     name: 'Final Fantasy VII Die-cast Buster Sword Desktop Display',
-    artist: 'Gaming',
+    artist: 'Square Enix',
     category: 'Collectibles',
+    universe: 'Gaming',
     priceUSD: 42.0,
     priceVND: 1050000,
     image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80',
@@ -187,18 +203,227 @@ const mockMerchList: MerchItem[] = [
     features: ['Heavy Zinc Alloy Die-Cast', 'Dual Translucent Materia Gems', 'Solid Slate Display Stand'],
   },
   {
-    id: 'md-pc-binder',
-    name: 'Fan Hub Plus Holographic Photocard Binder (360 Pockets)',
-    artist: 'Accessories',
+    id: 'md-genshin-vision',
+    name: 'Genshin Impact Metallic Anemo Vision & Light-Up Orb Desk Totem',
+    artist: 'HoYo-MiX',
     category: 'Accessories',
-    priceUSD: 26.0,
-    priceVND: 650000,
-    image: 'https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&w=600&q=80',
-    stock: 40,
-    badge: 'Acid-Free Archival',
-    description: '9-pocket side-loading binder with rainbow holographic hardcover and acid-free non-PVC protective card sleeves.',
-    features: ['360 Total Card Capacity', 'Acid-Free Archival Safe', 'Heavy Duty Zipper Closure'],
+    universe: 'Gaming',
+    priceUSD: 32.0,
+    priceVND: 800000,
+    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80',
+    stock: 25,
+    badge: 'miHoYo Authentic',
+    description: 'Die-cast metallic frame with rechargeable pulsing LED core replicating the sacred Mondstadt Anemo Vision.',
+    features: ['Rechargeable Type-C LED', 'Antiqued Brass Casing', 'Velvet Presentation Box'],
   },
+
+  // ==================== MANGA GUILD MERCH ====================
+  {
+    id: 'md-csm-pochita',
+    name: 'Chainsaw Man Pochita 1:1 Scale Lifesize Corduroy Plush Doll',
+    artist: 'Tatsuki Fujimoto',
+    category: 'Collectibles',
+    universe: 'Manga',
+    priceUSD: 45.0,
+    priceVND: 1125000,
+    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80',
+    stock: 20,
+    badge: 'Shueisha Certified',
+    description: 'Faithful lifesize Pochita plush with soft plush chainsaw blade, pull cord tail, and embroidered expressive eyes.',
+    features: ['Lifesize 35cm Height', 'High-Density Soft Velvet', 'Pull-String Cord Mechanism'],
+  },
+  {
+    id: 'md-berserk-sword',
+    name: 'Berserk Dragon Slayer Heavy Steel Bookmark & Display Stand',
+    artist: 'Kentaro Miura',
+    category: 'Accessories',
+    universe: 'Manga',
+    priceUSD: 24.0,
+    priceVND: 600000,
+    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80',
+    stock: 30,
+    badge: 'Young Animal Official',
+    description: 'Blackened stainless steel bookmark engraved with the Brand of Sacrifice and ultra-thin profile suited for tankōbon volumes.',
+    features: ['Laser-Cut Stainless Steel', 'Brand of Sacrifice Enamel', 'Acrylic Mini Desk Stand'],
+  },
+  {
+    id: 'md-op-shikishi',
+    name: 'One Piece Egghead Climax High-Gloss Gold Foil Shikishi Art Board',
+    artist: 'Eiichiro Oda',
+    category: 'Prints',
+    universe: 'Manga',
+    priceUSD: 19.0,
+    priceVND: 475000,
+    image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80',
+    stock: 45,
+    badge: 'Jump Festa 2025 Special',
+    description: 'Thick traditional washi cardboard illustration board with hot-stamped gold foil edges celebrating Gear 5 Sun God Luffy.',
+    features: ['Traditional Japanese Shikishi', 'Gold Foil Beveled Borders', 'Official Holographic Seal'],
+  },
+
+  // ==================== ANIME SAKUGA MERCH ====================
+  {
+    id: 'md-ds-diorama',
+    name: 'Demon Slayer Tanjiro & Rengoku Acrylic Flame Diorama',
+    artist: 'Ufotable',
+    category: 'Collectibles',
+    universe: 'Anime',
+    priceUSD: 34.0,
+    priceVND: 850000,
+    image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=600&q=80',
+    stock: 20,
+    badge: 'ufotable Certified',
+    description: 'Multi-layered 3D acrylic display diorama capturing the monumental climax battle with transparent flame effects.',
+    features: ['4-Layer Laser Cut Acrylic', 'Gold Foil Embellished Base', 'Original Keyframe Art'],
+  },
+  {
+    id: 'md-op-pass',
+    name: 'One Piece Film: Red Uta World Diva Concert Pass & Lanyard',
+    artist: 'Toei Animation',
+    category: 'Accessories',
+    universe: 'Anime',
+    priceUSD: 22.0,
+    priceVND: 550000,
+    image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80',
+    stock: 35,
+    badge: 'Toei Animation Official',
+    description: 'Replica metal VIP laminate pass from Elegia concert island with rainbow woven lanyard and Uta music badge.',
+    features: ['Solid Metal Core Pass', 'Holographic Front Foil', 'Heavy Woven Neck Lanyard'],
+  },
+  {
+    id: 'md-eva-lanyard',
+    name: 'Evangelion Unit-01 Awakening Heavy Modular Tactical Lanyard',
+    artist: 'Khara Studio',
+    category: 'Accessories',
+    universe: 'Anime',
+    priceUSD: 25.0,
+    priceVND: 625000,
+    image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=600&q=80',
+    stock: 18,
+    badge: 'Radio EVA Certified',
+    description: 'Military-grade nylon lanyard with anodized zinc carabiner buckle and Unit-01 purple/acid green colorway.',
+    features: ['Quick-Release Metal Cobra Buckle', 'High-Density Jacquard Webbing', 'Detachable O-Ring'],
+  },
+
+  // ==================== COSPLAY ATELIER MERCH ====================
+  {
+    id: 'md-cos-foam-kit',
+    name: 'Master Pro High-Density EVA Foam Sculpting & Bevel Cutter Toolkit',
+    artist: 'Atelier Guild',
+    category: 'Tools',
+    universe: 'Cosplay',
+    priceUSD: 48.0,
+    priceVND: 1200000,
+    image: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=600&q=80',
+    stock: 15,
+    badge: 'Maker Grade 100kg/m³',
+    description: 'Comprehensive armor fabrication kit including adjustable angle bevel cutter, tungsten carving blades, and rotary sanding blocks.',
+    features: ['3 Adjustable Cutting Angles (45°/60°/90°)', '10 Replacement Carbon Blades', 'Anti-Slip Aluminum Handle'],
+  },
+  {
+    id: 'md-cos-wig-kit',
+    name: 'Professional Heat-Resistant Synthetic Lace-Front Wig Styling Set',
+    artist: 'Atelier Guild',
+    category: 'Wig Care',
+    universe: 'Cosplay',
+    priceUSD: 36.0,
+    priceVND: 900000,
+    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
+    stock: 22,
+    badge: 'Pro Cosplayer Choice',
+    description: 'Complete wig preparation arsenal: canvas styling block head, table clamp, teasing brushes, and anti-static detangling mist.',
+    features: ['Heavy Canvas Block Head', '360° Rotational C-Clamp', 'Heat-Resistant Steel Combs'],
+  },
+
+  // ==================== COMICS MULTIVERSE MERCH ====================
+  {
+    id: 'md-spidey-book',
+    name: 'Spider-Man: Across The Spider-Verse Archival Sketchbook & Marker Set',
+    artist: 'Marvel Comics',
+    category: 'Art Supplies',
+    universe: 'Comics',
+    priceUSD: 38.0,
+    priceVND: 950000,
+    image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80',
+    stock: 24,
+    badge: 'Sony Animation Official',
+    description: '200gsm mixed-media sketchbook with holographic pop-art cover and 6 double-ended comic alcohol illustration markers.',
+    features: ['200gsm Bleedproof Paper', 'Holographic Embossed Cover', 'Dual-Brush Alcohol Markers'],
+  },
+  {
+    id: 'md-bat-signal',
+    name: 'Batman Dark Knight Bat-Signal Die-Cast Metal Desktop Spotlight',
+    artist: 'DC Comics',
+    category: 'Collectibles',
+    universe: 'Comics',
+    priceUSD: 49.0,
+    priceVND: 1225000,
+    image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80',
+    stock: 14,
+    badge: 'DC Collectibles',
+    description: 'Working high-intensity LED desktop projector that casts the iconic Bat-Insignia up to 6 meters with full 360-degree rotation.',
+    features: ['Cast Zinc Alloy Body', 'Super-Bright LED Projector Lens', '360° Swivel & Tilt Base'],
+  },
+
+  // ==================== MOVIES CINEMA MERCH ====================
+  {
+    id: 'md-dune-knife',
+    name: 'Dune: Part Two Crysknife Sandworm Tooth Display Replica',
+    artist: 'Legendary Pictures',
+    category: 'Collectibles',
+    universe: 'Movies',
+    priceUSD: 58.0,
+    priceVND: 1450000,
+    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80',
+    stock: 10,
+    badge: 'Denis Villeneuve Prop',
+    description: 'Solid resin ceremonial dagger replica with iridescent pearlescent finish, carved Fremen hilt, and solid sandstone pedestal.',
+    features: ['Translucent Shai-Hulud Resin', 'Hand-Wrapped Leather Grip', 'Natural Sandstone Display Plinth'],
+  },
+  {
+    id: 'md-oppen-cell',
+    name: 'Oppenheimer Trinity 70mm Film Cell Archival Acrylic Paperweight',
+    artist: 'Universal Pictures',
+    category: 'Collectibles',
+    universe: 'Movies',
+    priceUSD: 39.0,
+    priceVND: 975000,
+    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80',
+    stock: 15,
+    badge: 'Original 70mm Print',
+    description: 'Original frame from 70mm IMAX theatrical release print sealed inside optical-grade museum acrylic block with laser serial.',
+    features: ['Genuine 70mm Film Strip Cell', 'Optical Grade Scratchless Acrylic', 'Numbered Certificate of Authenticity'],
+  },
+
+  // ==================== TV SHOWS MERCH ====================
+  {
+    id: 'md-st-shirt',
+    name: 'Stranger Things Hellfire Club Hawkins High Raglan Baseball Shirt',
+    artist: 'Netflix',
+    category: 'Apparel',
+    universe: 'TV Shows',
+    priceUSD: 36.0,
+    priceVND: 900000,
+    image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80',
+    stock: 28,
+    badge: 'Official Netflix Merch',
+    description: 'Authentic 3/4 sleeve 100% combed cotton raglan t-shirt featuring screenprinted Eddie Munson Hellfire Club demon mascot.',
+    features: ['100% Combed Ring-Spun Cotton', 'Vintage Screenprinted Artwork', 'Retro 3/4 Contrast Sleeves'],
+  },
+  {
+    id: 'md-arcane-jinx',
+    name: 'Arcane: League of Legends Jinx Mechanical Shark Rocket Plush',
+    artist: 'Riot Games',
+    category: 'Collectibles',
+    universe: 'TV Shows',
+    priceUSD: 44.0,
+    priceVND: 1100000,
+    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80',
+    stock: 17,
+    badge: 'Fortiche / Riot Games',
+    description: 'Super soft oversized plush version of Fishbones the rocket launcher with fluorescent graffiti detailing and metallic teeth.',
+    features: ['Oversized 45cm Length', 'Glow-in-the-Dark Graffiti Paint', 'Heavyweight Plush Filling'],
+  }
 ];
 
 export default function MdPage() {
@@ -208,16 +433,39 @@ export default function MdPage() {
   const [addedItem, setAddedItem] = useState<string | null>(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const { themeKey, category } = useActiveFandom();
 
-  const categories = [
-    { id: 'All', label: 'All MD', count: mockMerchList.length },
-    { id: 'Lightstick', label: 'Lightsticks', count: mockMerchList.filter(m => m.category === 'Lightstick').length },
-    { id: 'Apparel', label: 'Apparel & Hoodies', count: mockMerchList.filter(m => m.category === 'Apparel').length },
-    { id: 'Collectibles', label: 'Collectibles & Figures', count: mockMerchList.filter(m => m.category === 'Collectibles').length },
-    { id: 'Accessories', label: 'Photocard Supplies', count: mockMerchList.filter(m => m.category === 'Accessories').length },
-  ];
+  // Filter merchandise by active fandom category
+  const normCategory = (category || '').toLowerCase();
+  const universeMatchedMerch = mockMerchList.filter((item) => {
+    if (!normCategory || normCategory === 'all') return true;
+    const itemUni = item.universe.toLowerCase();
+    return (
+      itemUni.includes(normCategory) ||
+      normCategory.includes(itemUni) ||
+      (normCategory.includes('game') && itemUni.includes('gaming')) ||
+      (normCategory.includes('movie') && itemUni.includes('movies')) ||
+      (normCategory.includes('tv') && itemUni.includes('tv'))
+    );
+  });
 
-  const filteredMerch = mockMerchList.filter((item) => {
+  // Fallback to all items if category has few items
+  const activePool = universeMatchedMerch.length > 0 ? universeMatchedMerch : mockMerchList;
+
+  // Dynamically compute subcategory filter chips
+  const subCategories = React.useMemo(() => {
+    const cats = new Set(activePool.map(m => m.category));
+    return [
+      { id: 'All', label: 'All MD', count: activePool.length },
+      ...Array.from(cats).map(c => ({
+        id: c,
+        label: c,
+        count: activePool.filter(m => m.category === c).length
+      }))
+    ];
+  }, [activePool]);
+
+  const filteredMerch = activePool.filter((item) => {
     const matchCat = selectedCategory === 'All' || item.category === selectedCategory;
     const q = searchQuery.toLowerCase().trim();
     const matchQuery = !q || item.name.toLowerCase().includes(q) || item.artist.toLowerCase().includes(q);
@@ -225,7 +473,6 @@ export default function MdPage() {
   });
 
   const handleAddMerchToCart = (item: MerchItem) => {
-    // Adapt to Cart Album interface so it seamlessly integrates into the cart system
     const fakeAlbum: Album = {
       id: item.id,
       title: item.name,
@@ -235,7 +482,7 @@ export default function MdPage() {
       priceVND: item.priceVND,
       coverImage: item.image,
       galleryImages: [item.image],
-      type: item.category === 'Lightstick' ? 'Lightstick' : 'Figure & Merch',
+      type: 'Figure & Merch',
       releaseDate: '2026-01-01',
       tag: item.stock <= 10 ? 'Limited Edition' : 'Hot Seller',
       rating: 5.0,
@@ -256,13 +503,18 @@ export default function MdPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div 
+      className={`min-h-screen flex flex-col fandom-theme-${themeKey} transition-colors duration-500`}
+      data-fandom-theme={themeKey}
+    >
       {/* Navigation Header */}
       <Header
         onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        fandomThemeKey={themeKey}
+        fandomCategory={category}
       />
 
       <main className="flex-1">
@@ -275,64 +527,200 @@ export default function MdPage() {
           />
         </div>
 
-        {/* Dedicated MD Hero Banner */}
-        <section 
-          style={{
-            backgroundColor: '#000000',
-            color: '#ffffff',
-            padding: '48px 28px',
-            borderBottom: '1px solid #1e293b',
-          }}
-        >
-          <div style={{ maxWidth: '1440px', margin: '0 auto' }}>
-            {/* Breadcrumb */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '16px' }}>
-              <Link href="/" className="hover:text-white transition-colors">HOME</Link>
-              <span>/</span>
-              <span style={{ color: '#ffffff', fontWeight: 800 }}>OFFICIAL MD & FANDOM GOODS</span>
-            </div>
+        {/* Dedicated Category-Specific MD Hero Banner */}
+        {(() => {
+          const bannerConfigs: Record<string, {
+            badge: string;
+            badgeColor: string;
+            title1: string;
+            title2: string;
+            desc: string;
+            stamp1Label: string;
+            stamp1Val: string;
+            stamp2Label: string;
+            stamp2Val: string;
+            stamp3Label: string;
+            stamp3Val: string;
+            stamp3Color?: string;
+          }> = {
+            gaming: {
+              badge: 'CERTIFIED ESPORTS & ARENA GEAR · HOYOVERSE & PRO REPLICAS',
+              badgeColor: '#00ff66',
+              title1: 'Gaming Gear, Keycaps ',
+              title2: '& Battlestation Collectibles',
+              desc: 'Level up your battlestation: mechanical keycap sets, die-cast weapon miniatures, archival canvas maps, and official tournament collectibles.',
+              stamp1Label: 'AUTHENTIC GEAR',
+              stamp1Val: '100% LICENSED',
+              stamp2Label: 'HARDWARE',
+              stamp2Val: 'PRO TIER',
+              stamp3Label: 'EXPRESS SHIP',
+              stamp3Val: 'GLOBAL',
+              stamp3Color: '#00ff66',
+            },
+            manga: {
+              badge: 'JAPANESE SHUEISHA & KODANSHA CERTIFIED GOODS',
+              badgeColor: '#f97316',
+              title1: 'Manga Merch, Plushies ',
+              title2: '& Archival Shikishi',
+              desc: 'Direct imports from Japanese manga stores: exclusive character plushies, engraved metal bookmarks, acrylic scene panels, and artist shikishi boards.',
+              stamp1Label: 'ORIGIN',
+              stamp1Val: '100% TOKYO',
+              stamp2Label: 'COLLECTIBLES',
+              stamp2Val: 'SHIKISHI·PLUSH',
+              stamp3Label: 'AUTHENTICITY',
+              stamp3Val: 'CERTIFIED',
+              stamp3Color: '#f97316',
+            },
+            anime: {
+              badge: 'ANIMATE & TOKYO POP-UP MERCH · 100% OFFICIALLY LICENSED',
+              badgeColor: '#ccff00',
+              title1: 'Anime Collectibles, Dioramas ',
+              title2: '& Tactical Lanyards',
+              desc: 'Authentic acrylic diorama displays, character convention passes, studio-exclusive metal accessories, and anime collaboration apparel.',
+              stamp1Label: 'STUDIO IMPORTS',
+              stamp1Val: '100% REAL',
+              stamp2Label: 'DISPLAYS',
+              stamp2Val: 'ACRYLIC 3D',
+              stamp3Label: 'QUALITY',
+              stamp3Val: 'PREMIUM',
+              stamp3Color: '#ccff00',
+            },
+            cosplay: {
+              badge: 'ATELIER PRO GRADE CRAFTING TOOLS & PROP ESSENTIALS',
+              badgeColor: '#38bdf8',
+              title1: 'Cosplay Crafting Tools, Wigs ',
+              title2: '& Workshop Supplies',
+              desc: 'Everything for the master prop maker: high-density EVA foam tools, lace-front wig care sets, armor grommets, and professional special FX kits.',
+              stamp1Label: 'MAKER TOOLS',
+              stamp1Val: 'PRO GRADE',
+              stamp2Label: 'WIG CRAFT',
+              stamp2Val: 'HEAT SAFE',
+              stamp3Label: 'MATERIALS',
+              stamp3Val: 'ARCHIVAL',
+              stamp3Color: '#38bdf8',
+            },
+            comics: {
+              badge: 'MARVEL & DC OFFICIALLY LICENSED COMIC ARTIFACTS',
+              badgeColor: '#ffd60a',
+              title1: 'Comic Collectibles, Pins ',
+              title2: '& Desktop Spotlights',
+              desc: 'Celebrate legendary comic book history: die-cast Bat-Signal spotlights, Spider-Verse sketching kits, vintage enamel pins, and archival comic sleeves.',
+              stamp1Label: 'LICENSED',
+              stamp1Val: 'MARVEL·DC',
+              stamp2Label: 'PINS & PROPS',
+              stamp2Val: 'DIE-CAST',
+              stamp3Label: 'PACKAGING',
+              stamp3Val: 'SAFE',
+              stamp3Color: '#ffd60a',
+            },
+            cinema: {
+              badge: 'AUTEUR CINEMA PROP REPLICAS & BOUTIQUE ARTIFACTS',
+              badgeColor: '#d4af37',
+              title1: 'Cinema Artifacts, Film Cells ',
+              title2: '& Prop Replicas',
+              desc: 'Museum-grade cinematic keepsakes: genuine 70mm IMAX film cell acrylic blocks, Dune Crysknife desktop displays, and A24 collector hardcover books.',
+              stamp1Label: 'ARTIFACTS',
+              stamp1Val: '70MM FILM',
+              stamp2Label: 'REPLICAS',
+              stamp2Val: 'MUSEUM',
+              stamp3Label: 'FINISH',
+              stamp3Val: 'DELUXE',
+              stamp3Color: '#d4af37',
+            },
+            tv: {
+              badge: 'ORIGINAL SERIES APPAREL & FANCLUB MEMORABILIA',
+              badgeColor: '#a78bfa',
+              title1: 'Series Merch, Apparel ',
+              title2: '& Nostalgia Collectibles',
+              desc: 'Official television fandom gear: Hawkins High baseball raglan tees, Arcane mechanical plushies, and collector enamel insignia pins.',
+              stamp1Label: 'SERIES MERCH',
+              stamp1Val: 'OFFICIAL',
+              stamp2Label: 'APPAREL',
+              stamp2Val: 'HEAVYWEIGHT',
+              stamp3Label: 'DROPS',
+              stamp3Val: 'LIMITED',
+              stamp3Color: '#a78bfa',
+            },
+            kpop: {
+              badge: 'Certified Authentic Merchandise · Direct Agency Imports',
+              badgeColor: '#a855f7',
+              title1: 'Official Fandom Goods, Lightsticks ',
+              title2: '& Apparel',
+              desc: 'Explore 100% authentic group lightsticks with Bluetooth stadium sync, official concert tour hoodies, limited acrylic character dioramas, and archival photocard storage binders.',
+              stamp1Label: 'AUTHENTIC GOODS',
+              stamp1Val: '100% REAL',
+              stamp2Label: 'LIGHTSTICKS',
+              stamp2Val: 'BT 5.2 SYNC',
+              stamp3Label: 'EXPRESS SHIP',
+              stamp3Val: 'GLOBAL',
+              stamp3Color: '#10b981',
+            }
+          };
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '24px' }}>
-              <div style={{ maxWidth: '780px' }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', backgroundColor: '#1e293b', color: '#a855f7', fontSize: '10px', fontFamily: 'monospace', fontWeight: 800, textTransform: 'uppercase', marginBottom: '12px', border: '1px solid rgba(168,85,247,0.3)' }}>
-                  <Sparkles style={{ width: '12px', height: '12px' }} />
-                  <span>Certified Authentic Merchandise · Direct Agency Imports</span>
-                </div>
-                <h1 
-                  style={{
-                    fontFamily: "'Playfair Display', Georgia, serif",
-                    fontSize: 'clamp(32px, 4vw, 56px)',
-                    fontWeight: 800,
-                    lineHeight: 1.1,
-                    letterSpacing: '-0.02em',
-                    margin: '0 0 12px 0',
-                  }}
-                >
-                  Official Fandom Goods, Lightsticks <em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic' }}>& Apparel</em>
-                </h1>
-                <p style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6, margin: 0, fontWeight: 300 }}>
-                  Explore 100% authentic group lightsticks with Bluetooth stadium sync, official concert tour hoodies, limited acrylic character dioramas, and archival photocard storage binders.
-                </p>
-              </div>
+          const conf = bannerConfigs[themeKey] || bannerConfigs.kpop;
 
-              {/* Stat badges */}
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
-                  <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>AUTHENTIC GOODS</span>
-                  <span style={{ fontSize: '20px', fontWeight: 900, fontFamily: 'monospace', color: '#ffffff' }}>100% REAL</span>
+          return (
+            <section 
+              style={{
+                backgroundColor: '#000000',
+                color: '#ffffff',
+                padding: '48px 28px',
+                borderBottom: '1px solid #1e293b',
+              }}
+            >
+              <div style={{ maxWidth: '1440px', margin: '0 auto' }}>
+                {/* Breadcrumb */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '16px' }}>
+                  <Link href="/" className="hover:text-white transition-colors">HOME</Link>
+                  <span>/</span>
+                  <span style={{ color: '#ffffff', fontWeight: 800 }}>OFFICIAL MD &amp; FANDOM GOODS</span>
+                  <span>/</span>
+                  <span style={{ color: conf.badgeColor, fontWeight: 800 }}>{category}</span>
                 </div>
-                <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
-                  <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>LIGHTSTICKS</span>
-                  <span style={{ fontSize: '20px', fontWeight: 900, fontFamily: 'monospace', color: '#ffffff' }}>BT 5.2 SYNC</span>
-                </div>
-                <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
-                  <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>EXPRESS SHIP</span>
-                  <span style={{ fontSize: '20px', fontWeight: 900, fontFamily: 'monospace', color: '#10b981' }}>GLOBAL</span>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '24px' }}>
+                  <div style={{ maxWidth: '780px' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', backgroundColor: '#1e293b', color: conf.badgeColor, fontSize: '10px', fontFamily: 'monospace', fontWeight: 800, textTransform: 'uppercase', marginBottom: '12px', border: `1px solid ${conf.badgeColor}40` }}>
+                      <Sparkles style={{ width: '12px', height: '12px' }} />
+                      <span>{conf.badge}</span>
+                    </div>
+                    <h1 
+                      style={{
+                        fontFamily: "'Playfair Display', Georgia, serif",
+                        fontSize: 'clamp(32px, 4vw, 56px)',
+                        fontWeight: 800,
+                        lineHeight: 1.1,
+                        letterSpacing: '-0.02em',
+                        margin: '0 0 12px 0',
+                      }}
+                    >
+                      {conf.title1}<em style={{ fontWeight: 400, color: '#94a3b8', fontStyle: 'italic' }}>{conf.title2}</em>
+                    </h1>
+                    <p style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6, margin: 0, fontWeight: 300 }}>
+                      {conf.desc}
+                    </p>
+                  </div>
+
+                  {/* Stat badges */}
+                  <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                    <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
+                      <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>{conf.stamp1Label}</span>
+                      <span style={{ fontSize: '20px', fontWeight: 900, fontFamily: 'monospace', color: '#ffffff' }}>{conf.stamp1Val}</span>
+                    </div>
+                    <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
+                      <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>{conf.stamp2Label}</span>
+                      <span style={{ fontSize: '20px', fontWeight: 900, fontFamily: 'monospace', color: '#ffffff' }}>{conf.stamp2Val}</span>
+                    </div>
+                    <div style={{ padding: '14px 20px', backgroundColor: '#0f172a', border: '1px solid #334155', minWidth: '140px' }}>
+                      <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#94a3b8', textTransform: 'uppercase', display: 'block' }}>{conf.stamp3Label}</span>
+                      <span style={{ fontSize: '20px', fontWeight: 900, fontFamily: 'monospace', color: conf.stamp3Color || '#10b981' }}>{conf.stamp3Val}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
+            </section>
+          );
+        })()}
 
         {/* MD Content Section */}
         <section className="py-14 px-4 sm:px-7 max-w-[1440px] mx-auto">
@@ -341,7 +729,7 @@ export default function MdPage() {
             
             {/* Category tabs */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '24px', overflowX: 'auto' }}>
-              {categories.map((c) => {
+              {subCategories.map((c) => {
                 const isActive = selectedCategory === c.id;
                 return (
                   <button

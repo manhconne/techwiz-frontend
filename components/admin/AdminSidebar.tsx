@@ -22,6 +22,7 @@ import {
   Bot,
   History,
   Settings,
+  Tv,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -50,6 +51,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'users', label: isEn ? 'User Management' : (t('users') || 'Quản lý người dùng'), icon: Users, href: '/admin/users', badge: null },
     { id: 'events', label: isEn ? 'Event Management' : 'Quản lý sự kiện', icon: Calendar, href: '/admin/events', badge: null },
     { id: 'contents', label: isEn ? 'Content & Posts' : 'Quản lý bài viết', icon: FileText, href: '/admin/contents', badge: null },
+    { id: 'multimedia', label: isEn ? 'Multimedia Hub' : 'Quản lý Đa phương tiện', icon: Tv, href: '/admin/multimedia', badge: null },
     { id: 'financial', label: isEn ? 'Financial Reports' : 'Báo cáo tài chính', icon: TrendingUp, href: '/admin/financial', badge: null },
     { id: 'transactions', label: isEn ? 'Transaction History' : 'Lịch sử giao dịch', icon: Receipt, href: '/admin/transactions', badge: null },
     { id: 'refunds', label: isEn ? 'Refund Requests' : 'Xử lý hoàn tiền', icon: RotateCcw, href: '/admin/refunds', badge: null },

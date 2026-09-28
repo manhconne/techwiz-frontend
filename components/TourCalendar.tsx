@@ -33,20 +33,53 @@ import {
   Compass
 } from 'lucide-react';
 import { useDomainTheme } from '../context/DomainContext';
+import { getFandomCategoryFromTheme } from '../utils/fandomTheme';
 
-export const TourCalendar: React.FC = () => {
+interface TourCalendarProps {
+  activeCategory?: string;
+}
+
+export const TourCalendar: React.FC<TourCalendarProps> = ({ activeCategory: propActiveCategory }) => {
   const { formatPrice } = useCartWishlist();
   const { activeConfig, activeSubCategory, selectSubCategory } = useDomainTheme();
 
   // Filters State
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => {
+    if (propActiveCategory && propActiveCategory !== 'all') {
+      return propActiveCategory;
+    }
+    return 'all';
+  });
   const [selectedPlatform, setSelectedPlatform] = useState<string>('all');
   const [selectedEventType, setSelectedEventType] = useState<string>('all');
   const [selectedCity, setSelectedCity] = useState<string>('all');
   const [searchFilter, setSearchFilter] = useState<string>('');
 
+  // Sync category with propActiveCategory
+  useEffect(() => {
+    if (propActiveCategory) {
+      setSelectedCategory(propActiveCategory);
+    }
+  }, [propActiveCategory]);
+
+  // Sync category with global fandom theme events
+  useEffect(() => {
+    const handleFandomChange = (e: any) => {
+      if (e?.detail?.category) {
+        setSelectedCategory(e.detail.category);
+      } else if (e?.detail?.theme) {
+        setSelectedCategory(getFandomCategoryFromTheme(e.detail.theme));
+      }
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('fandom-theme-change', handleFandomChange);
+      return () => window.removeEventListener('fandom-theme-change', handleFandomChange);
+    }
+  }, []);
+
   // Sync category with activeSubCategory from DomainContext
   useEffect(() => {
+    if (propActiveCategory) return;
     if (activeSubCategory === 'kpop' || activeSubCategory === 'kpop_fandom') {
       setSelectedCategory('K-Pop');
     } else if (activeSubCategory === 'anime' || activeSubCategory === 'anime_fandom' || activeSubCategory === 'ghibli') {
@@ -56,7 +89,7 @@ export const TourCalendar: React.FC = () => {
     } else if (activeSubCategory === 'all') {
       setSelectedCategory('all');
     }
-  }, [activeSubCategory]);
+  }, [activeSubCategory, propActiveCategory]);
 
   // Modals State
   const [bookedTour, setBookedTour] = useState<TourEvent | null>(null);
@@ -98,9 +131,20 @@ export const TourCalendar: React.FC = () => {
   // Filtered Events
   const filteredEvents = useMemo(() => {
     return mockTourEvents.filter((ev) => {
-      // Category filter (K-Pop, Anime, Gaming, all)
-      if (selectedCategory !== 'all' && ev.category !== selectedCategory) {
-        return false;
+      // Category filter (K-Pop, Anime, Gaming, Manga, Cosplay, Comics, Movies, TV, all)
+      if (selectedCategory !== 'all') {
+        const c1 = (ev.category || '').toLowerCase();
+        const c2 = selectedCategory.toLowerCase();
+        const matches = c1 === c2 ||
+          ((c1.includes('movie') || c1.includes('cinema')) && (c2.includes('movie') || c2.includes('cinema'))) ||
+          (c1.includes('tv') && c2.includes('tv')) ||
+          (c1.includes('game') && c2.includes('game')) ||
+          (c1.includes('comic') && c2.includes('comic')) ||
+          (c1.includes('manga') && c2.includes('manga')) ||
+          (c1.includes('anime') && c2.includes('anime')) ||
+          (c1.includes('cosplay') && c2.includes('cosplay')) ||
+          (c1.includes('kpop') && c2.includes('kpop'));
+        if (!matches) return false;
       }
       // Platform filter
       if (selectedPlatform !== 'all' && ev.sourcePlatform !== selectedPlatform) {

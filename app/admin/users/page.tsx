@@ -45,6 +45,94 @@ export interface AdminUserItem {
   [key: string]: any;
 }
 
+// Fallback demo users for offline / preview mode
+const FALLBACK_USERS: AdminUserItem[] = [
+  {
+    id: 'usr_001',
+    name: 'Nguyễn Văn Admin',
+    fullName: 'Nguyễn Văn Admin',
+    username: 'admin_chief',
+    email: 'admin@fanhub.com',
+    role: 'Admin',
+    status: 'active',
+    createdAt: '2026-08-15 08:30',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+    phone: '+84 901 234 567',
+  },
+  {
+    id: 'usr_002',
+    name: 'Lê Hoàng Nam',
+    fullName: 'Lê Hoàng Nam',
+    username: 'nam_event_owner',
+    email: 'nam.le@fandomfest.vn',
+    role: 'EventOwner',
+    status: 'active',
+    createdAt: '2026-09-01 10:15',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
+    phone: '+84 912 345 678',
+  },
+  {
+    id: 'usr_003',
+    name: 'Trần Thị Mai',
+    fullName: 'Trần Thị Mai',
+    username: 'mai_moderator',
+    email: 'mai.tran@fanhub.com',
+    role: 'Moderator',
+    status: 'active',
+    createdAt: '2026-09-05 14:20',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80',
+    phone: '+84 987 654 321',
+  },
+  {
+    id: 'usr_004',
+    name: 'Phạm Minh Tuấn',
+    fullName: 'Phạm Minh Tuấn',
+    username: 'tuan_otaku',
+    email: 'tuan.pham@gmail.com',
+    role: 'User',
+    status: 'active',
+    createdAt: '2026-09-10 16:45',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80',
+    phone: '+84 933 112 233',
+  },
+  {
+    id: 'usr_005',
+    name: 'Spammer Bot V2',
+    fullName: 'Spammer Bot V2',
+    username: 'spammer_99',
+    email: 'bot@spamattack.xyz',
+    role: 'User',
+    status: 'banned',
+    createdAt: '2026-09-18 22:05',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80',
+    phone: '+84 999 888 777',
+  },
+  {
+    id: 'usr_006',
+    name: 'Đỗ Thảo Linh',
+    fullName: 'Đỗ Thảo Linh',
+    username: 'linh_kpop',
+    email: 'thaolinh@gmail.com',
+    role: 'User',
+    status: 'active',
+    createdAt: '2026-09-22 09:12',
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80',
+    phone: '+84 908 776 554',
+  },
+  {
+    id: 'usr_007',
+    name: 'Hoàng Anh Dũng',
+    fullName: 'Hoàng Anh Dũng',
+    username: 'dung_esports',
+    email: 'dung.esports@vng.vn',
+    role: 'EventOwner',
+    status: 'active',
+    createdAt: '2026-09-23 11:30',
+    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80',
+    phone: '+84 944 556 677',
+  },
+];
+
 export interface ApiResponseMeta {
   total: number;
   page: number;
@@ -280,10 +368,10 @@ export default function AdminUsersPage() {
             <div
               style={{ borderRadius: '8px' }}
               className={`p-3 text-xs font-bold flex items-center justify-between gap-3 shadow-md animate-in fade-in slide-in-from-top-2 duration-200 ${actionToast.type === 'success'
-                  ? 'bg-emerald-600 text-white'
-                  : actionToast.type === 'warning'
-                    ? 'bg-amber-600 text-white'
-                    : 'bg-rose-600 text-white'
+                ? 'bg-emerald-600 text-white'
+                : actionToast.type === 'warning'
+                  ? 'bg-amber-600 text-white'
+                  : 'bg-rose-600 text-white'
                 }`}
             >
               <div className="flex items-center gap-2">
@@ -592,8 +680,8 @@ export default function AdminUsersPage() {
                               <div
                                 style={{ borderRadius: '50%' }}
                                 className={`w-8 h-8 flex items-center justify-center font-bold text-xs uppercase shrink-0 ${isAdmin
-                                    ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
-                                    : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
+                                  ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
+                                  : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
                                   }`}
                               >
                                 {item.avatar ? (

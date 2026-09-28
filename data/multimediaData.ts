@@ -1,5 +1,5 @@
 export type MediaType = 'trailer' | 'video' | 'podcast' | 'livestream' | 'soundtrack';
-export type FandomCategory = 'K-Pop' | 'V-Pop' | 'Anime' | 'Gaming' | 'Cinema';
+export type FandomCategory = 'K-Pop' | 'V-Pop' | 'Anime' | 'Gaming' | 'Cinema' | 'Manga' | 'Cosplay' | 'Comics' | 'TV Shows' | 'Movies';
 
 export interface LiveChatMessage {
   id: string;
@@ -578,5 +578,208 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       lyricsSnippet: 'If the world was ending, I’d wanna be next to you...'
     },
     tags: ['Die With A Smile', 'Bruno Mars', 'Lady Gaga', 'Vinyl Master', 'Acoustic']
+  },
+
+  // 13. MANGA: Chainsaw Man Chapter 180 Motion Comic & Audio Drama
+  {
+    id: 'media-manga-1',
+    title: 'Chainsaw Man Chapter 180: Official Motion Manga & Voice Drama Teaser',
+    subtitle: 'Dynamic motion manga comic release • Shueisha & MAPPA',
+    artist: 'Tatsuki Fujimoto / Shueisha',
+    agency: 'Weekly Shonen Jump',
+    type: 'trailer',
+    category: 'Manga',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/f9X6GkHnS9E?autoplay=1&mute=0',
+    duration: '03:15',
+    durationSeconds: 195,
+    views: 8900000,
+    releaseDate: '2024-10-15',
+    description: 'Special official motion comic presentation with dynamic ink transitions, screen screentone effects, and intense voiceover soundscape for the latest Chainsaw Man climax.',
+    qualityBadge: '4K MOTION INK • 60FPS',
+    rating: {
+      average: 4.95,
+      count: 14200,
+      distribution: { 5: 92, 4: 6, 3: 2, 2: 0, 1: 0 },
+      thumbsUp: 340000,
+      thumbsDown: 850,
+    },
+    chapters: [
+      { time: '00:00', seconds: 0, title: 'Denji in the ruined city' },
+      { time: '01:10', seconds: 70, title: 'War Devil Yoru awakening' },
+      { time: '02:30', seconds: 150, title: 'Black Chainsaw Man descent' }
+    ],
+    tags: ['Chainsaw Man', 'Manga', 'Motion Comic', 'Fujimoto', 'Shonen Jump']
+  },
+
+  // 14. MANGA SOUNDSTAGE: Berserk Memorial Audio Archive
+  {
+    id: 'media-manga-2',
+    title: 'Berserk Memorial Vinyl Soundstage: "Guts" & "Forces" Symphonic Suite',
+    subtitle: 'Susumu Hirasawa Memorial Compositions • Lossless 24-bit Vinyl Rip',
+    artist: 'Susumu Hirasawa & Shiro Sagisu',
+    agency: 'Hakusensha',
+    type: 'soundtrack',
+    category: 'Manga',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/8t3X32_1YkU?autoplay=1&mute=0',
+    duration: '05:40',
+    durationSeconds: 340,
+    views: 12400000,
+    releaseDate: '2024-05-20',
+    description: 'Immortal tribute to the legendary dark fantasy magnum opus by Kentaro Miura. Haunting vocals, acoustic strings, and relentless marching rhythms.',
+    qualityBadge: 'FLAC 24-BIT / 192KHZ',
+    rating: {
+      average: 5.0,
+      count: 28900,
+      distribution: { 5: 97, 4: 2, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 620000,
+      thumbsDown: 420,
+    },
+    soundtrackMeta: {
+      albumName: 'Berserk Sound Chronicle Vinyl Suite',
+      trackNumber: 1,
+      totalTracks: 14,
+      bitrate: '24-bit 192kHz Audiophile Master',
+      composer: 'Susumu Hirasawa',
+      lyricsSnippet: 'Tell me what you see, beyond the eternal sacrifice...'
+    },
+    tags: ['Berserk', 'Manga', 'Susumu Hirasawa', 'Guts Theme', 'Vinyl Master']
+  },
+
+  // 15. COSPLAY: World Cosplay Summit Nagoya 2024 Finals
+  {
+    id: 'media-cosplay-1',
+    title: '🔴 World Cosplay Summit Nagoya 2024: Championship Stage & Grand Parade 4K',
+    subtitle: 'Live broadcast from Nagoya Oasis 21 • 36 Country Champion Teams',
+    artist: 'World Cosplay Summit Committee',
+    agency: 'WCS Executive Office Japan',
+    type: 'livestream',
+    category: 'Cosplay',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/zSQ48zyWZrY?autoplay=1&mute=1',
+    duration: 'LIVE',
+    durationSeconds: 0,
+    views: 1480000,
+    releaseDate: 'Today',
+    description: 'The premier worldwide craftsmanship and performance showdown featuring custom mechanical armor, LED-embedded wings, and championship stage acting.',
+    qualityBadge: '4K BROADCAST 60FPS',
+    isLive: true,
+    liveViewers: 28900,
+    liveStatusText: '28,900 cosplay artisans streaming live worldwide',
+    rating: {
+      average: 4.96,
+      count: 19800,
+      distribution: { 5: 93, 4: 5, 3: 2, 2: 0, 1: 0 },
+      thumbsUp: 390000,
+      thumbsDown: 610,
+    },
+    chatMessages: [
+      { id: 'cc1', user: 'EvaArmorMaster_VN', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80', badge: 'PRO MAKER', badgeColor: '#3b82f6', message: 'The mechanical wings on Team Japan are insane! 3D printed servo joints!', timestamp: '14:20' },
+      { id: 'cc2', user: 'Nagoya_Fan_Live', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80', badge: 'WCS VIP', badgeColor: '#ec4899', message: 'Team Vietnam Monster Hunter armor details are top 3 for sure!! 🔥', timestamp: '14:21' }
+    ],
+    tags: ['Cosplay', 'WCS 2024', 'Nagoya', 'Craftsmanship', 'Stage Performance']
+  },
+
+  // 16. COMICS: Across The Spider-Verse Motion Masterclass & Score
+  {
+    id: 'media-comics-1',
+    title: 'Spider-Man: Across The Spider-Verse - Comic Art Motion Masterclass & OST',
+    subtitle: 'Pop-Art Halftone Animation & Daniel Pemberton Metro Synth Score',
+    artist: 'Sony Pictures Animation & Daniel Pemberton',
+    agency: 'Marvel Comics / Sony Pictures',
+    type: 'video',
+    category: 'Comics',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/hT_nvWreIhg?autoplay=1&mute=0',
+    duration: '18:40',
+    durationSeconds: 1120,
+    views: 22100000,
+    releaseDate: '2024-03-12',
+    description: 'Visual breakdown of the Ben-Day dots, comic ink line boiling, and the iconic orchestral synth breakdown for Miguel O’Hara’s Spider-Man 2099 theme.',
+    qualityBadge: 'IMAX ENHANCED 4K',
+    rating: {
+      average: 4.98,
+      count: 48900,
+      distribution: { 5: 96, 4: 3, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1100000,
+      thumbsDown: 1300,
+    },
+    chapters: [
+      { time: '00:00', seconds: 0, title: 'Earth-65 Gwen Stacy watercolor style' },
+      { time: '06:15', seconds: 375, title: 'Spider-Punk hand-cut zine animation' },
+      { time: '12:30', seconds: 750, title: '2099 Synth Elephant sound breakdown' }
+    ],
+    tags: ['Spider-Verse', 'Comics', 'Pop-Art', 'Miles Morales', 'Daniel Pemberton']
+  },
+
+  // 17. TV SHOWS: Stranger Things 5 Hawkins Synth Lab
+  {
+    id: 'media-tv-1',
+    title: 'Stranger Things Season 5: Hawkins Sound Lab & The Upside Down Synth Suite',
+    subtitle: 'Behind The Scenes 4K • Kyle Dixon & Michael Stein Modular Synthesizer Demo',
+    artist: 'SURVIVE (Kyle Dixon & Michael Stein)',
+    agency: 'Netflix / Lakeshore Records',
+    type: 'soundtrack',
+    category: 'TV Shows',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/kPa7bsKwL-8?autoplay=1&mute=0',
+    duration: '06:22',
+    durationSeconds: 382,
+    views: 15400000,
+    releaseDate: '2024-09-01',
+    description: 'Analog synth magic featuring vintage Prophet-5 and Arp 2600 modular systems creating the eerie Hawkins atmosphere and heart-pounding climax arpeggios.',
+    qualityBadge: '24-BIT 96KHZ ANALOG MASTER',
+    rating: {
+      average: 4.95,
+      count: 24300,
+      distribution: { 5: 94, 4: 5, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 510000,
+      thumbsDown: 820,
+    },
+    soundtrackMeta: {
+      albumName: 'Stranger Things Final Season Sound Archives',
+      trackNumber: 1,
+      totalTracks: 20,
+      bitrate: 'Analog Master 24-bit',
+      composer: 'Kyle Dixon & Michael Stein',
+      lyricsSnippet: 'Echoes from the Upside Down reverberate through the analog circuits...'
+    },
+    tags: ['Stranger Things', 'TV Shows', 'Synthwave', 'Netflix', 'Hawkins']
+  },
+
+  // 18. GAMING: Genshin Impact Symphonic Concert Tour 4K
+  {
+    id: 'media-gaming-symphony',
+    title: 'HoYo-MiX: Genshin Impact Global Concert Tour 2024 - Full Philharmonic 4K',
+    subtitle: 'London Philharmonic Orchestra live at Royal Albert Hall',
+    artist: 'HoYo-MiX & London Philharmonic',
+    agency: 'miHoYo / HoYoverse',
+    type: 'video',
+    category: 'Gaming',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/pnSsgrjpC88?autoplay=1&mute=0',
+    duration: '42:15',
+    durationSeconds: 2535,
+    views: 28400000,
+    releaseDate: '2024-08-10',
+    description: 'Symphonic tour featuring Fontaine, Sumeru, Inazuma, and Liyue battle suites with authentic regional instruments, choir chants, and guitar solos.',
+    qualityBadge: '4K ULTRA HD • DOLBY ATMOS',
+    rating: {
+      average: 5.0,
+      count: 76000,
+      distribution: { 5: 98, 4: 2, 3: 0, 2: 0, 1: 0 },
+      thumbsUp: 1820000,
+      thumbsDown: 1100,
+    },
+    chapters: [
+      { time: '00:00', seconds: 0, title: 'Fontaine Symphony: Pluie sur la ville' },
+      { time: '12:40', seconds: 760, title: 'Inazuma Duel Before the Throne' },
+      { time: '26:10', seconds: 1570, title: 'Liyue Harbor Moonlit Festival' },
+      { time: '38:00', seconds: 2280, title: 'Grand Finale & Standing Ovation' }
+    ],
+    tags: ['Genshin Impact', 'HoYo-MiX', 'Gaming', 'Concert 4K', 'Symphony']
   }
 ];

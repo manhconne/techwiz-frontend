@@ -243,6 +243,148 @@ const ANIME_CATALOG: AnimeItem[] = [
     stock: 30,
     episodes: '12 Episodes',
   },
+  {
+    id: 'anime-attack-on-titan-final',
+    title: 'Attack on Titan The Final Season: Complete 4K Boxset',
+    format: '4K Ultra HD Steelbook',
+    studio: 'MAPPA',
+    genre: 'Action',
+    distributor: 'Pony Canyon / Crunchyroll',
+    priceUSD: 94.99,
+    priceVND: 2360000,
+    originalPriceUSD: 119.99,
+    rating: 4.99,
+    reviewCount: 6980,
+    tag: '👑 THE RUMBLING CLIMAX',
+    coverImage: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop&q=80',
+    description: 'The historic conclusion of humanity’s battle against Titans. 4K Dolby Vision HDR mastering with Hiroyuki Sawano & Kohta Yamamoto OST CD.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 15,
+    episodes: 'Final Chapters Special 1 & 2',
+  },
+  {
+    id: 'anime-bleach-tybw-part2',
+    title: 'Bleach: Thousand-Year Blood War - The Separation',
+    format: 'Limited Edition Blu-ray Box',
+    studio: 'Studio Pierrot',
+    genre: 'Action',
+    distributor: 'Aniplex / Viz Media',
+    priceUSD: 62.99,
+    priceVND: 1560000,
+    rating: 4.96,
+    reviewCount: 3450,
+    tag: '⚡ BANKAI SEPARATION',
+    coverImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80',
+    description: 'The Quincy blood warfare escalates with cinema-grade sakuga animation. Includes Senjumaru Bankai special fold-out tapestry and interview booklet.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 26,
+    episodes: '13 Episodes + Uncut Scenes',
+  },
+  {
+    id: 'anime-cyberpunk-edgerunners',
+    title: 'Cyberpunk: Edgerunners Ultimate Collector Edition',
+    format: '4K UHD + Vinyl Soundtrack',
+    studio: 'Studio Trigger',
+    genre: 'Action',
+    distributor: 'CD Projekt Red / Netflix',
+    priceUSD: 79.99,
+    priceVND: 1980000,
+    originalPriceUSD: 99.99,
+    rating: 4.98,
+    reviewCount: 5740,
+    tag: '★ NIGHT CITY MASTERPIECE',
+    coverImage: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80',
+    description: 'David Martinez and Lucy battle across the neon ruins of Night City. Hiroyuki Imaishi signature kinetic direction packaged with yellow neon colored vinyl LP.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 20,
+    episodes: '10 Episodes Complete',
+  },
+  {
+    id: 'anime-one-piece-film-red',
+    title: 'One Piece Film: RED Deluxe 4K Soundstage Edition',
+    format: 'Deluxe 4K UHD + CD',
+    studio: 'Toei Animation',
+    genre: 'Action',
+    distributor: 'Toei / Crunchyroll',
+    priceUSD: 54.99,
+    priceVND: 1360000,
+    rating: 4.93,
+    reviewCount: 4200,
+    tag: '🎵 UTA LIVE CONCERT',
+    coverImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80',
+    description: 'Ado’s sensational vocal powerhouse brings Uta to life in dazzling 4K visuals. Includes concert replica lightstick and 7-track vocal album CD.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 35,
+    episodes: '115 Min Feature + Concert Extras',
+  },
+  {
+    id: 'anime-vinland-saga-s2',
+    title: 'Vinland Saga Season 2: Slave Arc Master Edition',
+    format: 'Collector Blu-ray Box',
+    studio: 'MAPPA',
+    genre: 'Action',
+    distributor: 'Twin Engine / Crunchyroll',
+    priceUSD: 72.00,
+    priceVND: 1790000,
+    rating: 4.99,
+    reviewCount: 3120,
+    tag: '✨ EMOTIONAL MASTERPIECE',
+    coverImage: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=600&auto=format&fit=crop&q=80',
+    description: 'Thorfinn’s spiritual rebirth on Ketil’s farm. Masterclass character acting animation, Shuhei Yabuta director commentary, and raw production storyboard binder.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 18,
+    episodes: '24 Episodes',
+  },
+  {
+    id: 'anime-mob-psycho-100-grand',
+    title: 'Mob Psycho 100 III: Grand Finale Sakuga Cut',
+    format: 'Limited Steelbook',
+    studio: 'Studio BONES',
+    genre: 'Action',
+    distributor: 'Warner Bros. Japan',
+    priceUSD: 58.50,
+    priceVND: 1450000,
+    rating: 4.97,
+    reviewCount: 2680,
+    tag: '💥 SAKUGA APOTHEOSIS',
+    coverImage: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop&q=80',
+    description: 'The tearful and explosive conclusion of Mob’s coming-of-age story with 100% hand-drawn uncorrected sakuga flipbook by legendary animators.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 24,
+    episodes: '12 Episodes',
+  },
+  {
+    id: 'anime-haikyu-dumpster-battle',
+    title: 'Haikyu!! The Dumpster Battle 4K IMAX Edition',
+    format: '4K UHD + Artbook',
+    studio: 'Production I.G',
+    genre: 'Slice of Life',
+    distributor: 'Toho Animation',
+    priceUSD: 48.00,
+    priceVND: 1190000,
+    rating: 4.95,
+    reviewCount: 4350,
+    tag: '🏐 KARASUNO VS NEKOMA',
+    coverImage: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
+    description: 'The destined match at the Spring Tournament. First-person POV volleyball camera runs in blistering high frame-rate animation with Kenma keyframe booklet.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 30,
+    episodes: '85 Min Theatrical IMAX Cut',
+  },
 ];
 
 // Helper to convert Anime item to Album format for cart
@@ -298,6 +440,66 @@ function animeToAlbum(item: AnimeItem): Album {
   };
 }
 
+// Anime Seasonal Sakuga Spotlight Banners
+export interface AnimeBanner {
+  id: string;
+  title: string;
+  studio: string;
+  badge: string;
+  tag: string;
+  desc: string;
+  image: string;
+  specs: string;
+  targetId?: string;
+}
+
+const ANIME_SPOTLIGHT_BANNERS: AnimeBanner[] = [
+  {
+    id: 'ab-demonslayer',
+    title: 'Demon Slayer: Infinity Castle Movie Trilogy',
+    studio: 'ufotable (ユーフォーテーブル)',
+    badge: '★ UFOTABLE SAKUGA MASTERPIECE',
+    tag: 'THEATRICAL IMAX 4K HDR',
+    desc: 'The Demon Slayer Corps plunges into the shifting depths of Muzan’s Infinity Castle. Groundbreaking 3D CGI architecture with hand-drawn sakuga animation.',
+    image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1600&auto=format&fit=crop&q=85',
+    specs: '4K HDR10+ • Dolby Atmos 7.1',
+    targetId: 'anime-demon-slayer-infinity-castle',
+  },
+  {
+    id: 'ab-sololeveling',
+    title: 'Solo Leveling: Arise - Shadow Monarch Unleashed',
+    studio: 'A-1 Pictures',
+    badge: '★ WORLDWIDE STREAMING PHENOMENON',
+    tag: 'LIMITED STEELBOOK 4K EDITION',
+    desc: 'Jinwoo ascends from the weakest hunter to the sovereign of shadows. Hiroyuki Sawano’s heart-pounding orchestral score in lossless master audio.',
+    image: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=1600&auto=format&fit=crop&q=85',
+    specs: 'Hiroyuki Sawano OST Included',
+    targetId: 'anime-solo-leveling-s1',
+  },
+  {
+    id: 'ab-aot',
+    title: 'Attack on Titan: The Final Chapters & 10-Year Memorial',
+    studio: 'MAPPA',
+    badge: '★ MAPPA DECADE COMMEMORATIVE',
+    tag: 'COLLECTOR WOODEN VAULT BOX',
+    desc: 'The Rumbling sweeps across the earth as Eren Yeager confronts his closest comrades. Comprehensive 128-page key animation frames and director interviews.',
+    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1600&auto=format&fit=crop&q=85',
+    specs: 'Uncut Extended 145min Feature',
+    targetId: 'anime-attack-on-titan-final',
+  },
+  {
+    id: 'ab-frieren',
+    title: 'Frieren: Beyond Journey’s End - Complete Archival Box',
+    studio: 'Madhouse',
+    badge: '★ MADHOUSE FANTASY CROWN',
+    tag: 'AUTHENTIC SOUNDSCAPE EDITION',
+    desc: 'The elf mage Frieren embarks on a nostalgic journey toward the resting place of souls. Stunning background art and peaceful pacing praised worldwide.',
+    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&auto=format&fit=crop&q=85',
+    specs: 'Evan Call 24-bit Lossless Score',
+    targetId: 'anime-frieren-s1',
+  },
+];
+
 export const AnimeNeoBrutalView: React.FC = () => {
   const { addToCart, toggleWishlist, isWishlisted, formatPrice, setIsCartOpen } = useCartWishlist();
 
@@ -309,6 +511,15 @@ export const AnimeNeoBrutalView: React.FC = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
   const [addedToast, setAddedToast] = useState<string | null>(null);
+  const [currentBannerIdx, setCurrentBannerIdx] = useState(0);
+
+  // Auto rotate banner every 6s
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentBannerIdx((prev) => (prev + 1) % ANIME_SPOTLIGHT_BANNERS.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Community Notes Wall State
   const [communityNotes, setCommunityNotes] = useState([
@@ -435,8 +646,8 @@ export const AnimeNeoBrutalView: React.FC = () => {
         </div>
       )}
 
-      {/* Main Container with reliable Flex Gap */}
-      <div className="max-w-5xl mx-auto flex flex-col gap-20 sm:gap-28">
+      {/* Main Container - Widened to 1440px for spacious browsing */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8 flex flex-col gap-24 sm:gap-32">
 
         {/* =========================================================================
             1. HERO SECTION: ANIME ARCHIVE & SAKUGA VAULT
@@ -470,8 +681,11 @@ export const AnimeNeoBrutalView: React.FC = () => {
               └── 4K.SAKUGA ──┘
             </div>
 
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="flex-1 space-y-4">
+            {/* Balanced 12-Column Responsive Hero Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              
+              {/* Left Column (7 cols): Heading, Narrative, Actions & Studio Badges */}
+              <div className="lg:col-span-7 space-y-5">
                 {/* Badge */}
                 <div
                   className="inline-flex items-center gap-2 px-3 py-1"
@@ -490,23 +704,23 @@ export const AnimeNeoBrutalView: React.FC = () => {
 
                 {/* Hero Title */}
                 <h1
-                  className="text-4xl sm:text-5xl md:text-6xl font-black leading-none tracking-tight"
+                  className="text-4xl sm:text-5xl lg:text-6xl font-black leading-none tracking-tight"
                   style={{ fontFamily: "'Kalam', cursive, sans-serif", color: COLORS.black }}
                 >
                   Anime Collector Vault!
                 </h1>
 
                 {/* Subtitle */}
-                <p className="text-lg sm:text-xl max-w-xl leading-relaxed" style={{ color: `${COLORS.black}cc` }}>
+                <p className="text-base sm:text-lg max-w-xl leading-relaxed" style={{ color: `${COLORS.black}cc` }}>
                   4K HDR Blu-ray steelbooks, limited edition box sets, original soundtracks, and exclusive
-                  animation studio art booklets from MAPPA, ufotable, Madhouse & A-1 Pictures.
+                  animation studio art booklets from MAPPA, ufotable, Madhouse &amp; A-1 Pictures.
                 </p>
 
                 {/* CTA Buttons */}
-                <div className="pt-2 flex flex-wrap items-center gap-4 relative">
+                <div className="pt-2 flex flex-wrap items-center gap-4">
                   <a
                     href="#anime-catalog"
-                    className="inline-flex items-center gap-2 px-6 py-3 font-bold text-lg transition-all cursor-pointer hover:translate-y-[-2px]"
+                    className="inline-flex items-center gap-2 px-6 py-3 font-bold text-base transition-all cursor-pointer hover:translate-y-[-2px]"
                     style={{
                       borderRadius: ROUND_SM,
                       backgroundColor: COLORS.lime,
@@ -521,7 +735,7 @@ export const AnimeNeoBrutalView: React.FC = () => {
 
                   <a
                     href="#anime-community"
-                    className="inline-flex items-center gap-2 px-5 py-3 font-bold text-lg transition-all cursor-pointer hover:translate-y-[-2px]"
+                    className="inline-flex items-center gap-2 px-5 py-3 font-bold text-base transition-all cursor-pointer hover:translate-y-[-2px]"
                     style={{
                       borderRadius: ROUND_SM,
                       backgroundColor: COLORS.white,
@@ -534,43 +748,137 @@ export const AnimeNeoBrutalView: React.FC = () => {
                     <span>COMMUNITY WALL</span>
                   </a>
                 </div>
-              </div>
 
-              {/* Post-it Feature Card */}
-              <div
-                className="w-full md:w-64 p-5 relative"
-                style={{
-                  borderRadius: ROUND_MD,
-                  backgroundColor: COLORS.limeLight,
-                  border: `3px solid ${COLORS.black}`,
-                  boxShadow: `5px 5px 0px ${COLORS.black}`,
-                }}
-              >
-                {/* Lime accent strip */}
-                <div
-                  className="absolute -top-2 left-1/2 -translate-x-1/2 w-20 h-3"
-                  style={{ backgroundColor: COLORS.lime, borderRadius: ROUND_SM }}
-                />
-
-                <div className="flex items-center justify-between pb-2 border-b-2 border-dashed" style={{ borderColor: COLORS.black }}>
-                  <span className="font-bold text-xs uppercase tracking-wider" style={{ color: COLORS.limeDark }}>
-                    WEEKLY ANIME DROP
+                {/* Studio Quick Pills */}
+                <div className="pt-2 flex flex-wrap items-center gap-2 text-xs font-bold">
+                  <span className="text-black/60 uppercase mr-1">TOP STUDIOS:</span>
+                  <span className="px-2.5 py-1 bg-[#ccff00] text-black border border-black font-bold" style={{ borderRadius: ROUND_SM }}>
+                    🔥 ufotable
                   </span>
-                  <Sparkles size={14} style={{ color: COLORS.accent }} />
+                  <span className="px-2.5 py-1 bg-white text-black border border-black font-bold" style={{ borderRadius: ROUND_SM }}>
+                    ⚡ MAPPA
+                  </span>
+                  <span className="px-2.5 py-1 bg-[#e0f2fe] text-[#0369a1] border border-black font-bold" style={{ borderRadius: ROUND_SM }}>
+                    ⚔️ Wit Studio
+                  </span>
+                  <span className="px-2.5 py-1 bg-[#fee2e2] text-[#991b1b] border border-black font-bold" style={{ borderRadius: ROUND_SM }}>
+                    🌸 Kyoto Animation
+                  </span>
                 </div>
 
-                <div className="mt-3 space-y-2 text-sm leading-snug">
-                  <p className="font-bold text-base" style={{ fontFamily: "'Kalam', cursive", color: COLORS.black }}>
-                    "Demon Slayer & JJK S2 steelbooks in stock!"
-                  </p>
-                  <p className="text-xs" style={{ color: `${COLORS.black}cc` }}>
-                    Pre-orders include exclusive animation cel art cards & studio booklets.
-                  </p>
-                  <div className="pt-1 flex items-center gap-1 text-xs font-bold" style={{ color: COLORS.limeDark }}>
-                    <span>★ CRUNCHYROLL CERTIFIED</span>
+                {/* Trust Guarantees */}
+                <div className="pt-3 flex flex-wrap items-center gap-4 text-xs font-bold border-t border-black/15" style={{ color: `${COLORS.black}bb` }}>
+                  <span className="flex items-center gap-1 text-emerald-800">
+                    <Check size={14} strokeWidth={3} /> 100% 4K HDR 10-Bit Master
+                  </span>
+                  <span className="flex items-center gap-1 text-sky-800">
+                    <Check size={14} strokeWidth={3} /> Uncompressed Dolby Atmos 7.1.4
+                  </span>
+                  <span className="flex items-center gap-1 text-black">
+                    <Check size={14} strokeWidth={3} /> Serialized Steelbook &amp; Art Booklet
+                  </span>
+                </div>
+              </div>
+
+              {/* Right Column (5 cols): Rich Featured Steelbook Spotlight Card */}
+              <div className="lg:col-span-5">
+                <div
+                  className="p-5 relative overflow-hidden"
+                  style={{
+                    borderRadius: ROUND_MD,
+                    backgroundColor: COLORS.limeLight,
+                    border: `3.5px solid ${COLORS.black}`,
+                    boxShadow: `6px 6px 0px ${COLORS.black}`,
+                  }}
+                >
+                  {/* Lime accent strip */}
+                  <div
+                    className="absolute -top-2 left-1/2 -translate-x-1/2 w-28 h-3 pointer-events-none"
+                    style={{ backgroundColor: COLORS.lime, borderRadius: ROUND_SM }}
+                  />
+
+                  {/* Sound Burst Pill */}
+                  <div
+                    className="absolute -top-1 -right-1 px-3 py-1 bg-[#09090b] text-[#ccff00] font-black text-xs uppercase border-2 border-black rotate-3 shadow-[2px_2px_0px_#ccff00] z-20"
+                    style={{ fontFamily: "'Bangers', 'Kalam', cursive", letterSpacing: '0.04em' }}
+                  >
+                    4K SAKUGA DROP
+                  </div>
+
+                  {/* Header bar */}
+                  <div className="flex items-center justify-between pb-3 border-b-2 border-dashed" style={{ borderColor: COLORS.black }}>
+                    <span className="font-bold text-xs uppercase tracking-wider flex items-center gap-1.5" style={{ color: COLORS.limeDark }}>
+                      <Sparkles size={14} style={{ color: COLORS.accent }} />
+                      ★ STEELBOOK OF THE WEEK
+                    </span>
+                    <span className="text-[10px] font-mono font-bold bg-black text-white px-2 py-0.5" style={{ borderRadius: ROUND_SM }}>
+                      4K UHD + OBI
+                    </span>
+                  </div>
+
+                  {/* Showcase Body: Cover Image + Boxset Details */}
+                  <div className="mt-4 flex gap-4">
+                    {/* Steelbook Mockup Frame */}
+                    <div 
+                      className="w-32 shrink-0 bg-black border-2 border-black overflow-hidden shadow-[3px_3px_0px_#000] relative"
+                      style={{ borderRadius: ROUND_SM }}
+                    >
+                      <div className="bg-[#ccff00] text-black text-[9px] font-mono font-black text-center py-0.5 uppercase border-b border-black">
+                        UFOTABLE SAKUGA
+                      </div>
+                      <img
+                        src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80"
+                        alt="Demon Slayer Infinity Castle"
+                        className="w-full h-40 object-cover"
+                      />
+                    </div>
+
+                    {/* Metadata & Quick Action */}
+                    <div className="flex-1 flex flex-col justify-between space-y-2 text-left">
+                      <div>
+                        <span className="text-[10px] font-mono font-bold uppercase text-black/60 block">
+                          UFOTABLE • HARUO SOTOZAKI
+                        </span>
+                        <h4 
+                          className="font-bold text-base text-black leading-tight mt-0.5 line-clamp-2"
+                          style={{ fontFamily: "'Kalam', cursive" }}
+                        >
+                          Demon Slayer: Infinity Castle 4K Steelbook
+                        </h4>
+                        <p className="text-xs text-black/80 mt-1">
+                          3-Disc Collector Boxset (Dolby Vision &amp; Atmos)
+                        </p>
+                      </div>
+
+                      <div className="pt-2 border-t border-black/20 flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] text-black/60 font-mono block">STEELBOOK PRICE</span>
+                          <span className="text-lg font-black text-black font-mono leading-none">
+                            $48.00
+                          </span>
+                        </div>
+
+                        <a
+                          href="#anime-catalog"
+                          className="px-3 py-1.5 bg-black hover:bg-[#ccff00] hover:text-black text-white text-xs font-bold uppercase transition-colors border border-black shadow-[2px_2px_0px_#000] inline-flex items-center gap-1"
+                          style={{ borderRadius: ROUND_SM }}
+                        >
+                          <ShoppingCart size={13} />
+                          <span>CLAIM BOX</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Speech Bubble */}
+                  <div className="mt-4 p-2.5 bg-white border-2 border-black text-xs text-black leading-snug relative" style={{ borderRadius: ROUND_SM }}>
+                    <p className="italic font-bold">
+                      "Includes 120-page key animation layouts &amp; storyboards drawn by chief animation directors."
+                    </p>
                   </div>
                 </div>
               </div>
+
             </div>
 
             {/* Stats Counter */}
@@ -602,6 +910,169 @@ export const AnimeNeoBrutalView: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            FEATURED ANIME SAKUGA SPOTLIGHT BANNER CAROUSEL
+        ========================================================================= */}
+        <section className="relative">
+          {/* Top Decorative Pills */}
+          <div
+            className="absolute -top-2.5 left-10 w-28 h-3 z-20 pointer-events-none"
+            style={{ backgroundColor: COLORS.lime, borderRadius: ROUND_SM }}
+          />
+          <div
+            className="absolute -top-2.5 right-12 w-20 h-3 z-20 pointer-events-none"
+            style={{ backgroundColor: COLORS.limeDeep, borderRadius: ROUND_SM }}
+          />
+
+          <div
+            className="relative overflow-hidden"
+            style={{
+              borderRadius: ROUND_LG,
+              backgroundColor: COLORS.white,
+              border: `3px solid ${COLORS.black}`,
+              boxShadow: `8px 8px 0px ${COLORS.lime}`,
+            }}
+          >
+            {/* Banner Slide Container */}
+            <div className="relative min-h-[360px] sm:min-h-[420px] md:min-h-[460px] flex flex-col justify-end p-6 sm:p-10 md:p-12 overflow-hidden">
+              {/* Background Art */}
+              <img
+                src={ANIME_SPOTLIGHT_BANNERS[currentBannerIdx].image}
+                alt={ANIME_SPOTLIGHT_BANNERS[currentBannerIdx].title}
+                className="absolute inset-0 w-full h-full object-cover transition-all duration-700 brightness-75 scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/15" />
+
+              {/* Neo-brutalist Grid Overlay */}
+              <div
+                className="absolute inset-0 opacity-15 pointer-events-none"
+                style={{
+                  backgroundImage: `linear-gradient(${COLORS.lime} 1px, transparent 1px), linear-gradient(90deg, ${COLORS.lime} 1px, transparent 1px)`,
+                  backgroundSize: '32px 32px',
+                }}
+              />
+
+              {/* Banner Content Container */}
+              <div className="relative z-10 max-w-3xl space-y-3.5 text-white">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className="px-3 py-1 text-xs font-bold uppercase"
+                    style={{
+                      borderRadius: ROUND_SM,
+                      backgroundColor: COLORS.lime,
+                      border: `2px solid ${COLORS.black}`,
+                      color: COLORS.black,
+                      boxShadow: `2px 2px 0px ${COLORS.black}`,
+                    }}
+                  >
+                    {ANIME_SPOTLIGHT_BANNERS[currentBannerIdx].badge}
+                  </span>
+                  <span
+                    className="px-3 py-1 text-xs font-bold uppercase bg-white text-black"
+                    style={{
+                      borderRadius: ROUND_SM,
+                      border: `2px solid ${COLORS.black}`,
+                      boxShadow: `2px 2px 0px ${COLORS.black}`,
+                    }}
+                  >
+                    {ANIME_SPOTLIGHT_BANNERS[currentBannerIdx].tag}
+                  </span>
+                  <span className="text-xs font-mono text-white/90 bg-black/70 px-2 py-0.5 border border-white/30">
+                    {ANIME_SPOTLIGHT_BANNERS[currentBannerIdx].specs}
+                  </span>
+                </div>
+
+                <h3
+                  className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight drop-shadow-md"
+                  style={{ fontFamily: "'Kalam', cursive, sans-serif" }}
+                >
+                  {ANIME_SPOTLIGHT_BANNERS[currentBannerIdx].title}
+                </h3>
+
+                <p className="text-sm font-bold text-white/90">
+                  Animation Studio: <span style={{ color: COLORS.lime }}>{ANIME_SPOTLIGHT_BANNERS[currentBannerIdx].studio}</span>
+                </p>
+
+                <p className="text-xs sm:text-sm text-white/80 max-w-2xl leading-relaxed">
+                  {ANIME_SPOTLIGHT_BANNERS[currentBannerIdx].desc}
+                </p>
+
+                <div className="pt-2 flex flex-wrap items-center gap-4">
+                  <a
+                    href="#anime-catalog"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 font-bold text-sm transition-transform hover:translate-y-[-2px] cursor-pointer"
+                    style={{
+                      borderRadius: ROUND_SM,
+                      backgroundColor: COLORS.lime,
+                      border: `2px solid ${COLORS.black}`,
+                      color: COLORS.black,
+                      boxShadow: `3px 3px 0px ${COLORS.black}`,
+                    }}
+                  >
+                    <span>BROWSE ANIME STEELBOOK</span>
+                    <ArrowRight size={16} strokeWidth={3} />
+                  </a>
+
+                  <div className="text-xs font-mono text-white/70 bg-black/50 px-2.5 py-1 border border-white/20">
+                    SAKUGA {currentBannerIdx + 1} / {ANIME_SPOTLIGHT_BANNERS.length}
+                  </div>
+                </div>
+              </div>
+
+              {/* Prev / Next Navigation Arrows */}
+              <div className="absolute bottom-6 right-6 z-20 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCurrentBannerIdx((prev) => (prev - 1 + ANIME_SPOTLIGHT_BANNERS.length) % ANIME_SPOTLIGHT_BANNERS.length)}
+                  className="w-10 h-10 flex items-center justify-center font-bold transition-transform hover:translate-y-[-2px] cursor-pointer"
+                  style={{
+                    borderRadius: ROUND_SM,
+                    backgroundColor: COLORS.white,
+                    border: `2px solid ${COLORS.black}`,
+                    color: COLORS.black,
+                    boxShadow: `2px 2px 0px ${COLORS.black}`,
+                  }}
+                  title="Previous Banner"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentBannerIdx((prev) => (prev + 1) % ANIME_SPOTLIGHT_BANNERS.length)}
+                  className="w-10 h-10 flex items-center justify-center font-bold transition-transform hover:translate-y-[-2px] cursor-pointer"
+                  style={{
+                    borderRadius: ROUND_SM,
+                    backgroundColor: COLORS.lime,
+                    border: `2px solid ${COLORS.black}`,
+                    color: COLORS.black,
+                    boxShadow: `2px 2px 0px ${COLORS.black}`,
+                  }}
+                  title="Next Banner"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+
+              {/* Bottom Dot Indicators */}
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+                {ANIME_SPOTLIGHT_BANNERS.map((banner, idx) => (
+                  <button
+                    key={banner.id}
+                    type="button"
+                    onClick={() => setCurrentBannerIdx(idx)}
+                    className="h-2.5 rounded-full border border-black transition-all cursor-pointer"
+                    style={{
+                      width: currentBannerIdx === idx ? '32px' : '10px',
+                      backgroundColor: currentBannerIdx === idx ? COLORS.lime : 'rgba(255,255,255,0.6)',
+                    }}
+                    title={`Slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -740,7 +1211,7 @@ export const AnimeNeoBrutalView: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
               {filteredAnime.map((anime) => {
                 const isFavorited = isWishlisted(anime.id);
 
@@ -932,7 +1403,7 @@ export const AnimeNeoBrutalView: React.FC = () => {
         {/* =========================================================================
             4. ANIMATION STUDIO SPOTLIGHT
         ========================================================================= */}
-        <section className="relative mt-6 sm:mt-10">
+        <section className="relative my-24 sm:my-36">
           <div
             className="p-6 sm:p-8 md:p-10 relative"
             style={{
@@ -1025,7 +1496,7 @@ export const AnimeNeoBrutalView: React.FC = () => {
         {/* =========================================================================
             5. COMMUNITY WALL (OTAKU BOARD)
         ========================================================================= */}
-        <section id="anime-community" className="flex flex-col gap-8 mt-6 sm:mt-10">
+        <section id="anime-community" className="flex flex-col gap-12 sm:gap-16 my-24 sm:my-36">
           <div className="text-center max-w-xl mx-auto space-y-2">
             <div
               className="inline-block px-3 py-1 text-xs font-bold mb-1"
@@ -1050,7 +1521,7 @@ export const AnimeNeoBrutalView: React.FC = () => {
           </div>
 
           {/* Notes Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 pb-6">
             {communityNotes.map((note) => (
               <div
                 key={note.id}
@@ -1089,16 +1560,16 @@ export const AnimeNeoBrutalView: React.FC = () => {
             ))}
           </div>
 
-          {/* Add Note Form - spaced cleanly from sticky notes above */}
+          {/* Add Note Form - spaced cleanly with extra top margin */}
           <form
             onSubmit={handleAddNote}
-            className="flex flex-col sm:flex-row items-center gap-3 mt-8 sm:mt-10"
+            className="flex flex-col sm:flex-row items-center gap-4 mt-16 sm:mt-24"
             style={{
               borderRadius: ROUND_MD,
               backgroundColor: COLORS.white,
               border: `3px solid ${COLORS.black}`,
               boxShadow: `4px 4px 0px ${COLORS.lime}`,
-              padding: '20px',
+              padding: '24px',
             }}
           >
             <input
@@ -1145,7 +1616,7 @@ export const AnimeNeoBrutalView: React.FC = () => {
         {/* =========================================================================
             6. NEWSLETTER & PRE-ORDER ALERT
         ========================================================================= */}
-        <section className="relative mt-6 sm:mt-10">
+        <section className="relative mt-28 sm:mt-40 mb-20 sm:mb-28 pt-8">
           {/* Accent strip */}
           <div
             className="absolute -top-2 left-1/2 -translate-x-1/2 w-32 h-3 z-10"

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { TourEvent, FandomCategoryKey } from '../types';
 import { mockTourEvents } from '../data/mockData';
 import { useCartWishlist } from '../context/CartWishlistContext';
+import { getActiveFandomTheme } from '../utils/fandomTheme';
 
 export type HeroBannerCategory = FandomCategoryKey | 'all';
 
@@ -38,7 +39,28 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
   onSelectCategory,
 }) => {
   const { formatPrice } = useCartWishlist();
-  const [internalCategory, setInternalCategory] = useState<HeroBannerCategory>('all');
+  const [internalCategory, setInternalCategory] = useState<HeroBannerCategory>(() => {
+    const th = getActiveFandomTheme();
+    if (th === 'manga') return 'Manga';
+    if (th === 'anime') return 'Anime';
+    if (th === 'comics') return 'Comics';
+    if (th === 'gaming') return 'Gaming';
+    if (th === 'cinema') return 'Movies';
+    if (th === 'tv') return 'TV Shows';
+    return 'all';
+  });
+
+  useEffect(() => {
+    const handleThemeChange = (e: any) => {
+      if (e?.detail?.category) {
+        setInternalCategory(e.detail.category);
+      }
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('fandom-theme-change', handleThemeChange);
+      return () => window.removeEventListener('fandom-theme-change', handleThemeChange);
+    }
+  }, []);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 

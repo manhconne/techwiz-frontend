@@ -98,7 +98,7 @@ export default function RealGpsMap({ events, activeEvent, onEventClick }: RealGp
                       className="flex items-center gap-1 text-[10px] uppercase font-bold bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100 transition-colors"
                     >
                       <Navigation size={10} />
-                      Chỉ đường
+                      Directions
                     </button>
                   </div>
                 </div>

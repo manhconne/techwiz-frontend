@@ -21,12 +21,15 @@ import {
   Share2,
   Tv,
   Bell,
-  ShieldCheck,
-  ArrowRight
+  Trash2,
+  FileText,
+  User as UserIcon,
+  Play,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCartWishlist } from '../context/CartWishlistContext';
-import { checkIsAdmin } from '../utils/authUtils';
+import { mockFeaturedArticles } from '../data/mockData';
+import { INITIAL_MEDIA_ITEMS } from '../data/multimediaData';
 
 interface PersonalDashboardModalProps {
   isOpen: boolean;
@@ -68,6 +71,116 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
   const [editBio, setEditBio] = useState('Music lover, photocard collector, and passionate concert enthusiast!');
   const [saveToast, setSaveToast] = useState(false);
 
+  // SRS 1.6: Categories of interest & Display preferences
+  const FANDOM_CATEGORIES = ['Anime', 'Gaming', 'Movies', 'TV Shows', 'K-Pop', 'Comics', 'Manga', 'Cosplay'];
+  const [selectedInterests, setSelectedInterests] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_user_interests');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return ['K-Pop', 'Anime', 'Gaming'];
+  });
+  const [prefTheme, setPrefTheme] = useState<'light' | 'dark'>('light');
+  const [prefFontSize, setPrefFontSize] = useState<'standard' | 'large'>('standard');
+  const [prefLanding, setPrefLanding] = useState<string>('all');
+
+  // SRS 1.6 & Database Specification: Centralized Bookmarks & Notes
+  const [bookmarkFilter, setBookmarkFilter] = useState<'all' | 'albums' | 'media' | 'articles' | 'characters'>('all');
+  const [characterBookmarks, setCharacterBookmarks] = useState<any[]>([]);
+  const [articleBookmarks, setArticleBookmarks] = useState<any[]>([]);
+  const [mediaBookmarks, setMediaBookmarks] = useState<any[]>([]);
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [tempNoteText, setTempNoteText] = useState('');
+  const [customNotes, setCustomNotes] = useState<Record<string, string>>(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_bookmark_notes');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  const saveCustomNote = (id: string, noteText: string) => {
+    setCustomNotes((prev) => {
+      const next = { ...prev, [id]: noteText };
+      try {
+        localStorage.setItem('fanhub_bookmark_notes', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+    setEditingNoteId(null);
+  };
+
+  const removeCharacterBookmark = (charId: string) => {
+    setCharacterBookmarks((prev) => {
+      const next = prev.filter((c) => c.id !== charId);
+      try {
+        localStorage.setItem('fanhub_bookmarked_characters_list', JSON.stringify(next));
+        const mapRaw = localStorage.getItem('fanhub_bookmarked_characters');
+        if (mapRaw) {
+          const map = JSON.parse(mapRaw);
+          delete map[charId];
+          localStorage.setItem('fanhub_bookmarked_characters', JSON.stringify(map));
+        }
+      } catch {}
+      return next;
+    });
+  };
+
+  const removeArticleBookmark = (artId: string) => {
+    setArticleBookmarks((prev) => {
+      const next = prev.filter((a) => a.id !== artId);
+      try {
+        const mapRaw = localStorage.getItem('fanhub_bookmarked_articles');
+        if (mapRaw) {
+          const map = JSON.parse(mapRaw);
+          delete map[artId];
+          localStorage.setItem('fanhub_bookmarked_articles', JSON.stringify(map));
+        }
+      } catch {}
+      return next;
+    });
+  };
+
+  const removeMediaBookmark = (mediaId: string) => {
+    setMediaBookmarks((prev) => {
+      const next = prev.filter((m) => m.id !== mediaId);
+      try {
+        const ids = next.map((m) => m.id);
+        localStorage.setItem('fanhub_bookmarked_media', JSON.stringify(ids));
+      } catch {}
+      return next;
+    });
+  };
+
+  // Load bookmarks on modal open
+  React.useEffect(() => {
+    if (isOpen) {
+      try {
+        const rawChars = localStorage.getItem('fanhub_bookmarked_characters_list');
+        if (rawChars) setCharacterBookmarks(JSON.parse(rawChars));
+      } catch {}
+
+      try {
+        const rawArts = localStorage.getItem('fanhub_bookmarked_articles');
+        if (rawArts) {
+          const map = JSON.parse(rawArts);
+          const savedList = mockFeaturedArticles.filter((a) => map[a.id]);
+          setArticleBookmarks(savedList);
+        }
+      } catch {}
+
+      try {
+        const rawMedia = localStorage.getItem('fanhub_bookmarked_media');
+        if (rawMedia) {
+          const ids: string[] = JSON.parse(rawMedia);
+          const savedMedia = INITIAL_MEDIA_ITEMS.filter((m) => ids.includes(m.id));
+          setMediaBookmarks(savedMedia);
+        }
+      } catch {}
+    }
+  }, [isOpen]);
+
   // Personalized Greeting calculation
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
@@ -85,6 +198,12 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
       name: editName.trim() || user.name,
       avatar: finalAvatar,
     });
+    try {
+      localStorage.setItem('fanhub_user_interests', JSON.stringify(selectedInterests));
+      localStorage.setItem('fanhub_user_pref_theme', prefTheme);
+      localStorage.setItem('fanhub_user_pref_font', prefFontSize);
+      localStorage.setItem('fanhub_user_pref_landing', prefLanding);
+    } catch {}
     setSaveToast(true);
     setTimeout(() => setSaveToast(false), 3000);
   };
@@ -149,20 +268,6 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 <span>•</span>
                 <span className="bg-[#ccff00] text-black px-1.5 py-0.2 border border-black font-black">DIAMOND STAN ⭐</span>
               </div>
-
-              {checkIsAdmin(user) && (
-                <div className="pt-3 flex justify-center sm:justify-start">
-                  <Link
-                    href="/admin"
-                    onClick={onClose}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-xs rounded-xl shadow-md transition-all active:scale-95 no-underline"
-                  >
-                    <ShieldCheck className="w-4 h-4 text-white" />
-                    <span>Vào Bảng Điều Khiển Admin (Dashboard)</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -175,7 +280,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
             { id: 'overview', label: 'OVERVIEW', icon: Sparkles },
             { id: 'fandoms', label: 'FAVORITE FANDOMS', icon: Heart, count: user.favoriteFandoms.length },
             { id: 'activities', label: 'RECENT ACTIVITY', icon: Clock, count: activities.length },
-            { id: 'bookmarks', label: 'BOOKMARKS', icon: Bookmark, count: wishlist.length },
+            { id: 'bookmarks', label: 'BOOKMARKS & NOTES', icon: Bookmark, count: wishlist.length + articleBookmarks.length + characterBookmarks.length + mediaBookmarks.length },
             { id: 'profile', label: 'PROFILE & SETTINGS', icon: Edit3 },
           ].map((tab) => {
             const isActive = activeTab === tab.id;
@@ -399,45 +504,403 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
             </div>
           )}
 
-          {/* TAB 4: BOOKMARKS */}
+          {/* TAB 4: CENTRALIZED BOOKMARKS & NOTES (SRS 1.6 & 1.4) */}
           {activeTab === 'bookmarks' && (
             <div className="space-y-4">
-              <div>
-                <h4 className="text-sm font-black text-black uppercase">SAVED ITEMS &amp; MEDIA</h4>
-                <p className="text-xs text-neutral-600 font-medium">
-                  Albums, photobooks, lightsticks, and media you have saved to track or prepare for pre-order.
-                </p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-2 border-black">
+                <div>
+                  <h4 className="text-sm font-black text-black uppercase">
+                    ★ CENTRALIZED BOOKMARKS &amp; COLLECTOR NOTES
+                  </h4>
+                  <p className="text-xs text-neutral-600 font-medium">
+                    Bookmark any article, character profile, video, or merchandise item with personal notes (SRS 1.6).
+                  </p>
+                </div>
+
+                {/* Sub-Filters */}
+                <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
+                  {[
+                    { id: 'all', label: `ALL (${wishlist.length + articleBookmarks.length + characterBookmarks.length + mediaBookmarks.length})` },
+                    { id: 'albums', label: `MERCH (${wishlist.length})` },
+                    { id: 'media', label: `STREAMS & MEDIA (${mediaBookmarks.length})` },
+                    { id: 'articles', label: `ARTICLES (${articleBookmarks.length})` },
+                    { id: 'characters', label: `CHARACTERS (${characterBookmarks.length})` },
+                  ].map((filter) => (
+                    <button
+                      key={filter.id}
+                      type="button"
+                      onClick={() => setBookmarkFilter(filter.id as any)}
+                      style={{ borderRadius: '0px' }}
+                      className={`px-2.5 py-1 text-[11px] font-mono font-black uppercase border-2 border-black transition-colors cursor-pointer whitespace-nowrap ${
+                        bookmarkFilter === filter.id
+                          ? 'bg-[#ff2e93] text-white shadow-[2px_2px_0px_#000]'
+                          : 'bg-white hover:bg-neutral-100 text-black shadow-[1px_1px_0px_#000]'
+                      }`}
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {wishlist.length === 0 ? (
+              {/* No items fallback */}
+              {wishlist.length === 0 && articleBookmarks.length === 0 && characterBookmarks.length === 0 && mediaBookmarks.length === 0 ? (
                 <div style={{ borderRadius: '0px' }} className="py-12 text-center bg-white border-2 border-black p-6 space-y-2 shadow-[3px_3px_0px_#000]">
                   <Bookmark className="w-8 h-8 text-neutral-400 mx-auto" />
-                  <p className="text-xs font-bold text-black uppercase">NO SAVED ITEMS YET</p>
-                  <p className="text-[11px] text-neutral-500">Click the bookmark button on products and trailers to save them here.</p>
+                  <p className="text-xs font-bold text-black uppercase">NO BOOKMARKS SAVED YET</p>
+                  <p className="text-[11px] text-neutral-500">
+                    Click the bookmark button on any album, featured article, media stream, or character dossier to save them here with personal notes!
+                  </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {wishlist.map((item) => (
-                    <div
-                      key={item.album.id}
-                      style={{ borderRadius: '0px' }}
-                      className="p-3 border-2 border-black flex items-center gap-3 bg-white shadow-[3px_3px_0px_#000]"
-                    >
-                      <img
-                        src={item.album.coverImage}
-                        alt={item.album.title}
-                        style={{ borderRadius: '0px', width: '56px', height: '56px' }}
-                        className="object-cover border border-black shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <span className="text-[10px] font-black text-[#ff2e93] block uppercase">{item.album.artist}</span>
-                        <h5 className="text-xs font-bold text-black truncate uppercase font-sans">{item.album.title}</h5>
-                        <span className="text-[11px] font-mono font-black text-black mt-0.5 block">
-                          ${item.album.priceUSD} USD
-                        </span>
+                <div className="space-y-4">
+                  
+                  {/* SECTION 1: ALBUMS & MERCH */}
+                  {(bookmarkFilter === 'all' || bookmarkFilter === 'albums') && wishlist.length > 0 && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 font-mono text-xs font-black uppercase text-black">
+                        <Disc className="w-4 h-4 text-cyan-600" />
+                        <span>OFFICIAL ALBUMS &amp; MERCHANDISE ({wishlist.length})</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {wishlist.map(({ album, note }) => {
+                          const activeNote = customNotes[album.id] !== undefined ? customNotes[album.id] : (note || '');
+                          const isEditing = editingNoteId === album.id;
+
+                          return (
+                            <div
+                              key={album.id}
+                              style={{ borderRadius: '0px' }}
+                              className="p-3 border-2 border-black bg-white shadow-[3px_3px_0px_#000] flex flex-col justify-between space-y-2"
+                            >
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={album.coverImage}
+                                  alt={album.title}
+                                  style={{ borderRadius: '0px', width: '56px', height: '56px' }}
+                                  className="object-cover border border-black shrink-0"
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <span className="text-[10px] font-black text-[#ff2e93] block uppercase">{album.artist}</span>
+                                  <h5 className="text-xs font-bold text-black truncate uppercase font-sans">{album.title}</h5>
+                                  <span className="text-[11px] font-mono font-black text-black mt-0.5 block">
+                                    ${album.priceUSD} USD
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Personal Note */}
+                              <div className="pt-2 border-t border-black/15 text-[11px] font-mono">
+                                {isEditing ? (
+                                  <div className="flex gap-1">
+                                    <input
+                                      type="text"
+                                      value={tempNoteText}
+                                      onChange={(e) => setTempNoteText(e.target.value)}
+                                      placeholder="Add note (e.g. Waiting for restock)..."
+                                      style={{ borderRadius: '0px' }}
+                                      className="flex-1 text-xs p-1 bg-white border border-black focus:outline-none"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => saveCustomNote(album.id, tempNoteText)}
+                                      className="px-2 py-1 bg-[#ff2e93] text-white text-[10px] font-bold border border-black"
+                                    >
+                                      SAVE
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center justify-between bg-[#ecfeff] p-1.5 border border-black/30">
+                                    <span className="truncate text-neutral-800">
+                                      {activeNote ? `📝 "${activeNote}"` : 'No note added'}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setEditingNoteId(album.id);
+                                        setTempNoteText(activeNote);
+                                      }}
+                                      className="text-[#ff2e93] font-bold text-[10px] ml-1 shrink-0 hover:underline cursor-pointer"
+                                    >
+                                      {activeNote ? '[EDIT NOTE]' : '[+ NOTE]'}
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
-                  ))}
+                  )}
+
+                  {/* SECTION 2: ARTICLES */}
+                  {(bookmarkFilter === 'all' || bookmarkFilter === 'articles') && articleBookmarks.length > 0 && (
+                    <div className="space-y-2 pt-2">
+                      <div className="flex items-center gap-2 font-mono text-xs font-black uppercase text-black">
+                        <FileText className="w-4 h-4 text-emerald-600" />
+                        <span>BOOKMARKED ARTICLES &amp; DISPATCHES ({articleBookmarks.length})</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {articleBookmarks.map((art) => {
+                          const activeNote = customNotes[art.id] || '';
+                          const isEditing = editingNoteId === art.id;
+
+                          return (
+                            <div
+                              key={art.id}
+                              style={{ borderRadius: '0px' }}
+                              className="p-3 border-2 border-black bg-white shadow-[3px_3px_0px_#000] flex flex-col justify-between space-y-2"
+                            >
+                              <div className="flex items-start gap-3">
+                                <img
+                                  src={art.image}
+                                  alt={art.title}
+                                  style={{ borderRadius: '0px', width: '56px', height: '56px' }}
+                                  className="object-cover border border-black shrink-0"
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[9px] font-black px-1.5 py-0.2 bg-[#ffd60a] text-black border border-black uppercase font-mono">
+                                      {art.category}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => removeArticleBookmark(art.id)}
+                                      className="text-neutral-400 hover:text-rose-600 cursor-pointer"
+                                      title="Remove bookmark"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                  <h5 className="text-xs font-bold text-black line-clamp-1 font-sans mt-1">{art.title}</h5>
+                                  <p className="text-[10px] text-neutral-500 font-mono">By {art.author?.name || 'Contributor'}</p>
+                                </div>
+                              </div>
+
+                              {/* Personal Note */}
+                              <div className="pt-2 border-t border-black/15 text-[11px] font-mono">
+                                {isEditing ? (
+                                  <div className="flex gap-1">
+                                    <input
+                                      type="text"
+                                      value={tempNoteText}
+                                      onChange={(e) => setTempNoteText(e.target.value)}
+                                      placeholder="Add personal thoughts on this dispatch..."
+                                      style={{ borderRadius: '0px' }}
+                                      className="flex-1 text-xs p-1 bg-white border border-black focus:outline-none"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => saveCustomNote(art.id, tempNoteText)}
+                                      className="px-2 py-1 bg-[#ff2e93] text-white text-[10px] font-bold border border-black"
+                                    >
+                                      SAVE
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center justify-between bg-[#fefce8] p-1.5 border border-black/30">
+                                    <span className="truncate text-neutral-800">
+                                      {activeNote ? `📝 "${activeNote}"` : 'No note added'}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setEditingNoteId(art.id);
+                                        setTempNoteText(activeNote);
+                                      }}
+                                      className="text-[#ff2e93] font-bold text-[10px] ml-1 shrink-0 hover:underline cursor-pointer"
+                                    >
+                                      {activeNote ? '[EDIT NOTE]' : '[+ NOTE]'}
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* SECTION 3: CHARACTERS */}
+                  {(bookmarkFilter === 'all' || bookmarkFilter === 'characters') && characterBookmarks.length > 0 && (
+                    <div className="space-y-2 pt-2">
+                      <div className="flex items-center gap-2 font-mono text-xs font-black uppercase text-black">
+                        <UserIcon className="w-4 h-4 text-purple-600" />
+                        <span>CHARACTER DOSSIERS ({characterBookmarks.length})</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {characterBookmarks.map((char) => {
+                          const activeNote = customNotes[char.id] || '';
+                          const isEditing = editingNoteId === char.id;
+
+                          return (
+                            <div
+                              key={char.id}
+                              style={{ borderRadius: '0px' }}
+                              className="p-3 border-2 border-black bg-white shadow-[3px_3px_0px_#000] flex flex-col justify-between space-y-2"
+                            >
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="text-[9px] font-mono px-1.5 py-0.2 bg-[#ff2e93] text-white font-bold uppercase">
+                                      {char.artistName || 'Universe'}
+                                    </span>
+                                    <span className="text-[10px] font-mono text-neutral-500 uppercase">{char.role}</span>
+                                  </div>
+                                  <h5 className="text-sm font-black text-black font-sans mt-0.5">{char.name}</h5>
+                                  <p className="text-[11px] text-neutral-600 line-clamp-1 italic">"{char.personality}"</p>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => removeCharacterBookmark(char.id)}
+                                  className="text-neutral-400 hover:text-rose-600 cursor-pointer shrink-0"
+                                  title="Remove bookmark"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                              {/* Personal Note */}
+                              <div className="pt-2 border-t border-black/15 text-[11px] font-mono">
+                                {isEditing ? (
+                                  <div className="flex gap-1">
+                                    <input
+                                      type="text"
+                                      value={tempNoteText}
+                                      onChange={(e) => setTempNoteText(e.target.value)}
+                                      placeholder="Add note on character traits, lore..."
+                                      style={{ borderRadius: '0px' }}
+                                      className="flex-1 text-xs p-1 bg-white border border-black focus:outline-none"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => saveCustomNote(char.id, tempNoteText)}
+                                      className="px-2 py-1 bg-[#ff2e93] text-white text-[10px] font-bold border border-black"
+                                    >
+                                      SAVE
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center justify-between bg-[#f3e8ff] p-1.5 border border-black/30">
+                                    <span className="truncate text-neutral-800">
+                                      {activeNote ? `📝 "${activeNote}"` : 'No note added'}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setEditingNoteId(char.id);
+                                        setTempNoteText(activeNote);
+                                      }}
+                                      className="text-[#ff2e93] font-bold text-[10px] ml-1 shrink-0 hover:underline cursor-pointer"
+                                    >
+                                      {activeNote ? '[EDIT NOTE]' : '[+ NOTE]'}
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* SECTION 4: STREAMING & MEDIA */}
+                  {(bookmarkFilter === 'all' || bookmarkFilter === 'media') && mediaBookmarks.length > 0 && (
+                    <div className="space-y-2 pt-2">
+                      <div className="flex items-center gap-2 font-mono text-xs font-black uppercase text-black">
+                        <Play className="w-4 h-4 text-rose-600" />
+                        <span>SAVED MEDIA &amp; STREAMS ({mediaBookmarks.length})</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {mediaBookmarks.map((media) => {
+                          const activeNote = customNotes[media.id] || '';
+                          const isEditing = editingNoteId === media.id;
+
+                          return (
+                            <div
+                              key={media.id}
+                              style={{ borderRadius: '0px' }}
+                              className="p-3 border-2 border-black bg-white shadow-[3px_3px_0px_#000] flex flex-col justify-between space-y-2"
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className="relative shrink-0">
+                                  <img
+                                    src={media.thumbnail}
+                                    alt={media.title}
+                                    style={{ borderRadius: '0px', width: '56px', height: '56px' }}
+                                    className="object-cover border border-black"
+                                  />
+                                  <span className="absolute bottom-0.5 right-0.5 px-1 bg-black/80 text-[8px] text-white font-mono font-bold">
+                                    {media.duration}
+                                  </span>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[9px] font-black px-1.5 py-0.2 bg-[#ffd60a] text-black border border-black uppercase font-mono">
+                                      {media.type}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => removeMediaBookmark(media.id)}
+                                      className="text-neutral-400 hover:text-rose-600 cursor-pointer"
+                                      title="Remove bookmark"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                  <h5 className="text-xs font-bold text-black line-clamp-1 font-sans mt-1">{media.title}</h5>
+                                  <p className="text-[10px] text-neutral-500 font-mono">{media.artist} • {media.views} views</p>
+                                </div>
+                              </div>
+
+                              {/* Personal Note */}
+                              <div className="pt-2 border-t border-black/15 text-[11px] font-mono">
+                                {isEditing ? (
+                                  <div className="flex gap-1">
+                                    <input
+                                      type="text"
+                                      value={tempNoteText}
+                                      onChange={(e) => setTempNoteText(e.target.value)}
+                                      placeholder="Add note on this media stream..."
+                                      style={{ borderRadius: '0px' }}
+                                      className="flex-1 text-xs p-1 bg-white border border-black focus:outline-none"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => saveCustomNote(media.id, tempNoteText)}
+                                      className="px-2 py-1 bg-[#ff2e93] text-white text-[10px] font-bold border border-black"
+                                    >
+                                      SAVE
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center justify-between bg-[#fefce8] p-1.5 border border-black/30">
+                                    <span className="truncate text-neutral-800">
+                                      {activeNote ? `📝 "${activeNote}"` : 'No note added'}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setEditingNoteId(media.id);
+                                        setTempNoteText(activeNote);
+                                      }}
+                                      className="text-[#ff2e93] font-bold text-[10px] ml-1 shrink-0 hover:underline cursor-pointer"
+                                    >
+                                      {activeNote ? '[EDIT NOTE]' : '[+ NOTE]'}
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
                 </div>
               )}
             </div>
@@ -511,6 +974,94 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   style={{ borderRadius: '0px' }}
                   className="w-full px-3 py-2 border-2 border-black text-xs bg-white focus:outline-none focus:border-[#ff2e93]"
                 />
+              </div>
+
+              {/* SRS 1.6 Requirement: Categories of Interest */}
+              <div className="space-y-2 pt-2 border-t-2 border-dashed border-neutral-300">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-black uppercase text-black">
+                    ★ CATEGORIES OF INTEREST (SRS 1.6 SPEC):
+                  </label>
+                  <span className="text-[10px] text-neutral-500 font-mono">
+                    {selectedInterests.length} SELECTED
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {FANDOM_CATEGORIES.map((cat) => {
+                    const isSelected = selectedInterests.includes(cat);
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => {
+                          setSelectedInterests((prev) =>
+                            isSelected ? prev.filter((c) => c !== cat) : [...prev, cat]
+                          );
+                        }}
+                        style={{ borderRadius: '0px' }}
+                        className={`px-2.5 py-1 text-xs font-bold border-2 border-black transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#ff2e93] text-white shadow-[2px_2px_0px_#000]'
+                            : 'bg-white text-black hover:bg-neutral-100'
+                        }`}
+                      >
+                        {isSelected ? '✓ ' : '+ '}
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* SRS 1.6 Requirement: Display Preferences */}
+              <div className="space-y-3 pt-2 border-t-2 border-dashed border-neutral-300">
+                <label className="text-xs font-black uppercase text-black block">
+                  ★ DISPLAY PREFERENCES (SRS 1.6 SPEC):
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-bold text-neutral-600 uppercase block">THEME MODE:</span>
+                    <select
+                      value={prefTheme}
+                      onChange={(e) => setPrefTheme(e.target.value as any)}
+                      style={{ borderRadius: '0px' }}
+                      className="w-full px-2 py-1.5 border-2 border-black text-xs bg-white font-mono cursor-pointer"
+                    >
+                      <option value="light">Light High-Contrast</option>
+                      <option value="dark">Dark Cyberpunk</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-bold text-neutral-600 uppercase block">TEXT SCALE:</span>
+                    <select
+                      value={prefFontSize}
+                      onChange={(e) => setPrefFontSize(e.target.value as any)}
+                      style={{ borderRadius: '0px' }}
+                      className="w-full px-2 py-1.5 border-2 border-black text-xs bg-white font-mono cursor-pointer"
+                    >
+                      <option value="standard">Standard (100%)</option>
+                      <option value="large">Accessible Large (+12.5%)</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-bold text-neutral-600 uppercase block">DEFAULT FANDOM:</span>
+                    <select
+                      value={prefLanding}
+                      onChange={(e) => setPrefLanding(e.target.value)}
+                      style={{ borderRadius: '0px' }}
+                      className="w-full px-2 py-1.5 border-2 border-black text-xs bg-white font-mono cursor-pointer"
+                    >
+                      <option value="all">Universe Explorer (All)</option>
+                      <option value="kpop">K-Pop Official Hub</option>
+                      <option value="anime">Anime Sakuga Archive</option>
+                      <option value="gaming">Gaming &amp; Esports</option>
+                      <option value="manga">Manga Tankōbon</option>
+                      <option value="movies">Cinema 70mm</option>
+                      <option value="comics">Comics Pop-Art</option>
+                      <option value="tv">TV Shows Y2K</option>
+                    </select>
+                  </div>
+                </div>
               </div>
 
               {/* Submit Buttons */}

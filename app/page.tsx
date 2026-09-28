@@ -25,9 +25,11 @@ import { AnimeNeoBrutalView } from '../components/AnimeNeoBrutalView';
 import { ComicsPopArtView } from '../components/ComicsPopArtView';
 import { CinemaSwissView } from '../components/CinemaSwissView';
 import { TvShowsY2KView } from '../components/TvShowsY2KView';
+import { SitemapSection } from '../components/SitemapSection';
 // import { TestConnection } from '../components/TestConnection';
 import { Album, FandomCategoryKey } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
+import { persistFandomTheme } from '../utils/fandomTheme';
 
 export default function Home({ initialCategory = 'all' }: { initialCategory?: FandomCategoryKey | 'all' } = {}) {
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
@@ -52,6 +54,8 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
           setSelectedFandomCategory('Manga');
         } else if (lower === 'anime') {
           setSelectedFandomCategory('Anime');
+        } else if (lower === 'cosplay') {
+          setSelectedFandomCategory('Cosplay');
         } else if (lower === 'gaming') {
           setSelectedFandomCategory('Gaming');
         } else if (lower === 'comics') {
@@ -61,6 +65,13 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
         } else if (lower === 'tv' || lower === 'tv-shows' || lower === 'tvshows' || lower === 'tv shows') {
           setSelectedFandomCategory('TV Shows');
         }
+      } else {
+        try {
+          const stored = localStorage.getItem('fanhub_fandom_category');
+          if (stored) {
+            setSelectedFandomCategory(stored as any);
+          }
+        } catch { }
       }
     }
   }, []);
@@ -80,13 +91,10 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
     }
   }, [selectedFandomCategory]);
 
-  // Synchronize full-page DOM theme attributes when fandom category changes
+  // Synchronize full-page DOM theme attributes and persist when fandom category changes
   React.useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.setAttribute('data-fandom-theme', fandomThemeKey);
-      document.body.setAttribute('data-fandom-theme', fandomThemeKey);
-    }
-  }, [fandomThemeKey]);
+    persistFandomTheme(fandomThemeKey, selectedFandomCategory);
+  }, [fandomThemeKey, selectedFandomCategory]);
 
   const handleSelectArtistFromProfiles = (artistId: string) => {
     setSelectedArtistFilter(artistId);
@@ -180,6 +188,7 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
             <div id="upcoming-releases">
               <UpcomingReleasesAndArticles 
                 initialCategory={selectedFandomCategory}
+                fandomCategory={selectedFandomCategory}
                 onSelectCategory={(cat) => setSelectedFandomCategory(cat)}
               />
             </div>
@@ -196,14 +205,21 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
         )}
       </main>
 
+      {/* SRS 1.9 Mandatory Deliverable: Fan Hub Plus Sitemap & Directory */}
+      <SitemapSection
+        onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenFeedback={() => setIsFeedbackOpen(true)}
+        onOpenWishlist={() => setIsWishlistOpen(true)}
+      />
+
       {/* Interactive Modals and Drawers */}
       <AlbumDetailModal
         album={selectedAlbum}
         onClose={() => setSelectedAlbum(null)}
       />
 
-      <CartDrawer />
-      <WishlistModal />
+      <CartDrawer fandomCategory={selectedFandomCategory} fandomThemeKey={fandomThemeKey} />
+      <WishlistModal fandomCategory={selectedFandomCategory} fandomThemeKey={fandomThemeKey} />
       <AudioPlayer />
 
       {/* AI-Powered Chatbot Assistant */}

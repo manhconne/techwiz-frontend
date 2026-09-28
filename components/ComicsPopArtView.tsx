@@ -59,7 +59,7 @@ export interface ComicItem {
   id: string;
   title: string;
   issue: string;
-  publisher: 'Marvel' | 'DC Comics' | 'Image Comics' | 'Vertigo' | 'Skybound';
+  publisher: 'Marvel' | 'DC Comics' | 'Image Comics' | 'Vertigo' | 'Skybound' | 'Dark Horse';
   genre: 'Marvel' | 'DC Comics' | 'Image Comics' | 'Sci-Fi' | 'Horror' | 'Noir';
   writer: string;
   artist: string;
@@ -278,6 +278,163 @@ const COMIC_CATALOG: ComicItem[] = [
     cgcGrade: 'CGC 9.8 NM/M',
     format: '1,024-Page Softcover Compendium',
   },
+  {
+    id: 'comic-daredevil-born-again',
+    title: 'Daredevil: Born Again Artist Edition',
+    issue: 'Complete Milestone Storyline',
+    publisher: 'Marvel',
+    genre: 'Marvel',
+    writer: 'Frank Miller',
+    artist: 'David Mazzucchelli',
+    priceUSD: 49.99,
+    priceVND: 1240000,
+    originalPriceUSD: 59.99,
+    rating: 4.99,
+    reviewCount: 4210,
+    tag: '👑 MASTERWORK TRAGEDY',
+    coverImage: 'https://images.unsplash.com/photo-1604200213928-ba3cf4fc8436?w=600&auto=format&fit=crop&q=80',
+    description: 'And I have shown him... that a man without hope is a man without fear. Frank Miller and David Mazzucchelli craft the definitive masterpiece of comic redemption.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1604200213928-ba3cf4fc8436?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 16,
+    cgcGrade: 'CGC 9.8 NM/M',
+    format: 'Deluxe Gallery Hardcover',
+  },
+  {
+    id: 'comic-dark-knight-returns',
+    title: 'Batman: The Dark Knight Returns Foil Gallery Slipcase',
+    issue: 'Definitive Graphic Novel',
+    publisher: 'DC Comics',
+    genre: 'DC Comics',
+    writer: 'Frank Miller',
+    artist: 'Frank Miller & Klaus Janson',
+    priceUSD: 59.99,
+    priceVND: 1490000,
+    originalPriceUSD: 69.99,
+    rating: 5.0,
+    reviewCount: 7850,
+    tag: '⚡ LEGENDARY REVOLUTION',
+    coverImage: 'https://images.unsplash.com/photo-1531259683007-016a7b628fc3?w=600&auto=format&fit=crop&q=80',
+    description: 'The graphic novel that revolutionized modern superhero comics in 1986. An aging Bruce Wayne returns to a dystopian Gotham to face the Mutant Gang, the Joker, and the Man of Steel.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1531259683007-016a7b628fc3?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 22,
+    cgcGrade: 'CGC 9.8 NM/M',
+    format: 'Leatherette Slipcase Hardcover',
+  },
+  {
+    id: 'comic-hellboy-omnibus-vol1',
+    title: 'Hellboy: Seed of Destruction Library Edition Vol. 1',
+    issue: 'Library Edition Vol. 1',
+    publisher: 'Dark Horse',
+    genre: 'Horror',
+    writer: 'Mike Mignola',
+    artist: 'Mike Mignola',
+    priceUSD: 38.50,
+    priceVND: 950000,
+    rating: 4.96,
+    reviewCount: 3120,
+    tag: '🔥 GOTHIC SHADOWS',
+    coverImage: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop&q=80',
+    description: 'Mike Mignola’s iconic use of deep chiaroscuro black shadows, folklore terror, and the Right Hand of Doom in an oversized clothbound coffee table tome.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1563089145-599997674d42?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 19,
+    cgcGrade: 'CGC 9.6 NM+',
+    format: 'Oversized Clothbound Hardcover',
+  },
+  {
+    id: 'comic-allstar-superman-absolute',
+    title: 'All-Star Superman: The Absolute Deluxe Edition',
+    issue: 'Complete 12-Issue Masterpiece',
+    publisher: 'DC Comics',
+    genre: 'DC Comics',
+    writer: 'Grant Morrison',
+    artist: 'Frank Quitely',
+    priceUSD: 79.99,
+    priceVND: 1980000,
+    originalPriceUSD: 99.99,
+    rating: 4.99,
+    reviewCount: 5410,
+    tag: '👑 THE GREATEST SUPERMAN TALE',
+    coverImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80',
+    description: 'You will give the people of Earth an ideal to strive towards. Grant Morrison and Frank Quitely deliver a timeless, mythic celebration of the Man of Tomorrow in an Absolute slipcase.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 12,
+    cgcGrade: 'CGC 9.8 NM/M',
+    format: 'Absolute Slipcase Omnibus',
+  },
+  {
+    id: 'comic-marvels-alex-ross',
+    title: 'Marvels 30th Anniversary Masterwork Foil Edition',
+    issue: 'Special Curated Edition',
+    publisher: 'Marvel',
+    genre: 'Marvel',
+    writer: 'Kurt Busiek',
+    artist: 'Alex Ross',
+    priceUSD: 44.99,
+    priceVND: 1120000,
+    rating: 4.98,
+    reviewCount: 4620,
+    tag: '✨ PHOTOREALISTIC GOUACHE',
+    coverImage: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80',
+    description: 'The birth of the Marvel Universe viewed through the lens of ordinary photojournalist Phil Sheldon. Alex Ross’s breathtaking hand-painted gouache illustrations in oversized gold foil format.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 25,
+    cgcGrade: 'CGC 9.8 NM/M',
+    format: 'Deluxe Hardcover with Dust Jacket',
+  },
+  {
+    id: 'comic-monstress-deluxe-book1',
+    title: 'Monstress: Deluxe Hardcover Book One',
+    issue: 'Collects Issues #1-18',
+    publisher: 'Image Comics',
+    genre: 'Image Comics',
+    writer: 'Marjorie Liu',
+    artist: 'Sana Takeda',
+    priceUSD: 42.00,
+    priceVND: 1040000,
+    rating: 4.97,
+    reviewCount: 3820,
+    tag: '🌸 ART DECO FANTASY',
+    coverImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80',
+    description: 'Set in an alternate 1900s Asia blending Art Deco aesthetics with Kaiju horror. Sana Takeda’s Eisner and Hugo Award-winning opulent linework presented in a lush gold-stamped clothbound spine.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 17,
+    cgcGrade: 'CGC 9.8 NM/M',
+    format: 'Deluxe Clothbound Hardcover',
+  },
+  {
+    id: 'comic-black-hammer-library',
+    title: 'Black Hammer: Library Edition Vol. 1',
+    issue: 'Library Edition Vol. 1',
+    publisher: 'Dark Horse',
+    genre: 'Sci-Fi',
+    writer: 'Jeff Lemire',
+    artist: 'Dean Ormston',
+    priceUSD: 36.00,
+    priceVND: 890000,
+    rating: 4.95,
+    reviewCount: 2450,
+    tag: '★ EISNER BEST NEW SERIES',
+    coverImage: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80',
+    description: 'Once they were heroes, but now they are trapped in a mysterious timeless midwestern town. A melancholic love letter to Golden Age comic tropes by Jeff Lemire and Dean Ormston.',
+    previewImages: [
+      'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&auto=format&fit=crop&q=80',
+    ],
+    stock: 20,
+    cgcGrade: 'CGC 9.8 NM/M',
+    format: 'Library Edition Hardcover',
+  },
 ];
 
 // Helper to convert Comic item to Album format for cart
@@ -336,6 +493,127 @@ function comicToAlbum(item: ComicItem): Album {
   };
 }
 
+// Comic Heroic Spotlight Banners
+export interface ComicBanner {
+  id: string;
+  title: string;
+  publisher: string;
+  badge: string;
+  tag: string;
+  desc: string;
+  image: string;
+  creators: string;
+  targetId?: string;
+}
+
+const COMIC_SPOTLIGHT_BANNERS: ComicBanner[] = [
+  {
+    id: 'cb-spiderman',
+    title: 'Spider-Man: Across the Multiverse & Secret Wars',
+    publisher: 'Marvel Comics',
+    badge: '★ MARVEL PREMIERE OMNIBUS',
+    tag: 'VIRGIN FOIL VARIANT',
+    desc: 'Miles Morales, Peter Parker, and Gwen Stacy unite across the dimensional web. Includes oversized double-page spreads and behind-the-scenes concept sketches.',
+    image: 'https://images.unsplash.com/photo-1531259683007-016a7b628fc3?w=1600&auto=format&fit=crop&q=85',
+    creators: 'Brian Michael Bendis & Sara Pichelli',
+    targetId: 'comic-spider-man-miles-omnibus',
+  },
+  {
+    id: 'cb-batman',
+    title: 'Batman: The Dark Knight Returns 40th Memorial',
+    publisher: 'DC Comics',
+    badge: '★ DC BLACK LABEL MASTERWORK',
+    tag: 'LEATHERETTE SLIPCASE SLAB',
+    desc: 'Frank Miller\'s dystopian masterpiece that reshaped the comic medium forever. Remastered directly from the original hand-lettered ink boards.',
+    image: 'https://images.unsplash.com/photo-1509281373149-e957c6296406?w=1600&auto=format&fit=crop&q=85',
+    creators: 'Frank Miller & Klaus Janson',
+    targetId: 'comic-batman-dark-knight-returns',
+  },
+  {
+    id: 'cb-invincible',
+    title: 'Invincible: The Complete Bloodline Compendium',
+    publisher: 'Image Comics / Skybound',
+    badge: '★ SKYBOUND HARDCOVER SAGA',
+    tag: 'UNCUT 144-ISSUE RUN',
+    desc: 'Mark Grayson discovers the brutal truth of the Viltrumite Empire. Robert Kirkman\'s legendary superhero saga collected in oversized foil hardcover.',
+    image: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1600&auto=format&fit=crop&q=85',
+    creators: 'Robert Kirkman & Ryan Ottley',
+    targetId: 'comic-invincible-compendium-vol1',
+  },
+  {
+    id: 'cb-watchmen',
+    title: 'Watchmen: The Absolute Annotated Edition',
+    publisher: 'DC / Vertigo',
+    badge: '★ HUGO AWARD HISTORIC GRAPHIC NOVEL',
+    tag: 'SLIPCASE DEFINITIVE EDITION',
+    desc: 'Who watches the watchmen? Alan Moore and Dave Gibbons’ revolutionary Cold War deconstruction of superhero archetypes with complete script notes.',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&auto=format&fit=crop&q=85',
+    creators: 'Alan Moore & Dave Gibbons',
+    targetId: 'comic-watchmen-deluxe',
+  },
+];
+
+// Featured CGC Graded Slabs for Hero Showcase
+export interface HeroSlab {
+  id: string;
+  title: string;
+  publisher: string;
+  creators: string;
+  grade: string;
+  gradeBadge: string;
+  tag: string;
+  priceUSD: number;
+  cover: string;
+  quote: string;
+  icon: string;
+  shortName: string;
+}
+
+const FEATURED_HERO_SLABS: HeroSlab[] = [
+  {
+    id: 'comic-batman-long-halloween',
+    title: 'Batman: The Long Halloween #1',
+    publisher: 'DC BLACK LABEL ARCHIVE',
+    creators: 'Jeph Loeb & Tim Sale',
+    grade: 'CGC 9.8 WHITE PAGES',
+    gradeBadge: 'CGC 9.8 NM/M',
+    tag: 'BATMAN NOIR',
+    priceUSD: 45.00,
+    cover: 'https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600&auto=format&fit=crop&q=80',
+    quote: '"Spider-Man: Blue & Long Halloween restocked in certified slabs. All orders ship with archival corner guards."',
+    icon: '🦇',
+    shortName: 'Batman #1',
+  },
+  {
+    id: 'comic-spiderman-blue',
+    title: 'Spider-Man: Blue - Deluxe Gallery',
+    publisher: 'MARVEL MODERN MASTERWORK',
+    creators: 'Jeph Loeb & Tim Sale',
+    grade: 'CGC 9.8 GEM MINT',
+    gradeBadge: 'CGC 9.8 MINT',
+    tag: 'EISNER WINNER',
+    priceUSD: 49.00,
+    cover: 'https://images.unsplash.com/photo-1604200213928-ba3cf4fc8436?w=600&auto=format&fit=crop&q=80',
+    quote: '"The heartbreaking tale of Peter Parker and Gwen Stacy rendered in timeless watercolor tones."',
+    icon: '🕷️',
+    shortName: 'Spider-Man',
+  },
+  {
+    id: 'comic-saga-deluxe-1',
+    title: 'Saga: Book One Deluxe Edition',
+    publisher: 'IMAGE / SKYBOUND VAULT',
+    creators: 'Brian K. Vaughan & Fiona Staples',
+    grade: 'CGC 9.8 1ST PRINT',
+    gradeBadge: 'CGC 9.8 NM/M',
+    tag: 'SPACE OPERA',
+    priceUSD: 39.99,
+    cover: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80',
+    quote: '"Award-winning sci-fi odyssey in oversized hardcover with gold-stamped foil slipcase."',
+    icon: '🚀',
+    shortName: 'Saga Vol. 1',
+  },
+];
+
 export const ComicsPopArtView: React.FC = () => {
   const { addToCart, toggleWishlist, isWishlisted, formatPrice, setIsCartOpen } = useCartWishlist();
 
@@ -347,6 +625,16 @@ export const ComicsPopArtView: React.FC = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
   const [addedToast, setAddedToast] = useState<string | null>(null);
+  const [currentBannerIdx, setCurrentBannerIdx] = useState(0);
+  const [featuredSlabIdx, setFeaturedSlabIdx] = useState(0);
+
+  // Auto rotate banner every 6s
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentBannerIdx((prev) => (prev + 1) % COMIC_SPOTLIGHT_BANNERS.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Community Dialogue Wall State
   const [communityNotes, setCommunityNotes] = useState([
@@ -474,8 +762,8 @@ export const ComicsPopArtView: React.FC = () => {
         </div>
       )}
 
-      {/* Main Container with reliable Flex Gap */}
-      <div className="max-w-5xl mx-auto flex flex-col gap-20 sm:gap-28">
+      {/* Main Container - Widened to 1440px for spacious browsing */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8 flex flex-col gap-24 sm:gap-32">
 
         {/* =========================================================================
             1. HERO SECTION: POP-ART COMIC BOOK VAULT
@@ -509,9 +797,12 @@ export const ComicsPopArtView: React.FC = () => {
               ★ FIRST PRINTING ARCHIVE ★
             </div>
 
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="flex-1 space-y-4">
-                {/* Badge */}
+            {/* Balanced 12-Column Responsive Hero Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              
+              {/* Left Column (7 cols): Heading, Narrative, Actions & Universe Badges */}
+              <div className="lg:col-span-7 space-y-5">
+                {/* Official Badge */}
                 <div
                   className="inline-flex items-center gap-2 px-3.5 py-1.5"
                   style={{
@@ -522,31 +813,30 @@ export const ComicsPopArtView: React.FC = () => {
                     color: COLORS.white,
                   }}
                 >
-                  <Shield size={15} className="text-white" />
-                  <span className="text-sm font-bold tracking-wide">
-                    OFFICIAL COMIC VAULT & FIRST EDITIONS
+                  <Shield size={16} className="text-white" />
+                  <span className="text-xs font-bold tracking-wide uppercase">
+                    OFFICIAL COMIC VAULT &amp; FIRST EDITIONS
                   </span>
                 </div>
 
-                {/* Hero Title with Bangers / Kalam font */}
+                {/* Hero Title */}
                 <h1
-                  className="text-4xl sm:text-5xl md:text-6xl font-black leading-none tracking-tight"
-                  style={{ fontFamily: "'Bangers', 'Kalam', cursive, sans-serif", color: COLORS.black, letterSpacing: '0.04em' }}
+                  className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-wide text-black"
+                  style={{ fontFamily: "'Bangers', 'Kalam', cursive, sans-serif", letterSpacing: '0.04em' }}
                 >
                   Pop-Art Comic Vault!
                 </h1>
 
-                {/* Subtitle with Patrick Hand */}
-                <p className="text-lg sm:text-xl max-w-xl leading-relaxed" style={{ color: `${COLORS.black}dd` }}>
-                  Rare first printings, deluxe oversized omnibuses, virgin holographic foil variants,
-                  and CGC 9.8 graded slabs from Marvel, DC Comics, Image, and Vertigo.
+                {/* Subtitle */}
+                <p className="text-base sm:text-lg text-neutral-800 leading-relaxed font-sans max-w-xl">
+                  Rare first printings, deluxe oversized omnibuses, virgin holographic foil variants, and CGC 9.8 graded slabs from Marvel, DC Comics, Image, and Vertigo.
                 </p>
 
-                {/* CTA Buttons */}
-                <div className="pt-2 flex flex-wrap items-center gap-4 relative">
+                {/* CTA Action Buttons */}
+                <div className="pt-1 flex flex-wrap items-center gap-3">
                   <a
                     href="#comic-catalog"
-                    className="inline-flex items-center gap-2 px-6 py-3 font-bold text-lg transition-all cursor-pointer hover:translate-y-[-2px]"
+                    className="inline-flex items-center gap-2 px-6 py-3 font-bold text-base transition-all cursor-pointer hover:translate-y-[-2px]"
                     style={{
                       borderRadius: ROUND_SM,
                       backgroundColor: COLORS.red,
@@ -561,7 +851,7 @@ export const ComicsPopArtView: React.FC = () => {
 
                   <a
                     href="#comic-community"
-                    className="inline-flex items-center gap-2 px-5 py-3 font-bold text-lg transition-all cursor-pointer hover:translate-y-[-2px]"
+                    className="inline-flex items-center gap-2 px-5 py-3 font-bold text-base transition-all cursor-pointer hover:translate-y-[-2px]"
                     style={{
                       borderRadius: ROUND_SM,
                       backgroundColor: COLORS.yellow,
@@ -574,43 +864,158 @@ export const ComicsPopArtView: React.FC = () => {
                     <span>FAN SOUNDBOARD</span>
                   </a>
                 </div>
-              </div>
 
-              {/* Feature Box / Comic Speech Bubble */}
-              <div
-                className="w-full md:w-68 p-5 relative"
-                style={{
-                  borderRadius: ROUND_MD,
-                  backgroundColor: COLORS.yellow,
-                  border: `3px solid ${COLORS.black}`,
-                  boxShadow: `5px 5px 0px ${COLORS.black}`,
-                }}
-              >
-                {/* Comic Pill Accent */}
-                <div
-                  className="absolute -top-2 left-1/2 -translate-x-1/2 w-24 h-3"
-                  style={{ backgroundColor: COLORS.red, borderRadius: ROUND_SM }}
-                />
-
-                <div className="flex items-center justify-between pb-2 border-b-2 border-dashed" style={{ borderColor: COLORS.black }}>
-                  <span className="font-bold text-xs uppercase tracking-wider" style={{ color: COLORS.redDeep }}>
-                    ★ NCBD DROP OF THE WEEK
+                {/* Universe Quick Pills */}
+                <div className="pt-2 flex flex-wrap items-center gap-2 font-mono text-xs">
+                  <span className="text-neutral-500 font-bold text-[11px] uppercase mr-1">KEY UNIVERSES:</span>
+                  <span className="px-2.5 py-1 bg-red-100 text-red-800 border border-black font-bold" style={{ borderRadius: ROUND_SM }}>
+                    ⚡ Marvel
                   </span>
-                  <Sparkles size={14} style={{ color: COLORS.red }} />
+                  <span className="px-2.5 py-1 bg-sky-100 text-sky-800 border border-black font-bold" style={{ borderRadius: ROUND_SM }}>
+                    🦇 DC Comics
+                  </span>
+                  <span className="px-2.5 py-1 bg-amber-100 text-amber-900 border border-black font-bold" style={{ borderRadius: ROUND_SM }}>
+                    🩸 Image / Skybound
+                  </span>
+                  <span className="px-2.5 py-1 bg-neutral-100 text-neutral-900 border border-black font-bold" style={{ borderRadius: ROUND_SM }}>
+                    💀 Dark Horse
+                  </span>
                 </div>
 
-                <div className="mt-3 space-y-2 text-sm leading-snug">
-                  <p className="font-bold text-base" style={{ fontFamily: "'Bangers', 'Kalam', cursive", color: COLORS.black, letterSpacing: '0.03em' }}>
-                    "Spider-Man: Blue & Long Halloween restocked!"
-                  </p>
-                  <p className="text-xs" style={{ color: `${COLORS.black}cc` }}>
-                    All orders ship bagged & boarded in certified comic mailers with protective corner guards.
-                  </p>
-                  <div className="pt-1 flex items-center gap-1 text-xs font-bold" style={{ color: COLORS.redDeep }}>
-                    <span>★ 100% CGC GUARANTEED</span>
+                {/* Trust Perks */}
+                <div className="pt-1 flex flex-wrap items-center gap-4 text-xs font-bold text-neutral-600 border-t border-black/15 pt-3">
+                  <span className="flex items-center gap-1 text-emerald-700">
+                    <Check size={14} strokeWidth={3} /> 100% CGC 9.8 Certified
+                  </span>
+                  <span className="flex items-center gap-1 text-sky-700">
+                    <Check size={14} strokeWidth={3} /> Free Mylar Bag &amp; Board
+                  </span>
+                  <span className="flex items-center gap-1 text-neutral-800">
+                    <Check size={14} strokeWidth={3} /> Armored Box Shipping
+                  </span>
+                </div>
+              </div>
+
+              {/* Right Column (5 cols): Rich Featured Slab Showcase Card */}
+              <div className="lg:col-span-5">
+                <div
+                  className="p-5 relative overflow-hidden"
+                  style={{
+                    borderRadius: ROUND_MD,
+                    backgroundColor: COLORS.yellow,
+                    border: `3.5px solid ${COLORS.black}`,
+                    boxShadow: `6px 6px 0px ${COLORS.black}`,
+                  }}
+                >
+                  {/* Comic Action Sound Burst Badge */}
+                  <div
+                    className="absolute -top-1 -right-1 px-3 py-1 bg-[#ef4444] text-white font-black text-xs uppercase border-2 border-black rotate-3 shadow-[2px_2px_0px_#000] z-20"
+                    style={{ fontFamily: "'Bangers', cursive", letterSpacing: '0.05em' }}
+                  >
+                    POW! HOT DROP
+                  </div>
+
+                  {/* Header bar */}
+                  <div className="flex items-center justify-between pb-3 border-b-2 border-dashed border-black">
+                    <span className="font-bold text-xs uppercase tracking-wider text-red-600 flex items-center gap-1.5">
+                      <Sparkles size={14} />
+                      ★ NCBD ISSUE OF THE WEEK
+                    </span>
+                    <span className="text-[10px] font-mono font-bold bg-black text-white px-2 py-0.5" style={{ borderRadius: ROUND_SM }}>
+                      {FEATURED_HERO_SLABS[featuredSlabIdx].gradeBadge}
+                    </span>
+                  </div>
+
+                  {/* Showcase Body: Cover Image + Issue Details */}
+                  <div className="mt-4 flex gap-4">
+                    {/* Graded Comic Slab Mockup Frame */}
+                    <div 
+                      className="w-32 shrink-0 bg-white border-2 border-black overflow-hidden shadow-[3px_3px_0px_#000] relative"
+                      style={{ borderRadius: ROUND_SM }}
+                    >
+                      {/* CGC Grade Label Header */}
+                      <div className="bg-[#0284c7] text-white text-[9px] font-mono font-black text-center py-0.5 uppercase border-b border-black">
+                        {FEATURED_HERO_SLABS[featuredSlabIdx].grade}
+                      </div>
+                      <img
+                        src={FEATURED_HERO_SLABS[featuredSlabIdx].cover}
+                        alt={FEATURED_HERO_SLABS[featuredSlabIdx].title}
+                        className="w-full h-40 object-cover"
+                      />
+                    </div>
+
+                    {/* Issue Metadata & Instant Pull */}
+                    <div className="flex-1 flex flex-col justify-between space-y-2 text-left">
+                      <div>
+                        <span className="text-[10px] font-mono font-bold uppercase text-neutral-600 block">
+                          {FEATURED_HERO_SLABS[featuredSlabIdx].publisher}
+                        </span>
+                        <h4 
+                          className="font-bold text-base text-black leading-tight mt-0.5 line-clamp-2"
+                          style={{ fontFamily: "'Bangers', 'Kalam', cursive", letterSpacing: '0.02em' }}
+                        >
+                          {FEATURED_HERO_SLABS[featuredSlabIdx].title}
+                        </h4>
+                        <p className="text-xs text-neutral-700 font-sans mt-1">
+                          {FEATURED_HERO_SLABS[featuredSlabIdx].creators}
+                        </p>
+                      </div>
+
+                      <div className="pt-2 border-t border-black/20 flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] text-neutral-500 font-mono block">COLLECTOR PRICE</span>
+                          <span className="text-lg font-black text-red-600 font-mono leading-none">
+                            ${FEATURED_HERO_SLABS[featuredSlabIdx].priceUSD.toFixed(2)}
+                          </span>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            const found = COMIC_CATALOG.find((c) => c.id === FEATURED_HERO_SLABS[featuredSlabIdx].id);
+                            if (found) handleAddToCart(found);
+                          }}
+                          className="px-3 py-1.5 bg-black hover:bg-red-600 text-white text-xs font-bold uppercase transition-colors border border-black shadow-[2px_2px_0px_#000] inline-flex items-center gap-1 cursor-pointer"
+                          style={{ borderRadius: ROUND_SM }}
+                        >
+                          <ShoppingCart size={13} />
+                          <span>PULL BOX</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Speech Bubble Quote */}
+                  <div className="mt-4 p-2.5 bg-white border-2 border-black text-xs font-sans text-neutral-800 leading-snug relative" style={{ borderRadius: ROUND_SM }}>
+                    <p className="italic">
+                      {FEATURED_HERO_SLABS[featuredSlabIdx].quote}
+                    </p>
+                  </div>
+
+                  {/* Interactive Slab Switcher Tabs */}
+                  <div className="mt-3 pt-2.5 border-t border-black/20 flex items-center justify-between gap-1.5">
+                    <span className="text-[10px] font-mono font-bold uppercase text-black/70 shrink-0">
+                      KEY SLABS:
+                    </span>
+                    <div className="flex items-center gap-1.5 overflow-x-auto">
+                      {FEATURED_HERO_SLABS.map((slab, sIdx) => (
+                        <button
+                          key={slab.id}
+                          onClick={() => setFeaturedSlabIdx(sIdx)}
+                          className={`px-2.5 py-1 text-xs font-bold transition-all border border-black cursor-pointer ${
+                            featuredSlabIdx === sIdx
+                              ? 'bg-[#ef4444] text-white shadow-[2px_2px_0px_#000]'
+                              : 'bg-white hover:bg-neutral-100 text-black'
+                          }`}
+                          style={{ borderRadius: ROUND_SM }}
+                        >
+                          <span>{slab.icon} {slab.shortName}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
+
             </div>
 
             {/* Stats Counter */}
@@ -642,6 +1047,169 @@ export const ComicsPopArtView: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            FEATURED COMIC HEROIC SPOTLIGHT BANNER CAROUSEL
+        ========================================================================= */}
+        <section className="relative">
+          {/* Top Decorative Comic Action Pills */}
+          <div
+            className="absolute -top-3 left-10 w-28 h-3.5 z-20 pointer-events-none"
+            style={{ backgroundColor: COLORS.red, borderRadius: ROUND_SM }}
+          />
+          <div
+            className="absolute -top-3 right-12 w-20 h-3.5 z-20 pointer-events-none"
+            style={{ backgroundColor: COLORS.yellow, borderRadius: ROUND_SM }}
+          />
+
+          <div
+            className="relative overflow-hidden"
+            style={{
+              borderRadius: ROUND_LG,
+              backgroundColor: COLORS.white,
+              border: `3.5px solid ${COLORS.black}`,
+              boxShadow: `8px 8px 0px ${COLORS.black}`,
+            }}
+          >
+            {/* Banner Slide Container */}
+            <div className="relative min-h-[360px] sm:min-h-[420px] md:min-h-[460px] flex flex-col justify-end p-6 sm:p-10 md:p-12 overflow-hidden">
+              {/* Background Art */}
+              <img
+                src={COMIC_SPOTLIGHT_BANNERS[currentBannerIdx].image}
+                alt={COMIC_SPOTLIGHT_BANNERS[currentBannerIdx].title}
+                className="absolute inset-0 w-full h-full object-cover transition-all duration-700 brightness-75 scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/15" />
+
+              {/* Ben-Day Halftone Dot Overlay */}
+              <div
+                className="absolute inset-0 opacity-20 pointer-events-none"
+                style={{
+                  backgroundImage: `radial-gradient(${COLORS.red} 2px, transparent 2px)`,
+                  backgroundSize: '16px 16px',
+                }}
+              />
+
+              {/* Banner Content Container */}
+              <div className="relative z-10 max-w-3xl space-y-3.5 text-white">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className="px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-white"
+                    style={{
+                      borderRadius: ROUND_SM,
+                      backgroundColor: COLORS.red,
+                      border: `2px solid ${COLORS.black}`,
+                      boxShadow: `2px 2px 0px ${COLORS.black}`,
+                    }}
+                  >
+                    {COMIC_SPOTLIGHT_BANNERS[currentBannerIdx].badge}
+                  </span>
+                  <span
+                    className="px-3 py-1 text-xs font-bold uppercase text-black"
+                    style={{
+                      borderRadius: ROUND_SM,
+                      backgroundColor: COLORS.yellow,
+                      border: `2px solid ${COLORS.black}`,
+                      boxShadow: `2px 2px 0px ${COLORS.black}`,
+                    }}
+                  >
+                    {COMIC_SPOTLIGHT_BANNERS[currentBannerIdx].tag}
+                  </span>
+                  <span className="text-xs font-mono text-white/90 bg-black/70 px-2 py-0.5 border border-white/30">
+                    {COMIC_SPOTLIGHT_BANNERS[currentBannerIdx].publisher}
+                  </span>
+                </div>
+
+                <h3
+                  className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight drop-shadow-md"
+                  style={{ fontFamily: "'Bangers', 'Kalam', cursive, sans-serif", letterSpacing: '0.04em' }}
+                >
+                  {COMIC_SPOTLIGHT_BANNERS[currentBannerIdx].title}
+                </h3>
+
+                <p className="text-sm font-bold text-white/90">
+                  Creators: <span style={{ color: COLORS.yellow }}>{COMIC_SPOTLIGHT_BANNERS[currentBannerIdx].creators}</span>
+                </p>
+
+                <p className="text-xs sm:text-sm text-white/80 max-w-2xl leading-relaxed">
+                  {COMIC_SPOTLIGHT_BANNERS[currentBannerIdx].desc}
+                </p>
+
+                <div className="pt-2 flex flex-wrap items-center gap-4">
+                  <a
+                    href="#comic-catalog"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 font-bold text-sm transition-transform hover:translate-y-[-2px] cursor-pointer"
+                    style={{
+                      borderRadius: ROUND_SM,
+                      backgroundColor: COLORS.red,
+                      border: `2px solid ${COLORS.black}`,
+                      color: COLORS.white,
+                      boxShadow: `3px 3px 0px ${COLORS.black}`,
+                    }}
+                  >
+                    <span>BROWSE COMIC VAULT</span>
+                    <ArrowRight size={16} strokeWidth={3} />
+                  </a>
+
+                  <div className="text-xs font-mono text-white/70 bg-black/50 px-2.5 py-1 border border-white/20">
+                    COMIC BANNER {currentBannerIdx + 1} / {COMIC_SPOTLIGHT_BANNERS.length}
+                  </div>
+                </div>
+              </div>
+
+              {/* Prev / Next Navigation Arrows */}
+              <div className="absolute bottom-6 right-6 z-20 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCurrentBannerIdx((prev) => (prev - 1 + COMIC_SPOTLIGHT_BANNERS.length) % COMIC_SPOTLIGHT_BANNERS.length)}
+                  className="w-10 h-10 flex items-center justify-center font-bold transition-transform hover:translate-y-[-2px] cursor-pointer"
+                  style={{
+                    borderRadius: ROUND_SM,
+                    backgroundColor: COLORS.white,
+                    border: `2px solid ${COLORS.black}`,
+                    color: COLORS.black,
+                    boxShadow: `2px 2px 0px ${COLORS.black}`,
+                  }}
+                  title="Previous Banner"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentBannerIdx((prev) => (prev + 1) % COMIC_SPOTLIGHT_BANNERS.length)}
+                  className="w-10 h-10 flex items-center justify-center font-bold transition-transform hover:translate-y-[-2px] cursor-pointer"
+                  style={{
+                    borderRadius: ROUND_SM,
+                    backgroundColor: COLORS.yellow,
+                    border: `2px solid ${COLORS.black}`,
+                    color: COLORS.black,
+                    boxShadow: `2px 2px 0px ${COLORS.black}`,
+                  }}
+                  title="Next Banner"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+
+              {/* Bottom Dot Indicators */}
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+                {COMIC_SPOTLIGHT_BANNERS.map((banner, idx) => (
+                  <button
+                    key={banner.id}
+                    type="button"
+                    onClick={() => setCurrentBannerIdx(idx)}
+                    className="h-2.5 rounded-full border border-black transition-all cursor-pointer"
+                    style={{
+                      width: currentBannerIdx === idx ? '32px' : '10px',
+                      backgroundColor: currentBannerIdx === idx ? COLORS.red : 'rgba(255,255,255,0.6)',
+                    }}
+                    title={`Slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -952,7 +1520,7 @@ export const ComicsPopArtView: React.FC = () => {
         {/* =========================================================================
             4. LEGENDARY COMIC IMPRINT SPOTLIGHT
         ========================================================================= */}
-        <section className="relative mt-6 sm:mt-10">
+        <section className="relative my-24 sm:my-36">
           <div
             className="p-6 sm:p-8 md:p-10 relative"
             style={{
@@ -1072,7 +1640,7 @@ export const ComicsPopArtView: React.FC = () => {
         {/* =========================================================================
             5. COMMUNITY DIALOGUE WALL (POP-ART SPEECH BUBBLES)
         ========================================================================= */}
-        <section id="comic-community" className="flex flex-col gap-8 mt-6 sm:mt-10">
+        <section id="comic-community" className="flex flex-col gap-12 sm:gap-16 my-24 sm:my-36">
           <div className="text-center max-w-xl mx-auto space-y-2">
             <div
               className="inline-block px-3 py-1 text-xs font-bold mb-1"
@@ -1097,7 +1665,7 @@ export const ComicsPopArtView: React.FC = () => {
           </div>
 
           {/* Notes Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 pb-6">
             {communityNotes.map((note) => (
               <div
                 key={note.id}
@@ -1136,16 +1704,16 @@ export const ComicsPopArtView: React.FC = () => {
             ))}
           </div>
 
-          {/* Add Note Form - spaced cleanly from sticky notes above */}
+          {/* Add Note Form - spaced cleanly with extra top margin */}
           <form
             onSubmit={handleAddNote}
-            className="flex flex-col sm:flex-row items-center gap-3 mt-8 sm:mt-10"
+            className="flex flex-col sm:flex-row items-center gap-4 mt-16 sm:mt-24"
             style={{
               borderRadius: ROUND_MD,
               backgroundColor: COLORS.white,
               border: `3px solid ${COLORS.black}`,
               boxShadow: `4px 4px 0px ${COLORS.red}`,
-              padding: '20px',
+              padding: '24px',
             }}
           >
             <input
@@ -1192,7 +1760,7 @@ export const ComicsPopArtView: React.FC = () => {
         {/* =========================================================================
             6. NEWSLETTER & PULL LIST PRE-ORDER ALERT
         ========================================================================= */}
-        <section className="relative mt-6 sm:mt-10">
+        <section className="relative mt-28 sm:mt-40 mb-20 sm:mb-28 pt-8">
           {/* Accent strip */}
           <div
             className="absolute -top-2 left-1/2 -translate-x-1/2 w-32 h-3 z-10"

@@ -868,6 +868,7 @@ interface IdolProfilesProps {
 
 import { useDomainTheme } from '../context/DomainContext';
 import { filterArtistsByDomain } from '../utils/domainFilters';
+import { Bookmark, Share2, Check, Copy, X } from 'lucide-react';
 
 export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fandomCategory }) => {
   const { currentDomain, activeSubCategory, activeConfig } = useDomainTheme();
@@ -877,18 +878,94 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
   const [activeCardTab, setActiveCardTab] = useState<Record<string, 'lore' | 'catalog' | 'fan'>>({});
   const [modalActiveTab, setModalActiveTab] = useState<'lore' | 'characters' | 'catalog' | 'fan'>('lore');
 
+  // SRS 1.6: Bookmarking & Sharing characters & artists
+  const [bookmarkedArtists, setBookmarkedArtists] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_bookmarked_artists');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  const [bookmarkedCharacters, setBookmarkedCharacters] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_bookmarked_characters');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return {};
+  });
+
+  const [sharingItem, setSharingItem] = useState<{ title: string; subtitle: string; url: string; type: 'Artist' | 'Character' } | null>(null);
+  const [copiedShareLink, setCopiedShareLink] = useState(false);
+  const [dossierToast, setDossierToast] = useState<string | null>(null);
+
+  const toggleBookmarkArtist = (artist: Artist) => {
+    setBookmarkedArtists((prev) => {
+      const isSaved = !!prev[artist.id];
+      const next = { ...prev, [artist.id]: !isSaved };
+      try {
+        localStorage.setItem('fanhub_bookmarked_artists', JSON.stringify(next));
+      } catch {}
+      setDossierToast(!isSaved ? `★ Saved artist "${artist.name}" to Bookmarks!` : `Removed artist from Bookmarks.`);
+      setTimeout(() => setDossierToast(null), 3000);
+      return next;
+    });
+  };
+
+  const toggleBookmarkCharacter = (char: CharacterDetail, artist: Artist) => {
+    const charId = `${artist.id}-${char.name}`;
+    setBookmarkedCharacters((prev) => {
+      const isSaved = !!prev[charId];
+      const next = { ...prev, [charId]: !isSaved };
+      try {
+        const existingListRaw = localStorage.getItem('fanhub_bookmarked_characters_list');
+        let list: any[] = existingListRaw ? JSON.parse(existingListRaw) : [];
+        if (!isSaved) {
+          list.push({
+            id: charId,
+            name: char.name,
+            role: char.role,
+            artistName: artist.name,
+            artistId: artist.id,
+            appearance: char.appearance,
+            personality: char.personality,
+            backstory: char.backstory,
+            savedAt: new Date().toLocaleDateString('en-US'),
+          });
+        } else {
+          list = list.filter((c: any) => c.id !== charId);
+        }
+        localStorage.setItem('fanhub_bookmarked_characters_list', JSON.stringify(list));
+        localStorage.setItem('fanhub_bookmarked_characters', JSON.stringify(next));
+      } catch {}
+      setDossierToast(!isSaved ? `★ Saved character "${char.name}" (${artist.name}) to Bookmarks!` : `Removed character from Bookmarks.`);
+      setTimeout(() => setDossierToast(null), 3000);
+      return next;
+    });
+  };
+
   // Sync with page fandom category
   React.useEffect(() => {
     if (fandomCategory) {
-      if (fandomCategory === 'K-Pop') {
+      const fc = fandomCategory.toLowerCase();
+      if (fc.includes('kpop') || fc.includes('k-pop')) {
         setSelectedCategory('k-pop');
-      } else if (fandomCategory === 'Anime') {
+      } else if (fc.includes('anime')) {
         setSelectedCategory('anime');
-      } else if (fandomCategory === 'Gaming') {
+      } else if (fc.includes('gaming') || fc.includes('game')) {
         setSelectedCategory('gaming');
-      } else if (fandomCategory === 'Cosplay') {
+      } else if (fc.includes('cosplay')) {
         setSelectedCategory('cosplay');
-      } else if (fandomCategory === 'all') {
+      } else if (fc.includes('manga')) {
+        setSelectedCategory('manga');
+      } else if (fc.includes('comic')) {
+        setSelectedCategory('comics');
+      } else if (fc.includes('movie') || fc.includes('cinema')) {
+        setSelectedCategory('movie');
+      } else if (fc.includes('tv')) {
+        setSelectedCategory('tv');
+      } else if (fc === 'all') {
         setSelectedCategory('all');
       }
     }
@@ -911,12 +988,18 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
               : selectedCategory === 'anime' 
                 ? artist.category === 'Anime' 
                 : selectedCategory === 'movie' 
-                  ? artist.category === 'Movie' 
+                  ? (artist.category === 'Movies' || artist.category === 'Movie') 
                   : selectedCategory === 'gaming' 
                     ? artist.category === 'Gaming' 
                     : selectedCategory === 'cosplay'
                       ? artist.category === 'Cosplay'
-                      : true;
+                      : selectedCategory === 'manga'
+                        ? artist.category === 'Manga'
+                        : selectedCategory === 'comics'
+                          ? artist.category === 'Comics'
+                          : selectedCategory === 'tv'
+                            ? artist.category === 'TV Shows'
+                            : true;
 
       const q = searchQuery.toLowerCase().trim();
       const matchQuery = 
@@ -934,12 +1017,15 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
 
   const categories = [
     { id: 'all', label: 'All Universes', count: mockArtists.length },
-    { id: 'v-pop', label: 'V-Pop (Vietnam)', count: mockArtists.filter(a => a.category === 'V-Pop').length },
+    { id: 'gaming', label: 'Gaming Arena', count: mockArtists.filter(a => a.category === 'Gaming').length },
     { id: 'k-pop', label: 'K-Pop', count: mockArtists.filter(a => a.category === 'K-Pop').length },
+    { id: 'anime', label: 'Anime Sakuga', count: mockArtists.filter(a => a.category === 'Anime').length },
+    { id: 'manga', label: 'Manga Guild', count: mockArtists.filter(a => a.category === 'Manga').length },
     { id: 'cosplay', label: 'Cosplay Atelier', count: mockArtists.filter(a => a.category === 'Cosplay').length },
-    { id: 'anime', label: 'Anime', count: mockArtists.filter(a => a.category === 'Anime').length },
-    { id: 'movie', label: 'Cinema', count: mockArtists.filter(a => a.category === 'Movie').length },
-    { id: 'gaming', label: 'Gaming', count: mockArtists.filter(a => a.category === 'Gaming').length },
+    { id: 'comics', label: 'Comics Pop-Art', count: mockArtists.filter(a => a.category === 'Comics').length },
+    { id: 'movie', label: '70mm Cinema', count: mockArtists.filter(a => a.category === 'Movies' || a.category === 'Movie').length },
+    { id: 'tv', label: 'TV Shows', count: mockArtists.filter(a => a.category === 'TV Shows').length },
+    { id: 'v-pop', label: 'V-Pop (Vietnam)', count: mockArtists.filter(a => a.category === 'V-Pop').length },
   ];
 
   const getCardTab = (artistId: string) => activeCardTab[artistId] || 'lore';
@@ -1628,6 +1714,36 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         gap: '8px',
                       }}
                     >
+                      {/* SRS 1.6: Bookmark & Share Actions Bar */}
+                      <div className="grid grid-cols-2 gap-2 mb-1">
+                        <button
+                          type="button"
+                          onClick={() => toggleBookmarkArtist(artist)}
+                          className={`py-1.5 px-2 border-2 border-black text-[10px] font-mono font-black flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+                            bookmarkedArtists[artist.id]
+                              ? 'bg-[#ccff00] text-black shadow-[2px_2px_0px_#000]'
+                              : 'bg-white text-black hover:bg-neutral-100 shadow-[2px_2px_0px_#000]'
+                          }`}
+                        >
+                          <Bookmark className={`w-3 h-3 ${bookmarkedArtists[artist.id] ? 'fill-black' : ''}`} />
+                          <span>{bookmarkedArtists[artist.id] ? 'SAVED' : 'SAVE'}</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setSharingItem({
+                            title: `${artist.name} (${artist.koreanName})`,
+                            subtitle: `${artist.agency} · Fandom: ${artist.fandomName}`,
+                            url: `${typeof window !== 'undefined' ? window.location.origin : ''}/#artists?id=${artist.id}`,
+                            type: 'Artist',
+                          })}
+                          className="py-1.5 px-2 bg-white text-black hover:bg-neutral-100 border-2 border-black text-[10px] font-mono font-black flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
+                        >
+                          <Share2 className="w-3 h-3" />
+                          <span>SHARE</span>
+                        </button>
+                      </div>
+
                       <button
                         onClick={() => {
                           setActiveDossierArtist(artist);
@@ -2003,41 +2119,80 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                       Detailed dossier of key figures, personality matrices, stage traits, and canonical backgrounds.
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {activeDossierData.characters.map((char, i) => (
-                        <div 
-                          key={i} 
-                          style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            backgroundColor: '#ffffff',
-                          }}
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid #f1f5f9', marginBottom: '10px' }}>
+                      {activeDossierData.characters.map((char, i) => {
+                        const charId = `${activeDossierArtist?.id}-${char.name}`;
+                        const isCharSaved = !!bookmarkedCharacters[charId];
+
+                        return (
+                          <div 
+                            key={i} 
+                            style={{
+                              padding: '16px',
+                              border: '2px solid #000000',
+                              backgroundColor: '#ffffff',
+                              boxShadow: '3px 3px 0px #000000',
+                            }}
+                            className="flex flex-col justify-between"
+                          >
                             <div>
-                              <h5 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '15px', fontWeight: 800, margin: 0, color: '#0f172a' }}>
-                                {char.name}
-                              </h5>
-                              <span style={{ fontSize: '10px', fontFamily: 'monospace', color: '#64748b', textTransform: 'uppercase' }}>
-                                {char.role}
-                              </span>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid #f1f5f9', marginBottom: '10px' }}>
+                                <div>
+                                  <h5 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '15px', fontWeight: 800, margin: 0, color: '#0f172a' }}>
+                                    {char.name}
+                                  </h5>
+                                  <span style={{ fontSize: '10px', fontFamily: 'monospace', color: '#64748b', textTransform: 'uppercase' }}>
+                                    {char.role}
+                                  </span>
+                                </div>
+                                <span style={{ fontSize: '9px', fontFamily: 'monospace', backgroundColor: '#f1f5f9', color: '#1e293b', padding: '2px 6px', border: '1px solid #e2e8f0' }}>
+                                  KEY ROLE
+                                </span>
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px', color: '#475569' }}>
+                                <p style={{ margin: 0 }}>
+                                  <strong style={{ color: '#0f172a', fontFamily: 'monospace', fontSize: '10px', textTransform: 'uppercase' }}>Personality:</strong> {char.personality}
+                                </p>
+                                <p style={{ margin: 0 }}>
+                                  <strong style={{ color: '#0f172a', fontFamily: 'monospace', fontSize: '10px', textTransform: 'uppercase' }}>Appearance:</strong> {char.appearance}
+                                </p>
+                                <p style={{ margin: '4px 0 0 0', paddingTop: '6px', borderTop: '1px solid #f8fafc', fontStyle: 'italic', fontSize: '11px', color: '#334155', lineHeight: 1.5 }}>
+                                  "{char.backstory}"
+                                </p>
+                              </div>
                             </div>
-                            <span style={{ fontSize: '9px', fontFamily: 'monospace', backgroundColor: '#f1f5f9', color: '#1e293b', padding: '2px 6px', border: '1px solid #e2e8f0' }}>
-                              KEY ROLE
-                            </span>
+
+                            {/* SRS 1.6: Character Bookmark & Share */}
+                            <div className="pt-3 mt-3 border-t border-black/10 flex items-center justify-between gap-2">
+                              <button
+                                type="button"
+                                onClick={() => activeDossierArtist && toggleBookmarkCharacter(char, activeDossierArtist)}
+                                className={`px-2.5 py-1 text-[10px] font-mono font-black border-2 border-black flex items-center gap-1 cursor-pointer transition-colors ${
+                                  isCharSaved
+                                    ? 'bg-[#ccff00] text-black shadow-[1.5px_1.5px_0px_#000]'
+                                    : 'bg-white hover:bg-neutral-100 text-black shadow-[1.5px_1.5px_0px_#000]'
+                                }`}
+                              >
+                                <Bookmark className={`w-3 h-3 ${isCharSaved ? 'fill-black' : ''}`} />
+                                <span>{isCharSaved ? 'SAVED TO DOSSIER' : 'BOOKMARK'}</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setSharingItem({
+                                  title: `${char.name} (${activeDossierArtist?.name})`,
+                                  subtitle: `Role: ${char.role} · ${char.personality}`,
+                                  url: `${typeof window !== 'undefined' ? window.location.origin : ''}/#artists?character=${encodeURIComponent(char.name)}`,
+                                  type: 'Character',
+                                })}
+                                className="px-2.5 py-1 text-[10px] font-mono font-black bg-white hover:bg-neutral-100 text-black border-2 border-black flex items-center gap-1 cursor-pointer shadow-[1.5px_1.5px_0px_#000]"
+                              >
+                                <Share2 className="w-3 h-3" />
+                                <span>SHARE</span>
+                              </button>
+                            </div>
                           </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px', color: '#475569' }}>
-                            <p style={{ margin: 0 }}>
-                              <strong style={{ color: '#0f172a', fontFamily: 'monospace', fontSize: '10px', textTransform: 'uppercase' }}>Personality:</strong> {char.personality}
-                            </p>
-                            <p style={{ margin: 0 }}>
-                              <strong style={{ color: '#0f172a', fontFamily: 'monospace', fontSize: '10px', textTransform: 'uppercase' }}>Appearance:</strong> {char.appearance}
-                            </p>
-                            <p style={{ margin: '4px 0 0 0', paddingTop: '6px', borderTop: '1px solid #f8fafc', fontStyle: 'italic', fontSize: '11px', color: '#334155', lineHeight: 1.5 }}>
-                              "{char.backstory}"
-                            </p>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -2340,6 +2495,95 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                 </button>
               </div>
 
+            </div>
+          </div>
+        )}
+
+        {/* Toast Notification */}
+        {dossierToast && (
+          <div className="fixed bottom-6 right-6 z-50 p-3 bg-[#ccff00] text-black border-2 border-black font-mono font-black text-xs shadow-[4px_4px_0px_#000] flex items-center gap-2 animate-in fade-in duration-150">
+            <Bookmark className="w-4 h-4 fill-black" />
+            <span>{dossierToast}</span>
+          </div>
+        )}
+
+        {/* Share Dialog Modal */}
+        {sharingItem && (
+          <div 
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4"
+            onClick={() => {
+              setSharingItem(null);
+              setCopiedShareLink(false);
+            }}
+          >
+            <div 
+              style={{ borderRadius: '0px' }}
+              className="bg-white max-w-sm w-full p-5 border-3 border-black shadow-[6px_6px_0px_#000] space-y-4 font-mono text-black"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between border-b-2 border-black pb-2">
+                <div className="flex items-center gap-2">
+                  <Share2 className="w-4 h-4 text-[#ff2e93]" />
+                  <span className="text-xs font-black uppercase">SHARE {sharingItem.type.toUpperCase()}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSharingItem(null);
+                    setCopiedShareLink(false);
+                  }}
+                  className="text-xs font-black hover:text-[#ff2e93] cursor-pointer"
+                >
+                  [✕]
+                </button>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-sm truncate font-sans text-black">{sharingItem.title}</h4>
+                <p className="text-[11px] text-neutral-600 line-clamp-1 mt-0.5">{sharingItem.subtitle}</p>
+              </div>
+
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(sharingItem.url);
+                    setCopiedShareLink(true);
+                    setTimeout(() => setCopiedShareLink(false), 2000);
+                  }}
+                  className="w-full py-2 px-3 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white border-2 border-black text-xs font-black uppercase flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
+                >
+                  {copiedShareLink ? <Check className="w-4 h-4 text-emerald-800" /> : <Copy className="w-4 h-4" />}
+                  <span>{copiedShareLink ? 'COPIED TO CLIPBOARD!' : 'COPY DIRECT LINK'}</span>
+                </button>
+
+                <div className="grid grid-cols-3 gap-2 pt-1 text-[10px] text-center font-bold">
+                  <a
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out ${sharingItem.title} on Fan Hub Plus! ${sharingItem.url}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 border-2 border-black bg-neutral-100 hover:bg-black hover:text-white transition-colors"
+                  >
+                    X / TWITTER
+                  </a>
+                  <a
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(sharingItem.url)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 border-2 border-black bg-neutral-100 hover:bg-[#1877f2] hover:text-white transition-colors"
+                  >
+                    FACEBOOK
+                  </a>
+                  <a
+                    href={`https://t.me/share/url?url=${encodeURIComponent(sharingItem.url)}&text=${encodeURIComponent(sharingItem.title)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 border-2 border-black bg-neutral-100 hover:bg-[#229ed9] hover:text-white transition-colors"
+                  >
+                    TELEGRAM
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         )}
