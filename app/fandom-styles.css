@@ -723,16 +723,16 @@
 }
 
 /* White Buttons */
-[data-fandom-theme="anime"] button.bg-white,
-[data-fandom-theme="anime"] button[class~="bg-white"],
-.fandom-theme-anime button.bg-white {
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="anime"] button.bg-white,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="anime"] button[class~="bg-white"],
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-anime button.bg-white {
   background-color: #ffffff !important;
   color: #000000 !important;
   border: 2px solid #000000 !important;
   box-shadow: 3px 3px 0px 0px #84cc16 !important;
 }
-[data-fandom-theme="anime"] button.bg-white *,
-.fandom-theme-anime button.bg-white * {
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="anime"] button.bg-white *,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-anime button.bg-white * {
   color: #000000 !important;
 }
 
@@ -1149,24 +1149,24 @@
 }
 
 /* White Buttons */
-[data-fandom-theme="cosplay"] button.bg-white,
-[data-fandom-theme="cosplay"] button[class~="bg-white"],
-.fandom-theme-cosplay button.bg-white {
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="cosplay"] button.bg-white,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="cosplay"] button[class~="bg-white"],
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-cosplay button.bg-white {
   background-color: #FFFFFF !important;
   color: #121212 !important;
   border: 2px solid #121212 !important;
   box-shadow: 4px 4px 0px 0px #121212 !important;
 }
-[data-fandom-theme="cosplay"] button.bg-white *,
-.fandom-theme-cosplay button.bg-white * {
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="cosplay"] button.bg-white *,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-cosplay button.bg-white * {
   color: #121212 !important;
 }
 
 /* Black Buttons */
-[data-fandom-theme="cosplay"] button.bg-black,
-[data-fandom-theme="cosplay"] button[class~="bg-black"],
-[data-fandom-theme="cosplay"] button[class~="bg-neutral-900"],
-.fandom-theme-cosplay button.bg-black {
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="cosplay"] button.bg-black,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="cosplay"] button[class~="bg-black"],
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="cosplay"] button[class~="bg-neutral-900"],
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-cosplay button.bg-black {
   background-color: #121212 !important;
   color: #FFFFFF !important;
   border: 2px solid #121212 !important;
@@ -1559,19 +1559,19 @@
   border: 1.5px solid #000000 !important;
 }
 
-/* Explicitly force black text on buttons and elements with white background */
-.fandom-theme-gaming .bg-white,
-.fandom-theme-gaming button.bg-white,
-.fandom-theme-gaming button[class*="bg-white"] {
+/* Explicitly force black text on buttons and elements with white background in light mode */
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming .bg-white,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming button.bg-white,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming button[class*="bg-white"] {
   background-color: #FFFFFF !important;
   color: #000000 !important;
 }
 
-/* Ensure explicitly black elements have white text */
-.fandom-theme-gaming .bg-black,
-.fandom-theme-gaming button.bg-black,
-.fandom-theme-gaming [class*="bg-[#000000]"],
-.fandom-theme-gaming button[class*="bg-[#000000]"] {
+/* Ensure explicitly black elements have white text in light mode */
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming .bg-black,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming button.bg-black,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming [class*="bg-[#000000]"],
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming button[class*="bg-[#000000]"] {
   background-color: #000000 !important;
   color: #FFFFFF !important;
 }
@@ -1628,32 +1628,74 @@
 }
 
 
-/* Light muted tints become #F5F5F5 (Muted Design Token) */
-.fandom-theme-gaming [class*="bg-[#ecfeff]"],
-.fandom-theme-gaming [class*="bg-[#fff9db]"],
-.fandom-theme-gaming [class*="hover:bg-[#ecfeff]"]:hover,
-.fandom-theme-gaming [class*="hover:bg-[#fff9db]"]:hover {
+/* Light muted tints become #F5F5F5 in light mode */
+html:not(.dark) .fandom-theme-gaming [class*="bg-[#ecfeff]"],
+html:not(.dark) .fandom-theme-gaming [class*="bg-[#fff9db]"],
+html:not(.dark) .fandom-theme-gaming [class*="hover:bg-[#ecfeff]"]:hover,
+html:not(.dark) .fandom-theme-gaming [class*="hover:bg-[#fff9db]"]:hover {
   background-color: #F5F5F5 !important;
   color: #000000 !important;
 }
 
-/* Purge all colorful text utilities into pure black (or white when inside dark cards/buttons) */
-.fandom-theme-gaming [class*="text-[#ff2e93]"],
-.fandom-theme-gaming [class*="text-[#ffd60a]"],
-.fandom-theme-gaming [class*="text-[#00f0ff]"],
-.fandom-theme-gaming [class*="text-[#9333ea]"],
-.fandom-theme-gaming [class*="text-[#c084fc]"],
-.fandom-theme-gaming [class*="text-[#10b981]"],
-.fandom-theme-gaming [class*="text-[#fb923c]"],
-.fandom-theme-gaming [class*="text-[#f43f5e]"],
-.fandom-theme-gaming [class*="text-[#38bdf8]"],
-.fandom-theme-gaming [class*="text-emerald-"],
-.fandom-theme-gaming [class*="text-pink-"],
-.fandom-theme-gaming [class*="text-purple-"],
-.fandom-theme-gaming [class*="text-amber-"],
-.fandom-theme-gaming [class*="text-yellow-"],
-.fandom-theme-gaming [class*="text-cyan-"] {
+[data-theme="dark"] .fandom-theme-gaming [class*="bg-[#ecfeff]"],
+[data-theme="dark"] .fandom-theme-gaming [class*="bg-[#fff9db]"],
+.dark .fandom-theme-gaming [class*="bg-[#ecfeff]"],
+.dark .fandom-theme-gaming [class*="bg-[#fff9db]"] {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+/* Purge all colorful text utilities into pure black in light mode */
+html:not(.dark) .fandom-theme-gaming [class*="text-[#ff2e93]"],
+html:not(.dark) .fandom-theme-gaming [class*="text-[#ffd60a]"],
+html:not(.dark) .fandom-theme-gaming [class*="text-[#00f0ff]"],
+html:not(.dark) .fandom-theme-gaming [class*="text-[#9333ea]"],
+html:not(.dark) .fandom-theme-gaming [class*="text-[#c084fc]"],
+html:not(.dark) .fandom-theme-gaming [class*="text-[#10b981]"],
+html:not(.dark) .fandom-theme-gaming [class*="text-[#fb923c]"],
+html:not(.dark) .fandom-theme-gaming [class*="text-[#f43f5e]"],
+html:not(.dark) .fandom-theme-gaming [class*="text-[#38bdf8]"],
+html:not(.dark) .fandom-theme-gaming [class*="text-emerald-"],
+html:not(.dark) .fandom-theme-gaming [class*="text-pink-"],
+html:not(.dark) .fandom-theme-gaming [class*="text-purple-"],
+html:not(.dark) .fandom-theme-gaming [class*="text-amber-"],
+html:not(.dark) .fandom-theme-gaming [class*="text-yellow-"],
+html:not(.dark) .fandom-theme-gaming [class*="text-cyan-"] {
   color: #000000 !important;
+}
+
+/* In dark mode, ensure gaming theme text remains bright & visible */
+[data-theme="dark"] .fandom-theme-gaming [class*="text-[#ff2e93]"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-[#ffd60a]"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-[#00f0ff]"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-[#9333ea]"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-[#c084fc]"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-[#10b981]"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-[#fb923c]"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-[#f43f5e]"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-[#38bdf8]"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-emerald-"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-pink-"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-purple-"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-amber-"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-yellow-"],
+[data-theme="dark"] .fandom-theme-gaming [class*="text-cyan-"],
+.dark .fandom-theme-gaming [class*="text-[#ff2e93]"],
+.dark .fandom-theme-gaming [class*="text-[#ffd60a]"],
+.dark .fandom-theme-gaming [class*="text-[#00f0ff]"],
+.dark .fandom-theme-gaming [class*="text-[#9333ea]"],
+.dark .fandom-theme-gaming [class*="text-[#c084fc]"],
+.dark .fandom-theme-gaming [class*="text-[#10b981]"],
+.dark .fandom-theme-gaming [class*="text-[#fb923c]"],
+.dark .fandom-theme-gaming [class*="text-[#f43f5e]"],
+.dark .fandom-theme-gaming [class*="text-[#38bdf8]"],
+.dark .fandom-theme-gaming [class*="text-emerald-"],
+.dark .fandom-theme-gaming [class*="text-pink-"],
+.dark .fandom-theme-gaming [class*="text-purple-"],
+.dark .fandom-theme-gaming [class*="text-amber-"],
+.dark .fandom-theme-gaming [class*="text-yellow-"],
+.dark .fandom-theme-gaming [class*="text-cyan-"] {
+  color: #f8fafc !important;
 }
 
 /* Elements inside dark containers or buttons have white text */
@@ -1718,7 +1760,7 @@
 .fandom-theme-comics .bg-body {
   background-color: #fef9c3 !important;
 }
-.fandom-theme-comics .bg-white:not(.comics-pop-art-root *) {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-comics .bg-white:not(.comics-pop-art-root *) {
   background-color: #ffffff !important;
   border: 3.5px solid #000000 !important;
   box-shadow: 6px 6px 0px #000000 !important;
@@ -1730,7 +1772,7 @@
   font-family: 'Bangers', cursive, sans-serif !important;
   letter-spacing: 0.05em !important;
 }
-.fandom-theme-comics button.bg-black:not(.comics-pop-art-root *) {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-comics button.bg-black:not(.comics-pop-art-root *) {
   background-color: #ef4444 !important;
   color: #ffffff !important;
   border: 3px solid #000000 !important;
@@ -1830,37 +1872,37 @@
   letter-spacing: normal !important;
 }
 
-.fandom-theme-manga p,
-.fandom-theme-manga span,
-.fandom-theme-manga a,
-.fandom-theme-manga button,
-.fandom-theme-manga input,
-.fandom-theme-manga label,
-.fandom-theme-manga li,
-[data-fandom-theme="manga"] p,
-[data-fandom-theme="manga"] span,
-[data-fandom-theme="manga"] a,
-[data-fandom-theme="manga"] button,
-[data-fandom-theme="manga"] input,
-[data-fandom-theme="manga"] label,
-[data-fandom-theme="manga"] li {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga p,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga span,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga a,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga button,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga input,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga label,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga li,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] p,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] span,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] a,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] button,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] input,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] label,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] li {
   font-family: 'Patrick Hand', cursive, sans-serif !important;
   color: #2d2d2d;
 }
 
-.fandom-theme-manga .text-slate-900,
-.fandom-theme-manga .text-slate-800,
-.fandom-theme-manga .text-slate-950,
-[data-fandom-theme="manga"] .text-slate-900,
-[data-fandom-theme="manga"] .text-slate-800,
-[data-fandom-theme="manga"] .text-slate-950 {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga .text-slate-900,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga .text-slate-800,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga .text-slate-950,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] .text-slate-900,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] .text-slate-800,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] .text-slate-950 {
   color: #2d2d2d !important;
 }
 
-.fandom-theme-manga .text-slate-600,
-.fandom-theme-manga .text-slate-500,
-[data-fandom-theme="manga"] .text-slate-600,
-[data-fandom-theme="manga"] .text-slate-500 {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga .text-slate-600,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga .text-slate-500,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] .text-slate-600,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] .text-slate-500 {
   color: #555555 !important;
 }
 
@@ -1873,8 +1915,8 @@
 }
 
 /* Cards / Containers with Hard Offset Shadows */
-.fandom-theme-manga .bg-white,
-[data-fandom-theme="manga"] .bg-white {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-manga .bg-white,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="manga"] .bg-white {
   background-color: #ffffff !important;
   border: 2px solid #2d2d2d !important;
   border-radius: 255px 25px 225px 25px / 25px 225px 25px 255px !important;
@@ -2004,19 +2046,19 @@
 .fandom-theme-cinema .bg-body {
   background-color: #FFFFFF !important;
 }
-.fandom-theme-cinema .bg-white {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-cinema .bg-white {
   background-color: #FFFFFF !important;
   color: #000000 !important;
   border-color: #000000 !important;
   box-shadow: none !important;
 }
-.fandom-theme-cinema .text-slate-900,
-.fandom-theme-cinema .text-slate-800,
-.fandom-theme-cinema .text-slate-950 {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-cinema .text-slate-900,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-cinema .text-slate-800,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-cinema .text-slate-950 {
   color: #000000 !important;
 }
-.fandom-theme-cinema .text-slate-600,
-.fandom-theme-cinema .text-slate-500 {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-cinema .text-slate-600,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-cinema .text-slate-500 {
   color: #525252 !important;
 }
 .fandom-theme-cinema h1,
@@ -2087,18 +2129,18 @@
 .fandom-theme-tv .bg-body {
   background-color: #f8f9fa !important;
 }
-.fandom-theme-tv .bg-white {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-tv .bg-white {
   background-color: #ffffff !important;
   color: #000000 !important;
   border-color: #000000 !important;
 }
-.fandom-theme-tv .text-slate-900,
-.fandom-theme-tv .text-slate-800,
-.fandom-theme-tv .text-slate-950 {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-tv .text-slate-900,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-tv .text-slate-800,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-tv .text-slate-950 {
   color: #000000 !important;
 }
-.fandom-theme-tv .text-slate-600,
-.fandom-theme-tv .text-slate-500 {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-tv .text-slate-600,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-tv .text-slate-500 {
   color: #525252 !important;
 }
 
@@ -2993,29 +3035,29 @@
 /* ==========================================================================
    FINAL BULLETPROOF FIX FOR GAMING ACTIVE TABS
    ========================================================================== */
-.fandom-theme-gaming button.bg-black,
-.fandom-theme-gaming button.bg-black *,
-.fandom-theme-gaming .bg-white button.bg-black,
-.fandom-theme-gaming .bg-white button.bg-black *,
-.fandom-theme-gaming button[class*="bg-[#000000]"],
-.fandom-theme-gaming button[class*="bg-[#000000]"] *,
-[data-fandom-theme="gaming"] button.bg-black,
-[data-fandom-theme="gaming"] button.bg-black *,
-[data-fandom-theme="gaming"] button[class*="bg-[#000000]"],
-[data-fandom-theme="gaming"] button[class*="bg-[#000000]"] * {
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming button.bg-black,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming button.bg-black *,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming .bg-white button.bg-black,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming .bg-white button.bg-black *,
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming button[class*="bg-[#000000]"],
+html:not(.dark):not([data-theme="dark"]) .fandom-theme-gaming button[class*="bg-[#000000]"] *,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="gaming"] button.bg-black,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="gaming"] button.bg-black *,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="gaming"] button[class*="bg-[#000000]"],
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="gaming"] button[class*="bg-[#000000]"] * {
   color: #FFFFFF !important;
 }
 
 /* Fix Hero Banner arrows which are bg-white inside bg-black container for Anime */
-[data-fandom-theme="anime"] .bg-black .bg-white,
-[data-fandom-theme="anime"] .bg-black .bg-white[class*="text-"],
-[data-fandom-theme="anime"] .bg-black button.bg-white,
-[data-fandom-theme="anime"] .bg-black button.bg-white[class*="text-"] {
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="anime"] .bg-black .bg-white,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="anime"] .bg-black .bg-white[class*="text-"],
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="anime"] .bg-black button.bg-white,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="anime"] .bg-black button.bg-white[class*="text-"] {
   background-color: #FFFFFF !important;
   color: #000000 !important;
 }
-[data-fandom-theme="anime"] .bg-black .bg-white *,
-[data-fandom-theme="anime"] .bg-black button.bg-white * {
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="anime"] .bg-black .bg-white *,
+html:not(.dark):not([data-theme="dark"]) [data-fandom-theme="anime"] .bg-black button.bg-white * {
   color: #000000 !important;
 }
 

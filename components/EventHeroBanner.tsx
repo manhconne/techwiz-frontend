@@ -541,22 +541,22 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
       {/* =========================================================================
           2. DEDICATED FANDOM CATEGORY DOCK
       ========================================================================= */}
-      <div className={`w-full ${isGaming ? 'bg-white' : isCinema ? 'bg-[#F2F2F2]' : isAnime ? 'bg-[#f7fee7]' : 'bg-[#fdfbf7]'} border-b-4 border-black py-4 px-4 sm:px-8`}>
+      <div className={`fandom-category-dock w-full ${isGaming ? 'bg-white' : isCinema ? 'bg-[#F2F2F2]' : isAnime ? 'bg-[#f7fee7]' : 'bg-[#fdfbf7]'} dark:bg-[#090d16] border-b-4 border-black dark:border-[#2a364f] py-4 px-4 sm:px-8 transition-colors duration-300`}>
         <div className="max-w-[1440px] mx-auto flex items-center justify-center overflow-x-auto scrollbar-none">
           <div className="flex items-center gap-2 flex-wrap justify-center">
             {FANDOM_TABS.map((tab) => {
               const isActive = currentCategory === tab.id;
 
               // Color per tab when active
-              let activeBgClass = 'bg-[#ffd60a] text-black';
-              if (tab.id === 'Gaming') activeBgClass = 'bg-black text-white';
-              else if (tab.id === 'K-Pop') activeBgClass = 'bg-[#ff2e93] text-white';
-              else if (tab.id === 'Manga') activeBgClass = 'bg-[#fff9c4] text-[#2d2d2d]';
-              else if (tab.id === 'Cosplay') activeBgClass = 'bg-[#D02020] text-white shadow-[4px_4px_0px_#121212]';
-              else if (tab.id === 'Anime') activeBgClass = 'bg-[#a3e635] text-black shadow-[4px_4px_0px_#000000]';
-              else if (tab.id === 'Comics') activeBgClass = 'bg-[#38bdf8] text-black';
-              else if (tab.id === 'Movies') activeBgClass = 'bg-[#FF3000] text-white';
-              else if (tab.id === 'TV Shows') activeBgClass = 'bg-[#ff2e93] text-white';
+              let activeBgClass = 'fandom-tab-active-all bg-[#ffd60a] text-black border-black dark:bg-[#ffd60a] dark:text-black dark:border-[#ffd60a]';
+              if (tab.id === 'Gaming') activeBgClass = 'fandom-tab-active-gaming bg-black text-white border-black dark:bg-[#00f0ff] dark:text-black dark:border-[#00f0ff]';
+              else if (tab.id === 'K-Pop') activeBgClass = 'fandom-tab-active-kpop bg-[#ff2e93] text-white border-black dark:bg-[#ff2e93] dark:text-white dark:border-[#ff2e93]';
+              else if (tab.id === 'Manga') activeBgClass = 'fandom-tab-active-manga bg-[#fff9c4] text-[#2d2d2d] border-[#2d2d2d] dark:bg-[#ff4d4d] dark:text-white dark:border-[#ff4d4d]';
+              else if (tab.id === 'Cosplay') activeBgClass = 'fandom-tab-active-cosplay bg-[#D02020] text-white border-black dark:bg-[#D02020] dark:text-white dark:border-[#D02020] shadow-[4px_4px_0px_#121212] dark:shadow-none';
+              else if (tab.id === 'Anime') activeBgClass = 'fandom-tab-active-anime bg-[#a3e635] text-black border-black dark:bg-[#a3e635] dark:text-black dark:border-[#a3e635] shadow-[4px_4px_0px_#000000] dark:shadow-none';
+              else if (tab.id === 'Comics') activeBgClass = 'fandom-tab-active-comics bg-[#38bdf8] text-black border-black dark:bg-[#38bdf8] dark:text-black dark:border-[#38bdf8]';
+              else if (tab.id === 'Movies') activeBgClass = 'fandom-tab-active-movies bg-[#FF3000] text-white border-black dark:bg-[#FF3000] dark:text-white dark:border-[#FF3000]';
+              else if (tab.id === 'TV Shows') activeBgClass = 'fandom-tab-active-tv bg-[#ff2e93] text-white border-black dark:bg-[#ff2e93] dark:text-white dark:border-[#ff2e93]';
 
               return (
                 <button
@@ -564,9 +564,9 @@ export const EventHeroBanner: React.FC<EventHeroBannerProps> = ({
                   onClick={() => handleSelectTab(tab.id)}
                   type="button"
                   style={{ borderRadius: isAnime || isComics ? '8px' : '0px' }}
-                  className={`px-4 sm:px-5 py-2.5 text-xs font-mono font-black tracking-widest uppercase transition-all duration-100 cursor-pointer flex items-center gap-2 whitespace-nowrap border-2 border-black ${isActive
+                  className={`fandom-dock-btn px-4 sm:px-5 py-2.5 text-xs font-mono font-black tracking-widest uppercase transition-all duration-100 cursor-pointer flex items-center gap-2 whitespace-nowrap border-2 ${isActive
                     ? `${activeBgClass} ${isGaming || isCinema ? 'shadow-none' : 'shadow-[3px_3px_0px_#000000]'}`
-                    : `bg-white text-black hover:bg-neutral-100 ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`
+                    : `fandom-tab-inactive bg-white text-black border-black hover:bg-neutral-100 dark:bg-[#1e293b] dark:text-[#f8fafc] dark:border-[#334155] dark:hover:bg-[#2a364f] dark:hover:text-white ${isGaming || isCinema ? 'shadow-none' : 'shadow-[2px_2px_0px_#000000]'}`
                     }`}
                 >
                   {isActive && <span>★</span>}

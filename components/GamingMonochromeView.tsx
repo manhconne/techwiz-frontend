@@ -228,11 +228,11 @@ export const GamingMonochromeView: React.FC<GamingMonochromeViewProps> = ({
   ];
 
   return (
-    <div className="w-full bg-[#FFFFFF] text-[#000000] selection:bg-[#000000] selection:text-[#FFFFFF]">
+    <div className="w-full bg-[#FFFFFF] text-[#000000] dark:bg-[#090d16] dark:text-[#f8fafc] selection:bg-[#000000] selection:text-[#FFFFFF]">
       
       {/* Toast Notification */}
       {addedToast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#000000] text-[#FFFFFF] border-2 border-[#000000] px-6 py-4 shadow-none flex items-center gap-3 font-mono text-xs uppercase tracking-widest animate-in fade-in slide-in-from-bottom-2 duration-100">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#000000] text-[#FFFFFF] dark:bg-[#1e293b] dark:text-white border-2 border-[#000000] dark:border-[#334155] px-6 py-4 shadow-none flex items-center gap-3 font-mono text-xs uppercase tracking-widest animate-in fade-in slide-in-from-bottom-2 duration-100">
           <Check className="w-4 h-4 text-[#FFFFFF]" />
           <span>Added to Collection: {addedToast.substring(0, 36)}...</span>
         </div>
@@ -241,10 +241,10 @@ export const GamingMonochromeView: React.FC<GamingMonochromeViewProps> = ({
       {/* =========================================================================
           0. TOP CATEGORY SWITCHER DOCK (Strict Minimalist Monochrome 0px)
       ========================================================================= */}
-      <div className="w-full bg-[#FFFFFF] border-b-4 border-[#000000] py-3 px-4 sm:px-8">
+      <div className="w-full bg-[#FFFFFF] dark:bg-[#090d16] border-b-4 border-[#000000] dark:border-[#2a364f] py-3 px-4 sm:px-8 transition-colors duration-300">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 overflow-x-auto scrollbar-none">
           <div className="flex items-center gap-2 shrink-0">
-            <span className="font-mono text-[11px] font-black tracking-widest uppercase mr-2 select-none">
+            <span className="font-mono text-[11px] font-black tracking-widest uppercase mr-2 select-none text-black dark:text-[#94a3b8]">
               SECTOR //
             </span>
             {FANDOM_CATEGORIES.map((cat) => {
@@ -255,10 +255,10 @@ export const GamingMonochromeView: React.FC<GamingMonochromeViewProps> = ({
                   onClick={() => onSelectCategory && onSelectCategory(cat.id)}
                   type="button"
                   style={{ borderRadius: '0px' }}
-                  className={`px-3.5 sm:px-4 py-2 text-xs font-mono font-bold tracking-widest uppercase transition-colors duration-100 cursor-pointer whitespace-nowrap border-2 border-[#000000] ${
+                  className={`px-3.5 sm:px-4 py-2 text-xs font-mono font-bold tracking-widest uppercase transition-colors duration-100 cursor-pointer whitespace-nowrap border-2 ${
                     isActive
-                      ? 'bg-[#000000] text-[#FFFFFF]'
-                      : 'bg-[#FFFFFF] text-[#000000] hover:bg-[#000000] hover:text-[#FFFFFF]'
+                      ? 'bg-[#000000] text-[#FFFFFF] border-[#000000] dark:bg-[#00f0ff] dark:text-black dark:border-[#00f0ff]'
+                      : 'bg-[#FFFFFF] text-[#000000] border-[#000000] hover:bg-[#000000] hover:text-[#FFFFFF] dark:bg-[#1e293b] dark:text-[#f8fafc] dark:border-[#334155] dark:hover:bg-[#2a364f] dark:hover:text-white'
                   }`}
                 >
                   {cat.label}
