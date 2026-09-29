@@ -50,7 +50,7 @@ import {
 } from 'lucide-react';
 
 interface HeaderProps {
-  onOpenAdmin: () => void;
+  onOpenAdmin?: () => void;
   onOpenFeedback: () => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
@@ -159,16 +159,16 @@ export const Header: React.FC<HeaderProps> = ({
         subtitleColor: '#2d5da1',
         border: '3px solid #2d2d2d',
         shadow: '8px 8px 0px #2d2d2d',
-        borderRadius: '255px 15px 225px 15px/15px 225px 15px 255px',
+        borderRadius: '0px',
         headerTitle: 'MANGA GUILD // PASSPORT LOGIN',
         headerSubtitle: 'Mangaka & Tankōbon Collector Sign-In',
         primaryBtnBg: '#ff4d4d',
         primaryBtnColor: '#ffffff',
         primaryBtnBorder: '2px solid #2d2d2d',
         primaryBtnShadow: '3px 3px 0px #2d2d2d',
-        primaryBtnRadius: '120px 8px 110px 8px/8px 110px 8px 120px',
+        primaryBtnRadius: '0px',
         inputBorder: '2px solid #2d2d2d',
-        inputRadius: '120px 8px 110px 8px/8px 110px 8px 120px',
+        inputRadius: '0px',
         inputBg: '#ffffff',
         inputColor: '#2d2d2d',
         accentColor: '#2d5da1',
@@ -216,7 +216,7 @@ export const Header: React.FC<HeaderProps> = ({
         primaryBtnShadow: '4px 4px 0px #000000',
         primaryBtnRadius: '0px',
         inputBorder: '2px solid #000000',
-        inputRadius: '2px',
+        inputRadius: '0px',
         inputBg: '#fffdf0',
         inputColor: '#000000',
         accentColor: '#ef4444',
@@ -348,7 +348,7 @@ export const Header: React.FC<HeaderProps> = ({
         btnBg: '#ff4d4d',
         btnColor: '#ffffff',
         btnBorder: '2px solid #2d2d2d',
-        btnRadius: '6px',
+        btnRadius: '0px',
         btnShadow: '3px 3px 0px #2d2d2d',
         btnFont: "'Kalam', cursive, sans-serif",
         btnLabel: '★ MANGA MD',
@@ -1465,11 +1465,7 @@ export const Header: React.FC<HeaderProps> = ({
                       style={{
                         width: '78px',
                         height: '78px',
-                        borderRadius: isManga
-                          ? '120px 8px 110px 8px/8px 110px 8px 120px'
-                          : isAnime || isComics || isGaming
-                          ? '0px'
-                          : '50%',
+                        borderRadius: '0px',
                         objectFit: 'cover',
                         border: loginTheme.primaryBtnBorder,
                         boxShadow: loginTheme.primaryBtnShadow !== 'none' ? loginTheme.primaryBtnShadow : '0 4px 12px rgba(0,0,0,0.15)',

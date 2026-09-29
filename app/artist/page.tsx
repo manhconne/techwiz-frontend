@@ -9,7 +9,6 @@ import { CartDrawer } from '../../components/CartDrawer';
 import { WishlistModal } from '../../components/WishlistModal';
 import { ChatbotModal } from '../../components/ChatbotModal';
 import { AudioPlayer } from '../../components/AudioPlayer';
-import { AdminModal } from '../../components/AdminModal';
 import { FeedbackModal } from '../../components/FeedbackModal';
 import { Breadcrumbs } from '../../components/Breadcrumbs';
 import { Footer } from '../../components/Footer';
@@ -34,7 +33,6 @@ const FANDOM_DOCK_TABS = [
 export default function ArtistPage() {
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const { setIsCartOpen } = useCartWishlist();
   const { themeKey, category, changeFandom } = useActiveFandom();
@@ -74,7 +72,6 @@ export default function ArtistPage() {
     >
       {/* Navigation Header */}
       <Header
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -266,10 +263,7 @@ export default function ArtistPage() {
         onOpenCart={() => setIsCartOpen(true)}
       />
 
-      <AdminModal
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-      />
+
 
       <FeedbackModal
         isOpen={isFeedbackOpen}
@@ -277,7 +271,6 @@ export default function ArtistPage() {
       />
 
       <Footer
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
       />
     </div>

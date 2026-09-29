@@ -70,7 +70,7 @@ export const WishlistModal: React.FC<WishlistModalProps> = ({ fandomCategory, fa
   const isCinema = currentTheme === 'cinema';
   const isTvShows = currentTheme === 'tv';
 
-  const WOBBLY_SM = '120px 8px 110px 8px/8px 110px 8px 120px';
+  const WOBBLY_SM = '0px';
 
   const getThemeConfig = () => {
     if (isManga) {

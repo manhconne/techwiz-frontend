@@ -7,7 +7,6 @@ import { CartDrawer } from '../../components/CartDrawer';
 import { WishlistModal } from '../../components/WishlistModal';
 import { ChatbotModal } from '../../components/ChatbotModal';
 import { AudioPlayer } from '../../components/AudioPlayer';
-import { AdminModal } from '../../components/AdminModal';
 import { FeedbackModal } from '../../components/FeedbackModal';
 import { Breadcrumbs } from '../../components/Breadcrumbs';
 import { Footer } from '../../components/Footer';
@@ -431,7 +430,6 @@ export default function MdPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [addedItem, setAddedItem] = useState<string | null>(null);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const { themeKey, category } = useActiveFandom();
 
@@ -509,7 +507,6 @@ export default function MdPage() {
     >
       {/* Navigation Header */}
       <Header
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -920,10 +917,7 @@ export default function MdPage() {
         onOpenCart={() => setIsCartOpen(true)}
       />
 
-      <AdminModal
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-      />
+
 
       <FeedbackModal
         isOpen={isFeedbackOpen}
@@ -931,7 +925,6 @@ export default function MdPage() {
       />
 
       <Footer
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
       />
     </div>

@@ -10,7 +10,6 @@ import { CartDrawer } from '../../components/CartDrawer';
 import { WishlistModal } from '../../components/WishlistModal';
 import { ChatbotModal } from '../../components/ChatbotModal';
 import { AudioPlayer } from '../../components/AudioPlayer';
-import { AdminModal } from '../../components/AdminModal';
 import { FeedbackModal } from '../../components/FeedbackModal';
 import { Footer } from '../../components/Footer';
 import { Album } from '../../types';
@@ -43,7 +42,6 @@ import {
 export default function EventPage() {
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const { setIsCartOpen } = useCartWishlist();
   const { themeKey, category, changeFandom } = useActiveFandom();
@@ -63,7 +61,6 @@ export default function EventPage() {
     >
       {/* Navigation Header */}
       <Header
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -268,10 +265,7 @@ export default function EventPage() {
         onOpenCart={() => setIsCartOpen(true)}
       />
 
-      <AdminModal
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-      />
+
 
       <FeedbackModal
         isOpen={isFeedbackOpen}
@@ -279,7 +273,6 @@ export default function EventPage() {
       />
 
       <Footer
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
       />
     </div>

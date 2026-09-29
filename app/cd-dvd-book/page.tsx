@@ -9,7 +9,6 @@ import { CartDrawer } from '../../components/CartDrawer';
 import { WishlistModal } from '../../components/WishlistModal';
 import { ChatbotModal } from '../../components/ChatbotModal';
 import { AudioPlayer } from '../../components/AudioPlayer';
-import { AdminModal } from '../../components/AdminModal';
 import { FeedbackModal } from '../../components/FeedbackModal';
 import { Breadcrumbs } from '../../components/Breadcrumbs';
 import { Footer } from '../../components/Footer';
@@ -23,7 +22,6 @@ export default function CdDvdBookPage() {
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedArtistFilter, setSelectedArtistFilter] = useState('all');
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const { setIsCartOpen } = useCartWishlist();
   const { themeKey, category } = useActiveFandom();
@@ -35,7 +33,6 @@ export default function CdDvdBookPage() {
     >
       {/* Navigation Header */}
       <Header
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -273,10 +270,7 @@ export default function CdDvdBookPage() {
         onOpenCart={() => setIsCartOpen(true)}
       />
 
-      <AdminModal
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-      />
+
 
       <FeedbackModal
         isOpen={isFeedbackOpen}
@@ -284,7 +278,6 @@ export default function CdDvdBookPage() {
       />
 
       <Footer
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
       />
     </div>

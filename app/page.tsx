@@ -30,7 +30,6 @@ const CartDrawer = dynamic(() => import('../components/CartDrawer').then(m => m.
 const WishlistModal = dynamic(() => import('../components/WishlistModal').then(m => m.WishlistModal), { ssr: false });
 const ChatbotModal = dynamic(() => import('../components/ChatbotModal').then(m => m.ChatbotModal), { ssr: false });
 const AudioPlayer = dynamic(() => import('../components/AudioPlayer').then(m => m.AudioPlayer), { ssr: false });
-const AdminModal = dynamic(() => import('../components/AdminModal').then(m => m.AdminModal), { ssr: false });
 const FeedbackModal = dynamic(() => import('../components/FeedbackModal').then(m => m.FeedbackModal), { ssr: false });
 // import { TestConnection } from '../components/TestConnection';
 import { Album, FandomCategoryKey } from '../types';
@@ -42,7 +41,6 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedArtistFilter, setSelectedArtistFilter] = useState('all');
   const [selectedFandomCategory, setSelectedFandomCategory] = useState<FandomCategoryKey | 'all'>(initialCategory);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   const { setIsCartOpen, setIsWishlistOpen } = useCartWishlist();
@@ -125,7 +123,6 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
     >
       {/* Navigation Header */}
       <Header
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -224,7 +221,6 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
       {/* SRS 1.9 Mandatory Deliverable: Fan Hub Plus Sitemap & Directory */}
       <div className="section-lazy-layout">
         <SitemapSection
-          onOpenAdmin={() => setIsAdminOpen(true)}
           onOpenFeedback={() => setIsFeedbackOpen(true)}
           onOpenWishlist={() => setIsWishlistOpen(true)}
         />
@@ -248,13 +244,7 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
         onOpenCart={() => setIsCartOpen(true)}
       />
 
-      {/* Admin Control Panel Modal - Loaded on demand */}
-      {isAdminOpen && (
-        <AdminModal
-          isOpen={isAdminOpen}
-          onClose={() => setIsAdminOpen(false)}
-        />
-      )}
+      {/* Feedback Modal - Loaded on demand */}
 
       {/* Dynamic Feedback Modal - Loaded on demand */}
       {isFeedbackOpen && (
@@ -267,7 +257,6 @@ export default function Home({ initialCategory = 'all' }: { initialCategory?: Fa
       {/* Footer */}
       <div className="section-lazy-layout">
         <Footer
-          onOpenAdmin={() => setIsAdminOpen(true)}
           onOpenFeedback={() => setIsFeedbackOpen(true)}
         />
       </div>

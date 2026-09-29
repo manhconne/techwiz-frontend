@@ -170,7 +170,7 @@
   background: var(--kpop-accent-soft) !important;
   color: var(--kpop-accent) !important;
   border: 1px solid rgba(37, 99, 235, 0.3) !important;
-  border-radius: 9999px !important;
+  border-radius: 0px !important;
   box-shadow: none !important;
   font-family: var(--kpop-font) !important;
   font-weight: 700 !important;
@@ -194,7 +194,7 @@
   background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
   border: none !important;
   color: #ffffff !important;
-  border-radius: 12px !important;
+  border-radius: 0px !important;
   font-family: var(--kpop-font) !important;
   box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35) !important;
   font-weight: 700 !important;
@@ -204,7 +204,7 @@
 .theme-kpop .domain-hero-btn-secondary {
   border-color: rgba(226, 232, 240, 0.9) !important;
   color: var(--kpop-text-sub) !important;
-  border-radius: 12px !important;
+  border-radius: 0px !important;
   font-family: var(--kpop-font) !important;
 }
 
@@ -349,7 +349,7 @@
   background: linear-gradient(90deg, #ff5722 0%, #ff9800 100%) !important;
   width: 24px !important;
   height: 3px !important;
-  border-radius: 2px !important;
+  border-radius: 0px !important;
 }
 .theme-anime .domain-eyebrow-text {
   color: #ff5722 !important;
@@ -401,7 +401,7 @@
   background: #ffffff !important;
   border: 1px solid var(--anime-border) !important;
   box-shadow: var(--anime-shadow-card) !important;
-  border-radius: 18px !important;
+  border-radius: 0px !important;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 .theme-anime .domain-card:hover {
@@ -584,7 +584,7 @@
 .theme-gaming .domain-card {
   background: var(--gaming-bg-card) !important;
   border-color: var(--gaming-border) !important;
-  border-radius: 12px !important;
+  border-radius: 0px !important;
   box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
 }
@@ -612,7 +612,7 @@
   background: transparent !important;
   color: var(--gaming-primary) !important;
   border: 1px solid var(--gaming-primary) !important;
-  border-radius: 4px !important;
+  border-radius: 0px !important;
   box-shadow: 0 0 8px rgba(0,229,255,0.4) !important;
   letter-spacing: 0.15em;
   font-family: var(--gaming-font) !important;
@@ -631,7 +631,7 @@
   background: var(--gaming-primary) !important;
   border-color: transparent !important;
   color: #0d0d1a !important;
-  border-radius: 6px !important;
+  border-radius: 0px !important;
   font-family: var(--gaming-font) !important;
   box-shadow: 0 4px 20px rgba(0,229,255,0.4) !important;
 }
@@ -639,7 +639,7 @@
 .theme-gaming .domain-hero-btn-secondary {
   border-color: var(--gaming-secondary) !important;
   color: var(--gaming-secondary) !important;
-  border-radius: 6px !important;
+  border-radius: 0px !important;
   font-family: var(--gaming-font) !important;
 }
 

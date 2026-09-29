@@ -78,8 +78,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ fandomCategory, fandomTh
   const isCinema = currentTheme === 'cinema';
   const isTvShows = currentTheme === 'tv';
 
-  const WOBBLY_RADIUS = '255px 15px 225px 15px/15px 225px 15px 255px';
-  const WOBBLY_SM = '120px 8px 110px 8px/8px 110px 8px 120px';
+  const WOBBLY_RADIUS = '0px';
+  const WOBBLY_SM = '0px';
 
   // Get current theme parameters
   const getThemeConfig = () => {

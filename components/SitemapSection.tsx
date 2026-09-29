@@ -20,7 +20,7 @@ interface SiteCategory {
 }
 
 interface SitemapSectionProps {
-  onOpenAdmin: () => void;
+  onOpenAdmin?: () => void;
   onOpenFeedback: () => void;
   onOpenWishlist?: () => void;
 }

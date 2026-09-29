@@ -7,7 +7,6 @@ import { CartDrawer } from '../../components/CartDrawer';
 import { WishlistModal } from '../../components/WishlistModal';
 import { ChatbotModal } from '../../components/ChatbotModal';
 import { AudioPlayer } from '../../components/AudioPlayer';
-import { AdminModal } from '../../components/AdminModal';
 import { FeedbackModal } from '../../components/FeedbackModal';
 import { Breadcrumbs } from '../../components/Breadcrumbs';
 import { Footer } from '../../components/Footer';
@@ -32,7 +31,6 @@ import {
 
 export default function B2bPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const { setIsCartOpen } = useCartWishlist();
   const { themeKey, category } = useActiveFandom();
@@ -83,7 +81,6 @@ export default function B2bPage() {
     >
       {/* Navigation Header */}
       <Header
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -582,10 +579,7 @@ export default function B2bPage() {
         onOpenCart={() => setIsCartOpen(true)}
       />
 
-      <AdminModal
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-      />
+
 
       <FeedbackModal
         isOpen={isFeedbackOpen}
@@ -593,7 +587,6 @@ export default function B2bPage() {
       />
 
       <Footer
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
       />
     </div>

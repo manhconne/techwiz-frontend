@@ -26,12 +26,12 @@ import { Album } from '../types';
 import { useCartWishlist } from '../context/CartWishlistContext';
 
 // ==========================================
-// Hand-Drawn Wobbly Border Radius Constants
+// Hand-Drawn Square Border Radius Constants (Strict 0px)
 // ==========================================
-const WOBBLY_SM = '255px 15px 225px 15px / 15px 225px 15px 255px';
-const WOBBLY_MD = '255px 25px 225px 25px / 25px 225px 25px 255px';
-const WOBBLY_LG = '225px 35px 255px 25px / 25px 245px 35px 225px';
-const WOBBLY_CIRCLE = '255px 225px 240px 220px / 225px 250px 220px 245px';
+const WOBBLY_SM = '0px';
+const WOBBLY_MD = '0px';
+const WOBBLY_LG = '0px';
+const WOBBLY_CIRCLE = '0px';
 
 // ==========================================
 // Manga Volume Model
