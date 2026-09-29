@@ -36,7 +36,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           <button
             onClick={onToggleSidebar}
             type="button"
-            style={{ borderRadius: '8px' }}
+            style={{ borderRadius: '12px' }}
             className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             title="Toggle Menu Sidebar"
           >
@@ -47,7 +47,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
         <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
           <Link
             href="/"
-            style={{ borderRadius: '8px' }}
+            style={{ borderRadius: '12px' }}
             className="admin-hide-on-mobile hidden md:flex items-center gap-2 px-3.5 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-sky-400 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 border border-slate-200 dark:border-slate-700 transition-all shadow-2xs"
             target='_blank'
             title="Back to Store"
@@ -59,7 +59,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           {/* Dual Segmented Language Switcher [ EN | VI ] */}
           <div
             translate="no"
-            style={{ borderRadius: '8px' }}
+            style={{ borderRadius: '12px' }}
             className="notranslate flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700"
           >
             <button
@@ -68,7 +68,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                 setLanguage('en');
                 setGoogleLanguage('en');
               }}
-              style={{ borderRadius: '6px' }}
+              style={{ borderRadius: '10px' }}
               className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold transition-all cursor-pointer ${
                 language === 'en'
                   ? 'bg-indigo-600 text-white shadow-xs'
@@ -87,7 +87,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             <button
               type="button"
               onClick={() => setLanguage('vi')}
-              style={{ borderRadius: '6px' }}
+              style={{ borderRadius: '10px' }}
               className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold transition-all cursor-pointer ${
                 language === 'vi'
                   ? 'bg-indigo-600 text-white shadow-xs'
@@ -109,10 +109,10 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               type="button"
-              style={{ borderRadius: '8px' }}
+              style={{ borderRadius: '12px' }}
               className="flex items-center gap-2 p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             >
-              <div className="w-8 h-8 bg-danger from-indigo-600 to-purple-600 text-white flex items-center justify-center font-black text-xs shadow-md shadow-indigo-500/20" style={{ borderRadius: '8px' }}>
+              <div className="w-8 h-8 bg-danger from-indigo-600 to-purple-600 text-white flex items-center justify-center font-black text-xs shadow-md shadow-indigo-500/20" style={{ borderRadius: '12px' }}>
                 A
               </div>
               <div className="hidden md:block text-left">
@@ -132,7 +132,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                   className="fixed inset-0 z-40"
                   onClick={() => setIsProfileOpen(false)}
                 />
-                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl z-50 overflow-hidden py-1" style={{ borderRadius: '8px' }}>
+                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl z-50 overflow-hidden py-1" style={{ borderRadius: '12px' }}>
                   <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
                     <p className="text-xs font-bold text-slate-900 dark:text-white">Admin Master</p>
                     <p className="text-[11px] text-slate-400 truncate">admin@fanhubplus.com</p>

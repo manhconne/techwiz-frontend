@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { mockTourEvents } from '../data/mockData';
 import { useCartWishlist } from '../context/CartWishlistContext';
@@ -56,7 +57,7 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = () => {
 
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-black leading-tight tracking-tight">
               World Tour &amp;{' '}
-              <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
+              <em className="font-serif italic font-normal text-[#d91470] drop-shadow-[1px_1px_0px_#000000]">
                 Stadium Arenas
               </em>
             </h2>
@@ -78,7 +79,7 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = () => {
                     style={{ borderRadius: '0px' }}
                     className={`px-3.5 py-2 font-black uppercase tracking-wider cursor-pointer transition-all duration-100 ${
                       isActive 
-                        ? 'bg-[#ff2e93] text-white shadow-[2px_2px_0px_#000]' 
+                        ? 'bg-[#d91470] text-white shadow-[2px_2px_0px_#000]' 
                         : 'bg-white text-black hover:bg-[#fefce8]'
                     }`}
                   >
@@ -114,18 +115,19 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = () => {
                     style={{ borderRadius: '0px' }}
                     className="relative aspect-[16/10] overflow-hidden bg-neutral-100 border-b-2 border-black"
                   >
-                    <img
-                      src={tour.coverImage}
-                      alt={tour.tourTitle}
+                    <Image
+                      src={tour.coverImage || '/banners/banner_stadium_live.webp'}
+                      alt={tour.tourTitle || 'World Tour Event'}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
-                      loading="lazy"
                     />
 
                     {/* Top-Left Category Badge */}
                     <div className="absolute top-3 left-3 z-10 font-mono">
                       <span 
                         style={{ borderRadius: '0px' }}
-                        className="px-2.5 py-1 bg-[#ff2e93] text-white border-2 border-black text-[10px] font-black uppercase tracking-widest shadow-[2px_2px_0px_#000]"
+                        className="px-2.5 py-1 bg-[#d91470] text-white border-2 border-black text-[10px] font-black uppercase tracking-widest shadow-[2px_2px_0px_#000]"
                       >
                         ★ {tour.badgeText || tour.category}
                       </span>
@@ -156,7 +158,7 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = () => {
                   <div className="p-6">
                     {/* Date and Time Line */}
                     <div className="flex items-center justify-between font-mono text-xs mb-2">
-                      <span className="font-black uppercase tracking-wider text-[#ff2e93]">
+                      <span className="font-black uppercase tracking-wider text-[#d91470]">
                         DATE // {tour.date} · {tour.time}
                       </span>
                       <span className="bg-[#fefce8] border border-black px-1.5 py-0.5 font-bold text-black text-[10px]">
@@ -222,21 +224,21 @@ export const WorldTourShowcase: React.FC<WorldTourShowcaseProps> = () => {
           className="mt-12 sm:mt-16 p-8 border-2 border-black bg-[#ecfeff] grid grid-cols-1 md:grid-cols-3 gap-8 text-black font-mono text-xs shadow-[5px_5px_0px_#000000]"
         >
           <div className="space-y-1.5">
-            <span className="font-black text-sm block text-[#ff2e93]">01 // ANTI-SCALPER PROTOCOL</span>
+            <span className="font-black text-sm block text-[#d91470]">01 // ANTI-SCALPER PROTOCOL</span>
             <p className="text-neutral-700 text-[11px] leading-relaxed font-semibold">
               Encrypted biometric barcode directly bound to verified Global Pass ID to eliminate speculative resale.
             </p>
           </div>
 
-          <div className="space-y-1.5 border-t md:border-t-0 md:border-l-2 border-black pt-4 md:pt-0 md:pl-8">
-            <span className="font-black text-sm block text-[#ff2e93]">02 // SOUNDCHECK ALLOCATION</span>
+          <div className="space-y-1.5">
+            <span className="font-black text-sm block text-[#d91470]">02 // SOUNDCHECK ALLOCATION</span>
             <p className="text-neutral-700 text-[11px] leading-relaxed font-semibold">
               First-entry priority into arena staging areas with official soundcheck rehearsing laminate pass.
             </p>
           </div>
 
-          <div className="space-y-1.5 border-t md:border-t-0 md:border-l-2 border-black pt-4 md:pt-0 md:pl-8">
-            <span className="font-black text-sm block text-[#ff2e93]">03 // OFFICIAL HAN/CIRCLE COUNT</span>
+          <div className="space-y-1.5">
+            <span className="font-black text-sm block text-[#d91470]">03 // OFFICIAL HAN/CIRCLE COUNT</span>
             <p className="text-neutral-700 text-[11px] leading-relaxed font-semibold">
               Live concert box packages counted 100% directly towards verified Hanteo and Circle Music Charts.
             </p>

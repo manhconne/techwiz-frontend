@@ -39,6 +39,7 @@ import {
   XCircle,
   Pencil,
   Pin,
+  WifiOff,
 } from 'lucide-react';
 
 // Data item interface matching list API:
@@ -87,84 +88,7 @@ export interface ApiResponseMeta {
   limit?: number;
 }
 
-// Fallback demo data to showcase the UI if backend is offline
-const FALLBACK_CONTENTS: AdminContentItem[] = [
-  {
-    id: 'cnt_001',
-    title: 'Review Anime Mùa Thu: Những siêu phẩm đáng xem nhất năm 2026',
-    author: { id: 'usr_002', name: 'User B' },
-    status: 'Pending',
-    created_at: '2026-09-25',
-    category: 'Review',
-    category_id: 'cat_review',
-    description: 'Tổng hợp đánh giá chi tiết các bộ anime nổi bật phát sóng trong mùa thu năm nay, phân tích cốt truyện và chất lượng hoạt họa.',
-    body: 'Anime Mùa Thu 2026 đánh dấu sự trở lại của hàng loạt tác phẩm đình đám cùng các dự án chuyển thể đầy hứa hẹn. Đáng chú ý nhất là chất lượng đồ họa đỉnh cao từ các studio hàng đầu kết hợp cùng âm nhạc ấn tượng.',
-    media: [
-      { url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&auto=format&fit=crop', type: 'Image' },
-      { url: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&auto=format&fit=crop', type: 'Image' }
-    ],
-    is_pinned: false,
-    views: 1240,
-  },
-  {
-    id: 'cnt_002',
-    title: 'Hội thảo Công Nghệ AI & Web3 Fan Hub 2026',
-    author: { id: 'usr_001', name: 'Admin Tech' },
-    status: 'Published',
-    created_at: '2026-09-24',
-    category: 'Sự kiện',
-    category_id: 'cat_event',
-    description: 'Chương trình hội thảo kết nối cộng đồng nhà phát triển và người hâm mộ công nghệ trên toàn quốc.',
-    body: 'Sự kiện quy tụ hơn 50 chuyên gia công nghệ hàng đầu chia sẻ về ứng dụng AI trong tối ưu hóa trải nghiệm fandom và công nghệ nhận diện vé điện tử thế hệ mới.',
-    media: [
-      { url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop', type: 'Image' }
-    ],
-    is_pinned: true,
-    views: 8450,
-  },
-  {
-    id: 'cnt_003',
-    title: 'Nghi vấn bài viết chứa liên kết quảng cáo không hợp lệ',
-    author: { id: 'usr_099', name: 'Spammer99' },
-    status: 'Flagged',
-    created_at: '2026-09-23',
-    category: 'Báo cáo',
-    category_id: 'cat_report',
-    description: 'Nội dung bị cộng đồng người dùng báo cáo nhiều lần do chứa liên kết spam và nội dung không phù hợp chuẩn mực.',
-    body: 'Bài viết quảng cáo cờ bạc trái phép núp bóng đường link giveaway sự kiện idol. Cần tiến hành từ chối và khóa bài viết khẩn cấp.',
-    is_pinned: false,
-    views: 210,
-  },
-  {
-    id: 'cnt_004',
-    title: 'K-POP World Tour 2026: Hướng dẫn săn vé mở bán Presale độc quyền',
-    author: { id: 'usr_007', name: 'MusicLover' },
-    status: 'Published',
-    created_at: '2026-09-22',
-    category: 'Sự kiện',
-    category_id: 'cat_event',
-    description: 'Kinh nghiệm chuẩn bị tài khoản, thẻ thanh toán quốc tế và khung giờ săn vé mở bán đợt 1 dành riêng cho hội viên.',
-    body: 'Tất tần tật các bước săn vé concert không lo bị nghẽn mạng: Kiểm tra hạn định mức thẻ thanh toán, mở sẵn cổng queue trước 15 phút và tuân thủ quy định số vé tối đa trên mỗi tài khoản.',
-    media: [
-      { url: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&auto=format&fit=crop', type: 'Image' }
-    ],
-    is_pinned: false,
-    views: 14200,
-  },
-  {
-    id: 'cnt_005',
-    title: 'Thông báo Sự kiện Chung kết Thế Giới Fan Hub 2026',
-    author: { id: 'usr_001', name: 'Ban Tổ Chức' },
-    status: 'Published',
-    created_at: '2026-09-21',
-    category: 'Thông báo',
-    category_id: 'cat_announcement',
-    description: 'Sự kiện chung kết toàn cầu sẽ diễn ra vào tháng 11 với nhiều phần quà hấp dẫn.',
-    body: 'Vòng chung kết toàn cầu sẽ được truyền hình trực tiếp với phụ đề đa ngữ. Hội viên VIP sẽ được tham gia bốc thăm gặp gỡ nghệ sĩ tại hậu trường.',
-    is_pinned: true,
-    views: 26500,
-  }
-];
+
 
 export default function AdminEventsPage() {
   const { language } = useAdminLanguage();
@@ -307,19 +231,11 @@ export default function AdminEventsPage() {
         throw new Error('Invalid format');
       }
     } catch (err) {
-      console.warn('Backend API /api/v1/admin/contents offline or error. Loading interactive fallback data.', err);
+      console.warn('Backend API /api/v1/admin/contents offline or error.', err);
       setIsConnectionError(true);
-
-      let filtered = [...FALLBACK_CONTENTS];
-      if (statusFilter !== 'all') {
-        filtered = filtered.filter((item) => (item.status || '').toLowerCase() === statusFilter.toLowerCase());
-      }
-      if (categoryIdFilter !== 'all') {
-        filtered = filtered.filter((item) => item.category_id === categoryIdFilter);
-      }
-      setContents(filtered);
+      setContents([]);
       setMeta({
-        total: filtered.length,
+        total: 0,
         page,
         limit,
       });
@@ -896,50 +812,76 @@ export default function AdminEventsPage() {
             </div>
           )}
 
-          {/* Page Title & Action Bar */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200">
-            <div>
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100">
-                  <Calendar className="w-6 h-6" />
-                </div>
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
-                    {isVi ? 'Quản Lý Nội Dung & Sự Kiện' : 'Content & Event Management'}
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono">
-                      /api/v1/admin/contents
-                    </span>
-                  </h1>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    {isVi
-                      ? 'Xem chi tiết (GET /{id}), duyệt bài (PUT /review), cập nhật nội dung (PUT /{id}) và gỡ bài viết (DELETE /{id}).'
-                      : 'Full content management: details, review approvals, live editing, and removals.'}
-                  </p>
-                </div>
+          {/* Page Title & Top Actions Header */}
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
+                <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
+                <span>/</span>
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Quản lý Nội dung' : 'Content Management'}
+                </span>
               </div>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <span>{isVi ? 'Quản Lý Nội Dung & Bài Viết' : 'Content & Post Management'}</span>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
+                  {totalCount} {isVi ? 'bài viết' : 'posts'}
+                </span>
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Quản lý bài viết, kiểm duyệt nội dung công khai, ghim bài và xử lý báo cáo.'
+                  : 'Manage articles, review public submissions, pin featured posts, and resolve flags.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2 self-start md:self-auto">
-              {/* Button: + Đăng bài viết / sự kiện mới (POST /api/v1/admin/contents) */}
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
-                onClick={() => setIsCreateModalOpen(true)}
-                style={{ borderRadius: '8px' }}
-                className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
-              >
-                <Plus className="w-4 h-4" />
-                <span>{isVi ? 'Đăng bài viết mới' : 'Create Content'}</span>
-              </button>
-
-              {/* Refresh Button */}
-              <button
+                type="button"
                 onClick={fetchContents}
                 disabled={isLoading}
-                style={{ borderRadius: '8px' }}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
-                title="Làm mới dữ liệu từ API"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsCreateModalOpen(true)}
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#4f46e5',
+                  color: '#ffffff',
+                  padding: '9px 18px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  border: 'none',
+                }}
+                className="hover:bg-indigo-700 transition-colors shadow-2xs"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{isVi ? 'ĐĂNG BÀI MỚI' : 'CREATE NEW POST'}</span>
               </button>
             </div>
           </div>
@@ -1089,7 +1031,7 @@ export default function AdminEventsPage() {
             {/* Search Input & Category Filter */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="relative md:col-span-2">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
@@ -1099,7 +1041,7 @@ export default function AdminEventsPage() {
                       ? 'Tìm kiếm theo tiêu đề, tác giả, mã ID (cnt_xxx)...'
                       : 'Search by title, author, or ID (cnt_xxx)...'
                   }
-                  className="w-full bg-white border border-slate-300 rounded-lg pl-9 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-colors shadow-xs"
+                  className="w-full bg-white border border-slate-300 rounded-xl pl-11 pr-8 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-colors shadow-xs"
                 />
                 {searchQuery && (
                   <button
@@ -1136,8 +1078,44 @@ export default function AdminEventsPage() {
             <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">
               <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
               <p className="text-sm font-semibold text-slate-600">
-                {isVi ? 'Đang tải danh sách từ /api/v1/admin/contents...' : 'Fetching contents from API...'}
+                {isVi ? 'Đang tải danh sách bài viết...' : 'Fetching contents from API...'}
               </p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={fetchContents}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
             </div>
           ) : displayedItems.length === 0 ? (
             <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">

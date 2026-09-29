@@ -21,7 +21,7 @@ export const Y2KTickerTape: React.FC<Y2KTickerTapeProps> = ({ inverted = false }
     <div 
       className={`w-full overflow-hidden border-y-2 border-black py-2.5 font-mono text-[12px] font-black tracking-widest uppercase select-none shadow-[0px_2px_0px_#000000] ${
         inverted 
-          ? 'bg-[#ff2e93] text-white' 
+          ? 'bg-[#d91470] text-white' 
           : 'bg-[#ffd60a] text-black'
       }`}
     >
@@ -33,7 +33,7 @@ export const Y2KTickerTape: React.FC<Y2KTickerTapeProps> = ({ inverted = false }
                 <span className="flex items-center gap-2 drop-shadow-[1px_1px_0px_#000000]">
                   <span>{item}</span>
                 </span>
-                <span className={inverted ? 'text-[#ffd60a]' : 'text-[#ff2e93]'}>◆◆◆</span>
+                <span className={inverted ? 'text-[#ffd60a]' : 'text-[#d91470]'}>◆◆◆</span>
               </span>
             ))}
           </div>

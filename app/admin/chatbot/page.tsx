@@ -34,6 +34,7 @@ import {
   ExternalLink,
   MessageCircle,
   Lightbulb,
+  WifiOff,
 } from 'lucide-react';
 
 export interface AdminFaqItem {
@@ -47,51 +48,7 @@ export interface AdminFaqItem {
   [key: string]: any;
 }
 
-// Fallback demo FAQs
-const FALLBACK_FAQS: AdminFaqItem[] = [
-  {
-    id: 'faq_001',
-    question: 'Làm thế nào để lấy vé NFT?',
-    answer: 'Sau khi thanh toán thành công, vé sự kiện sẽ được tự động mint dạng NFT và lưu vào mục "Vé của tôi" trên ứng dụng. Bạn chỉ cần mở mã QR tại cổng kiểm soát để check-in.',
-    category: 'Booking',
-    is_active: true,
-  },
-  {
-    id: 'faq_002',
-    question: 'Quy định hoàn tiền vé?',
-    answer: 'Bạn có thể gửi yêu cầu hoàn tiền trước 48h khi sự kiện diễn ra. Trong trường hợp sự kiện bị dời ngày hoặc hủy bởi ban tổ chức, hệ thống sẽ tự động hoàn 100% tiền vé về tài khoản nguồn.',
-    category: 'Booking',
-    is_active: true,
-  },
-  {
-    id: 'faq_003',
-    question: 'Tôi có thể chuyển nhượng hoặc tặng vé cho bạn bè không?',
-    answer: 'Có. Tại chi tiết vé trong mục "Vé của tôi", chọn tính năng "Chuyển nhượng vé", nhập email hoặc địa chỉ ví của người nhận và xác nhận mã OTP gửi về số điện thoại.',
-    category: 'Ticket Transfer',
-    is_active: true,
-  },
-  {
-    id: 'faq_004',
-    question: 'Những hình thức thanh toán nào được hỗ trợ?',
-    answer: 'Hệ thống hỗ trợ thanh toán qua VNPay (QR Pay, thẻ ATM nội địa, Visa/Mastercard), Ví MoMo, ZaloPay và chuyển khoản tức thì 24/7 qua VietQR.',
-    category: 'Payment',
-    is_active: true,
-  },
-  {
-    id: 'faq_005',
-    question: 'Làm sao để đăng ký gian hàng bán vật phẩm tại sự kiện?',
-    answer: 'Đơn vị hoặc cosplayer muốn thuê gian hàng vui lòng truy cập trang B2B Đối tác hoặc gửi email trực tiếp tới partner@fandomfest.vn kèm thông tin sản phẩm và quy mô gian hàng.',
-    category: 'B2B / Partner',
-    is_active: false,
-  },
-  {
-    id: 'faq_006',
-    question: 'Trẻ em dưới bao nhiêu tuổi được miễn phí vé vào cổng?',
-    answer: 'Trẻ em dưới 1 mét được miễn phí vé vào cổng khi đi kèm người lớn có vé hợp lệ (tối đa 1 trẻ em/1 người lớn), không bao gồm quyền lợi quà tặng của vé VIP.',
-    category: 'Event Rules',
-    is_active: true,
-  },
-];
+
 
 const FAQ_CATEGORIES = ['All', 'Booking', 'Payment', 'Ticket Transfer', 'B2B / Partner', 'Event Rules'];
 
@@ -107,6 +64,7 @@ export default function AdminChatbotPage() {
   const [faqs, setFaqs] = useState<AdminFaqItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isConnectionError, setIsConnectionError] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [apiSuccess, setApiSuccess] = useState<string | null>(null);
 
@@ -127,6 +85,7 @@ export default function AdminChatbotPage() {
   // Chatbot Simulator Playground State
   const [isTesterOpen, setIsTesterOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
+  const [isTesterTyping, setIsTesterTyping] = useState(false);
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'bot' | 'user'; text: string }>>([
     {
       sender: 'bot',
@@ -171,6 +130,7 @@ export default function AdminChatbotPage() {
   const fetchFaqs = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
+    setIsConnectionError(false);
 
     try {
       const token = getAccessToken();
@@ -200,27 +160,15 @@ export default function AdminChatbotPage() {
         setTotalCount(json.meta?.total || json.total || rawData.length);
       } else {
         setFaqs([]);
+        setTotalCount(0);
       }
       setApiError(null);
+      setIsConnectionError(false);
     } catch (err: any) {
-      console.warn('API /api/v1/admin/chatbot/faqs offline, using demo data:', err);
-      let filtered = [...FALLBACK_FAQS];
-      if (categoryFilter !== 'All') {
-        filtered = filtered.filter(
-          (f) => (f.category || '').toLowerCase() === categoryFilter.toLowerCase()
-        );
-      }
-      if (searchTerm.trim()) {
-        const q = searchTerm.toLowerCase();
-        filtered = filtered.filter(
-          (f) =>
-            f.question.toLowerCase().includes(q) ||
-            f.answer.toLowerCase().includes(q) ||
-            f.id.toLowerCase().includes(q)
-        );
-      }
-      setFaqs(filtered);
-      setTotalCount(filtered.length);
+      console.warn('API /api/v1/admin/chatbot/faqs offline or error:', err);
+      setFaqs([]);
+      setTotalCount(0);
+      setIsConnectionError(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -394,16 +342,17 @@ export default function AdminChatbotPage() {
     }
   };
 
-  // Chatbot Tester query match
+  // Chatbot Tester query match with astream & typing indicator
   const handleSendTestChat = () => {
-    if (!chatInput.trim()) return;
+    if (!chatInput.trim() || isTesterTyping) return;
     const userQuestion = chatInput.trim();
     const newHistory = [...chatMessages, { sender: 'user' as const, text: userQuestion }];
     setChatMessages(newHistory);
     setChatInput('');
+    setIsTesterTyping(true);
 
     // Find best match in FAQs
-    setTimeout(() => {
+    setTimeout(async () => {
       const q = userQuestion.toLowerCase();
       const matched = faqs.find(
         (f) =>
@@ -415,10 +364,26 @@ export default function AdminChatbotPage() {
 
       const botReply = matched
         ? matched.answer
-        : 'Xin lỗi, tôi chưa tìm thấy câu trả lời chính xác trong kho tri thức FAQ. Đội ngũ hỗ trợ sẽ liên hệ với bạn sớm nhất!';
+        : (isVi
+            ? 'Xin lỗi, tôi chưa tìm thấy câu trả lời chính xác trong kho tri thức FAQ. Đội ngũ hỗ trợ sẽ liên hệ với bạn sớm nhất!'
+            : 'Sorry, I could not find a matching answer in the FAQ knowledge base. Our team will contact you soon!');
 
-      setChatMessages((prev) => [...prev, { sender: 'bot', text: botReply }]);
-    }, 400);
+      setIsTesterTyping(false);
+      // Stream bot reply
+      setChatMessages((prev) => [...prev, { sender: 'bot', text: '' }]);
+      const tokens = botReply.match(/\S+|\s+/g) || [botReply];
+      let current = '';
+      for (let i = 0; i < tokens.length; i++) {
+        current += tokens[i];
+        const snap = current;
+        setChatMessages((prev) => {
+          const next = [...prev];
+          next[next.length - 1] = { sender: 'bot', text: snap };
+          return next;
+        });
+        await new Promise((r) => setTimeout(r, 20));
+      }
+    }, 550);
   };
 
   // KPI computations
@@ -449,53 +414,100 @@ export default function AdminChatbotPage() {
           activeTab="chatbot"
         />
 
-        {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+        {/* BREADCRUMB & TOP ACTIONS HEADER */}
+        <div className="p-6 pb-0">
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-indigo-600 font-medium">
-                  {isVi ? 'Kho Tri Thức Chatbot (AI FAQ)' : 'Chatbot Knowledge Base'}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Kho Tri Thức Chatbot' : 'Chatbot Knowledge Base'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
                   <Bot className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Quản Lý Câu Hỏi & Tri Thức Chatbot' : 'AI Chatbot FAQs Management'}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                   {totalFaqs} {isVi ? 'câu hỏi' : 'entries'}
                 </span>
               </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Huấn luyện cơ sở dữ liệu câu hỏi thường gặp (FAQ) cho trợ lý ảo AI trả lời tự động.'
+                  : 'Train FAQ knowledge base for automated AI customer support responses.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
                 onClick={() => setIsTesterOpen(true)}
-                className="px-3.5 py-2 bg-white hover:bg-slate-50 text-indigo-700 text-xs font-bold rounded-xl border border-indigo-200 flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
-                title={isVi ? 'Thử nghiệm Bot' : 'Test Chatbot'}
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#4f46e5',
+                  border: '1px solid #c7d2fe',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-indigo-50 transition-colors shadow-2xs"
               >
-                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                <span>{isVi ? 'Thử nghiệm Chatbot' : 'Test Bot'}</span>
+                <Sparkles className="w-4 h-4 text-indigo-600" />
+                <span>{isVi ? 'THỬ NGHIỆM CHATBOT' : 'TEST BOT'}</span>
               </button>
 
               <button
+                type="button"
                 onClick={() => fetchFaqs(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
-                <span className="hidden sm:inline">{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
               </button>
 
               <button
+                type="button"
                 onClick={() => setIsCreateOpen(true)}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#4f46e5',
+                  color: '#ffffff',
+                  padding: '9px 18px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  border: 'none',
+                }}
+                className="hover:bg-indigo-700 transition-colors shadow-2xs"
               >
-                <Plus className="w-4 h-4 stroke-[2.5]" />
-                <span>{isVi ? 'Thêm câu hỏi FAQ' : 'Add FAQ'}</span>
+                <Plus className="w-4 h-4" />
+                <span>{isVi ? 'THÊM CÂU HỎI FAQ' : 'ADD FAQ'}</span>
               </button>
             </div>
           </div>
@@ -528,7 +540,50 @@ export default function AdminChatbotPage() {
 
         {/* CONTENT BODY */}
         <div className="p-6 space-y-6">
-          {/* STATS OVERVIEW CARDS */}
+          {loading ? (
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
+              <p className="text-xs text-slate-500">{isVi ? 'Đang tải kho tri thức FAQ...' : 'Loading FAQs...'}</p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => fetchFaqs(true)}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* STATS OVERVIEW CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
               <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
@@ -777,6 +832,8 @@ export default function AdminChatbotPage() {
               </button>
             </div>
           </div>
+        </>
+        )}
         </div>
       </div>
 
@@ -1108,6 +1165,21 @@ export default function AdminChatbotPage() {
                   </div>
                 </div>
               ))}
+
+              {/* 3 bouncing dots indicator in tester */}
+              {isTesterTyping && (
+                <div className="flex items-start gap-2.5 justify-start">
+                  <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-200 shadow-xs">
+                    <Bot className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="bg-white border border-slate-200 text-slate-800 p-3 rounded-2xl rounded-tl-xs shadow-xs flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:-0.32s]" />
+                    <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:-0.16s]" />
+                    <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" />
+                    <span className="text-[10px] text-slate-500 ml-1 font-medium">{isVi ? 'Đang soạn phản hồi...' : 'Typing...'}</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Input box */}

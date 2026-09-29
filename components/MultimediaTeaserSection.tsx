@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { INITIAL_MEDIA_ITEMS } from '../data/multimediaData';
 
@@ -41,11 +42,11 @@ export const MultimediaTeaserSection: React.FC = () => {
                 style={{ borderRadius: '0px' }}
                 className="px-2.5 py-1 bg-[#fefce8] text-black border-2 border-black font-black uppercase shadow-[2px_2px_0px_#000]"
               >
-                ★ 12 TITLES
+                ★ {INITIAL_MEDIA_ITEMS.length} TITLES
               </span>
               <span 
                 style={{ borderRadius: '0px' }}
-                className="px-2.5 py-1 bg-[#ecfeff] text-[#0284c7] border-2 border-black font-black uppercase shadow-[2px_2px_0px_#000]"
+                className="px-2.5 py-1 bg-[#ecfeff] text-[#0369a1] border-2 border-black font-black uppercase shadow-[2px_2px_0px_#000]"
               >
                 ⚡ LOSSLESS 24-BIT
               </span>
@@ -57,7 +58,7 @@ export const MultimediaTeaserSection: React.FC = () => {
             <div>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-tight tracking-tight">
                 Cinematheque &amp;{' '}
-                <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
+                <em className="font-serif italic font-normal text-[#d91470] drop-shadow-[1px_1px_0px_#000000]">
                   Sound Lab
                 </em>
               </h2>
@@ -96,9 +97,11 @@ export const MultimediaTeaserSection: React.FC = () => {
                     href={`/multimedia?id=${featuredItem.id}`}
                     className="block relative aspect-video w-full overflow-hidden bg-black border-2 border-black shadow-[2px_2px_0px_#000] mb-4"
                   >
-                    <img 
+                    <Image 
                       src={featuredItem.thumbnailUrl} 
                       alt={featuredItem.title} 
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 58vw"
                       className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 opacity-90 group-hover:opacity-100"
                     />
 
@@ -112,7 +115,7 @@ export const MultimediaTeaserSection: React.FC = () => {
                       </span>
                       <span 
                         style={{ borderRadius: '0px' }}
-                        className="px-2 py-0.5 bg-[#ff2e93] text-white border border-black text-[10px] font-black uppercase"
+                        className="px-2 py-0.5 bg-[#d91470] text-white border border-black text-[10px] font-black uppercase"
                       >
                         {featuredItem.category}
                       </span>
@@ -139,7 +142,7 @@ export const MultimediaTeaserSection: React.FC = () => {
 
                   {/* Metadata */}
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between text-xs font-mono font-black text-[#ff2e93] uppercase tracking-wider">
+                    <div className="flex items-center justify-between text-xs font-mono font-black text-[#d91470] uppercase tracking-wider">
                       <span>{featuredItem.artist}</span>
                       <span className="text-black bg-[#fefce8] px-2 py-0.5 border border-black">
                         {featuredItem.agency || 'OFFICIAL RELEASE'}
@@ -161,7 +164,7 @@ export const MultimediaTeaserSection: React.FC = () => {
                 {/* Rating & Launch Action */}
                 <div className="pt-4 mt-4 border-t-2 border-black flex items-center justify-between font-mono text-xs">
                   <div className="flex items-center gap-3">
-                    <span className="font-black text-[#ff2e93]">
+                    <span className="font-black text-[#d91470]">
                       ★ {featuredItem.rating.average.toFixed(1)} / 5.0
                     </span>
                     <span className="text-neutral-500 font-bold hidden sm:inline">
@@ -184,7 +187,7 @@ export const MultimediaTeaserSection: React.FC = () => {
           {/* Secondary Highlight Cards (5 Cols) */}
           <div className="lg:col-span-5 flex flex-col gap-4">
             <div className="flex items-center justify-between pb-2 border-b-2 border-black font-mono text-xs">
-              <span className="font-black uppercase tracking-widest text-[#ff2e93]">
+              <span className="font-black uppercase tracking-widest text-[#d91470]">
                 TRENDING BROADCASTS // HIGHLIGHTS
               </span>
               <Link href="/multimedia" className="underline hover:text-[#ff2e93] font-bold text-[10px]">
@@ -204,15 +207,16 @@ export const MultimediaTeaserSection: React.FC = () => {
                   style={{ borderRadius: '0px' }}
                   className="relative w-28 sm:w-32 aspect-video bg-black border-2 border-black shrink-0 overflow-hidden shadow-[1px_1px_0px_#000]"
                 >
-                  <img 
+                  <Image 
                     src={item.thumbnailUrl} 
                     alt={item.title} 
+                    fill
+                    sizes="(max-width: 640px) 112px, 128px"
                     className="w-full h-full object-cover group-hover:scale-105 transition-all duration-200"
-                    loading="lazy"
                   />
                   <span 
                     style={{ borderRadius: '0px' }}
-                    className="absolute bottom-1 right-1 px-1 py-0.2 bg-black text-white text-[9px] font-mono font-bold"
+                    className="absolute bottom-1 right-1 px-1 py-0.2 bg-black text-white text-[9px] font-mono font-bold z-10"
                   >
                     {item.duration}
                   </span>
@@ -221,7 +225,7 @@ export const MultimediaTeaserSection: React.FC = () => {
                 {/* Details */}
                 <div className="flex-1 min-w-0 space-y-1 font-mono">
                   <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider">
-                    <span className="text-[#ff2e93] truncate">{item.artist}</span>
+                    <span className="text-[#d91470] truncate">{item.artist}</span>
                     <span>•</span>
                     <span className="bg-[#fefce8] px-1 border border-black text-black">{item.category}</span>
                   </div>
@@ -231,7 +235,7 @@ export const MultimediaTeaserSection: React.FC = () => {
                   </h4>
 
                   <div className="flex items-center justify-between text-[10px] text-neutral-500 pt-1">
-                    <span className="text-[#ff2e93] font-black">★ {item.rating.average.toFixed(1)}</span>
+                    <span className="text-[#d91470] font-black">★ {item.rating.average.toFixed(1)}</span>
                     <span className="font-bold">{(item.views / 1000000).toFixed(1)}M VIEWS</span>
                   </div>
                 </div>
@@ -276,7 +280,7 @@ export const MultimediaTeaserSection: React.FC = () => {
             <div className="flex items-center gap-2 justify-center md:justify-start font-mono text-[10px]">
               <span 
                 style={{ borderRadius: '0px' }}
-                className="bg-[#ff2e93] text-white px-2 py-0.5 border border-black font-black uppercase tracking-widest shadow-[1px_1px_0px_#000]"
+                className="bg-[#d91470] text-white px-2 py-0.5 border border-black font-black uppercase tracking-widest shadow-[1px_1px_0px_#000]"
               >
                 LOSSLESS HUB // 2026 ARCHIVE
               </span>
@@ -294,7 +298,7 @@ export const MultimediaTeaserSection: React.FC = () => {
             <Link
               href="/multimedia"
               style={{ borderRadius: '0px' }}
-              className="px-8 py-4 bg-[#ff2e93] hover:bg-[#e11d48] text-white text-xs sm:text-sm font-mono font-black uppercase tracking-widest border-2 border-black shadow-[4px_4px_0px_#000000] transition-colors inline-flex items-center gap-3"
+              className="px-8 py-4 bg-[#d91470] hover:bg-[#be185d] text-white text-xs sm:text-sm font-mono font-black uppercase tracking-widest border-2 border-black shadow-[4px_4px_0px_#000000] transition-colors inline-flex items-center gap-3"
             >
               <span>[▶ EXPLORE MULTIMEDIA CENTER]</span>
               <span>→</span>

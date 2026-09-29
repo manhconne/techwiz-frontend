@@ -1,19 +1,19 @@
 'use client';
 
+import QRCode from 'react-qr-code';
 import React, { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
-const EventLeafletMap = dynamic(() => import('./EventLeafletMap'), { 
+const RealGpsMap = dynamic(() => import('./RealGpsMap'), { 
   ssr: false, 
-  loading: () => (
-    <div className="w-full h-[520px] flex flex-col items-center justify-center bg-slate-950 text-white font-mono gap-3 border-2 border-black">
-      <div className="w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
-      <div className="text-xs uppercase tracking-wider text-emerald-400 font-bold">
-        Loading OpenStreetMap &amp; Leaflet Engine...
-      </div>
-    </div>
-  ) 
+  loading: () => <div className="w-full h-[460px] flex items-center justify-center bg-slate-900 text-slate-400 font-mono font-bold">Loading GPS Radar Map...</div> 
 });
+
+const Map = dynamic(() => import('./Map'), { 
+  ssr: false, 
+  loading: () => <div className="w-full h-full flex items-center justify-center bg-slate-900 text-slate-400 font-mono font-bold">Loading Map...</div> 
+});
+
 import { 
   MapPin, 
   Navigation, 
@@ -51,9 +51,358 @@ import {
   mockLocationEvents, 
   calculateDistanceKm 
 } from '../data/locationEventsData';
+import { useActiveFandom, getFandomThemeKeyFromCategory, getFandomCategoryFromTheme } from '../utils/fandomTheme';
 
-export const LocationAwareEventExplorer: React.FC = () => {
+interface LocationAwareEventExplorerProps {
+  fandomCategory?: string;
+}
+
+export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProps> = ({ fandomCategory: propFandomCategory }) => {
   const { formatPrice } = useCartWishlist();
+  const { themeKey, category } = useActiveFandom();
+
+  // Internal reactive theme key that syncs with props and window events
+  const [internalCategory, setInternalCategory] = useState<string>(() => propFandomCategory || category || 'all');
+
+  useEffect(() => {
+    if (propFandomCategory) {
+      setInternalCategory(propFandomCategory);
+    }
+  }, [propFandomCategory]);
+
+  useEffect(() => {
+    const handleFandomChange = (e: any) => {
+      if (e?.detail?.category) {
+        setInternalCategory(e.detail.category);
+      } else if (e?.detail?.theme) {
+        setInternalCategory(getFandomCategoryFromTheme(e.detail.theme));
+      }
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('fandom-theme-change', handleFandomChange);
+      return () => window.removeEventListener('fandom-theme-change', handleFandomChange);
+    }
+  }, []);
+
+  const effectiveThemeKey = useMemo(() => {
+    const cat = (internalCategory || propFandomCategory || category || '').toLowerCase();
+    if (cat.includes('comic')) return 'comics';
+    if (cat.includes('manga')) return 'manga';
+    if (cat.includes('anime')) return 'anime';
+    if (cat.includes('game') || cat.includes('gaming')) return 'gaming';
+    if (cat.includes('movie') || cat.includes('cinema')) return 'cinema';
+    if (cat.includes('tv')) return 'tv';
+    if (cat.includes('cosplay')) return 'cosplay';
+    if (themeKey && themeKey !== 'all') return themeKey;
+    return 'kpop';
+  }, [internalCategory, propFandomCategory, category, themeKey]);
+
+  const isComics = effectiveThemeKey === 'comics';
+  const isManga = effectiveThemeKey === 'manga';
+  const isAnime = effectiveThemeKey === 'anime';
+  const isGaming = effectiveThemeKey === 'gaming';
+  const isCosplay = effectiveThemeKey === 'cosplay';
+  const isCinema = effectiveThemeKey === 'cinema';
+  const isTv = effectiveThemeKey === 'tv';
+  const isDark = isGaming || isCinema || isTv || isCosplay;
+
+  // Unified theme tokens across all 8 fandom categories
+  const themeTokens = useMemo(() => {
+    if (isGaming) {
+      return {
+        key: 'gaming',
+        sectionBg: '#050508',
+        sectionBorder: 'border-t border-b border-[#00f0ff]/40',
+        textColor: 'text-white',
+        textMuted: 'text-cyan-200/70',
+        headingFont: "'JetBrains Mono', monospace",
+        accentHex: '#00f0ff',
+        accentText: 'text-[#00f0ff]',
+        eyebrowBox: 'bg-black text-[#00f0ff] border-2 border-[#00f0ff] shadow-[2px_2px_0px_#00f0ff]',
+        eyebrowDot: 'bg-[#00f0ff]',
+        switcherBox: 'bg-[#0a0a12] border-2 border-[#00f0ff]/60 shadow-[3px_3px_0px_#00f0ff]',
+        btnActive: 'bg-[#00f0ff] text-black font-extrabold shadow-[2px_2px_0px_#ffffff]',
+        btnInactive: 'text-cyan-300 hover:text-white hover:bg-cyan-950/60 font-bold',
+        gpsBar: 'bg-[#0b0c16] border-2 border-[#00f0ff] shadow-[4px_4px_0px_#00f0ff]',
+        gpsBtn: 'bg-[#00f0ff] hover:bg-[#38bdf8] text-black border-2 border-black font-extrabold shadow-[2px_2px_0px_#ffffff]',
+        coordBadge: 'bg-[#050508] border-2 border-[#00f0ff]/50 text-cyan-300 font-mono font-bold',
+        cityActive: 'bg-[#00f0ff] text-black border-2 border-white shadow-[2px_2px_0px_#00ff66] font-extrabold',
+        cityInactive: 'bg-[#121324] text-cyan-200 border border-[#00f0ff]/40 hover:bg-cyan-950',
+        filterBox: 'bg-[#0b0c16] border-2 border-[#00f0ff]/60 shadow-[2px_2px_0px_#00f0ff]',
+        radiusActive: 'bg-[#00f0ff] text-black border-2 border-white shadow-[2px_2px_0px_#00ff66] font-extrabold',
+        radiusInactive: 'bg-[#0b0c16] border-2 border-[#00f0ff]/40 text-cyan-300 hover:bg-cyan-950 font-bold',
+        searchBox: 'bg-[#050508] border-2 border-[#00f0ff] text-white placeholder-cyan-500/50 shadow-[2px_2px_0px_#00f0ff]',
+        cardBg: 'bg-[#0b0c16] border-2 border-[#00f0ff] shadow-[5px_5px_0px_#00f0ff]',
+        cardSubtleBorder: 'border-[#00f0ff]/30',
+        cardTitleColor: 'text-white',
+        primaryBtn: 'bg-[#00f0ff] hover:bg-white text-black border-2 border-black shadow-[3px_3px_0px_#00ff66] font-extrabold',
+        secondaryBtn: 'bg-[#121324] border-2 border-[#00f0ff] text-cyan-300 hover:bg-[#00f0ff] hover:text-black shadow-[2px_2px_0px_#00f0ff]',
+        badgeDistance: 'bg-black text-[#00ff66] border-2 border-[#00ff66]',
+        perkChip: 'bg-[#050508] text-cyan-300 border border-[#00f0ff]/60 font-mono',
+        listItemActive: 'bg-[#16182e] border-2 border-[#00f0ff] text-white shadow-[3px_3px_0px_#00f0ff]',
+        listItemInactive: 'bg-[#0b0c16] border border-[#00f0ff]/30 hover:border-[#00f0ff] text-slate-200',
+        modalBg: 'bg-[#080910] border-3 border-[#00f0ff] shadow-[8px_8px_0px_#00f0ff] text-white',
+      };
+    }
+
+    if (isCinema) {
+      return {
+        key: 'cinema',
+        sectionBg: '#09090b',
+        sectionBorder: 'border-t border-b border-[#d4af37]/40',
+        textColor: 'text-zinc-100',
+        textMuted: 'text-neutral-400',
+        headingFont: "'Playfair Display', Georgia, serif",
+        accentHex: '#d4af37',
+        accentText: 'text-[#d4af37]',
+        eyebrowBox: 'bg-[#121215] text-[#d4af37] border-2 border-[#d4af37] shadow-[2px_2px_0px_#d4af37]',
+        eyebrowDot: 'bg-[#d4af37]',
+        switcherBox: 'bg-[#141418] border-2 border-[#d4af37]/60 shadow-[3px_3px_0px_#d4af37]',
+        btnActive: 'bg-[#d4af37] text-black font-extrabold shadow-[2px_2px_0px_#ffffff]',
+        btnInactive: 'text-[#d4af37]/80 hover:text-white hover:bg-neutral-800 font-bold',
+        gpsBar: 'bg-[#121216] border-2 border-[#d4af37] shadow-[4px_4px_0px_#d4af37]',
+        gpsBtn: 'bg-[#d4af37] hover:bg-[#e6c35c] text-black border-2 border-black font-extrabold shadow-[2px_2px_0px_#ffffff]',
+        coordBadge: 'bg-[#09090b] border-2 border-[#d4af37]/50 text-amber-200 font-mono font-bold',
+        cityActive: 'bg-[#d4af37] text-black border-2 border-white shadow-[2px_2px_0px_#d4af37] font-extrabold',
+        cityInactive: 'bg-[#1a1a20] text-amber-100/80 border border-[#d4af37]/30 hover:bg-neutral-800',
+        filterBox: 'bg-[#121216] border-2 border-[#d4af37]/60 shadow-[2px_2px_0px_#d4af37]',
+        radiusActive: 'bg-[#d4af37] text-black border-2 border-white shadow-[2px_2px_0px_#d4af37] font-extrabold',
+        radiusInactive: 'bg-[#121216] border-2 border-[#d4af37]/40 text-amber-200 hover:bg-neutral-800 font-bold',
+        searchBox: 'bg-[#09090b] border-2 border-[#d4af37] text-white placeholder-amber-400/40 shadow-[2px_2px_0px_#d4af37]',
+        cardBg: 'bg-[#121216] border-2 border-[#d4af37] shadow-[5px_5px_0px_#d4af37]',
+        cardSubtleBorder: 'border-[#d4af37]/30',
+        cardTitleColor: 'text-white',
+        primaryBtn: 'bg-[#d4af37] hover:bg-amber-300 text-black border-2 border-black shadow-[3px_3px_0px_#ffffff] font-extrabold',
+        secondaryBtn: 'bg-[#1c1c22] border-2 border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-black shadow-[2px_2px_0px_#d4af37]',
+        badgeDistance: 'bg-black text-[#d4af37] border-2 border-[#d4af37]',
+        perkChip: 'bg-[#09090b] text-[#d4af37] border border-[#d4af37]/50 font-serif',
+        listItemActive: 'bg-[#1f1f28] border-2 border-[#d4af37] text-white shadow-[3px_3px_0px_#d4af37]',
+        listItemInactive: 'bg-[#121216] border border-[#d4af37]/30 hover:border-[#d4af37] text-zinc-300',
+        modalBg: 'bg-[#0f0f13] border-3 border-[#d4af37] shadow-[8px_8px_0px_#d4af37] text-white',
+      };
+    }
+
+    if (isManga) {
+      return {
+        key: 'manga',
+        sectionBg: '#fdfbf7',
+        sectionBorder: 'border-t-2 border-b-2 border-[#2d2d2d]',
+        textColor: 'text-[#2d2d2d]',
+        textMuted: 'text-[#555555]',
+        headingFont: "'Kalam', cursive, sans-serif",
+        accentHex: '#ff4d4d',
+        accentText: 'text-[#ff4d4d]',
+        eyebrowBox: 'bg-[#ff4d4d] text-white border-2 border-[#2d2d2d] shadow-[2px_2px_0px_#2d2d2d]',
+        eyebrowDot: 'bg-[#ffd60a]',
+        switcherBox: 'bg-white border-2 border-[#2d2d2d] shadow-[3px_3px_0px_#2d2d2d]',
+        btnActive: 'bg-[#ff4d4d] text-white border-2 border-[#2d2d2d] shadow-[2px_2px_0px_#2d2d2d] font-bold',
+        btnInactive: 'text-[#2d2d2d] hover:bg-[#fff0f0] font-bold',
+        gpsBar: 'bg-white border-3 border-[#2d2d2d] shadow-[4px_4px_0px_#2d2d2d]',
+        gpsBtn: 'bg-[#ff4d4d] hover:bg-[#e03a3a] text-white border-2 border-[#2d2d2d] shadow-[2px_2px_0px_#2d2d2d] font-bold',
+        coordBadge: 'bg-[#fdfbf7] border-2 border-[#2d2d2d] text-[#2d2d2d] font-mono font-bold',
+        cityActive: 'bg-[#ffd60a] text-black border-2 border-[#2d2d2d] shadow-[2px_2px_0px_#2d2d2d] font-bold',
+        cityInactive: 'bg-white text-[#2d2d2d] border border-[#2d2d2d] hover:bg-[#fff0f0]',
+        filterBox: 'bg-white border-2 border-[#2d2d2d] shadow-[2px_2px_0px_#2d2d2d]',
+        radiusActive: 'bg-[#ff4d4d] text-white border-2 border-[#2d2d2d] shadow-[2px_2px_0px_#2d2d2d] font-bold',
+        radiusInactive: 'bg-white border-2 border-[#2d2d2d] text-[#2d2d2d] hover:bg-[#fff0f0] font-bold',
+        searchBox: 'bg-white border-2 border-[#2d2d2d] text-[#2d2d2d] placeholder-slate-400 shadow-[2px_2px_0px_#2d2d2d]',
+        cardBg: 'bg-white border-3 border-[#2d2d2d] shadow-[5px_5px_0px_#2d2d2d]',
+        cardSubtleBorder: 'border-[#2d2d2d]/30',
+        cardTitleColor: 'text-[#2d2d2d]',
+        primaryBtn: 'bg-[#ff4d4d] hover:bg-[#e03a3a] text-white border-2 border-[#2d2d2d] shadow-[3px_3px_0px_#2d2d2d] font-bold',
+        secondaryBtn: 'bg-white border-2 border-[#2d2d2d] text-[#2d2d2d] hover:bg-[#fff0f0] shadow-[2px_2px_0px_#2d2d2d]',
+        badgeDistance: 'bg-[#ffd60a] text-black border-2 border-[#2d2d2d] shadow-[2px_2px_0px_#2d2d2d]',
+        perkChip: 'bg-[#fff0f0] text-[#ff4d4d] border border-[#2d2d2d] font-bold',
+        listItemActive: 'bg-[#ffd60a] border-2 border-[#2d2d2d] text-black shadow-[3px_3px_0px_#2d2d2d]',
+        listItemInactive: 'bg-white border-2 border-[#2d2d2d] hover:bg-[#fff0f0] text-[#2d2d2d]',
+        modalBg: 'bg-[#fdfbf7] border-3 border-[#2d2d2d] shadow-[8px_8px_0px_#2d2d2d] text-[#2d2d2d]',
+      };
+    }
+
+    if (isAnime) {
+      return {
+        key: 'anime',
+        sectionBg: '#f8fafc',
+        sectionBorder: 'border-t-3 border-b-3 border-black',
+        textColor: 'text-black',
+        textMuted: 'text-slate-600',
+        headingFont: "'Space Grotesk', sans-serif",
+        accentHex: '#ccff00',
+        accentText: 'text-[#ff0055]',
+        eyebrowBox: 'bg-[#ffd60a] text-black border-2 border-black font-black shadow-[2px_2px_0px_#000000]',
+        eyebrowDot: 'bg-[#ff0055]',
+        switcherBox: 'bg-white border-2 border-black shadow-[3px_3px_0px_#000000]',
+        btnActive: 'bg-[#ccff00] text-black border-2 border-black shadow-[2px_2px_0px_#000000] font-black',
+        btnInactive: 'text-black hover:bg-[#fefce8] font-bold',
+        gpsBar: 'bg-white border-3 border-black shadow-[4px_4px_0px_#ccff00]',
+        gpsBtn: 'bg-[#ccff00] hover:bg-[#b8e600] text-black border-2 border-black shadow-[2px_2px_0px_#000000] font-black',
+        coordBadge: 'bg-[#fefce8] border-2 border-black text-black font-mono font-bold',
+        cityActive: 'bg-[#ccff00] text-black border-2 border-black shadow-[2px_2px_0px_#000000] font-black',
+        cityInactive: 'bg-white text-black border border-black hover:bg-[#fefce8]',
+        filterBox: 'bg-white border-2 border-black shadow-[2px_2px_0px_#000000]',
+        radiusActive: 'bg-[#ccff00] text-black border-2 border-black shadow-[2px_2px_0px_#000000] font-black',
+        radiusInactive: 'bg-white border-2 border-black text-black hover:bg-[#fefce8] font-bold',
+        searchBox: 'bg-white border-2 border-black text-black placeholder-slate-400 shadow-[2px_2px_0px_#000000]',
+        cardBg: 'bg-white border-3 border-black shadow-[6px_6px_0px_#ccff00]',
+        cardSubtleBorder: 'border-black/30',
+        cardTitleColor: 'text-black',
+        primaryBtn: 'bg-[#ccff00] hover:bg-[#b8e600] text-black border-2 border-black shadow-[3px_3px_0px_#000000] font-black',
+        secondaryBtn: 'bg-white border-2 border-black text-black hover:bg-[#fefce8] shadow-[2px_2px_0px_#000000]',
+        badgeDistance: 'bg-[#ffd60a] text-black border-2 border-black shadow-[2px_2px_0px_#000000]',
+        perkChip: 'bg-[#fefce8] text-black border border-black font-bold',
+        listItemActive: 'bg-[#ccff00] border-2 border-black text-black shadow-[3px_3px_0px_#000000]',
+        listItemInactive: 'bg-white border-2 border-black hover:bg-[#fefce8] text-black',
+        modalBg: 'bg-white border-4 border-black shadow-[8px_8px_0px_#ccff00] text-black',
+      };
+    }
+
+    if (isTv) {
+      return {
+        key: 'tv',
+        sectionBg: '#090d16',
+        sectionBorder: 'border-t border-b border-[#8b5cf6]/40',
+        textColor: 'text-slate-100',
+        textMuted: 'text-slate-400',
+        headingFont: "'Space Grotesk', sans-serif",
+        accentHex: '#8b5cf6',
+        accentText: 'text-[#8b5cf6]',
+        eyebrowBox: 'bg-[#151226] text-[#c084fc] border-2 border-[#8b5cf6] shadow-[2px_2px_0px_#8b5cf6]',
+        eyebrowDot: 'bg-[#c084fc]',
+        switcherBox: 'bg-[#121624] border-2 border-[#8b5cf6]/60 shadow-[3px_3px_0px_#8b5cf6]',
+        btnActive: 'bg-[#8b5cf6] text-white font-extrabold shadow-[2px_2px_0px_#ffffff]',
+        btnInactive: 'text-purple-300 hover:text-white hover:bg-purple-950/60 font-bold',
+        gpsBar: 'bg-[#121624] border-2 border-[#8b5cf6] shadow-[4px_4px_0px_#8b5cf6]',
+        gpsBtn: 'bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-2 border-black font-extrabold shadow-[2px_2px_0px_#ffffff]',
+        coordBadge: 'bg-[#090d16] border-2 border-[#8b5cf6]/50 text-purple-200 font-mono font-bold',
+        cityActive: 'bg-[#8b5cf6] text-white border-2 border-white shadow-[2px_2px_0px_#c084fc] font-extrabold',
+        cityInactive: 'bg-[#161c30] text-purple-200 border border-[#8b5cf6]/40 hover:bg-purple-950',
+        filterBox: 'bg-[#121624] border-2 border-[#8b5cf6]/60 shadow-[2px_2px_0px_#8b5cf6]',
+        radiusActive: 'bg-[#8b5cf6] text-white border-2 border-white shadow-[2px_2px_0px_#c084fc] font-extrabold',
+        radiusInactive: 'bg-[#121624] border-2 border-[#8b5cf6]/40 text-purple-300 hover:bg-purple-950 font-bold',
+        searchBox: 'bg-[#090d16] border-2 border-[#8b5cf6] text-white placeholder-purple-400/40 shadow-[2px_2px_0px_#8b5cf6]',
+        cardBg: 'bg-[#121624] border-2 border-[#8b5cf6] shadow-[5px_5px_0px_#8b5cf6]',
+        cardSubtleBorder: 'border-[#8b5cf6]/30',
+        cardTitleColor: 'text-white',
+        primaryBtn: 'bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-2 border-black shadow-[3px_3px_0px_#ffffff] font-extrabold',
+        secondaryBtn: 'bg-[#1a2035] border-2 border-[#8b5cf6] text-purple-300 hover:bg-[#8b5cf6] hover:text-white shadow-[2px_2px_0px_#8b5cf6]',
+        badgeDistance: 'bg-black text-[#c084fc] border-2 border-[#8b5cf6]',
+        perkChip: 'bg-[#090d16] text-purple-300 border border-[#8b5cf6]/50 font-mono',
+        listItemActive: 'bg-[#202742] border-2 border-[#8b5cf6] text-white shadow-[3px_3px_0px_#8b5cf6]',
+        listItemInactive: 'bg-[#121624] border border-[#8b5cf6]/30 hover:border-[#8b5cf6] text-slate-200',
+        modalBg: 'bg-[#0d101a] border-3 border-[#8b5cf6] shadow-[8px_8px_0px_#8b5cf6] text-white',
+      };
+    }
+
+    if (isCosplay) {
+      return {
+        key: 'cosplay',
+        sectionBg: '#101014',
+        sectionBorder: 'border-t-2 border-b-2 border-[#D02020]',
+        textColor: 'text-slate-100',
+        textMuted: 'text-slate-400',
+        headingFont: "'Space Grotesk', sans-serif",
+        accentHex: '#D02020',
+        accentText: 'text-[#D02020]',
+        eyebrowBox: 'bg-[#D02020] text-white border-2 border-white shadow-[2px_2px_0px_#D02020]',
+        eyebrowDot: 'bg-[#ffd60a]',
+        switcherBox: 'bg-[#18181f] border-2 border-[#D02020] shadow-[3px_3px_0px_#D02020]',
+        btnActive: 'bg-[#D02020] text-white font-extrabold shadow-[2px_2px_0px_#ffffff]',
+        btnInactive: 'text-rose-300 hover:text-white hover:bg-rose-950/60 font-bold',
+        gpsBar: 'bg-[#18181f] border-2 border-[#D02020] shadow-[4px_4px_0px_#D02020]',
+        gpsBtn: 'bg-[#D02020] hover:bg-[#b01818] text-white border-2 border-white font-extrabold shadow-[2px_2px_0px_#ffffff]',
+        coordBadge: 'bg-[#101014] border-2 border-[#D02020]/60 text-rose-200 font-mono font-bold',
+        cityActive: 'bg-[#D02020] text-white border-2 border-white shadow-[2px_2px_0px_#ffd60a] font-extrabold',
+        cityInactive: 'bg-[#22222c] text-rose-200 border border-[#D02020]/40 hover:bg-rose-950',
+        filterBox: 'bg-[#18181f] border-2 border-[#D02020] shadow-[2px_2px_0px_#D02020]',
+        radiusActive: 'bg-[#D02020] text-white border-2 border-white shadow-[2px_2px_0px_#ffd60a] font-extrabold',
+        radiusInactive: 'bg-[#18181f] border-2 border-[#D02020]/40 text-rose-300 hover:bg-rose-950 font-bold',
+        searchBox: 'bg-[#101014] border-2 border-[#D02020] text-white placeholder-rose-400/40 shadow-[2px_2px_0px_#D02020]',
+        cardBg: 'bg-[#18181f] border-2 border-[#D02020] shadow-[5px_5px_0px_#D02020]',
+        cardSubtleBorder: 'border-[#D02020]/40',
+        cardTitleColor: 'text-white',
+        primaryBtn: 'bg-[#D02020] hover:bg-[#b01818] text-white border-2 border-white shadow-[3px_3px_0px_#ffd60a] font-extrabold',
+        secondaryBtn: 'bg-[#22222c] border-2 border-[#D02020] text-rose-300 hover:bg-[#D02020] hover:text-white shadow-[2px_2px_0px_#D02020]',
+        badgeDistance: 'bg-black text-[#ffd60a] border-2 border-[#D02020]',
+        perkChip: 'bg-[#101014] text-rose-300 border border-[#D02020]/60 font-mono',
+        listItemActive: 'bg-[#2a2a38] border-2 border-[#D02020] text-white shadow-[3px_3px_0px_#D02020]',
+        listItemInactive: 'bg-[#18181f] border border-[#D02020]/30 hover:border-[#D02020] text-slate-200',
+        modalBg: 'bg-[#121217] border-3 border-[#D02020] shadow-[8px_8px_0px_#D02020] text-white',
+      };
+    }
+
+    if (isComics) {
+      return {
+        key: 'comics',
+        sectionBg: '#fffdf0',
+        sectionBorder: 'border-t-3 border-b-3 border-black',
+        textColor: 'text-black',
+        textMuted: 'text-slate-700',
+        headingFont: "var(--font-bangers), 'Bangers', cursive, sans-serif",
+        accentHex: '#ef4444',
+        accentText: 'text-[#ef4444]',
+        eyebrowBox: 'bg-[#ffd60a] text-black border-2 border-black font-mono shadow-[2px_2px_0px_#000000]',
+        eyebrowDot: 'bg-[#ef4444]',
+        switcherBox: 'bg-white border-2 border-black shadow-[3px_3px_0px_#000000]',
+        btnActive: 'bg-[#ef4444] text-white border-2 border-black shadow-[2px_2px_0px_#000000] font-bold',
+        btnInactive: 'text-black hover:bg-[#fef9c3] font-bold',
+        gpsBar: 'bg-white border-3 border-black shadow-[4px_4px_0px_#000000]',
+        gpsBtn: 'bg-[#ef4444] hover:bg-[#dc2626] text-white border-2 border-black shadow-[3px_3px_0px_#000000] font-bold',
+        coordBadge: 'bg-[#fffdf0] border-2 border-black text-black font-mono font-bold',
+        cityActive: 'bg-[#ffd60a] text-black border-2 border-black shadow-[2px_2px_0px_#000000] font-bold',
+        cityInactive: 'bg-white text-black border border-black hover:bg-[#fef9c3]',
+        filterBox: 'bg-white border-2 border-black shadow-[2px_2px_0px_#000000]',
+        radiusActive: 'bg-[#ef4444] text-white border-2 border-black shadow-[2px_2px_0px_#000000] font-bold',
+        radiusInactive: 'bg-white border-2 border-black text-black hover:bg-[#fef9c3] font-bold',
+        searchBox: 'bg-white border-2 border-black text-black placeholder-slate-400 shadow-[2px_2px_0px_#000000]',
+        cardBg: 'bg-white border-3 border-black shadow-[6px_6px_0px_#000000]',
+        cardSubtleBorder: 'border-black/30',
+        cardTitleColor: 'text-black',
+        primaryBtn: 'bg-[#ffd60a] hover:bg-[#eab308] text-black border-2 border-black shadow-[3px_3px_0px_#000000] font-bold',
+        secondaryBtn: 'bg-white border-2 border-black text-black hover:bg-[#fef9c3] shadow-[2px_2px_0px_#000000]',
+        badgeDistance: 'bg-[#ffd60a] text-black border-2 border-black shadow-[2px_2px_0px_#000000]',
+        perkChip: 'bg-[#fef9c3] text-black border border-black font-bold',
+        listItemActive: 'bg-[#ffd60a] border-2 border-black text-black shadow-[3px_3px_0px_#000000]',
+        listItemInactive: 'bg-white border-2 border-black hover:bg-[#fef9c3] text-black shadow-[1px_1px_0px_#000000]',
+        modalBg: 'bg-[#fffdf0] border-4 border-black shadow-[10px_10px_0px_#000000] text-black',
+      };
+    }
+
+    // Default: K-Pop & All Fandoms (Y2K Neo-brutalist / Clean Editorial with Pink & Stark Black)
+    return {
+      key: 'kpop',
+      sectionBg: '#fdfbf7',
+      sectionBorder: 'border-t-3 border-b-3 border-black',
+      textColor: 'text-black',
+      textMuted: 'text-slate-600',
+      headingFont: "'Space Grotesk', sans-serif",
+      accentHex: '#ff2e93',
+      accentText: 'text-[#ff2e93]',
+      eyebrowBox: 'bg-[#ffd60a] text-black border-2 border-black font-mono shadow-[2px_2px_0px_#000000]',
+      eyebrowDot: 'bg-[#ff2e93]',
+      switcherBox: 'bg-white border-2 border-black shadow-[3px_3px_0px_#000000]',
+      btnActive: 'bg-black text-white border-2 border-black shadow-[2px_2px_0px_#ff2e93] font-bold',
+      btnInactive: 'text-black hover:bg-[#fff0f6] font-bold',
+      gpsBar: 'bg-white border-3 border-black shadow-[4px_4px_0px_#000000]',
+      gpsBtn: 'bg-[#ff2e93] hover:bg-[#e0207e] text-white border-2 border-black shadow-[3px_3px_0px_#000000] font-bold',
+      coordBadge: 'bg-[#fffdf0] border-2 border-black text-black font-mono font-bold',
+      cityActive: 'bg-[#ffd60a] text-black border-2 border-black shadow-[2px_2px_0px_#000000] font-bold',
+      cityInactive: 'bg-white text-black border border-black hover:bg-[#fff0f6]',
+      filterBox: 'bg-white border-2 border-black shadow-[2px_2px_0px_#000000]',
+      radiusActive: 'bg-[#ff2e93] text-white border-2 border-black shadow-[2px_2px_0px_#000000] font-bold',
+      radiusInactive: 'bg-white border-2 border-black text-black hover:bg-[#fff0f6] font-bold',
+      searchBox: 'bg-white border-2 border-black text-black placeholder-slate-400 shadow-[2px_2px_0px_#000000]',
+      cardBg: 'bg-white border-3 border-black shadow-[6px_6px_0px_#000000]',
+      cardSubtleBorder: 'border-black/30',
+      cardTitleColor: 'text-black',
+      primaryBtn: 'bg-[#ffd60a] hover:bg-[#eab308] text-black border-2 border-black shadow-[3px_3px_0px_#000000] font-bold',
+      secondaryBtn: 'bg-white border-2 border-black text-black hover:bg-[#fff0f6] shadow-[2px_2px_0px_#000000]',
+      badgeDistance: 'bg-[#ffd60a] text-black border-2 border-black shadow-[2px_2px_0px_#000000]',
+      perkChip: 'bg-[#fff0f6] text-black border border-black font-bold',
+      listItemActive: 'bg-[#ffd60a] border-2 border-black text-black shadow-[3px_3px_0px_#000000]',
+      listItemInactive: 'bg-white border-2 border-black hover:bg-[#fff0f6] text-black shadow-[1px_1px_0px_#000000]',
+      modalBg: 'bg-[#fffdf0] border-4 border-black shadow-[10px_10px_0px_#000000] text-black',
+    };
+  }, [isGaming, isCinema, isManga, isAnime, isTv, isCosplay, isComics]);
 
   // User location state
   const [userLocation, setUserLocation] = useState<{
@@ -84,9 +433,9 @@ export const LocationAwareEventExplorer: React.FC = () => {
   const [bookingEvent, setBookingEvent] = useState<LocationEvent | null>(null);
   const [selectedTierIndex, setSelectedTierIndex] = useState<number>(0);
   const [ticketQuantity, setTicketQuantity] = useState<number>(1);
-  const [rsvpName, setRsvpName] = useState<string>('Nguyen Anh Tu');
-  const [rsvpEmail, setRsvpEmail] = useState<string>('fan.anhtu@gmail.com');
-  const [rsvpPhone, setRsvpPhone] = useState<string>('0912345678');
+  const [rsvpName, setRsvpName] = useState<string>('Alex Morgan');
+  const [rsvpEmail, setRsvpEmail] = useState<string>('fanhub.fan@gmail.com');
+  const [rsvpPhone, setRsvpPhone] = useState<string>('+1 (555) 019-2834');
   const [bookingCompleted, setBookingCompleted] = useState<boolean>(false);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
 
@@ -124,11 +473,11 @@ export const LocationAwareEventExplorer: React.FC = () => {
           }
         });
         setSelectedCity(nearestCity.id);
-        setMaxRadiusKm(100); // broaden radius to catch local events
+        setMaxRadiusKm(100);
       },
       (error) => {
         setIsLocating(false);
-        let msg = 'Unable to retrieve GPS coordinates. Please grant location permissions in your browser.';
+        let msg = 'Unable to acquire GPS coordinates. Please grant location permissions in your browser.';
         if (error.code === error.PERMISSION_DENIED) {
           msg = 'Location permission denied. Please select a city manually below.';
         }
@@ -198,7 +547,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
       }
 
       return true;
-    }).sort((a, b) => a.distanceKm - b.distanceKm); // Closest first
+    }).sort((a, b) => a.distanceKm - b.distanceKm);
   }, [eventsWithDistance, searchQuery, selectedType, selectedCategory, maxRadiusKm, selectedDate]);
 
   // Selected event object
@@ -231,54 +580,58 @@ export const LocationAwareEventExplorer: React.FC = () => {
   const getEventTypeBadge = (type: LocationEvent['type']) => {
     switch (type) {
       case 'stadium_concert':
-        return { label: 'Concert & Stadium Tour', icon: Ticket, color: 'bg-blue-600 text-white border-blue-500' };
+        return { label: 'Concert & Stadium Tour', icon: Ticket, color: isDark ? 'bg-[#ff2e93] text-white border-2 border-white' : 'bg-[#ef4444] text-white border-2 border-black font-bold' };
       case 'cup_sleeve_cafe':
-        return { label: 'Cup Sleeve & Birthday Cafe', icon: Coffee, color: 'bg-pink-600 text-white border-pink-500' };
+        return { label: 'Cup Sleeve & Birthday Cafe', icon: Coffee, color: isDark ? 'bg-pink-700 text-white border-2 border-pink-400' : 'bg-[#ec4899] text-white border-2 border-black font-bold' };
       case 'photocard_trade':
-        return { label: 'Photocard Trade Lounge', icon: Sparkles, color: 'bg-purple-600 text-white border-purple-500' };
+        return { label: 'Photocard Trade Lounge', icon: Sparkles, color: isDark ? 'bg-purple-700 text-white border-2 border-purple-400' : 'bg-[#8b5cf6] text-white border-2 border-black font-bold' };
       case 'anime_expo':
-        return { label: 'Manga & Cosplay Expo', icon: Layers, color: 'bg-rose-600 text-white border-rose-500' };
+        return { label: 'Manga & Cosplay Expo', icon: Layers, color: isDark ? 'bg-amber-600 text-black border-2 border-amber-300' : 'bg-[#ffd60a] text-black border-2 border-black font-bold' };
       case 'gaming_arena':
-        return { label: 'Gaming Arena Live Watch', icon: Radio, color: 'bg-emerald-600 text-white border-emerald-500' };
+        return { label: 'Gaming Arena Live Watch', icon: Radio, color: isDark ? 'bg-cyan-500 text-black border-2 border-cyan-300' : 'bg-[#00f0ff] text-black border-2 border-black font-bold' };
       default:
-        return { label: 'Fandom Event', icon: Compass, color: 'bg-slate-900 text-white border-slate-700' };
+        return { label: 'Fandom Event', icon: Compass, color: isDark ? 'bg-slate-800 text-white border-2 border-white' : 'bg-black text-white border-2 border-black font-bold' };
     }
   };
 
   return (
     <section 
       id="location-events"
-      style={{ scrollMarginTop: '100px', position: 'relative', zIndex: 1, isolation: 'isolate' }}
-      className="py-14 sm:py-20 w-full bg-slate-50/70 border-t border-b border-slate-200/90 relative z-1"
+      style={{ 
+        scrollMarginTop: '100px',
+        backgroundColor: themeTokens.sectionBg 
+      }}
+      className={`py-16 sm:py-24 w-full ${themeTokens.sectionBorder} transition-colors duration-300`}
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
         
         {/* ==================== 1. Editorial Section Header ==================== */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/80 text-[11px] font-bold uppercase tracking-wider mb-2.5">
-              <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
-              <LocateFixed size={12} className="text-blue-600" />
+            <div className={`inline-flex items-center gap-2 px-3 py-1 text-[11px] font-bold uppercase tracking-wider mb-2.5 rounded-none ${themeTokens.eyebrowBox}`}>
+              <span className={`w-2 h-2 rounded-full ${themeTokens.eyebrowDot} animate-ping`} />
+              <LocateFixed size={12} className={themeTokens.accentText} />
               <span>Location-Aware Event Radar &amp; GPS Discovery</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight uppercase font-sans m-0">
-              Discover Events <span className="text-blue-600">&amp; Meetups Near You</span>
+            <h2 
+              style={{ fontFamily: themeTokens.headingFont }}
+              className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight uppercase m-0 ${themeTokens.textColor}`}
+            >
+              Discover Events <span className={themeTokens.accentText}>&amp; Meetups Near You</span>
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-2xl font-normal leading-relaxed">
-              Automatically scan with GPS to find premier stadium concerts, idol cup sleeve birthday celebrations, manga cosplay conventions, and official photocard trading events near you.
+            <p className={`text-xs sm:text-sm mt-2 max-w-2xl font-normal leading-relaxed ${themeTokens.textMuted}`}>
+              Live GPS radar automatically locates stadium concert tours, birthday cup-sleeve cafes, manga and cosplay expos, and official photocard trading meetups near you.
             </p>
           </div>
 
           {/* View Mode Switcher */}
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white border border-slate-200/90 shadow-2xs self-start md:self-auto shrink-0">
+          <div className={`flex items-center gap-1.5 p-1 self-start md:self-auto shrink-0 rounded-none ${themeTokens.switcherBox}`}>
             <button
               type="button"
               onClick={() => setViewMode('map')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                viewMode === 'map'
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider transition-all cursor-pointer rounded-none ${
+                viewMode === 'map' ? themeTokens.btnActive : themeTokens.btnInactive
               }`}
             >
               <Navigation size={13} />
@@ -288,10 +641,8 @@ export const LocationAwareEventExplorer: React.FC = () => {
             <button
               type="button"
               onClick={() => setViewMode('calendar')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                viewMode === 'calendar'
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider transition-all cursor-pointer rounded-none ${
+                viewMode === 'calendar' ? themeTokens.btnActive : themeTokens.btnInactive
               }`}
             >
               <CalendarIcon size={13} />
@@ -301,10 +652,8 @@ export const LocationAwareEventExplorer: React.FC = () => {
             <button
               type="button"
               onClick={() => setViewMode('list')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                viewMode === 'list'
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider transition-all cursor-pointer rounded-none ${
+                viewMode === 'list' ? themeTokens.btnActive : themeTokens.btnInactive
               }`}
             >
               <Users size={13} />
@@ -314,7 +663,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
         </div>
 
         {/* ==================== 2. GPS Locator Bar & City Pills ==================== */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm mb-8 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        <div className={`p-4 sm:p-5 mb-8 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 rounded-none ${themeTokens.gpsBar}`}>
           
           {/* GPS Auto-Detect Button & Current Coordinates indicator */}
           <div className="flex items-center gap-3 flex-wrap">
@@ -322,19 +671,15 @@ export const LocationAwareEventExplorer: React.FC = () => {
               type="button"
               onClick={handleDetectGps}
               disabled={isLocating}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-xs ${
-                userLocation.isGpsActive
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20'
-              }`}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none ${themeTokens.gpsBtn}`}
             >
               <LocateFixed size={14} className={isLocating ? 'animate-spin' : ''} />
               <span>
-                {isLocating ? 'Scanning satellite GPS...' : userLocation.isGpsActive ? '✓ Using live GPS' : 'Enable GPS Near Me'}
+                {isLocating ? 'Scanning satellite GPS...' : userLocation.isGpsActive ? '✓ Using Live GPS' : 'Enable GPS Near Me'}
               </span>
             </button>
 
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100/90 border border-slate-200 text-xs font-medium text-slate-700">
+            <div className={`flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-none ${themeTokens.coordBadge}`}>
               <MapPin size={13} className="text-rose-500 shrink-0" />
               <span className="truncate max-w-[240px] sm:max-w-none">
                 {userLocation.name}
@@ -342,7 +687,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
             </div>
 
             {gpsError && (
-              <span className="text-[11.5px] text-amber-600 font-medium bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
+              <span className="text-[11.5px] text-amber-400 font-bold bg-amber-950/80 px-2.5 py-1 rounded-none border border-amber-500">
                 ⚠️ {gpsError}
               </span>
             )}
@@ -350,7 +695,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
           {/* Quick City Switcher Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
-            <span className="text-[11px] font-bold uppercase text-slate-400 font-mono shrink-0 mr-1">
+            <span className={`text-[11px] font-bold uppercase font-mono shrink-0 mr-1 ${themeTokens.textMuted}`}>
               City:
             </span>
             {CITIES_CONFIG.map(city => {
@@ -360,10 +705,8 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   key={city.id}
                   type="button"
                   onClick={() => handleSelectCityPreset(city.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer shrink-0 flex items-center gap-1 ${
-                    isActive
-                      ? 'bg-slate-900 text-white shadow-2xs'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                  className={`px-3 py-1.5 text-xs font-bold transition-all cursor-pointer shrink-0 flex items-center gap-1 rounded-none ${
+                    isActive ? themeTokens.cityActive : themeTokens.cityInactive
                   }`}
                 >
                   <span>{city.flag}</span>
@@ -380,7 +723,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
           
           {/* Radius Selector Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 sm:pb-0">
-            <span className="text-[10.5px] font-mono font-bold uppercase tracking-wider text-slate-400 shrink-0 mr-1">
+            <span className={`text-[10.5px] font-mono font-bold uppercase tracking-wider shrink-0 mr-1 ${themeTokens.textMuted}`}>
               Radius:
             </span>
             {[
@@ -393,10 +736,8 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 key={r.val}
                 type="button"
                 onClick={() => setMaxRadiusKm(r.val)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                  maxRadiusKm === r.val
-                    ? 'bg-blue-600 text-white shadow-2xs'
-                    : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
+                className={`px-3 py-1 text-xs font-bold transition-all cursor-pointer rounded-none ${
+                  maxRadiusKm === r.val ? themeTokens.radiusActive : themeTokens.radiusInactive
                 }`}
               >
                 {r.label}
@@ -406,12 +747,12 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
           {/* Event Category Tabs */}
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs text-xs">
+            <div className={`flex items-center gap-1 rounded-none p-1 ${themeTokens.filterBox} text-xs`}>
               {[
                 { id: 'all', label: 'All Types' },
                 { id: 'stadium_concert', label: 'Concert' },
                 { id: 'cup_sleeve_cafe', label: 'Cafe Meetup' },
-                { id: 'photocard_trade', label: 'Trade Card' },
+                { id: 'photocard_trade', label: 'Trade Lounge' },
                 { id: 'anime_expo', label: 'Manga / Cosplay' },
                 { id: 'gaming_arena', label: 'Gaming' },
               ].map(t => (
@@ -419,10 +760,8 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   key={t.id}
                   type="button"
                   onClick={() => setSelectedType(t.id)}
-                  className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                    selectedType === t.id
-                      ? 'bg-slate-900 text-white'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  className={`px-2.5 py-1 font-bold transition-all cursor-pointer rounded-none ${
+                    selectedType === t.id ? themeTokens.btnActive : themeTokens.btnInactive
                   }`}
                 >
                   {t.label}
@@ -432,13 +771,13 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
             {/* Keyword Search */}
             <div className="relative min-w-[220px]">
-              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search size={13} className={`absolute left-3 top-1/2 -translate-y-1/2 ${themeTokens.textMuted}`} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search venues, tour names, artists..."
-                className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 shadow-2xs font-sans"
+                placeholder="Search venue, artist, tour..."
+                className={`w-full pl-8 pr-3 py-1.5 text-xs focus:outline-none rounded-none font-sans ${themeTokens.searchBox}`}
               />
             </div>
           </div>
@@ -451,38 +790,48 @@ export const LocationAwareEventExplorer: React.FC = () => {
         {viewMode === 'map' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
-            {/* Left 7 Columns: OpenStreetMap + Leaflet Interactive GPS Engine */}
-            <div 
-              className="lg:col-span-7 rounded-none overflow-hidden bg-slate-950 border-2 border-black shadow-[4px_4px_0px_#000000] relative flex flex-col justify-between"
-              style={{ isolation: 'isolate', zIndex: 1 }}
-            >
+            {/* Left 7 Columns: High-Tech GPS Interactive Map Canvas / Radar */}
+            <div className={`lg:col-span-7 overflow-hidden relative min-h-[460px] sm:min-h-[540px] flex flex-col justify-between rounded-none ${themeTokens.cardBg}`}>
               
-              {/* Real Interactive OpenStreetMap + Leaflet Engine */}
-              <EventLeafletMap
-                userLocation={userLocation}
-                events={filteredEvents}
-                selectedEventId={selectedEventId}
-                onSelectEvent={(id) => setSelectedEventId(id)}
-                height="500px"
-              />
+              {/* Map Top Overlay HUD: GPS Status & Stats */}
+              <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between gap-3 pointer-events-none">
+                <div className={`pointer-events-auto px-3 py-1.5 flex items-center gap-2 rounded-none bg-black/90 border-2 border-white text-white font-mono shadow-[2px_2px_0px_#000000]`}>
+                  <span className={`w-2.5 h-2.5 rounded-full ${themeTokens.eyebrowDot} animate-ping`} />
+                  <span className="text-[11px] font-mono font-bold tracking-wider uppercase">
+                    Satellite GPS Radar: {filteredEvents.length} Active Venues
+                  </span>
+                </div>
+
+                <div className="pointer-events-auto flex items-center gap-2">
+                  <span className={`px-2.5 py-1 text-[10px] font-mono rounded-none bg-black/90 border-2 border-white text-white`}>
+                    Coordinates: {userLocation.lat.toFixed(2)}°N, {userLocation.lng.toFixed(2)}°E
+                  </span>
+                </div>
+              </div>
+
+              {/* REAL LEAFLET GPS MAP OVERLAY */}
+              <div className="relative w-full h-[460px] sm:h-[540px] z-10 overflow-hidden rounded-none border-b-2 border-black">
+                <RealGpsMap 
+                  events={filteredEvents}
+                  activeEvent={activeEvent}
+                  onEventClick={(ev) => setSelectedEventId(ev.id)}
+                />
+              </div>
 
               {/* Map Bottom Legend / Compass Bar */}
-              <div className="p-3 bg-black border-t-2 border-black text-slate-300 text-xs flex items-center justify-between flex-wrap gap-2 z-10">
-                <div className="flex items-center gap-3 text-[11px] font-mono font-medium flex-wrap">
-                  <span className="flex items-center gap-1.5 text-slate-200">
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500 border border-white" /> You
+              <div className="p-3.5 border-t text-xs flex items-center justify-between flex-wrap gap-2 z-10 bg-black border-black text-white">
+                <div className="flex items-center gap-3 text-[11px] font-medium flex-wrap">
+                  <span className="flex items-center gap-1.5 text-slate-300">
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> You
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-200">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 border border-black" /> Concert
+                  <span className="flex items-center gap-1.5 text-slate-300">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400" /> Concert
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-200">
-                    <span className="w-2.5 h-2.5 rounded-full bg-pink-500 border border-black" /> Cafe Meetup
+                  <span className="flex items-center gap-1.5 text-slate-300">
+                    <span className="w-2.5 h-2.5 rounded-full bg-pink-400" /> Cafe Meetup
                   </span>
-                  <span className="flex items-center gap-1.5 text-slate-200">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500 border border-black" /> Manga/Cosplay
-                  </span>
-                  <span className="flex items-center gap-1.5 text-slate-200">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 border border-black" /> Gaming
+                  <span className="flex items-center gap-1.5 text-slate-300">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-400" /> Manga/Cosplay
                   </span>
                 </div>
 
@@ -495,10 +844,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         window.open(url, '_blank');
                       }
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563eb] hover:bg-blue-600 text-white text-[11px] font-mono font-bold uppercase transition-all cursor-pointer border-2 border-black shadow-[2px_2px_0px_#000000]"
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer rounded-none ${themeTokens.primaryBtn}`}
                   >
                     <Compass size={12} />
-                    <span>GOOGLE MAPS DIRECTIONS</span>
+                    <span>Google Maps Directions</span>
                     <ArrowUpRight size={11} />
                   </button>
                 </div>
@@ -511,34 +860,39 @@ export const LocationAwareEventExplorer: React.FC = () => {
               
               {/* Highlight Card for Active Selected Pin */}
               {activeEvent ? (
-                <div className="rounded-2xl bg-white border-2 border-blue-600/90 shadow-lg p-5 sm:p-6 relative overflow-hidden transition-all">
+                <div className={`p-5 sm:p-6 relative overflow-hidden transition-all rounded-none ${themeTokens.cardBg}`}>
                   
                   {/* Category Pill & Distance Badge */}
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border flex items-center gap-1.5 shadow-2xs ${getEventTypeBadge(activeEvent.type).color}`}>
+                    <span className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 rounded-none ${getEventTypeBadge(activeEvent.type).color}`}>
                       <Radio size={11} className="animate-pulse" />
                       <span>{getEventTypeBadge(activeEvent.type).label}</span>
                     </span>
 
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-mono font-bold">
-                      <LocateFixed size={12} className="text-emerald-600" />
-                      <span>Within {activeEvent.distanceKm} km of you</span>
+                    <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-mono font-bold rounded-none ${themeTokens.badgeDistance}`}>
+                      <LocateFixed size={12} />
+                      <span>{activeEvent.distanceKm} km away</span>
                     </span>
                   </div>
 
                   {/* Image & Title */}
-                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-4 bg-slate-100 border border-slate-200">
+                  <div className="relative aspect-[16/9] overflow-hidden mb-4 rounded-none border-2 border-black bg-slate-900">
                     <img 
                       src={activeEvent.coverImage} 
                       alt={activeEvent.title}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                     <div className="absolute bottom-3 left-3 right-3 text-white">
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-amber-300 font-bold block mb-0.5">
+                      <span className={`text-[10px] font-mono uppercase tracking-widest font-bold block mb-0.5 ${themeTokens.accentText}`}>
                         {activeEvent.artistOrHost}
                       </span>
-                      <h3 className="text-base sm:text-lg font-black leading-tight text-white m-0">
+                      <h3 
+                        className="text-base sm:text-lg font-black leading-tight text-white m-0 tracking-wide"
+                        style={{
+                          fontFamily: themeTokens.headingFont
+                        }}
+                      >
                         {activeEvent.title}
                       </h3>
                     </div>
@@ -546,28 +900,28 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
                   {/* Details: Venue, Date, Time */}
                   <div className="space-y-2 mb-4 text-xs">
-                    <div className="flex items-start gap-2 text-slate-700">
+                    <div className="flex items-start gap-2">
                       <MapPin size={14} className="text-rose-500 shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-slate-900 block font-bold">{activeEvent.venue}</strong>
-                        <span className="text-slate-500 text-[11.5px] leading-tight block">{activeEvent.address}</span>
+                        <strong className={`block font-bold ${themeTokens.cardTitleColor}`}>{activeEvent.venue}</strong>
+                        <span className={`text-[11.5px] leading-tight block ${themeTokens.textMuted}`}>{activeEvent.address}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between text-slate-600 pt-2 border-t border-slate-100">
+                    <div className={`flex items-center justify-between pt-2 border-t ${themeTokens.cardSubtleBorder}`}>
                       <div className="flex items-center gap-1.5">
-                        <CalendarIcon size={13} className="text-blue-600" />
-                        <span className="font-semibold text-slate-900">{activeEvent.date}</span>
+                        <CalendarIcon size={13} className={themeTokens.accentText} />
+                        <span className={`font-semibold ${themeTokens.cardTitleColor}`}>{activeEvent.date}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <Clock size={13} className="text-amber-600" />
-                        <span>{activeEvent.time}</span>
+                        <Clock size={13} className="text-amber-500" />
+                        <span className={themeTokens.textMuted}>{activeEvent.time}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Description Excerpt */}
-                  <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-4">
+                  <p className={`text-xs line-clamp-2 leading-relaxed mb-4 ${themeTokens.textMuted}`}>
                     {activeEvent.description}
                   </p>
 
@@ -575,7 +929,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   {activeEvent.perks && activeEvent.perks.length > 0 && (
                     <div className="flex items-center gap-1.5 flex-wrap mb-5">
                       {activeEvent.perks.slice(0, 2).map((p, pIdx) => (
-                        <span key={pIdx} className="text-[10.5px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                        <span key={pIdx} className={`text-[10.5px] px-2 py-0.5 rounded-none ${themeTokens.perkChip}`}>
                           ✓ {p}
                         </span>
                       ))}
@@ -583,14 +937,14 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   )}
 
                   {/* Action Row: Price & Booking */}
-                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                  <div className={`pt-4 border-t ${themeTokens.cardSubtleBorder} flex items-center justify-between gap-3`}>
                     <div>
-                      <span className="text-[10px] text-slate-400 font-mono uppercase font-bold tracking-wider block">
+                      <span className={`text-[10px] font-mono uppercase font-bold tracking-wider block ${themeTokens.textMuted}`}>
                         {activeEvent.freeEntry ? 'Admission' : 'Tickets From'}
                       </span>
-                      <div className="text-base sm:text-lg font-black text-slate-950">
+                      <div className={`text-base sm:text-lg font-black font-mono ${themeTokens.cardTitleColor}`}>
                         {activeEvent.freeEntry ? (
-                          <span className="text-emerald-600">Free Entry (RSVP)</span>
+                          <span className={themeTokens.accentText}>Free Admission (RSVP)</span>
                         ) : (
                           formatPrice(activeEvent.priceUSD, activeEvent.priceVND)
                         )}
@@ -601,10 +955,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleShare(activeEvent)}
-                        className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
+                        className={`p-2.5 transition-colors cursor-pointer rounded-none ${themeTokens.secondaryBtn}`}
                         title="Share event link"
                       >
-                        {copiedLink ? <Check size={14} className="text-emerald-600" /> : <Share2 size={14} />}
+                        {copiedLink ? <Check size={14} className="text-emerald-500" /> : <Share2 size={14} />}
                       </button>
 
                       <button
@@ -613,13 +967,9 @@ export const LocationAwareEventExplorer: React.FC = () => {
                           setBookingEvent(activeEvent);
                           setBookingCompleted(false);
                         }}
-                        style={{
-                          backgroundColor: '#000000',
-                          color: '#ffffff',
-                        }}
-                        className="px-4 py-2.5 rounded-xl hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                        className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer font-mono rounded-none ${themeTokens.primaryBtn}`}
                       >
-                        <Ticket size={13} style={{ color: '#ffffff' }} />
+                        <Ticket size={13} />
                         <span>{activeEvent.freeEntry ? 'RSVP Now' : 'Book Tickets'}</span>
                       </button>
                     </div>
@@ -627,15 +977,15 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
                 </div>
               ) : (
-                <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500 text-sm">
-                  No events found within the selected radius. Try increasing the radius or choosing another city.
+                <div className={`p-8 text-center text-sm rounded-none ${themeTokens.cardBg} ${themeTokens.textMuted}`}>
+                  No events found within the selected radius. Try expanding your radius or selecting another city.
                 </div>
               )}
 
               {/* Quick Scrollable Nearby Events List Below Spotlight */}
-              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono block px-1">
-                  Other nearby events ({filteredEvents.length}):
+              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1 scrollbar-none">
+                <span className={`text-[11px] font-bold uppercase tracking-wider font-mono block px-1 ${themeTokens.textMuted}`}>
+                  Other nearby venues ({filteredEvents.length}):
                 </span>
                 {filteredEvents.map(ev => {
                   const isCurrent = ev.id === activeEvent?.id;
@@ -643,31 +993,31 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     <div
                       key={ev.id}
                       onClick={() => setSelectedEventId(ev.id)}
-                      className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                      className={`p-3 transition-all cursor-pointer flex items-center justify-between gap-3 rounded-none ${
                         isCurrent 
-                          ? 'bg-blue-50/80 border-blue-400 shadow-2xs' 
-                          : 'bg-white border-slate-200/90 hover:border-slate-300 hover:bg-slate-50'
+                          ? themeTokens.listItemActive 
+                          : themeTokens.listItemInactive
                       }`}
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-none bg-black text-white border border-white/20">
                             {ev.city}
                           </span>
-                          <span className="text-xs font-bold text-slate-900 truncate block">
+                          <span className="text-xs font-bold truncate block">
                             {ev.title}
                           </span>
                         </div>
-                        <span className="text-[11px] text-slate-500 truncate block mt-0.5">
+                        <span className={`text-[11px] truncate block mt-0.5 ${themeTokens.textMuted}`}>
                           {ev.venue}
                         </span>
                       </div>
 
                       <div className="text-right shrink-0">
-                        <span className="text-[11px] font-mono font-bold text-blue-600 block">
+                        <span className={`text-[11px] font-mono font-bold block ${themeTokens.accentText}`}>
                           {ev.distanceKm} km
                         </span>
-                        <span className="text-[10px] text-slate-400">
+                        <span className={`text-[10px] ${themeTokens.textMuted}`}>
                           {ev.date}
                         </span>
                       </div>
@@ -683,14 +1033,17 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
         {/* --- VIEW MODE 2: CALENDAR VIEW --- */}
         {viewMode === 'calendar' && (
-          <div className="rounded-2xl bg-white border border-slate-200/90 shadow-sm p-6 sm:p-8">
-            <div className="flex items-center justify-between mb-6 flex-wrap gap-4 pb-4 border-b border-slate-100">
+          <div className={`p-6 sm:p-8 rounded-none ${themeTokens.cardBg}`}>
+            <div className={`flex items-center justify-between mb-6 flex-wrap gap-4 pb-4 border-b ${themeTokens.cardSubtleBorder}`}>
               <div>
-                <h3 className="text-lg sm:text-xl font-black text-slate-900 uppercase">
-                  Fandom Event Calendar by Date
+                <h3 
+                  className={`text-lg sm:text-xl font-black uppercase ${themeTokens.cardTitleColor}`}
+                  style={{ fontFamily: themeTokens.headingFont }}
+                >
+                  Fandom Event Schedule by Date
                 </h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Select a date to quickly filter concerts, offline meetups, and anime exhibitions.
+                <p className={`text-xs mt-1 ${themeTokens.textMuted}`}>
+                  Select a date to filter stadium concerts, offline meetups, and anime expos.
                 </p>
               </div>
 
@@ -698,7 +1051,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedDate('')}
-                  className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors"
+                  className={`px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer rounded-none ${themeTokens.primaryBtn}`}
                 >
                   ✕ Clear date filter ({selectedDate})
                 </button>
@@ -716,22 +1069,20 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     key={dateStr}
                     type="button"
                     onClick={() => setSelectedDate(isSelected ? '' : dateStr)}
-                    className={`p-3 rounded-xl border text-center transition-all cursor-pointer min-w-[100px] shrink-0 ${
-                      isSelected
-                        ? 'bg-slate-900 text-white border-slate-900 shadow-md'
-                        : 'bg-white border-slate-200 hover:border-blue-400 hover:bg-blue-50/50'
+                    className={`p-3 text-center transition-all cursor-pointer min-w-[100px] shrink-0 rounded-none ${
+                      isSelected ? themeTokens.listItemActive : themeTokens.listItemInactive
                     }`}
                   >
-                    <span className="text-[10px] font-mono uppercase font-bold text-slate-400 block">
+                    <span className={`text-[10px] font-mono uppercase font-bold block ${themeTokens.textMuted}`}>
                       {new Date(dateStr).toLocaleDateString('en-US', { weekday: 'short' })}
                     </span>
                     <span className="text-base font-black block my-0.5">
                       {dateStr.split('-').slice(1).join('/')}
                     </span>
-                    <span className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-full inline-block ${
-                      isSelected ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-700'
+                    <span className={`text-[9.5px] font-bold px-1.5 py-0.5 inline-block rounded-none ${
+                      isSelected ? 'bg-black text-white border border-white' : 'bg-black/20 text-current border border-current'
                     }`}>
-                      {count} events
+                      {count} {count === 1 ? 'event' : 'events'}
                     </span>
                   </button>
                 );
@@ -743,37 +1094,40 @@ export const LocationAwareEventExplorer: React.FC = () => {
               {filteredEvents.map(ev => (
                 <div
                   key={ev.id}
-                  className="rounded-2xl overflow-hidden bg-white border border-slate-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between p-5"
+                  className={`overflow-hidden transition-all flex flex-col justify-between p-5 rounded-none ${themeTokens.cardBg} hover:translate-y-[-2px]`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${getEventTypeBadge(ev.type).color}`}>
+                      <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-none ${getEventTypeBadge(ev.type).color}`}>
                         {getEventTypeBadge(ev.type).label}
                       </span>
-                      <span className="text-xs font-mono font-bold text-blue-600">
+                      <span className={`text-xs font-mono font-bold ${themeTokens.accentText}`}>
                         {ev.distanceKm} km away
                       </span>
                     </div>
 
-                    <div className="relative aspect-[16/10] rounded-xl overflow-hidden mb-3 bg-slate-100">
+                    <div className="relative aspect-[16/10] overflow-hidden mb-3 bg-slate-900 rounded-none border-2 border-black">
                       <img src={ev.coverImage} alt={ev.title} className="w-full h-full object-cover" />
                     </div>
 
-                    <span className="text-[10px] font-mono text-slate-400 font-bold block uppercase mb-1">
+                    <span className={`text-[10px] font-mono font-bold block uppercase mb-1 ${themeTokens.textMuted}`}>
                       {ev.artistOrHost}
                     </span>
-                    <h4 className="text-base font-bold text-slate-900 line-clamp-1 mb-2">
+                    <h4 
+                      className={`text-base font-bold line-clamp-1 mb-2 ${themeTokens.cardTitleColor}`}
+                      style={{ fontFamily: themeTokens.headingFont }}
+                    >
                       {ev.title}
                     </h4>
-                    <p className="text-xs text-slate-500 line-clamp-2 mb-3">
+                    <p className={`text-xs line-clamp-2 mb-3 ${themeTokens.textMuted}`}>
                       {ev.venue} • {ev.address}
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <div className={`pt-3 border-t ${themeTokens.cardSubtleBorder} flex items-center justify-between`}>
                     <div>
-                      <span className="text-[10px] text-slate-400 font-mono block">From</span>
-                      <strong className="text-sm font-black text-slate-900">
+                      <span className={`text-[10px] font-mono block ${themeTokens.textMuted}`}>From</span>
+                      <strong className={`text-sm font-black font-mono ${themeTokens.cardTitleColor}`}>
                         {ev.freeEntry ? 'Free' : formatPrice(ev.priceUSD, ev.priceVND)}
                       </strong>
                     </div>
@@ -781,8 +1135,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setBookingEvent(ev)}
-                      style={{ backgroundColor: '#000000', color: '#ffffff' }}
-                      className="px-3.5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-slate-800 transition-colors"
+                      className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider cursor-pointer font-mono rounded-none ${themeTokens.primaryBtn}`}
                     >
                       {ev.freeEntry ? 'RSVP' : 'Get Tickets'}
                     </button>
@@ -796,44 +1149,49 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
         {/* --- VIEW MODE 3: FULL LIST VIEW --- */}
         {viewMode === 'list' && (
-          <div className="rounded-2xl bg-white border border-slate-200/90 shadow-sm overflow-hidden">
-            <div className="divide-y divide-slate-100">
+          <div className={`overflow-hidden rounded-none ${themeTokens.cardBg}`}>
+            <div className={`divide-y ${themeTokens.cardSubtleBorder}`}>
               {filteredEvents.map(ev => (
                 <div
                   key={ev.id}
-                  className="p-4 sm:p-6 hover:bg-slate-50/80 transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                  className={`p-4 sm:p-6 transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
+                    isDark ? 'hover:bg-white/5' : 'hover:bg-black/5'
+                  }`}
                 >
                   <div className="flex items-start gap-4 min-w-0 flex-1">
                     <img
                       src={ev.coverImage}
                       alt={ev.title}
-                      className="w-20 h-20 rounded-xl object-cover shrink-0 border border-slate-200"
+                      className="w-20 h-20 object-cover shrink-0 rounded-none border-2 border-black"
                     />
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className={`px-2 py-0.5 rounded text-[9.5px] font-bold uppercase ${getEventTypeBadge(ev.type).color}`}>
+                        <span className={`px-2 py-0.5 text-[9.5px] font-bold uppercase rounded-none ${getEventTypeBadge(ev.type).color}`}>
                           {getEventTypeBadge(ev.type).label}
                         </span>
-                        <span className="text-xs font-mono font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                        <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-none ${themeTokens.badgeDistance}`}>
                           {ev.distanceKm} km away
                         </span>
-                        <span className="text-xs text-slate-400">• {ev.date} ({ev.time})</span>
+                        <span className={`text-xs ${themeTokens.textMuted}`}>• {ev.date} ({ev.time})</span>
                       </div>
 
-                      <h4 className="text-base font-bold text-slate-900 leading-snug">
+                      <h4 
+                        className={`text-base font-bold leading-snug ${themeTokens.cardTitleColor}`}
+                        style={{ fontFamily: themeTokens.headingFont }}
+                      >
                         {ev.title}
                       </h4>
-                      <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                      <p className={`text-xs mt-1 flex items-center gap-1 ${themeTokens.textMuted}`}>
                         <MapPin size={12} className="text-rose-500 shrink-0" />
                         <span>{ev.venue} — {ev.address}</span>
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end pt-3 md:pt-0 border-t md:border-t-0 border-slate-100">
+                  <div className={`flex items-center gap-4 w-full md:w-auto justify-between md:justify-end pt-3 md:pt-0 border-t md:border-t-0 ${themeTokens.cardSubtleBorder}`}>
                     <div className="text-left md:text-right">
-                      <span className="text-[10px] text-slate-400 font-mono uppercase block">Tickets</span>
-                      <strong className="text-base font-black text-slate-900">
+                      <span className={`text-[10px] font-mono uppercase block ${themeTokens.textMuted}`}>Tickets</span>
+                      <strong className={`text-base font-black font-mono ${themeTokens.cardTitleColor}`}>
                         {ev.freeEntry ? 'Free RSVP' : formatPrice(ev.priceUSD, ev.priceVND)}
                       </strong>
                     </div>
@@ -845,7 +1203,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                           const url = `https://www.google.com/maps/dir/?api=1&destination=${ev.lat},${ev.lng}`;
                           window.open(url, '_blank');
                         }}
-                        className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
+                        className={`p-2.5 transition-colors cursor-pointer rounded-none ${themeTokens.secondaryBtn}`}
                         title="Google Maps Directions"
                       >
                         <Compass size={14} />
@@ -854,8 +1212,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setBookingEvent(ev)}
-                        style={{ backgroundColor: '#000000', color: '#ffffff' }}
-                        className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white hover:bg-slate-800 transition-all cursor-pointer shrink-0"
+                        className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shrink-0 font-mono rounded-none ${themeTokens.primaryBtn}`}
                       >
                         {ev.freeEntry ? 'RSVP Now' : 'Book Tickets'}
                       </button>
@@ -869,10 +1226,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
 
       </div>
 
-      {/* ==================== 5. MODAL: DIRECT TICKET BOOKING & RSVP MEETUP ==================== */}
+      {/* ==================== 5. MODAL: TICKETS & MEETUP RSVP ==================== */}
       {bookingEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className={`max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative rounded-none ${themeTokens.modalBg}`}>
             
             {/* Close Button */}
             <button
@@ -881,7 +1238,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 setBookingEvent(null);
                 setBookingCompleted(false);
               }}
-              className="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-900 transition-colors cursor-pointer"
+              className="absolute top-5 right-5 p-2 transition-colors cursor-pointer rounded-none border-2 border-black bg-white hover:bg-black hover:text-white text-black"
             >
               <X size={18} />
             </button>
@@ -889,18 +1246,21 @@ export const LocationAwareEventExplorer: React.FC = () => {
             {!bookingCompleted ? (
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${getEventTypeBadge(bookingEvent.type).color}`}>
+                  <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-none ${getEventTypeBadge(bookingEvent.type).color}`}>
                     {getEventTypeBadge(bookingEvent.type).label}
                   </span>
-                  <span className="text-xs font-mono font-bold text-slate-500">
+                  <span className={`text-xs font-mono font-bold ${themeTokens.textMuted}`}>
                     📍 {bookingEvent.city} {bookingEvent.distanceKm ? `(${bookingEvent.distanceKm} km away)` : ''}
                   </span>
                 </div>
 
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900 uppercase pr-8 mb-2">
+                <h3 
+                  className={`text-xl sm:text-2xl font-black uppercase pr-8 mb-2 ${themeTokens.cardTitleColor}`}
+                  style={{ fontFamily: themeTokens.headingFont }}
+                >
                   {bookingEvent.title}
                 </h3>
-                <p className="text-xs text-slate-500 mb-6 flex items-center gap-1.5">
+                <p className={`text-xs mb-6 flex items-center gap-1.5 ${themeTokens.textMuted}`}>
                   <MapPin size={13} className="text-rose-500" />
                   <span>{bookingEvent.venue} — {bookingEvent.address}</span>
                 </p>
@@ -908,7 +1268,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 {/* Event Form: Concert Tickets vs Free RSVP */}
                 {!bookingEvent.freeEntry && bookingEvent.seatTiers && bookingEvent.seatTiers.length > 0 ? (
                   <div className="space-y-4 mb-6">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-900 block font-mono">
+                    <span className={`text-xs font-bold uppercase tracking-wider block font-mono ${themeTokens.cardTitleColor}`}>
                       Select Ticket Tier &amp; Seating:
                     </span>
                     <div className="space-y-2">
@@ -916,10 +1276,10 @@ export const LocationAwareEventExplorer: React.FC = () => {
                         <label
                           key={idx}
                           onClick={() => setSelectedTierIndex(idx)}
-                          className={`p-3.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
+                          className={`p-3.5 border flex items-center justify-between cursor-pointer transition-all rounded-none ${
                             selectedTierIndex === idx
-                              ? 'bg-blue-50 border-blue-600 shadow-2xs'
-                              : 'bg-white border-slate-200 hover:border-slate-300'
+                              ? themeTokens.listItemActive
+                              : themeTokens.listItemInactive
                           }`}
                         >
                           <div className="min-w-0 pr-2">
@@ -929,17 +1289,17 @@ export const LocationAwareEventExplorer: React.FC = () => {
                                 name="tier"
                                 checked={selectedTierIndex === idx}
                                 onChange={() => setSelectedTierIndex(idx)}
-                                className="accent-blue-600"
+                                className="accent-[#ff2e93]"
                               />
-                              <span className="text-xs font-bold text-slate-900">{tier.name}</span>
+                              <span className="text-xs font-bold">{tier.name}</span>
                             </div>
-                            <span className="text-[11px] text-slate-500 block pl-5 mt-0.5">
+                            <span className={`text-[11px] block pl-5 mt-0.5 ${themeTokens.textMuted}`}>
                               {tier.perks.join(' • ')} ({tier.availableSeats} seats remaining)
                             </span>
                           </div>
 
                           <div className="text-right shrink-0">
-                            <span className="text-sm font-black text-slate-900">
+                            <span className="text-sm font-black font-mono">
                               {formatPrice(tier.priceUSD, tier.priceVND)}
                             </span>
                           </div>
@@ -948,21 +1308,21 @@ export const LocationAwareEventExplorer: React.FC = () => {
                     </div>
 
                     {/* Quantity Picker */}
-                    <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                      <span className="text-xs font-bold text-slate-700">Ticket Quantity:</span>
+                    <div className={`flex items-center justify-between pt-3 border-t ${themeTokens.cardSubtleBorder}`}>
+                      <span className={`text-xs font-bold ${themeTokens.cardTitleColor}`}>Ticket Quantity:</span>
                       <div className="flex items-center gap-3">
                         <button
                           type="button"
                           onClick={() => setTicketQuantity(Math.max(1, ticketQuantity - 1))}
-                          className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center font-bold text-slate-700 hover:bg-slate-100"
+                          className="w-8 h-8 flex items-center justify-center font-bold cursor-pointer rounded-none border-2 border-black bg-white hover:bg-black hover:text-white text-black"
                         >
                           -
                         </button>
-                        <span className="text-sm font-bold text-slate-900 w-6 text-center">{ticketQuantity}</span>
+                        <span className="text-sm font-bold w-6 text-center font-mono">{ticketQuantity}</span>
                         <button
                           type="button"
                           onClick={() => setTicketQuantity(Math.min(4, ticketQuantity + 1))}
-                          className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center font-bold text-slate-700 hover:bg-slate-100"
+                          className="w-8 h-8 flex items-center justify-center font-bold cursor-pointer rounded-none border-2 border-black bg-white hover:bg-black hover:text-white text-black"
                         >
                           +
                         </button>
@@ -971,37 +1331,37 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   </div>
                 ) : (
                   /* Free Meetup RSVP Form */
-                  <div className="space-y-3 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-900 block font-mono">
+                  <div className={`space-y-3 mb-6 p-4 border rounded-none ${themeTokens.cardBg}`}>
+                    <span className={`text-xs font-bold uppercase tracking-wider block font-mono ${themeTokens.cardTitleColor}`}>
                       Attendee Information (Free RSVP):
                     </span>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-600 block mb-1">Full Name</label>
+                      <label className={`text-[11px] font-bold block mb-1 ${themeTokens.textMuted}`}>Full Name</label>
                       <input
                         type="text"
                         value={rsvpName}
                         onChange={e => setRsvpName(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                        className={`w-full px-3 py-2 text-xs focus:outline-none rounded-none ${themeTokens.searchBox}`}
                         placeholder="Alex Morgan"
                       />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[11px] font-bold text-slate-600 block mb-1">Email for QR Ticket</label>
+                        <label className={`text-[11px] font-bold block mb-1 ${themeTokens.textMuted}`}>Email for QR Ticket</label>
                         <input
                           type="email"
                           value={rsvpEmail}
                           onChange={e => setRsvpEmail(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                          className={`w-full px-3 py-2 text-xs focus:outline-none rounded-none ${themeTokens.searchBox}`}
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] font-bold text-slate-600 block mb-1">Phone Number</label>
+                        <label className={`text-[11px] font-bold block mb-1 ${themeTokens.textMuted}`}>Phone / WhatsApp</label>
                         <input
                           type="text"
                           value={rsvpPhone}
                           onChange={e => setRsvpPhone(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                          className={`w-full px-3 py-2 text-xs focus:outline-none rounded-none ${themeTokens.searchBox}`}
                         />
                       </div>
                     </div>
@@ -1009,12 +1369,12 @@ export const LocationAwareEventExplorer: React.FC = () => {
                 )}
 
                 {/* Total & Submit Button */}
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
+                <div className={`pt-4 border-t ${themeTokens.cardSubtleBorder} flex items-center justify-between gap-4`}>
                   <div>
-                    <span className="text-[10px] text-slate-400 font-mono block">Total Payment</span>
-                    <strong className="text-lg font-black text-slate-950">
+                    <span className={`text-[10px] font-mono block ${themeTokens.textMuted}`}>Total Due</span>
+                    <strong className={`text-lg font-black font-mono ${themeTokens.cardTitleColor}`}>
                       {bookingEvent.freeEntry
-                        ? '0 USD (Free)'
+                        ? '$0.00 (Free)'
                         : formatPrice(
                             (bookingEvent.seatTiers?.[selectedTierIndex]?.priceUSD || bookingEvent.priceUSD) * ticketQuantity,
                             (bookingEvent.seatTiers?.[selectedTierIndex]?.priceVND || bookingEvent.priceVND) * ticketQuantity
@@ -1025,53 +1385,73 @@ export const LocationAwareEventExplorer: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setBookingCompleted(true)}
-                    style={{ backgroundColor: '#000000', color: '#ffffff' }}
-                    className="px-6 py-3 rounded-xl hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+                    className={`px-6 py-3 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer font-mono rounded-none ${themeTokens.primaryBtn}`}
                   >
-                    {bookingEvent.freeEntry ? 'Confirm RSVP Registration' : 'Confirm & Issue Tickets'}
+                    {bookingEvent.freeEntry ? 'Confirm Free RSVP' : 'Confirm & Issue Ticket'}
                   </button>
                 </div>
               </div>
             ) : (
               /* Success Confirmation with Barcode & Google Maps Direction Link */
               <div className="text-center py-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+                <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4 border-2 border-black bg-[#ffd60a] text-black shadow-[3px_3px_0px_#000000] rounded-none">
                   <CheckCircle2 size={32} />
                 </div>
 
-                <h3 className="text-2xl font-black text-slate-900 uppercase mb-1">
-                  {bookingEvent.freeEntry ? 'Registration Successful!' : 'Event Ticket Booking Confirmed!'}
+                <h3 
+                  className={`text-2xl font-black uppercase mb-1 ${themeTokens.cardTitleColor}`}
+                  style={{ fontFamily: themeTokens.headingFont }}
+                >
+                  {bookingEvent.freeEntry ? 'RSVP Registration Confirmed!' : 'Ticket Order Successful!'}
                 </h3>
-                <p className="text-xs text-slate-600 max-w-md mx-auto mb-6">
-                  Your electronic pass has been securely generated and emailed to you. Please present the QR code/barcode at the venue gate.
+                <p className={`text-xs max-w-md mx-auto mb-6 ${themeTokens.textMuted}`}>
+                  Your digital pass has been cryptographically verified and sent to your email. Please present the QR code at the event gate.
                 </p>
 
                 {/* Digital Ticket Mock Card */}
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 max-w-sm mx-auto mb-6 text-left relative overflow-hidden">
+                <div className={`p-5 max-w-sm mx-auto mb-6 text-left relative overflow-hidden rounded-none ${themeTokens.cardBg}`}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-mono font-bold text-slate-400 uppercase">
+                    <span className={`text-[10px] font-mono font-bold uppercase ${themeTokens.textMuted}`}>
                       FAN HUB PLUS VERIFIED PASS
                     </span>
-                    <span className="text-[10px] font-mono font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 bg-[#ffd60a] text-black border border-black rounded-none">
                       ACTIVE
                     </span>
                   </div>
 
-                  <h4 className="text-sm font-bold text-slate-900 truncate">
+                  <h4 
+                    className={`text-sm font-bold truncate ${themeTokens.cardTitleColor}`}
+                    style={{ fontFamily: themeTokens.headingFont }}
+                  >
                     {bookingEvent.title}
                   </h4>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
+                  <p className={`text-[11px] mt-0.5 ${themeTokens.textMuted}`}>
                     {bookingEvent.venue} • {bookingEvent.date}
                   </p>
 
-                  {/* Barcode Simulation */}
-                  <div className="mt-4 pt-3 border-t border-dashed border-slate-300 text-center">
-                    <div className="font-mono text-2xl tracking-[0.25em] text-slate-800 font-bold select-all">
-                      ||| | |||| | ||| || |||
+                  {/* Blockchain QR Code Simulation */}
+                  <div className="mt-4 pt-4 border-t border-slate-700 border-dashed flex flex-col items-center">
+                    <div className="p-2 bg-white rounded-none border-2 border-black">
+                      <QRCode 
+                        value={`https://sepolia.etherscan.io/tx/0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa`} 
+                        size={100} 
+                        style={{ height: "auto", maxWidth: "100px", width: "100%" }}
+                        viewBox={`0 0 100 100`}
+                      />
                     </div>
-                    <span className="text-[9px] font-mono text-slate-400 block mt-1">
-                      PASS ID: FHP-2025-{Math.floor(100000 + Math.random() * 900000)}
-                    </span>
+                  </div>
+                  
+                  <div className="mt-4 text-left p-3 bg-black rounded-none border-2 border-white">
+                    <div className="text-[10px] text-slate-400 font-mono uppercase mb-1 flex items-center justify-between">
+                      <span>Blockchain Ticket</span>
+                      <span className="text-emerald-400 font-bold">MINTED</span>
+                    </div>
+                    <div className="text-[11px] text-white font-mono break-all leading-tight">
+                      TxHash: <span className="text-cyan-300">0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa</span>
+                    </div>
+                    <div className="text-[11px] text-white font-mono mt-1">
+                      TokenID: <span className="text-pink-400">#7077</span>
+                    </div>
                   </div>
                 </div>
 
@@ -1083,7 +1463,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                       const url = `https://www.google.com/maps/dir/?api=1&destination=${bookingEvent.lat},${bookingEvent.lng}`;
                       window.open(url, '_blank');
                     }}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold uppercase transition-all shadow-sm cursor-pointer"
+                    className={`inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold uppercase transition-all cursor-pointer font-mono rounded-none ${themeTokens.primaryBtn}`}
                   >
                     <Compass size={14} />
                     <span>Open Google Maps Directions</span>
@@ -1095,7 +1475,7 @@ export const LocationAwareEventExplorer: React.FC = () => {
                       setBookingEvent(null);
                       setBookingCompleted(false);
                     }}
-                    className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-bold uppercase transition-all cursor-pointer"
+                    className={`px-4 py-2.5 text-xs font-bold uppercase transition-all cursor-pointer font-mono rounded-none ${themeTokens.secondaryBtn}`}
                   >
                     Close
                   </button>

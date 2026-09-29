@@ -32,6 +32,7 @@ import {
   Tag,
   ArrowRight,
   List,
+  WifiOff,
 } from 'lucide-react';
 
 export interface CategoryChild {
@@ -65,52 +66,7 @@ export interface CategoryDetail extends AdminCategoryItem {
   };
 }
 
-// Fallback demo data to showcase the UI if backend is offline
-const FALLBACK_CATEGORIES: AdminCategoryItem[] = [
-  {
-    id: 'cat_1',
-    name: 'Gaming',
-    slug: 'gaming',
-    parent_id: null,
-    stats: { events_count: 24, posts_count: 580 },
-    children: [
-      { id: 'cat_2', name: 'Esports', slug: 'esports', parent_id: 'cat_1', stats: { events_count: 12, posts_count: 340 } },
-      { id: 'cat_3', name: 'PC & Console', slug: 'pc-console', parent_id: 'cat_1', stats: { events_count: 7, posts_count: 150 } },
-      { id: 'cat_4', name: 'Mobile Games', slug: 'mobile-games', parent_id: 'cat_1', stats: { events_count: 5, posts_count: 90 } },
-    ],
-  },
-  {
-    id: 'cat_5',
-    name: 'Âm Nhạc (K-POP)',
-    slug: 'kpop-music',
-    parent_id: null,
-    stats: { events_count: 45, posts_count: 1250 },
-    children: [
-      { id: 'cat_6', name: 'Concerts & Tour', slug: 'concerts-tour', parent_id: 'cat_5', stats: { events_count: 28, posts_count: 720 } },
-      { id: 'cat_7', name: 'Album & Merch', slug: 'album-merch', parent_id: 'cat_5', stats: { events_count: 10, posts_count: 310 } },
-      { id: 'cat_8', name: 'Fan Meeting', slug: 'fan-meeting', parent_id: 'cat_5', stats: { events_count: 7, posts_count: 220 } },
-    ],
-  },
-  {
-    id: 'cat_9',
-    name: 'Anime & Manga',
-    slug: 'anime-manga',
-    parent_id: null,
-    stats: { events_count: 18, posts_count: 420 },
-    children: [
-      { id: 'cat_10', name: 'Review Anime', slug: 'review-anime', parent_id: 'cat_9', stats: { events_count: 8, posts_count: 260 } },
-      { id: 'cat_11', name: 'Cosplay Festival', slug: 'cosplay-festival', parent_id: 'cat_9', stats: { events_count: 10, posts_count: 160 } },
-    ],
-  },
-  {
-    id: 'cat_12',
-    name: 'Công Nghệ & AI',
-    slug: 'tech-ai',
-    parent_id: null,
-    stats: { events_count: 9, posts_count: 180 },
-    children: [],
-  },
-];
+
 
 // Helper to generate slug from name
 const generateSlug = (str: string): string => {
@@ -227,9 +183,9 @@ export default function AdminCategoriesPage() {
         throw new Error('Invalid response structure');
       }
     } catch (err) {
-      console.warn('API /api/v1/admin/categories offline. Loading interactive fallback categories:', err);
+      console.warn('API /api/v1/admin/categories offline or error:', err);
       setIsConnectionError(true);
-      setCategories(FALLBACK_CATEGORIES);
+      setCategories([]);
     } finally {
       setIsLoading(false);
     }
@@ -716,51 +672,79 @@ export default function AdminCategoriesPage() {
             </div>
           )}
 
-          {/* Page Title & Status Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200">
-            <div>
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-xs">
-                  <FolderTree className="w-6 h-6" />
-                </div>
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
-                    {isVi ? 'Quản Lý Danh Mục (Categories)' : 'Category Management'}
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-mono">
-                      /api/v1/admin/categories
-                    </span>
-                  </h1>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    {isVi
-                      ? 'Cấu trúc cây phân cấp danh mục cha - con (include_children=true), thống kê sự kiện và bài viết.'
-                      : 'Hierarchical category tree with subcategories and linked content statistics.'}
-                  </p>
-                </div>
+          {/* Page Title & Top Actions Header */}
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
+                <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
+                <span>/</span>
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Quản lý Danh mục' : 'Category Management'}
+                </span>
               </div>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
+                  <FolderTree className="w-5 h-5" />
+                </div>
+                <span>{isVi ? 'Quản lý Danh mục' : 'Category Management'}</span>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
+                  {totalAll} {isVi ? 'danh mục' : 'categories'}
+                </span>
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Cấu trúc cây phân cấp danh mục cha - con, thống kê sự kiện và bài viết liên quan.'
+                  : 'Hierarchical category tree with subcategories and linked content statistics.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2 self-start md:self-auto">
-              {/* + Create New Category */}
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
+                onClick={fetchCategories}
+                disabled={isLoading}
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
+              >
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
+              </button>
+              <button
+                type="button"
                 onClick={() => {
                   setCreateForm({ name: '', slug: '', parent_id: '' });
                   setIsCreateModalOpen(true);
                 }}
-                className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs rounded-xl transition-all cursor-pointer"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#4f46e5',
+                  color: '#ffffff',
+                  padding: '9px 18px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  border: 'none',
+                }}
+                className="hover:bg-indigo-700 transition-colors shadow-2xs"
               >
                 <Plus className="w-4 h-4" />
-                <span>{isVi ? 'Thêm danh mục mới' : 'Add Category'}</span>
-              </button>
-
-              {/* Refresh Button */}
-              <button
-                onClick={fetchCategories}
-                disabled={isLoading}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
-                title="Làm mới danh sách từ API"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-indigo-600' : ''}`} />
-                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <span>{isVi ? 'THÊM DANH MỤC MỚI' : 'ADD NEW CATEGORY'}</span>
               </button>
             </div>
           </div>
@@ -861,8 +845,44 @@ export default function AdminCategoriesPage() {
             <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">
               <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
               <p className="text-sm font-semibold text-slate-700">
-                {isVi ? 'Đang tải danh mục từ /api/v1/admin/categories...' : 'Loading categories...'}
+                {isVi ? 'Đang tải danh mục...' : 'Loading categories...'}
               </p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={fetchCategories}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
             </div>
           ) : filteredCategories.length === 0 ? (
             <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">

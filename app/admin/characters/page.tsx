@@ -33,6 +33,7 @@ import {
   Filter,
   FileText,
   BookOpen,
+  WifiOff,
 } from 'lucide-react';
 
 export interface AdminCharacterItem {
@@ -53,63 +54,7 @@ export interface AdminCategoryOption {
   slug?: string;
 }
 
-// Fallback demo characters to showcase UI when API is offline
-const FALLBACK_CHARACTERS: AdminCharacterItem[] = [
-  {
-    id: 'chr_001',
-    name: 'Naruto Uzumaki',
-    category: 'Anime',
-    category_id: 'cat_anime',
-    avatar_url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400&auto=format&fit=crop&q=80',
-    biography: 'Hokage Đệ Thất của Làng Lá. Anh hùng của Thế chiến Ninja lần thứ tư, người sở hữu Cửu Vĩ Kurama và ý chí Hỏa Quốc bất diệt.',
-    created_at: '2026-01-15T08:30:00Z',
-  },
-  {
-    id: 'chr_002',
-    name: 'Monkey D. Luffy',
-    category: 'Anime',
-    category_id: 'cat_anime',
-    avatar_url: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&auto=format&fit=crop&q=80',
-    biography: 'Thuyền trưởng Băng Hải Tặc Mũ Rơm, Tứ Hoàng của biển cả. Sở hữu sức mạnh Hito Hito no Mi, Model: Nika với giấc mơ trở thành Vua Hải Tặc.',
-    created_at: '2026-01-20T10:15:00Z',
-  },
-  {
-    id: 'chr_003',
-    name: 'Ahri - Cửu Vĩ Hồ',
-    category: 'Game / MOBA',
-    category_id: 'cat_moba',
-    avatar_url: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=400&auto=format&fit=crop&q=80',
-    biography: 'Pháp sư Vastaya sở hữu ma thuật linh hồn diệu kỳ từ vùng đất Ionia. Nhân vật biểu tượng của Liên Minh Huyền Thoại.',
-    created_at: '2026-02-02T14:45:00Z',
-  },
-  {
-    id: 'chr_004',
-    name: 'Geralt of Rivia',
-    category: 'RPG Game',
-    category_id: 'cat_game',
-    avatar_url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&auto=format&fit=crop&q=80',
-    biography: 'Thợ săn quái vật đột biến - Sói Trắng (Gwynbleidd). Bậc thầy kiếm thuật, độc dược và dấu ấn ma thuật Witcher.',
-    created_at: '2026-02-14T09:20:00Z',
-  },
-  {
-    id: 'chr_005',
-    name: 'Jinx - Khẩu Pháo Nổi Loạn',
-    category: 'Game / MOBA',
-    category_id: 'cat_moba',
-    avatar_url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400&auto=format&fit=crop&q=80',
-    biography: 'Tội phạm nguy hiểm và điên cuồng nhất xứ Zaun. Nhân vật chính trong bom tấn hoạt hình ARCANE đoạt giải Emmy.',
-    created_at: '2026-02-28T16:00:00Z',
-  },
-  {
-    id: 'chr_006',
-    name: 'Son Goku',
-    category: 'Anime',
-    category_id: 'cat_anime',
-    avatar_url: 'https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?w=400&auto=format&fit=crop&q=80',
-    biography: 'Chiến binh Saiyan huyền thoại, người bảo vệ Trái Đất và đa vũ trụ. Đã khai mở Bản Năng Vô Cực (Ultra Instinct).',
-    created_at: '2026-03-05T11:10:00Z',
-  },
-];
+
 
 const FALLBACK_CATEGORIES: AdminCategoryOption[] = [
   { id: 'cat_anime', name: 'Anime' },
@@ -132,6 +77,7 @@ export default function AdminCharactersPage() {
   const [categories, setCategories] = useState<AdminCategoryOption[]>(FALLBACK_CATEGORIES);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isConnectionError, setIsConnectionError] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [apiSuccess, setApiSuccess] = useState<string | null>(null);
 
@@ -250,24 +196,10 @@ export default function AdminCharactersPage() {
       }
       setApiError(null);
     } catch (err: any) {
-      console.warn('API /api/v1/admin/characters error or offline. Using demo data:', err);
-      // Client-side filter fallback demo data
-      let filtered = [...FALLBACK_CHARACTERS];
-      if (selectedCategoryId) {
-        filtered = filtered.filter(
-          (c) => c.category_id === selectedCategoryId || c.category === selectedCategoryId
-        );
-      }
-      if (searchTerm.trim()) {
-        const q = searchTerm.toLowerCase();
-        filtered = filtered.filter(
-          (c) =>
-            c.name.toLowerCase().includes(q) ||
-            (c.biography && c.biography.toLowerCase().includes(q))
-        );
-      }
-      setCharacters(filtered);
-      setTotalCount(filtered.length);
+      console.warn('API /api/v1/admin/characters error or offline:', err);
+      setCharacters([]);
+      setTotalCount(0);
+      setIsConnectionError(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -479,45 +411,77 @@ export default function AdminCharactersPage() {
           activeTab="characters"
         />
 
-        {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+        {/* BREADCRUMB & TOP ACTIONS HEADER */}
+        <div className="p-6 pb-0">
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-indigo-600 font-medium">
-                  {isVi ? 'Hồ sơ nhân vật (Characters)' : 'Character Profiles'}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Hồ sơ Nhân vật' : 'Character Profiles'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
                   <Drama className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Quản lý Hồ sơ Nhân vật' : 'Character Management'}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                   {totalCharacters} {isVi ? 'nhân vật' : 'records'}
                 </span>
               </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Quản lý hồ sơ nhân vật anime, game, tiểu sử chi tiết và hình ảnh đại diện.'
+                  : 'Manage anime and game character profiles, detailed biographies, and avatars.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
                 onClick={() => fetchCharacters(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
-                title={isVi ? 'Làm mới' : 'Refresh'}
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
-                <span className="hidden sm:inline">{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
               </button>
-
               <button
+                type="button"
                 onClick={() => setIsCreateOpen(true)}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#4f46e5',
+                  color: '#ffffff',
+                  padding: '9px 18px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  border: 'none',
+                }}
+                className="hover:bg-indigo-700 transition-colors shadow-2xs"
               >
-                <Plus className="w-4 h-4 stroke-[2.5]" />
-                <span>{isVi ? 'Thêm nhân vật mới' : 'Create Character'}</span>
+                <Plus className="w-4 h-4" />
+                <span>{isVi ? 'THÊM NHÂN VẬT MỚI' : 'CREATE CHARACTER'}</span>
               </button>
             </div>
           </div>
@@ -550,7 +514,50 @@ export default function AdminCharactersPage() {
 
         {/* CONTENT BODY */}
         <div className="p-6 space-y-6">
-          {/* STATS OVERVIEW CARDS */}
+          {loading ? (
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
+              <p className="text-xs text-slate-500">{isVi ? 'Đang tải danh sách nhân vật...' : 'Loading characters...'}</p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => fetchCharacters(true)}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* STATS OVERVIEW CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
               <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
@@ -976,6 +983,8 @@ export default function AdminCharactersPage() {
               </button>
             </div>
           </div>
+        </>
+        )}
         </div>
       </div>
 

@@ -28,6 +28,7 @@ import {
   ChevronRight,
   ShieldAlert,
   ArrowRight,
+  WifiOff,
 } from 'lucide-react';
 
 export interface AdminRefundItem {
@@ -42,47 +43,7 @@ export interface AdminRefundItem {
   [key: string]: any;
 }
 
-// Fallback demo refunds
-const FALLBACK_REFUNDS: AdminRefundItem[] = [
-  {
-    id: 'ref_001',
-    booking_id: 'bk_89210',
-    amount: 500000,
-    user: 'Tran Van B',
-    reason: 'Sự kiện dời ngày tổ chức sang tuần sau không tham dự được.',
-    status: 'Pending',
-    created_at: '2026-09-27T08:30:00Z',
-  },
-  {
-    id: 'ref_002',
-    booking_id: 'bk_89215',
-    amount: 1500000,
-    user: 'Nguyen Mai Huong',
-    reason: 'Đặt nhầm số lượng vé VIP, mong muốn hoàn bớt 2 vé thừa.',
-    status: 'Pending',
-    created_at: '2026-09-27T09:15:00Z',
-  },
-  {
-    id: 'ref_003',
-    booking_id: 'bk_88992',
-    amount: 300000,
-    user: 'Pham Quoc Huy',
-    reason: 'Sự kiện Đêm Nhạc Acoustic bị hủy bởi BTC.',
-    status: 'Approved',
-    created_at: '2026-09-25T14:20:00Z',
-    admin_note: 'Đã hoàn tiền tự động qua cổng VNPay theo chính sách sự kiện bị hủy.',
-  },
-  {
-    id: 'ref_004',
-    booking_id: 'bk_88750',
-    amount: 600000,
-    user: 'Doan Van Hau',
-    reason: 'Yêu cầu hoàn tiền sau khi sự kiện đã diễn ra kết thúc.',
-    status: 'Rejected',
-    created_at: '2026-09-24T11:00:00Z',
-    admin_note: 'Từ chối hoàn tiền theo điều khoản: Vé sự kiện không hoàn trả sau giờ khai mạc.',
-  },
-];
+
 
 export default function AdminRefundsPage() {
   const { language } = useAdminLanguage();
@@ -96,6 +57,7 @@ export default function AdminRefundsPage() {
   const [refunds, setRefunds] = useState<AdminRefundItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isConnectionError, setIsConnectionError] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [apiSuccess, setApiSuccess] = useState<string | null>(null);
 
@@ -144,6 +106,7 @@ export default function AdminRefundsPage() {
   const fetchRefunds = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
+    setIsConnectionError(false);
 
     try {
       const token = getAccessToken();
@@ -173,28 +136,15 @@ export default function AdminRefundsPage() {
         setTotalCount(json.meta?.total || json.total || rawData.length);
       } else {
         setRefunds([]);
+        setTotalCount(0);
       }
       setApiError(null);
+      setIsConnectionError(false);
     } catch (err: any) {
-      console.warn('API /api/v1/admin/refunds offline, using demo refunds:', err);
-      let filtered = [...FALLBACK_REFUNDS];
-      if (statusFilter !== 'All') {
-        filtered = filtered.filter(
-          (r) => (r.status || '').toLowerCase() === statusFilter.toLowerCase()
-        );
-      }
-      if (searchTerm.trim()) {
-        const q = searchTerm.toLowerCase();
-        filtered = filtered.filter(
-          (r) =>
-            r.booking_id.toLowerCase().includes(q) ||
-            r.id.toLowerCase().includes(q) ||
-            r.reason.toLowerCase().includes(q) ||
-            getUserName(r.user).toLowerCase().includes(q)
-        );
-      }
-      setRefunds(filtered);
-      setTotalCount(filtered.length);
+      console.warn('API /api/v1/admin/refunds offline or error:', err);
+      setRefunds([]);
+      setTotalCount(0);
+      setIsConnectionError(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -327,36 +277,56 @@ export default function AdminRefundsPage() {
           activeTab="refunds"
         />
 
-        {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+        {/* BREADCRUMB & TOP ACTIONS HEADER */}
+        <div className="p-6 pb-0">
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-indigo-600 font-medium">
-                  {isVi ? 'Yêu cầu Hoàn tiền (Refund Requests)' : 'Refund Requests'}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Yêu cầu Hoàn tiền' : 'Refund Requests'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
                   <RotateCcw className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Xử Lý Yêu Cầu Hoàn Tiền Vé' : 'Refund Management'}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                   {refunds.length} {isVi ? 'yêu cầu' : 'records'}
                 </span>
               </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Kiểm duyệt đơn xin hoàn trả tiền vé, xét duyệt điều kiện và hoàn trả tự động.'
+                  : 'Review ticket refund requests, check policy conditions, and execute payouts.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
                 onClick={() => fetchRefunds(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
-                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
               </button>
             </div>
           </div>
@@ -377,7 +347,50 @@ export default function AdminRefundsPage() {
 
         {/* CONTENT BODY */}
         <div className="p-6 space-y-6">
-          {/* STATS OVERVIEW */}
+          {loading ? (
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
+              <p className="text-xs text-slate-500">{isVi ? 'Đang tải danh sách hoàn tiền...' : 'Loading refund requests...'}</p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => fetchRefunds(true)}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* STATS OVERVIEW */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
               <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
@@ -642,6 +655,8 @@ export default function AdminRefundsPage() {
               </button>
             </div>
           </div>
+        </>
+        )}
         </div>
       </div>
 

@@ -30,6 +30,7 @@ import {
   ArrowUpDown,
   ExternalLink,
   ShieldAlert,
+  WifiOff,
 } from 'lucide-react';
 
 // Data item interface matching GET /api/v1/admin/comments/flagged:
@@ -51,49 +52,7 @@ export interface ApiResponseMeta {
   limit?: number;
 }
 
-// Fallback demo data to showcase the UI if backend is offline
-const FALLBACK_COMMENTS: AdminCommentItem[] = [
-  {
-    id: 'cmt_001',
-    post_id: 'cnt_001',
-    user: 'Spammer',
-    body: 'Bình luận spam liên kết độc hại mời vào nhóm cá cược telegram nhận khuyến mãi 100%...',
-    reports_count: 5,
-    created_at: '2026-09-25 10:30',
-  },
-  {
-    id: 'cmt_002',
-    post_id: 'cnt_002',
-    user: 'Hater99',
-    body: 'Nội dung xúc phạm bôi nhọ nghệ sĩ và cộng đồng người hâm mộ bằng ngôn từ thiếu văn hóa.',
-    reports_count: 8,
-    created_at: '2026-09-24 14:15',
-  },
-  {
-    id: 'cmt_003',
-    post_id: 'cnt_003',
-    user: 'BotTicketFake',
-    body: 'Pass lại 5 vé concert VIP khu A giá rẻ bất ngờ chuyển khoản giữ chỗ ngay kẻo lỡ!',
-    reports_count: 3,
-    created_at: '2026-09-24 09:20',
-  },
-  {
-    id: 'cmt_004',
-    post_id: 'cnt_004',
-    user: 'TrollAccount',
-    body: 'Spam bình luận vô nghĩa lặp đi lặp lại hàng chục lần gây nhiễu luồng thảo luận.',
-    reports_count: 4,
-    created_at: '2026-09-23 18:45',
-  },
-  {
-    id: 'cmt_005',
-    post_id: 'cnt_005',
-    user: 'ScamLinker',
-    body: 'Bấm vào liên kết này để nhận giftcode miễn phí (đường dẫn giả mạo đánh cắp tài khoản).',
-    reports_count: 12,
-    created_at: '2026-09-22 21:00',
-  },
-];
+
 
 export default function AdminCommentsPage() {
   const { language } = useAdminLanguage();
@@ -198,17 +157,11 @@ export default function AdminCommentsPage() {
         throw new Error('Invalid JSON format');
       }
     } catch (err) {
-      console.warn('Backend API /api/v1/admin/comments/flagged offline, loading interactive fallback data:', err);
+      console.warn('Backend API /api/v1/admin/comments/flagged offline or error:', err);
       setIsConnectionError(true);
-
-      const sorted = [...FALLBACK_COMMENTS].sort((a, b) => {
-        if (sort === 'reports_count') return b.reports_count - a.reports_count;
-        return 0;
-      });
-
-      setComments(sorted);
+      setComments([]);
       setMeta({
-        total: sorted.length,
+        total: 0,
         page,
         limit,
       });
@@ -382,53 +335,55 @@ export default function AdminCommentsPage() {
             </div>
           )}
 
-          {/* Page Title & Status Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200">
-            <div>
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 shadow-xs">
-                  <ShieldAlert className="w-6 h-6" />
-                </div>
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
-                    {isVi ? 'Quản Lý Bình Luận Bị Báo Cáo' : 'Flagged Comments Moderation'}
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-mono">
-                      /api/v1/admin/comments/flagged
-                    </span>
-                  </h1>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    {isVi
-                      ? 'Kiểm duyệt các bình luận spam, thù địch hoặc vi phạm bị người dùng cắm cờ báo cáo.'
-                      : 'Review and remove comments flagged by community users for spam or abuse.'}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 self-start md:self-auto">
-              {/* Endpoint Status Pill */}
-              <div
-                className={`px-3 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-2 border shadow-xs ${
-                  !isConnectionError
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                    : 'bg-amber-50 text-amber-700 border-amber-200'
-                }`}
-              >
-                <span className={`w-2 h-2 rounded-full ${!isConnectionError ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
-                <span className="font-mono text-[11px]">
-                  {!isConnectionError ? 'GET 200 OK' : 'Demo Mode (Backend Offline)'}
+          {/* Page Title & Top Actions Header */}
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
+                <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
+                <span>/</span>
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Kiểm duyệt Bình luận' : 'Comment Moderation'}
                 </span>
               </div>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center border border-rose-100 dark:border-rose-900/60 shadow-2xs shrink-0">
+                  <ShieldAlert className="w-5 h-5" />
+                </div>
+                <span>{isVi ? 'Quản Lý Bình Luận Bị Báo Cáo' : 'Flagged Comments Moderation'}</span>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
+                  {totalComments} {isVi ? 'báo cáo' : 'flagged'}
+                </span>
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Kiểm duyệt các bình luận spam, thù địch hoặc vi phạm bị người dùng cắm cờ báo cáo.'
+                  : 'Review and remove comments flagged by community users for spam or abuse.'}
+              </p>
+            </div>
 
-              {/* Refresh Button */}
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
                 onClick={fetchComments}
                 disabled={isLoading}
-                className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
-                title="Làm mới danh sách từ API"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-indigo-600' : ''}`} />
-                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
               </button>
             </div>
           </div>
@@ -563,8 +518,44 @@ export default function AdminCommentsPage() {
             <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">
               <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
               <p className="text-sm font-semibold text-slate-700">
-                {isVi ? 'Đang tải bình luận vi phạm từ /api/v1/admin/comments/flagged...' : 'Fetching flagged comments...'}
+                {isVi ? 'Đang tải bình luận vi phạm...' : 'Fetching flagged comments...'}
               </p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={fetchComments}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
             </div>
           ) : displayedComments.length === 0 ? (
             <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">

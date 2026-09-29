@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAdminLanguage } from '../../context/AdminLanguageContext';
@@ -22,6 +22,7 @@ import {
   Bot,
   History,
   Settings,
+  Tv,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -43,11 +44,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const pathname = usePathname();
   const isEn = language === 'en';
 
+  const activeItemRef = useRef<HTMLAnchorElement | null>(null);
+
   const navItems = [
     { id: 'dashboard', label: isEn ? 'Dashboard Overview' : (t('dashboard') || 'Trang Chủ Admin'), icon: LayoutDashboard, href: '/admin', badge: null },
     { id: 'users', label: isEn ? 'User Management' : (t('users') || 'Quản lý người dùng'), icon: Users, href: '/admin/users', badge: null },
     { id: 'events', label: isEn ? 'Event Management' : 'Quản lý sự kiện', icon: Calendar, href: '/admin/events', badge: null },
     { id: 'contents', label: isEn ? 'Content & Posts' : 'Quản lý bài viết', icon: FileText, href: '/admin/contents', badge: null },
+    { id: 'multimedia', label: isEn ? 'Multimedia Hub' : 'Quản lý Đa phương tiện', icon: Tv, href: '/admin/multimedia', badge: null },
     { id: 'financial', label: isEn ? 'Financial Reports' : 'Báo cáo tài chính', icon: TrendingUp, href: '/admin/financial', badge: null },
     { id: 'transactions', label: isEn ? 'Transaction History' : 'Lịch sử giao dịch', icon: Receipt, href: '/admin/transactions', badge: null },
     { id: 'refunds', label: isEn ? 'Refund Requests' : 'Xử lý hoàn tiền', icon: RotateCcw, href: '/admin/refunds', badge: null },
@@ -61,6 +65,16 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'characters', label: isEn ? 'Character Profiles' : 'Hồ sơ nhân vật', icon: Drama, href: '/admin/characters', badge: null },
     { id: 'merchandises', label: isEn ? 'Merchandise Store' : 'Quản lý vật phẩm (Merch)', icon: Store, href: '/admin/merchandises', badge: null },
   ];
+
+  // Auto-scroll sidebar to active menu item when tab/route changes
+  useEffect(() => {
+    if (activeItemRef.current) {
+      activeItemRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  }, [pathname, activeTab]);
 
   return (
     <>
@@ -76,8 +90,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         className={`notranslate admin-sidebar sticky top-0 h-screen shrink-0 z-30 flex flex-col justify-between transition-all duration-300 admin-typography ${isOpen ? 'sidebar-open' : 'sidebar-closed'
           }`}
       >
-        <div>
-          <div className="h-16 px-4 flex items-center justify-between border-b border-white/10 bg-black/20 w-100">
+        <div className="flex flex-col h-full min-h-0">
+          <div className="h-16 px-4 flex items-center justify-between border-b border-white/10 bg-black/20 w-100 shrink-0">
             <Link href="/" className="overflow-hidden group w-100 text-center">
               {isOpen && (
                 <span className="font-black text-sm tracking-wider text-white uppercase text-center w-100">
@@ -97,7 +111,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             </button>
           </div>
 
-          <div className="p-3 space-y-2 overflow-y-auto max-h-[calc(100vh-180px)]">
+          <div className="p-3 space-y-2 overflow-y-auto flex-1 min-h-0 admin-sidebar-scroll">
             {isOpen && (
               <div className="pt-2 text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2">
                 <span>Main Menu</span>
@@ -110,6 +124,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
               return (
                 <Link
                   key={item.id}
+                  ref={isActive ? activeItemRef : null}
                   href={item.href}
                   onClick={() => {
                     setActiveTab(item.id);

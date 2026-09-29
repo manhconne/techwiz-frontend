@@ -484,6 +484,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                       <select
                         value={newArtist}
                         onChange={(e) => setNewArtist(e.target.value)}
+                        aria-label="Artist or Fandom"
                         className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-sky-500"
                       >
                         <option value="NewJeans">NewJeans</option>
@@ -504,6 +505,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                         min="1"
                         value={newPrice}
                         onChange={(e) => setNewPrice(Number(e.target.value))}
+                        aria-label="Reference Price in USD"
                         className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-sky-500"
                       />
                     </div>
@@ -512,6 +514,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose }) => {
                       <select
                         value={newTag}
                         onChange={(e) => setNewTag(e.target.value as any)}
+                        aria-label="Category Tag"
                         className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-sky-500"
                       >
                         <option value="Pre-Order">Pre-Order</option>

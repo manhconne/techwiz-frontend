@@ -30,6 +30,7 @@ import {
   ShieldCheck,
   ArrowUpDown,
   Download,
+  WifiOff,
 } from 'lucide-react';
 
 export interface AdminTransactionItem {
@@ -120,6 +121,7 @@ export default function AdminTransactionsPage() {
   const [transactions, setTransactions] = useState<AdminTransactionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isConnectionError, setIsConnectionError] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
   // Filters & Pagination: ?provider=VNPay&status=Success&page=1&limit=20
@@ -146,7 +148,7 @@ export default function AdminTransactionsPage() {
 
   // Helper get user name
   const getUserName = (u: any) => {
-    if (!u) return 'Ẩn danh';
+    if (!u) return 'Anonymous';
     if (typeof u === 'string') return u;
     return u.name || u.email || 'User';
   };
@@ -155,6 +157,7 @@ export default function AdminTransactionsPage() {
   const fetchTransactions = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
+    setIsConnectionError(false);
 
     try {
       const token = getAccessToken();
@@ -185,32 +188,15 @@ export default function AdminTransactionsPage() {
         setTotalCount(json.meta?.total || json.total || rawData.length);
       } else {
         setTransactions([]);
+        setTotalCount(0);
       }
       setApiError(null);
+      setIsConnectionError(false);
     } catch (err: any) {
-      console.warn('API /api/v1/admin/transactions offline, using demo transactions:', err);
-      let filtered = [...FALLBACK_TRANSACTIONS];
-      if (providerFilter) {
-        filtered = filtered.filter(
-          (t) => (t.provider || '').toLowerCase() === providerFilter.toLowerCase()
-        );
-      }
-      if (statusFilter) {
-        filtered = filtered.filter(
-          (t) => (t.status || '').toLowerCase() === statusFilter.toLowerCase()
-        );
-      }
-      if (searchTerm.trim()) {
-        const q = searchTerm.toLowerCase();
-        filtered = filtered.filter(
-          (t) =>
-            t.merchant_ref.toLowerCase().includes(q) ||
-            t.id.toLowerCase().includes(q) ||
-            getUserName(t.user).toLowerCase().includes(q)
-        );
-      }
-      setTransactions(filtered);
-      setTotalCount(filtered.length);
+      console.warn('API /api/v1/admin/transactions offline or error:', err);
+      setTransactions([]);
+      setTotalCount(0);
+      setIsConnectionError(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -286,7 +272,7 @@ export default function AdminTransactionsPage() {
       {/* SIDEBAR */}
       <AdminSidebar
         activeTab="transactions"
-        setActiveTab={() => {}}
+        setActiveTab={() => { }}
         isOpen={isSidebarOpen}
         onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
       />
@@ -302,36 +288,56 @@ export default function AdminTransactionsPage() {
           activeTab="transactions"
         />
 
-        {/* BREADCRUMB & TOOLBAR */}
-        <div className="border-b border-slate-200 bg-white px-6 py-4 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+        {/* BREADCRUMB & TOP ACTIONS HEADER */}
+        <div className="p-6 pb-0">
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
                 <span>/</span>
-                <span className="text-indigo-600 font-medium">
-                  {isVi ? 'Lịch sử Giao dịch (Transactions)' : 'Transaction History'}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Lịch sử Giao dịch' : 'Transaction History'}
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
                   <Receipt className="w-5 h-5" />
                 </div>
                 <span>{isVi ? 'Nhật Ký Giao Dịch & Cổng Thanh Toán' : 'Transaction Logs & Gateways'}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                   {transactions.length} {isVi ? 'giao dịch' : 'records'}
                 </span>
               </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Theo dõi nhật ký các giao dịch thanh toán vé, nạp ví và trạng thái đối soát cổng.'
+                  : 'Monitor ticket payment logs, wallet top-ups, and gateway reconciliation status.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
                 onClick={() => fetchTransactions(true)}
                 disabled={loading || refreshing}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-600' : ''}`} />
-                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
               </button>
             </div>
           </div>
@@ -339,240 +345,285 @@ export default function AdminTransactionsPage() {
 
         {/* CONTENT BODY */}
         <div className="p-6 space-y-6">
-          {/* STATS OVERVIEW */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
-              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-                <span>{isVi ? 'Tổng tiền thanh toán' : 'Settled Volume'}</span>
-                <DollarSign className="w-4 h-4 text-emerald-600" />
-              </div>
-              <div className="text-2xl font-black text-emerald-600 font-mono">
-                {formatCurrency(totalVolume)}
-              </div>
-              <div className="text-[11px] text-slate-400 mt-1">
-                {isVi ? 'Đã thanh toán thành công' : 'Captured successfully'}
-              </div>
+          {loading ? (
+            <div className="p-12 text-center rounded-xl bg-white border border-slate-200/80 shadow-xs">
+              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
+              <p className="text-xs text-slate-500">{isVi ? 'Đang tải danh sách giao dịch...' : 'Loading transactions...'}</p>
             </div>
-
-            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
-              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-                <span>{isVi ? 'Giao dịch thành công' : 'Successful'}</span>
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              </div>
-              <div className="text-2xl font-black text-slate-900">{successCount}</div>
-              <div className="text-[11px] text-slate-400 mt-1">
-                {isVi ? 'Tỷ lệ thanh toán chuẩn 100%' : 'Processed without issues'}
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
-              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-                <span>{isVi ? 'Giao dịch chờ xử lý' : 'Pending'}</span>
-                <Clock className="w-4 h-4 text-amber-500" />
-              </div>
-              <div className="text-2xl font-black text-amber-600">{pendingCount}</div>
-              <div className="text-[11px] text-slate-400 mt-1">
-                {isVi ? 'Đang đợi webhook cổng' : 'Awaiting IPN callback'}
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
-              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-                <span>{isVi ? 'Cổng thanh toán' : 'Payment Gateways'}</span>
-                <CreditCard className="w-4 h-4 text-indigo-600" />
-              </div>
-              <div className="text-2xl font-black text-slate-900">VNPay, MoMo, VietQR</div>
-              <div className="text-[11px] text-slate-400 mt-1">
-                {isVi ? 'Hỗ trợ quét mã & thẻ ngân hàng' : 'Multi-gateway routing'}
-              </div>
-            </div>
-          </div>
-
-          {/* FILTER & SEARCH BAR */}
-          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
-            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-              {/* Search input */}
-              <div className="relative flex-1">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setPage(1);
-                  }}
-                  placeholder={
-                    isVi
-                      ? 'Tìm kiếm theo mã đơn (ORD_xxx), mã GD, tên khách hàng...'
-                      : 'Search by merchant_ref, transaction id, customer...'
-                  }
-                  className="w-full pl-9 pr-8 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all shadow-xs"
-                />
-                {searchTerm && (
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
                   <button
-                    onClick={() => {
-                      setSearchTerm('');
-                      setPage(1);
+                    type="button"
+                    onClick={() => fetchTransactions(true)}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
                     }}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
                   </button>
-                )}
-              </div>
-
-              {/* Provider Filter: ?provider=VNPay */}
-              <div className="flex items-center gap-2">
-                <div className="relative min-w-[150px]">
-                  <select
-                    value={providerFilter}
-                    onChange={(e) => {
-                      setProviderFilter(e.target.value);
-                      setPage(1);
-                    }}
-                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-indigo-600 cursor-pointer appearance-none shadow-xs"
-                  >
-                    <option value="">{isVi ? 'Tất cả Cổng (Provider)' : 'All Providers'}</option>
-                    <option value="VNPay">VNPay</option>
-                    <option value="Momo">MoMo</option>
-                    <option value="ZaloPay">ZaloPay</option>
-                    <option value="VietQR">VietQR</option>
-                    <option value="Stripe">Stripe</option>
-                  </select>
-                  <Filter className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                </div>
-
-                {/* Status Filter: ?status=Success */}
-                <div className="relative min-w-[140px]">
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => {
-                      setStatusFilter(e.target.value);
-                      setPage(1);
-                    }}
-                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-indigo-600 cursor-pointer appearance-none shadow-xs"
-                  >
-                    <option value="">{isVi ? 'Tất cả Trạng thái' : 'All Statuses'}</option>
-                    <option value="Success">{isVi ? 'Thành công' : 'Success'}</option>
-                    <option value="Pending">{isVi ? 'Chờ xử lý' : 'Pending'}</option>
-                    <option value="Failed">{isVi ? 'Thất bại' : 'Failed'}</option>
-                  </select>
-                  <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <>
+              {/* STATS OVERVIEW */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+                  <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+                    <span>{isVi ? 'Tổng tiền thanh toán' : 'Settled Volume'}</span>
+                    <DollarSign className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <div className="text-2xl font-black text-emerald-600 font-mono">
+                    {formatCurrency(totalVolume)}
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-1">
+                    {isVi ? 'Đã thanh toán thành công' : 'Captured successfully'}
+                  </div>
+                </div>
 
-          {/* TABLE OF TRANSACTIONS */}
-          <div className="rounded-xl bg-white border border-slate-200/80 overflow-hidden shadow-xs">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
-                  <tr>
-                    <th className="px-4 py-3">{isVi ? 'Mã Giao dịch (id)' : 'Tx ID'}</th>
-                    <th className="px-4 py-3">{isVi ? 'Khách hàng' : 'User'}</th>
-                    <th className="px-4 py-3 text-right">{isVi ? 'Số tiền (amount)' : 'Amount'}</th>
-                    <th className="px-4 py-3">{isVi ? 'Cổng thanh toán' : 'Provider'}</th>
-                    <th className="px-4 py-3">{isVi ? 'Mã đơn (merchant_ref)' : 'Merchant Ref'}</th>
-                    <th className="px-4 py-3">{isVi ? 'Trạng thái' : 'Status'}</th>
-                    <th className="px-4 py-3">{isVi ? 'Thời gian' : 'Time'}</th>
-                    <th className="px-4 py-3 text-right">{isVi ? 'Chi tiết' : 'Action'}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {transactions.map((tx) => (
-                    <tr
-                      key={tx.id}
-                      onClick={() => setDetailItem(tx)}
-                      className="hover:bg-slate-50/80 transition-colors cursor-pointer text-slate-800"
-                    >
-                      <td className="px-4 py-3 font-mono font-bold text-indigo-600">
-                        <div className="flex items-center gap-1.5">
-                          <span>{tx.id}</span>
-                          <button
-                            onClick={(e) => handleCopyId(tx.id, e)}
-                            className="text-slate-400 hover:text-indigo-600 cursor-pointer"
-                          >
-                            {copiedId === tx.id ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                          </button>
-                        </div>
-                      </td>
+                <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+                  <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+                    <span>{isVi ? 'Giao dịch thành công' : 'Successful'}</span>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <div className="text-2xl font-black text-slate-900">{successCount}</div>
+                  <div className="text-[11px] text-slate-400 mt-1">
+                    {isVi ? 'Tỷ lệ thanh toán chuẩn 100%' : 'Processed without issues'}
+                  </div>
+                </div>
 
-                      <td className="px-4 py-3">
-                        <div className="font-semibold text-slate-800">{getUserName(tx.user)}</div>
-                      </td>
+                <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+                  <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+                    <span>{isVi ? 'Giao dịch chờ xử lý' : 'Pending'}</span>
+                    <Clock className="w-4 h-4 text-amber-500" />
+                  </div>
+                  <div className="text-2xl font-black text-amber-600">{pendingCount}</div>
+                  <div className="text-[11px] text-slate-400 mt-1">
+                    {isVi ? 'Đang đợi webhook cổng' : 'Awaiting IPN callback'}
+                  </div>
+                </div>
 
-                      <td className="px-4 py-3 text-right font-mono font-bold text-emerald-600 whitespace-nowrap">
-                        {formatCurrency(tx.amount)}
-                      </td>
+                <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+                  <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+                    <span>{isVi ? 'Cổng thanh toán' : 'Payment Gateways'}</span>
+                    <CreditCard className="w-4 h-4 text-indigo-600" />
+                  </div>
+                  <div className="text-2xl font-black text-slate-900">VNPay, MoMo, VietQR</div>
+                  <div className="text-[11px] text-slate-400 mt-1">
+                    {isVi ? 'Hỗ trợ quét mã & thẻ ngân hàng' : 'Multi-gateway routing'}
+                  </div>
+                </div>
+              </div>
 
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        {renderProviderBadge(tx.provider)}
-                      </td>
+              {/* FILTER & SEARCH BAR */}
+              <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
+                <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                  {/* Search input */}
+                  <div className="relative flex-1">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={searchTerm}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setPage(1);
+                      }}
+                      placeholder={
+                        isVi
+                          ? 'Tìm kiếm theo mã đơn (ORD_xxx), mã GD, tên khách hàng...'
+                          : 'Search by merchant_ref, transaction id, customer...'
+                      }
+                      className="w-full pl-9 pr-8 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all shadow-xs"
+                    />
+                    {searchTerm && (
+                      <button
+                        onClick={() => {
+                          setSearchTerm('');
+                          setPage(1);
+                        }}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
 
-                      <td className="px-4 py-3 font-mono text-slate-600">
-                        {tx.merchant_ref}
-                      </td>
+                  {/* Provider Filter: ?provider=VNPay */}
+                  <div className="flex items-center gap-2">
+                    <div className="relative min-w-[150px]">
+                      <select
+                        value={providerFilter}
+                        onChange={(e) => {
+                          setProviderFilter(e.target.value);
+                          setPage(1);
+                        }}
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-indigo-600 cursor-pointer appearance-none shadow-xs"
+                      >
+                        <option value="">{isVi ? 'Tất cả Cổng (Provider)' : 'All Providers'}</option>
+                        <option value="VNPay">VNPay</option>
+                        <option value="Momo">MoMo</option>
+                        <option value="ZaloPay">ZaloPay</option>
+                        <option value="VietQR">VietQR</option>
+                        <option value="Stripe">Stripe</option>
+                      </select>
+                      <Filter className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
 
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        {renderStatusBadge(tx.status)}
-                      </td>
+                    {/* Status Filter: ?status=Success */}
+                    <div className="relative min-w-[140px]">
+                      <select
+                        value={statusFilter}
+                        onChange={(e) => {
+                          setStatusFilter(e.target.value);
+                          setPage(1);
+                        }}
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-indigo-600 cursor-pointer appearance-none shadow-xs"
+                      >
+                        <option value="">{isVi ? 'Tất cả Trạng thái' : 'All Statuses'}</option>
+                        <option value="Success">{isVi ? 'Thành công' : 'Success'}</option>
+                        <option value="Pending">{isVi ? 'Chờ xử lý' : 'Pending'}</option>
+                        <option value="Failed">{isVi ? 'Thất bại' : 'Failed'}</option>
+                      </select>
+                      <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                      <td className="px-4 py-3 font-mono text-slate-500 whitespace-nowrap">
-                        {new Date(tx.created_at).toLocaleDateString()}{' '}
-                        <span className="text-[10px] text-slate-400">
-                          {new Date(tx.created_at).toLocaleTimeString()}
-                        </span>
-                      </td>
-
-                      <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
-                        <button
+              {/* TABLE OF TRANSACTIONS */}
+              <div className="rounded-xl bg-white border border-slate-200/80 overflow-hidden shadow-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+                      <tr>
+                        <th className="px-4 py-3">{isVi ? 'Mã Giao dịch (id)' : 'Tx ID'}</th>
+                        <th className="px-4 py-3">{isVi ? 'Khách hàng' : 'User'}</th>
+                        <th className="px-4 py-3 text-right">{isVi ? 'Số tiền (amount)' : 'Amount'}</th>
+                        <th className="px-4 py-3">{isVi ? 'Cổng thanh toán' : 'Provider'}</th>
+                        <th className="px-4 py-3">{isVi ? 'Mã đơn (merchant_ref)' : 'Merchant Ref'}</th>
+                        <th className="px-4 py-3">{isVi ? 'Trạng thái' : 'Status'}</th>
+                        <th className="px-4 py-3">{isVi ? 'Thời gian' : 'Time'}</th>
+                        <th className="px-4 py-3 text-right">{isVi ? 'Chi tiết' : 'Action'}</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {transactions.map((tx) => (
+                        <tr
+                          key={tx.id}
                           onClick={() => setDetailItem(tx)}
-                          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-slate-100 rounded-lg cursor-pointer transition-colors"
-                          title={isVi ? 'Xem chi tiết' : 'View'}
+                          className="hover:bg-slate-50/80 transition-colors cursor-pointer text-slate-800"
                         >
-                          <Eye className="w-3.5 h-3.5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                          <td className="px-4 py-3 font-mono font-bold text-indigo-600">
+                            <div className="flex items-center gap-1.5">
+                              <span>{tx.id}</span>
+                              <button
+                                onClick={(e) => handleCopyId(tx.id, e)}
+                                className="text-slate-400 hover:text-indigo-600 cursor-pointer"
+                              >
+                                {copiedId === tx.id ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                              </button>
+                            </div>
+                          </td>
 
-          {/* PAGINATION BAR */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 pt-2">
-            <div>
-              {isVi
-                ? `Hiển thị ${transactions.length} giao dịch (Trang ${page})`
-                : `Showing ${transactions.length} records (Page ${page})`}
-            </div>
+                          <td className="px-4 py-3">
+                            <div className="font-semibold text-slate-800">{getUserName(tx.user)}</div>
+                          </td>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page <= 1 || loading}
-                className="px-3 py-1.5 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs text-slate-700"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                <span>{isVi ? 'Trang trước' : 'Previous'}</span>
-              </button>
+                          <td className="px-4 py-3 text-right font-mono font-bold text-emerald-600 whitespace-nowrap">
+                            {formatCurrency(tx.amount)}
+                          </td>
 
-              <span className="px-3 py-1.5 bg-slate-100 text-indigo-700 border border-slate-200 rounded-xl font-bold font-mono">
-                {page}
-              </span>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            {renderProviderBadge(tx.provider)}
+                          </td>
 
-              <button
-                onClick={() => setPage((p) => p + 1)}
-                disabled={transactions.length < limit || loading}
-                className="px-3 py-1.5 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs text-slate-700"
-              >
-                <span>{isVi ? 'Trang sau' : 'Next'}</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
+                          <td className="px-4 py-3 font-mono text-slate-600">
+                            {tx.merchant_ref}
+                          </td>
+
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            {renderStatusBadge(tx.status)}
+                          </td>
+
+                          <td className="px-4 py-3 font-mono text-slate-500 whitespace-nowrap">
+                            {new Date(tx.created_at).toLocaleDateString()}{' '}
+                            <span className="text-[10px] text-slate-400">
+                              {new Date(tx.created_at).toLocaleTimeString()}
+                            </span>
+                          </td>
+
+                          <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+                            <button
+                              onClick={() => setDetailItem(tx)}
+                              className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-slate-100 rounded-lg cursor-pointer transition-colors"
+                              title={isVi ? 'Xem chi tiết' : 'View'}
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* PAGINATION BAR */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 pt-2">
+                <div>
+                  {isVi
+                    ? `Hiển thị ${transactions.length} giao dịch (Trang ${page})`
+                    : `Showing ${transactions.length} records (Page ${page})`}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page <= 1 || loading}
+                    className="px-3 py-1.5 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs text-slate-700"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>{isVi ? 'Trang trước' : 'Previous'}</span>
+                  </button>
+
+                  <span className="px-3 py-1.5 bg-slate-100 text-indigo-700 border border-slate-200 rounded-xl font-bold font-mono">
+                    {page}
+                  </span>
+
+                  <button
+                    onClick={() => setPage((p) => p + 1)}
+                    disabled={transactions.length < limit || loading}
+                    className="px-3 py-1.5 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex items-center gap-1 shadow-xs text-slate-700"
+                  >
+                    <span>{isVi ? 'Trang sau' : 'Next'}</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
 

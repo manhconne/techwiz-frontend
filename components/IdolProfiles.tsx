@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useMemo } from 'react';
+import Image from 'next/image';
 import { mockArtists } from '../data/mockData';
 import { Artist } from '../types';
 
@@ -868,6 +869,89 @@ interface IdolProfilesProps {
 
 import { useDomainTheme } from '../context/DomainContext';
 import { filterArtistsByDomain } from '../utils/domainFilters';
+import { Bookmark, Share2, Check, Copy, X } from 'lucide-react';
+
+const getCategoryBadgeStyles = (cat?: string) => {
+  const c = (cat || '').toLowerCase();
+  if (c.includes('gaming')) {
+    return {
+      badgeBg: '#00f0ff',
+      badgeText: '#000000',
+      tagColor: '#00f0ff',
+      avatarShadow: '3px 3px 0px #00f0ff',
+      hoverBorder: 'hover:border-[#00f0ff]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#00f0ff]'
+    };
+  }
+  if (c.includes('manga')) {
+    return {
+      badgeBg: '#ff4d4d',
+      badgeText: '#ffffff',
+      tagColor: '#ff4d4d',
+      avatarShadow: '3px 3px 0px #ff4d4d',
+      hoverBorder: 'hover:border-[#ff4d4d]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#ff4d4d]'
+    };
+  }
+  if (c.includes('anime')) {
+    return {
+      badgeBg: '#a3e635',
+      badgeText: '#000000',
+      tagColor: '#84cc16',
+      avatarShadow: '3px 3px 0px #a3e635',
+      hoverBorder: 'hover:border-[#84cc16]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#84cc16]'
+    };
+  }
+  if (c.includes('cosplay')) {
+    return {
+      badgeBg: '#D02020',
+      badgeText: '#ffffff',
+      tagColor: '#D02020',
+      avatarShadow: '3px 3px 0px #D02020',
+      hoverBorder: 'hover:border-[#D02020]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#D02020]'
+    };
+  }
+  if (c.includes('comic')) {
+    return {
+      badgeBg: '#38bdf8',
+      badgeText: '#000000',
+      tagColor: '#38bdf8',
+      avatarShadow: '3px 3px 0px #ffd60a',
+      hoverBorder: 'hover:border-[#38bdf8]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#38bdf8]'
+    };
+  }
+  if (c.includes('movie') || c.includes('cinema')) {
+    return {
+      badgeBg: '#d4af37',
+      badgeText: '#000000',
+      tagColor: '#d4af37',
+      avatarShadow: '3px 3px 0px #d4af37',
+      hoverBorder: 'hover:border-[#d4af37]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#d4af37]'
+    };
+  }
+  if (c.includes('tv')) {
+    return {
+      badgeBg: '#c084fc',
+      badgeText: '#000000',
+      tagColor: '#c084fc',
+      avatarShadow: '3px 3px 0px #ffd60a',
+      hoverBorder: 'hover:border-[#c084fc]',
+      hoverShadow: 'hover:shadow-[4px_4px_0px_#c084fc]'
+    };
+  }
+  return {
+    badgeBg: '#d91470',
+    badgeText: '#ffffff',
+    tagColor: '#d91470',
+    avatarShadow: '3px 3px 0px #ff2e93',
+    hoverBorder: 'hover:border-[#d91470]',
+    hoverShadow: 'hover:shadow-[4px_4px_0px_#ff2e93]'
+  };
+};
 
 export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fandomCategory }) => {
   const { currentDomain, activeSubCategory, activeConfig } = useDomainTheme();
@@ -877,22 +961,117 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
   const [activeCardTab, setActiveCardTab] = useState<Record<string, 'lore' | 'catalog' | 'fan'>>({});
   const [modalActiveTab, setModalActiveTab] = useState<'lore' | 'characters' | 'catalog' | 'fan'>('lore');
 
+  const isManga = selectedCategory === 'manga' || fandomCategory?.toLowerCase().includes('manga');
+  const isGaming = selectedCategory === 'gaming' || fandomCategory?.toLowerCase().includes('gaming') || fandomCategory?.toLowerCase().includes('game');
+  const isAnime = selectedCategory === 'anime' || fandomCategory?.toLowerCase().includes('anime');
+  const isCosplay = selectedCategory === 'cosplay' || fandomCategory?.toLowerCase().includes('cosplay');
+  const isComics = selectedCategory === 'comics' || fandomCategory?.toLowerCase().includes('comic');
+  const isCinema = selectedCategory === 'movie' || selectedCategory === 'cinema' || fandomCategory?.toLowerCase().includes('movie') || fandomCategory?.toLowerCase().includes('cinema');
+  const isTv = selectedCategory === 'tv' || fandomCategory?.toLowerCase().includes('tv');
+  const isKpop = selectedCategory === 'k-pop' || fandomCategory?.toLowerCase().includes('kpop') || fandomCategory?.toLowerCase().includes('k-pop');
+
+  // SRS 1.6: Bookmarking & Sharing characters & artists
+  const [bookmarkedArtists, setBookmarkedArtists] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_bookmarked_artists');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  const [bookmarkedCharacters, setBookmarkedCharacters] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_bookmarked_characters');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return {};
+  });
+
+  const [sharingItem, setSharingItem] = useState<{ title: string; subtitle: string; url: string; type: 'Artist' | 'Character' } | null>(null);
+  const [copiedShareLink, setCopiedShareLink] = useState(false);
+  const [dossierToast, setDossierToast] = useState<string | null>(null);
+
+  const toggleBookmarkArtist = (artist: Artist) => {
+    setBookmarkedArtists((prev) => {
+      const isSaved = !!prev[artist.id];
+      const next = { ...prev, [artist.id]: !isSaved };
+      try {
+        localStorage.setItem('fanhub_bookmarked_artists', JSON.stringify(next));
+      } catch {}
+      setDossierToast(!isSaved ? `★ Saved artist "${artist.name}" to Bookmarks!` : `Removed artist from Bookmarks.`);
+      setTimeout(() => setDossierToast(null), 3000);
+      return next;
+    });
+  };
+
+  const toggleBookmarkCharacter = (char: CharacterDetail, artist: Artist) => {
+    const charId = `${artist.id}-${char.name}`;
+    setBookmarkedCharacters((prev) => {
+      const isSaved = !!prev[charId];
+      const next = { ...prev, [charId]: !isSaved };
+      try {
+        const existingListRaw = localStorage.getItem('fanhub_bookmarked_characters_list');
+        let list: any[] = existingListRaw ? JSON.parse(existingListRaw) : [];
+        if (!isSaved) {
+          list.push({
+            id: charId,
+            name: char.name,
+            role: char.role,
+            artistName: artist.name,
+            artistId: artist.id,
+            appearance: char.appearance,
+            personality: char.personality,
+            backstory: char.backstory,
+            savedAt: new Date().toLocaleDateString('en-US'),
+          });
+        } else {
+          list = list.filter((c: any) => c.id !== charId);
+        }
+        localStorage.setItem('fanhub_bookmarked_characters_list', JSON.stringify(list));
+        localStorage.setItem('fanhub_bookmarked_characters', JSON.stringify(next));
+      } catch {}
+      setDossierToast(!isSaved ? `★ Saved character "${char.name}" (${artist.name}) to Bookmarks!` : `Removed character from Bookmarks.`);
+      setTimeout(() => setDossierToast(null), 3000);
+      return next;
+    });
+  };
+
   // Sync with page fandom category
   React.useEffect(() => {
     if (fandomCategory) {
-      if (fandomCategory === 'K-Pop') {
+      const fc = fandomCategory.toLowerCase();
+      if (fc.includes('kpop') || fc.includes('k-pop')) {
         setSelectedCategory('k-pop');
-      } else if (fandomCategory === 'Anime') {
+      } else if (fc.includes('anime')) {
         setSelectedCategory('anime');
-      } else if (fandomCategory === 'all') {
+      } else if (fc.includes('gaming') || fc.includes('game')) {
+        setSelectedCategory('gaming');
+      } else if (fc.includes('cosplay')) {
+        setSelectedCategory('cosplay');
+      } else if (fc.includes('manga')) {
+        setSelectedCategory('manga');
+      } else if (fc.includes('comic')) {
+        setSelectedCategory('comics');
+      } else if (fc.includes('movie') || fc.includes('cinema')) {
+        setSelectedCategory('movie');
+      } else if (fc.includes('tv')) {
+        setSelectedCategory('tv');
+      } else if (fc === 'all' || fc.includes('all')) {
         setSelectedCategory('all');
       }
     }
   }, [fandomCategory]);
 
   const domainFilteredArtists = useMemo(() => {
-    return filterArtistsByDomain(mockArtists, currentDomain, activeSubCategory);
-  }, [currentDomain, activeSubCategory]);
+    // When a fandom category is selected or provided by the page, use mockArtists directly
+    // so non-music domains (Gaming, Anime, Manga, Cosplay, Comics, Cinema, TV) are not filtered out
+    if (fandomCategory || selectedCategory !== 'all') {
+      return mockArtists;
+    }
+    const filtered = filterArtistsByDomain(mockArtists, currentDomain, activeSubCategory);
+    return filtered.length > 0 ? filtered : mockArtists;
+  }, [fandomCategory, selectedCategory, currentDomain, activeSubCategory]);
 
   // Filter artists
   const filteredArtists = useMemo(() => {
@@ -906,11 +1085,19 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
               ? artist.category === 'K-Pop' 
               : selectedCategory === 'anime' 
                 ? artist.category === 'Anime' 
-                : selectedCategory === 'movie' 
-                  ? artist.category === 'Movie' 
+                : (selectedCategory === 'movie' || selectedCategory === 'cinema' || selectedCategory === 'movies')
+                  ? (artist.category === 'Movies' || artist.category === 'Movie') 
                   : selectedCategory === 'gaming' 
                     ? artist.category === 'Gaming' 
-                    : true;
+                    : selectedCategory === 'cosplay'
+                      ? artist.category === 'Cosplay'
+                      : selectedCategory === 'manga'
+                        ? artist.category === 'Manga'
+                        : selectedCategory === 'comics'
+                          ? artist.category === 'Comics'
+                          : (selectedCategory === 'tv' || selectedCategory === 'tv shows')
+                            ? artist.category === 'TV Shows'
+                            : true;
 
       const q = searchQuery.toLowerCase().trim();
       const matchQuery = 
@@ -928,11 +1115,15 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
 
   const categories = [
     { id: 'all', label: 'All Universes', count: mockArtists.length },
-    { id: 'v-pop', label: 'V-Pop (Vietnam)', count: mockArtists.filter(a => a.category === 'V-Pop').length },
+    { id: 'gaming', label: 'Gaming Arena', count: mockArtists.filter(a => a.category === 'Gaming').length },
     { id: 'k-pop', label: 'K-Pop', count: mockArtists.filter(a => a.category === 'K-Pop').length },
-    { id: 'anime', label: 'Anime', count: mockArtists.filter(a => a.category === 'Anime').length },
-    { id: 'movie', label: 'Cinema', count: mockArtists.filter(a => a.category === 'Movie').length },
-    { id: 'gaming', label: 'Gaming', count: mockArtists.filter(a => a.category === 'Gaming').length },
+    { id: 'anime', label: 'Anime Sakuga', count: mockArtists.filter(a => a.category === 'Anime').length },
+    { id: 'manga', label: 'Manga Guild', count: mockArtists.filter(a => a.category === 'Manga').length },
+    { id: 'cosplay', label: 'Cosplay Atelier', count: mockArtists.filter(a => a.category === 'Cosplay').length },
+    { id: 'comics', label: 'Comics Pop-Art', count: mockArtists.filter(a => a.category === 'Comics').length },
+    { id: 'movie', label: '70mm Cinema', count: mockArtists.filter(a => a.category === 'Movies' || a.category === 'Movie').length },
+    { id: 'tv', label: 'TV Shows', count: mockArtists.filter(a => a.category === 'TV Shows').length },
+    { id: 'v-pop', label: 'V-Pop (Vietnam)', count: mockArtists.filter(a => a.category === 'V-Pop').length },
   ];
 
   const getCardTab = (artistId: string) => activeCardTab[artistId] || 'lore';
@@ -1012,89 +1203,44 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
         {/* ==================== 1. Editorial Header (Matching AlbumGrid Signature) ==================== */}
         <div style={{ marginBottom: '40px' }}>
           
-          {/* Top Row: Eyebrow on Left, Category Tabs on Right */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '26px',
-              gap: '24px',
-              flexWrap: 'wrap',
-            }}
-          >
-            {/* Eyebrow Label */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '20px', height: '2px', backgroundColor: '#000', display: 'inline-block', borderRadius: '2px' }} />
-              <span
-                style={{
-                  fontSize: '10px',
-                  fontWeight: 800,
-                  letterSpacing: '0.22em',
-                  textTransform: 'uppercase',
-                  color: '#94a3b8',
-                }}
-              >
-                Encyclopedic Archive · Characters & Lore
-              </span>
-            </div>
-
-            {/* Category Filter Tabs - Underline Editorial Style */}
-            <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto scrollbar-none max-w-full pb-1">
-              {categories.map((cat) => {
-                const isActive = selectedCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(cat.id)}
-                    type="button"
-                    style={{
-                      padding: '0 0 8px 0',
-                      fontSize: '11px',
-                      fontWeight: isActive ? 800 : 600,
-                      letterSpacing: '0.14em',
-                      textTransform: 'uppercase',
-                      color: isActive ? '#0f172a' : '#94a3b8',
-                      background: 'none',
-                      border: 'none',
-                      borderBottom: isActive ? '2px solid #0f172a' : '2px solid transparent',
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      transition: 'all 0.2s ease',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                    }}
-                  >
-                    <span>{cat.label}</span>
-                    <span 
-                      style={{ 
-                        fontSize: '10px', 
-                        fontFamily: 'monospace',
-                        color: isActive ? '#000' : '#cbd5e1',
-                        fontWeight: 700
-                      }}
-                    >
-                      ({cat.count})
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           {/* Title Row: Heading on Left + Compact Search Box on Right */}
           <div
             className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-7 border-b border-slate-200"
           >
             <div className="flex-1 max-w-2xl">
               <h2
+                style={{
+                  fontFamily: isManga ? "'Kalam', cursive" : isCinema ? "'Playfair Display', Georgia, serif" : isComics ? "'Bangers', cursive" : isGaming ? "var(--font-mono)" : undefined
+                }}
                 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-tight tracking-tight text-black m-0"
               >
-                Fandom Universes{' '}
-                <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
-                  &amp; Character Dossiers
-                </em>
+                {isGaming ? (
+                  <>Roster Index <em style={{ fontStyle: 'normal', color: '#0891b2' }}>// Canonical Character Dossiers</em></>
+                ) : isManga ? (
+                  <>Mangaka Roster <em style={{ fontStyle: 'italic', color: '#e11d48' }}>&amp; Character Archives</em></>
+                ) : isAnime ? (
+                  <>Voice Cast &amp; Studios <em style={{ fontStyle: 'normal', color: '#4d7c0f' }}>// Canonical Dossiers</em></>
+                ) : isCosplay ? (
+                  <>Constructors &amp; Ateliers <em style={{ fontStyle: 'italic', color: '#D02020' }}>&amp; Costume Archives</em></>
+                ) : isComics ? (
+                  <>Multiverse Registry <em style={{ fontStyle: 'normal', color: '#dc2626' }}>// Character Archives</em></>
+                ) : isCinema ? (
+                  <>Auteurs &amp; Directors <em style={{ fontStyle: 'italic', color: '#d4af37' }}>&amp; Film Monographs</em></>
+                ) : isTv ? (
+                  <>Ensemble Casts <em style={{ fontStyle: 'normal', color: '#c084fc' }}>&amp; Episode Dossiers</em></>
+                ) : isKpop ? (
+                  <>Idol Roster{' '}
+                    <em className="font-serif italic font-normal text-[#d91470] drop-shadow-[1px_1px_0px_#000000]">
+                      &amp; Member Matrices
+                    </em>
+                  </>
+                ) : (
+                  <>Character Dossiers{' '}
+                    <em className="font-serif italic font-normal text-[#d91470] drop-shadow-[1px_1px_0px_#000000]">
+                      &amp; Fandom Archives
+                    </em>
+                  </>
+                )}
               </h2>
               <p
                 style={{
@@ -1105,8 +1251,21 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                   lineHeight: 1.6,
                 }}
               >
-                Curated archive of legendary K-Pop groups, Anime icons, and Gaming franchises. 
-                Explore key character dossiers, canonical universe lore, catalog collections, and official fandom perks.
+                {isGaming
+                  ? 'Official dossiers of World Champion esports icons, Riot Games legends, and HoYo-MiX symphonic orchestrators.'
+                  : isManga
+                  ? 'Weekly Shonen Jump archives, master mangaka manuscripts, and legendary pirate & ninja lore.'
+                  : isAnime
+                  ? 'Curated archive of landmark anime studios, premier seiyuu voice talents, and supernatural sorcery.'
+                  : isCosplay
+                  ? 'Bauhaus theatrical ateliers, avant-garde constructivism, geometric silhouettes, and living architecture.'
+                  : isComics
+                  ? 'Pop-art superhero multiverse, vintage comic panels, variant cover editions, and iconic graphic lore.'
+                  : isCinema
+                  ? '70mm photochemical cinema archives, auteur director monographs, and uncompressed analog scores.'
+                  : isTv
+                  ? 'Retro television binge vault, 80s synthwave mysteries, and ensemble cast character biographies.'
+                  : 'Curated archive of legendary K-Pop groups, Anime icons, and Gaming franchises. Explore key character dossiers, canonical universe lore, catalog collections, and official fandom perks.'}
               </p>
             </div>
 
@@ -1197,9 +1356,9 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
             <div className="font-mono text-xs font-bold uppercase tracking-widest text-neutral-400 mb-2">
               [ARCHIVE EMPTY // NO MATCH]
             </div>
-            <h4 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '20px', fontWeight: 700, margin: '0 0 6px' }}>
+            <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '20px', fontWeight: 700, margin: '0 0 6px' }}>
               No Universes Found
-            </h4>
+            </h3>
             <p style={{ fontSize: '12px', color: '#737373', margin: '0 0 16px', fontFamily: 'monospace' }}>
               We could not find any artists or characters matching "{searchQuery}".
             </p>
@@ -1227,6 +1386,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
             {filteredArtists.map((artist) => {
               const dossier = UNIVERSE_DOSSIERS[artist.id];
               const currentTab = getCardTab(artist.id);
+              const badgeStyle = getCategoryBadgeStyles(artist.category);
 
               return (
                 <div
@@ -1240,7 +1400,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                   }}
-                  className="group hover:border-black transition-all"
+                  className={`group ${badgeStyle.hoverBorder} ${badgeStyle.hoverShadow} transition-all`}
                 >
                   
                   {/* Card Banner Image & Integrated Avatar */}
@@ -1253,12 +1413,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                       overflow: 'hidden',
                     }}
                   >
-                    <img
+                    <Image
                       src={artist.bannerImage}
                       alt={artist.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       style={{
-                        width: '100%',
-                        height: '100%',
                         objectFit: 'cover',
                         opacity: 0.95,
                         transition: 'transform 0.5s ease',
@@ -1275,7 +1435,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                       }} 
                     />
 
-                    {/* Top Badges (Vibrant Y2K Pop Badges) */}
+                    {/* Top Badges (Vibrant Category Badges) */}
                     <div 
                       style={{
                         position: 'absolute',
@@ -1296,8 +1456,8 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           textTransform: 'uppercase',
                           letterSpacing: '0.12em',
                           padding: '4px 10px',
-                          backgroundColor: '#ff2e93',
-                          color: '#ffffff',
+                          backgroundColor: badgeStyle.badgeBg,
+                          color: badgeStyle.badgeText,
                           borderRadius: '0px',
                           border: '2px solid #000000',
                           boxShadow: '2px 2px 0px #000000',
@@ -1337,6 +1497,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                     >
                       <div 
                         style={{
+                          position: 'relative',
                           width: '56px',
                           height: '56px',
                           border: '2px solid #000000',
@@ -1344,13 +1505,15 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           backgroundColor: '#ffd60a',
                           overflow: 'hidden',
                           flexShrink: 0,
-                          boxShadow: '3px 3px 0px #ff2e93',
+                          boxShadow: badgeStyle.avatarShadow,
                         }}
                       >
-                        <img
+                        <Image
                           src={artist.image}
                           alt={artist.name}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          fill
+                          sizes="56px"
+                          style={{ objectFit: 'cover' }}
                         />
                       </div>
                       <div style={{ overflow: 'hidden' }}>
@@ -1408,7 +1571,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ color: '#ff2e93', fontWeight: 800, textTransform: 'uppercase' }}>
+                          <span style={{ color: badgeStyle.tagColor, fontWeight: 800, textTransform: 'uppercase' }}>
                             FANDOM //
                           </span>
                           <span style={{ fontWeight: 900, color: '#000000' }}>
@@ -1461,7 +1624,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                             activeBg = '#00f0ff';
                             activeColor = '#000000';
                           } else if (tId === 'fan') {
-                            activeBg = '#ff2e93';
+                            activeBg = '#d91470';
                             activeColor = '#ffffff';
                           }
 
@@ -1548,7 +1711,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {dossier?.catalog.officialMerch.slice(0, 2).map((item, idx) => (
                                 <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontFamily: "var(--font-mono), monospace", color: '#000000' }}>
-                                  <span className="font-bold text-[#ff2e93]">0{idx + 1} //</span>
+                                  <span className="font-bold text-[#d91470]">0{idx + 1} //</span>
                                   <span className="truncate font-semibold">{item}</span>
                                 </div>
                               ))}
@@ -1566,7 +1729,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                                 marginTop: '8px',
                               }}
                             >
-                              <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#ff2e93', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
+                              <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#d91470', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
                                 ★ COLLECTOR BOXSET:
                               </span>
                               <span style={{ fontSize: '11px', fontWeight: 800, color: '#000000', fontFamily: 'monospace' }} className="truncate block">
@@ -1598,7 +1761,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                               marginTop: '8px',
                             }}
                           >
-                            <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#ff2e93', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
+                            <span style={{ fontSize: '9px', fontFamily: 'monospace', color: '#d91470', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>
                               PRE-ORDER BENEFIT (POB):
                             </span>
                             <span style={{ fontSize: '11px', fontWeight: 800, color: '#000000', fontFamily: 'monospace' }} className="truncate block">
@@ -1621,6 +1784,36 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         gap: '8px',
                       }}
                     >
+                      {/* SRS 1.6: Bookmark & Share Actions Bar */}
+                      <div className="grid grid-cols-2 gap-2 mb-1">
+                        <button
+                          type="button"
+                          onClick={() => toggleBookmarkArtist(artist)}
+                          className={`py-1.5 px-2 border-2 border-black text-[10px] font-mono font-black flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+                            bookmarkedArtists[artist.id]
+                              ? 'bg-[#ccff00] text-black shadow-[2px_2px_0px_#000]'
+                              : 'bg-white text-black hover:bg-neutral-100 shadow-[2px_2px_0px_#000]'
+                          }`}
+                        >
+                          <Bookmark className={`w-3 h-3 ${bookmarkedArtists[artist.id] ? 'fill-black' : ''}`} />
+                          <span>{bookmarkedArtists[artist.id] ? 'SAVED' : 'SAVE'}</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setSharingItem({
+                            title: `${artist.name} (${artist.koreanName})`,
+                            subtitle: `${artist.agency} · Fandom: ${artist.fandomName}`,
+                            url: `${typeof window !== 'undefined' ? window.location.origin : ''}/#artists?id=${artist.id}`,
+                            type: 'Artist',
+                          })}
+                          className="py-1.5 px-2 bg-white text-black hover:bg-neutral-100 border-2 border-black text-[10px] font-mono font-black flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
+                        >
+                          <Share2 className="w-3 h-3" />
+                          <span>SHARE</span>
+                        </button>
+                      </div>
+
                       <button
                         onClick={() => {
                           setActiveDossierArtist(artist);
@@ -1630,7 +1823,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         style={{
                           width: '100%',
                           height: '40px',
-                          backgroundColor: '#ff2e93',
+                          backgroundColor: '#d91470',
                           color: '#ffffff',
                           border: '2px solid #000000',
                           borderRadius: '0px',
@@ -1645,7 +1838,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                           cursor: 'pointer',
                           boxShadow: '3px 3px 0px #000000',
                         }}
-                        className="hover:bg-[#ff007f] transition-colors duration-100"
+                        className="hover:bg-[#be185d] transition-colors duration-100"
                       >
                         <span>[VIEW DOSSIER ARCHIVE →]</span>
                       </button>
@@ -1725,10 +1918,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                   overflow: 'hidden',
                 }}
               >
-                <img 
+                <Image 
                   src={activeDossierArtist.bannerImage} 
                   alt={activeDossierArtist.name} 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.82 }}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 800px"
+                  style={{ objectFit: 'cover', opacity: 0.82 }}
                 />
                 <div 
                   style={{
@@ -1747,8 +1942,8 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                     top: '16px',
                     right: '16px',
                     zIndex: 20,
-                    width: '32px',
-                    height: '32px',
+                    width: '44px',
+                    height: '44px',
                     backgroundColor: '#000000',
                     color: '#ffffff',
                     border: '1.5px solid #ffffff',
@@ -1781,6 +1976,7 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                   <div style={{ display: 'flex', alignItems: 'flex-end', gap: '14px' }}>
                     <div 
                       style={{
+                        position: 'relative',
                         width: '70px',
                         height: '70px',
                         border: '2px solid #ffffff',
@@ -1790,10 +1986,12 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                         boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
                       }}
                     >
-                      <img 
+                      <Image 
                         src={activeDossierArtist.image} 
                         alt={activeDossierArtist.name} 
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        fill
+                        sizes="70px"
+                        style={{ objectFit: 'cover' }}
                       />
                     </div>
                     <div>
@@ -1996,41 +2194,80 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                       Detailed dossier of key figures, personality matrices, stage traits, and canonical backgrounds.
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {activeDossierData.characters.map((char, i) => (
-                        <div 
-                          key={i} 
-                          style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            backgroundColor: '#ffffff',
-                          }}
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid #f1f5f9', marginBottom: '10px' }}>
+                      {activeDossierData.characters.map((char, i) => {
+                        const charId = `${activeDossierArtist?.id}-${char.name}`;
+                        const isCharSaved = !!bookmarkedCharacters[charId];
+
+                        return (
+                          <div 
+                            key={i} 
+                            style={{
+                              padding: '16px',
+                              border: '2px solid #000000',
+                              backgroundColor: '#ffffff',
+                              boxShadow: '3px 3px 0px #000000',
+                            }}
+                            className="flex flex-col justify-between"
+                          >
                             <div>
-                              <h5 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '15px', fontWeight: 800, margin: 0, color: '#0f172a' }}>
-                                {char.name}
-                              </h5>
-                              <span style={{ fontSize: '10px', fontFamily: 'monospace', color: '#64748b', textTransform: 'uppercase' }}>
-                                {char.role}
-                              </span>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid #f1f5f9', marginBottom: '10px' }}>
+                                <div>
+                                  <h5 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '15px', fontWeight: 800, margin: 0, color: '#0f172a' }}>
+                                    {char.name}
+                                  </h5>
+                                  <span style={{ fontSize: '10px', fontFamily: 'monospace', color: '#64748b', textTransform: 'uppercase' }}>
+                                    {char.role}
+                                  </span>
+                                </div>
+                                <span style={{ fontSize: '9px', fontFamily: 'monospace', backgroundColor: '#f1f5f9', color: '#1e293b', padding: '2px 6px', border: '1px solid #e2e8f0' }}>
+                                  KEY ROLE
+                                </span>
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px', color: '#475569' }}>
+                                <p style={{ margin: 0 }}>
+                                  <strong style={{ color: '#0f172a', fontFamily: 'monospace', fontSize: '10px', textTransform: 'uppercase' }}>Personality:</strong> {char.personality}
+                                </p>
+                                <p style={{ margin: 0 }}>
+                                  <strong style={{ color: '#0f172a', fontFamily: 'monospace', fontSize: '10px', textTransform: 'uppercase' }}>Appearance:</strong> {char.appearance}
+                                </p>
+                                <p style={{ margin: '4px 0 0 0', paddingTop: '6px', borderTop: '1px solid #f8fafc', fontStyle: 'italic', fontSize: '11px', color: '#334155', lineHeight: 1.5 }}>
+                                  "{char.backstory}"
+                                </p>
+                              </div>
                             </div>
-                            <span style={{ fontSize: '9px', fontFamily: 'monospace', backgroundColor: '#f1f5f9', color: '#1e293b', padding: '2px 6px', border: '1px solid #e2e8f0' }}>
-                              KEY ROLE
-                            </span>
+
+                            {/* SRS 1.6: Character Bookmark & Share */}
+                            <div className="pt-3 mt-3 border-t border-black/10 flex items-center justify-between gap-2">
+                              <button
+                                type="button"
+                                onClick={() => activeDossierArtist && toggleBookmarkCharacter(char, activeDossierArtist)}
+                                className={`px-2.5 py-1 text-[10px] font-mono font-black border-2 border-black flex items-center gap-1 cursor-pointer transition-colors ${
+                                  isCharSaved
+                                    ? 'bg-[#ccff00] text-black shadow-[1.5px_1.5px_0px_#000]'
+                                    : 'bg-white hover:bg-neutral-100 text-black shadow-[1.5px_1.5px_0px_#000]'
+                                }`}
+                              >
+                                <Bookmark className={`w-3 h-3 ${isCharSaved ? 'fill-black' : ''}`} />
+                                <span>{isCharSaved ? 'SAVED TO DOSSIER' : 'BOOKMARK'}</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setSharingItem({
+                                  title: `${char.name} (${activeDossierArtist?.name})`,
+                                  subtitle: `Role: ${char.role} · ${char.personality}`,
+                                  url: `${typeof window !== 'undefined' ? window.location.origin : ''}/#artists?character=${encodeURIComponent(char.name)}`,
+                                  type: 'Character',
+                                })}
+                                className="px-2.5 py-1 text-[10px] font-mono font-black bg-white hover:bg-neutral-100 text-black border-2 border-black flex items-center gap-1 cursor-pointer shadow-[1.5px_1.5px_0px_#000]"
+                              >
+                                <Share2 className="w-3 h-3" />
+                                <span>SHARE</span>
+                              </button>
+                            </div>
                           </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px', color: '#475569' }}>
-                            <p style={{ margin: 0 }}>
-                              <strong style={{ color: '#0f172a', fontFamily: 'monospace', fontSize: '10px', textTransform: 'uppercase' }}>Personality:</strong> {char.personality}
-                            </p>
-                            <p style={{ margin: 0 }}>
-                              <strong style={{ color: '#0f172a', fontFamily: 'monospace', fontSize: '10px', textTransform: 'uppercase' }}>Appearance:</strong> {char.appearance}
-                            </p>
-                            <p style={{ margin: '4px 0 0 0', paddingTop: '6px', borderTop: '1px solid #f8fafc', fontStyle: 'italic', fontSize: '11px', color: '#334155', lineHeight: 1.5 }}>
-                              "{char.backstory}"
-                            </p>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -2333,6 +2570,95 @@ export const IdolProfiles: React.FC<IdolProfilesProps> = ({ onSelectArtist, fand
                 </button>
               </div>
 
+            </div>
+          </div>
+        )}
+
+        {/* Toast Notification */}
+        {dossierToast && (
+          <div className="fixed bottom-6 right-6 z-50 p-3 bg-[#ccff00] text-black border-2 border-black font-mono font-black text-xs shadow-[4px_4px_0px_#000] flex items-center gap-2 animate-in fade-in duration-150">
+            <Bookmark className="w-4 h-4 fill-black" />
+            <span>{dossierToast}</span>
+          </div>
+        )}
+
+        {/* Share Dialog Modal */}
+        {sharingItem && (
+          <div 
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4"
+            onClick={() => {
+              setSharingItem(null);
+              setCopiedShareLink(false);
+            }}
+          >
+            <div 
+              style={{ borderRadius: '0px' }}
+              className="bg-white max-w-sm w-full p-5 border-3 border-black shadow-[6px_6px_0px_#000] space-y-4 font-mono text-black"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between border-b-2 border-black pb-2">
+                <div className="flex items-center gap-2">
+                  <Share2 className="w-4 h-4 text-[#ff2e93]" />
+                  <span className="text-xs font-black uppercase">SHARE {sharingItem.type.toUpperCase()}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSharingItem(null);
+                    setCopiedShareLink(false);
+                  }}
+                  className="text-xs font-black hover:text-[#ff2e93] cursor-pointer"
+                >
+                  [✕]
+                </button>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-sm truncate font-sans text-black">{sharingItem.title}</h4>
+                <p className="text-[11px] text-neutral-600 line-clamp-1 mt-0.5">{sharingItem.subtitle}</p>
+              </div>
+
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(sharingItem.url);
+                    setCopiedShareLink(true);
+                    setTimeout(() => setCopiedShareLink(false), 2000);
+                  }}
+                  className="w-full py-2 px-3 bg-[#ffd60a] hover:bg-[#ff2e93] hover:text-white border-2 border-black text-xs font-black uppercase flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
+                >
+                  {copiedShareLink ? <Check className="w-4 h-4 text-emerald-800" /> : <Copy className="w-4 h-4" />}
+                  <span>{copiedShareLink ? 'COPIED TO CLIPBOARD!' : 'COPY DIRECT LINK'}</span>
+                </button>
+
+                <div className="grid grid-cols-3 gap-2 pt-1 text-[10px] text-center font-bold">
+                  <a
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out ${sharingItem.title} on Fan Hub Plus! ${sharingItem.url}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 border-2 border-black bg-neutral-100 hover:bg-black hover:text-white transition-colors"
+                  >
+                    X / TWITTER
+                  </a>
+                  <a
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(sharingItem.url)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 border-2 border-black bg-neutral-100 hover:bg-[#1877f2] hover:text-white transition-colors"
+                  >
+                    FACEBOOK
+                  </a>
+                  <a
+                    href={`https://t.me/share/url?url=${encodeURIComponent(sharingItem.url)}&text=${encodeURIComponent(sharingItem.title)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 border-2 border-black bg-neutral-100 hover:bg-[#229ed9] hover:text-white transition-colors"
+                  >
+                    TELEGRAM
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         )}

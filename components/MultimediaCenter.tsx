@@ -26,6 +26,7 @@ interface MultimediaCenterProps {
 
 export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
   initialMediaId,
+  defaultCategory,
 }) => {
   // Media items state (allows persistent rating and thumbs updates in memory)
   const [mediaList, setMediaList] = useState<MediaItem[]>(INITIAL_MEDIA_ITEMS);
@@ -43,8 +44,87 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
   // Filters & Search
   const [selectedFormat, setSelectedFormat] = useState<MediaType | 'all'>('all');
   const [selectedUniverse, setSelectedUniverse] = useState<FandomCategory | 'all'>('all');
+  const [selectedArtist, setSelectedArtist] = useState<string>('');
+  const [selectedArtistLabel, setSelectedArtistLabel] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'views' | 'rating' | 'newest' | 'duration'>('views');
+
+  // Handle category selection with auto-trailer playback
+  const handleSelectUniverse = (cat: FandomCategory | 'all') => {
+    setSelectedUniverse(cat);
+    setSelectedArtist('');
+    setSelectedArtistLabel('');
+    if (cat !== 'all') {
+      const firstMatch =
+        mediaList.find((m) => (m.category === cat || (cat === 'Cinema' && m.category === 'Movies')) && m.type === 'trailer') ||
+        mediaList.find((m) => m.category === cat || (cat === 'Cinema' && m.category === 'Movies'));
+      if (firstMatch) {
+        setActiveMediaId(firstMatch.id);
+      }
+    }
+  };
+
+  // Handle artist/music group selection with auto-trailer playback
+  const handleSelectArtist = (artistQuery: string, artistLabel: string) => {
+    setSelectedArtist(artistQuery);
+    setSelectedArtistLabel(artistLabel);
+    if (artistQuery) {
+      const q = artistQuery.toLowerCase();
+      const matchedItem =
+        mediaList.find((m) => {
+          const matchCat = selectedUniverse === 'all' || m.category === selectedUniverse || (selectedUniverse === 'Cinema' && m.category === 'Movies');
+          const matchArt = m.artist.toLowerCase().includes(q) || m.tags.some((t) => t.toLowerCase().includes(q)) || m.title.toLowerCase().includes(q);
+          return matchCat && matchArt && m.type === 'trailer';
+        }) ||
+        mediaList.find((m) => {
+          const matchCat = selectedUniverse === 'all' || m.category === selectedUniverse || (selectedUniverse === 'Cinema' && m.category === 'Movies');
+          return matchCat && (m.artist.toLowerCase().includes(q) || m.tags.some((t) => t.toLowerCase().includes(q)) || m.title.toLowerCase().includes(q));
+        });
+      if (matchedItem) {
+        setActiveMediaId(matchedItem.id);
+      }
+    }
+  };
+
+  // Synchronize category filter with active fandom category
+  useEffect(() => {
+    const applyCategory = (catName?: string) => {
+      if (!catName || catName === 'all') return;
+      const lower = catName.toLowerCase();
+      let matched: FandomCategory | null = null;
+      if (lower.includes('gaming')) matched = 'Gaming';
+      else if (lower.includes('manga')) matched = 'Manga';
+      else if (lower.includes('anime') || lower.includes('sakuga')) matched = 'Anime';
+      else if (lower.includes('cosplay')) matched = 'Cosplay';
+      else if (lower.includes('comic')) matched = 'Comics';
+      else if (lower.includes('cinema') || lower.includes('movie')) matched = 'Cinema';
+      else if (lower.includes('tv')) matched = 'TV Shows';
+      else if (lower.includes('kpop') || lower.includes('k-pop')) matched = 'K-Pop';
+      else if (lower.includes('vpop') || lower.includes('v-pop')) matched = 'V-Pop';
+
+      if (matched) {
+        setSelectedUniverse(matched);
+        setSelectedArtist('');
+        const firstMatch = mediaList.find((m) => m.category === matched && m.type === 'trailer') || mediaList.find((m) => m.category === matched);
+        if (firstMatch) {
+          setActiveMediaId(firstMatch.id);
+        }
+      }
+    };
+
+    if (defaultCategory) {
+      applyCategory(defaultCategory);
+    }
+
+    const handleThemeChange = (e: any) => {
+      if (e.detail?.category) {
+        applyCategory(e.detail.category);
+      }
+    };
+
+    window.addEventListener('fandom-theme-change', handleThemeChange);
+    return () => window.removeEventListener('fandom-theme-change', handleThemeChange);
+  }, [defaultCategory, mediaList]);
 
   // Cinema Mode / Lighting Dimmer
   const [isCinemaMode, setIsCinemaMode] = useState(false);
@@ -62,7 +142,14 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
   const [showRatingBreakdown, setShowRatingBreakdown] = useState(false);
 
   // Bookmark / Watch Later
-  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('fanhub_bookmarked_media');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [shareToast, setShareToast] = useState<string | null>(null);
 
   // Live Chat State
@@ -229,9 +316,16 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
 
   // Bookmark toggle
   const toggleBookmark = (id: string) => {
-    setBookmarkedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
+    setBookmarkedIds((prev) => {
+      const isSaved = prev.includes(id);
+      const next = isSaved ? prev.filter((i) => i !== id) : [...prev, id];
+      try {
+        localStorage.setItem('fanhub_bookmarked_media', JSON.stringify(next));
+      } catch {}
+      setRatingToast(isSaved ? 'REMOVED FROM SAVED ARCHIVES' : `★ SAVED "${activeMedia.title.slice(0, 24)}..." TO BOOKMARKS`);
+      setTimeout(() => setRatingToast(null), 3000);
+      return next;
+    });
   };
 
   // Share Link Handler
@@ -288,7 +382,20 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
     return mediaList
       .filter((item) => {
         if (selectedFormat !== 'all' && item.type !== selectedFormat) return false;
-        if (selectedUniverse !== 'all' && item.category !== selectedUniverse) return false;
+        if (selectedUniverse !== 'all') {
+          const matchCat =
+            item.category === selectedUniverse ||
+            (selectedUniverse === 'Cinema' && item.category === 'Movies') ||
+            (selectedUniverse === 'Movies' && item.category === 'Cinema');
+          if (!matchCat) return false;
+        }
+        if (selectedArtist) {
+          const q = selectedArtist.toLowerCase();
+          const matchArtist = item.artist.toLowerCase().includes(q);
+          const matchTags = item.tags.some((t) => t.toLowerCase().includes(q));
+          const matchTitle = item.title.toLowerCase().includes(q);
+          if (!matchArtist && !matchTags && !matchTitle) return false;
+        }
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase();
           const matchTitle = item.title.toLowerCase().includes(q);
@@ -304,7 +411,7 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
         if (sortBy === 'duration') return b.durationSeconds - a.durationSeconds;
         return 0;
       });
-  }, [mediaList, selectedFormat, selectedUniverse, searchQuery, sortBy]);
+  }, [mediaList, selectedFormat, selectedUniverse, selectedArtist, searchQuery, sortBy]);
 
   // Format Helper Labels
   const getFormatLabel = (type: MediaType) => {
@@ -320,11 +427,15 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
   return (
     <section 
       id="multimedia" 
-      className={`relative w-full pt-16 sm:pt-24 pb-20 sm:pb-28 transition-colors duration-200 border-b-4 border-black ${
-        isCinemaMode ? 'bg-[#000000] text-white' : 'bg-white text-black'
+      style={{
+        paddingTop: '80px',
+        paddingBottom: '96px',
+      }}
+      className={`relative w-full transition-colors duration-200 border-b-4 border-black ${
+        isCinemaMode ? 'bg-[#000000] text-white' : 'bg-[#fdfbf7] text-black'
       }`}
     >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 flex flex-col gap-12 sm:gap-16">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 flex flex-col gap-14 sm:gap-20">
         
         {/* ========================================================= */}
         {/* 1. EDITORIAL HEADER & CINEMA CONTROLLER                   */}
@@ -398,15 +509,17 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
         {/* ========================================================= */}
         {/* 3. MULTIMEDIA FILTER TOOLBAR                              */}
         {/* ========================================================= */}
-        <div className="pt-2 sm:pt-4">
+        <div className="pt-8 sm:pt-12">
           <MultimediaFilterBar
             selectedFormat={selectedFormat}
             selectedUniverse={selectedUniverse}
+            selectedArtist={selectedArtist}
             searchQuery={searchQuery}
             sortBy={sortBy}
             mediaList={mediaList}
             onSelectFormat={setSelectedFormat}
-            onSelectUniverse={setSelectedUniverse}
+            onSelectUniverse={handleSelectUniverse}
+            onSelectArtist={handleSelectArtist}
             onSearchChange={setSearchQuery}
             onSortChange={setSortBy}
           />
@@ -415,7 +528,7 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
         {/* ========================================================= */}
         {/* 4. MEDIA GALLERY GRID                                     */}
         {/* ========================================================= */}
-        <div className="pt-2 sm:pt-4">
+        <div className="pt-8 sm:pt-12">
           <MultimediaCardGrid
             filteredMediaList={filteredMediaList}
             activeMediaId={activeMedia.id}
@@ -429,6 +542,8 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
             onResetFilters={() => {
               setSelectedFormat('all');
               setSelectedUniverse('all');
+              setSelectedArtist('');
+              setSelectedArtistLabel('');
               setSearchQuery('');
             }}
             getFormatLabel={getFormatLabel}
@@ -438,7 +553,7 @@ export const MultimediaCenter: React.FC<MultimediaCenterProps> = ({
         {/* ========================================================= */}
         {/* 5. PROTOCOL BANNER                                        */}
         {/* ========================================================= */}
-        <div className="pt-4 sm:pt-6">
+        <div className="pt-10 sm:pt-14">
           <MultimediaProtocolBanner />
         </div>
 

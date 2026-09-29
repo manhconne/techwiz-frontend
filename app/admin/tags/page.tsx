@@ -27,6 +27,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowUpDown,
+  WifiOff,
 } from 'lucide-react';
 
 export interface AdminTagItem {
@@ -42,21 +43,7 @@ export interface ApiResponseMeta {
   limit?: number;
 }
 
-// Fallback demo tags to showcase the UI if backend is offline
-const FALLBACK_TAGS: AdminTagItem[] = [
-  { id: 'tag_001', name: 'MOBA', used_count: 45 },
-  { id: 'tag_002', name: 'Limited Edition', used_count: 68 },
-  { id: 'tag_003', name: 'K-POP 2026', used_count: 120 },
-  { id: 'tag_004', name: 'World Tour VIP', used_count: 89 },
-  { id: 'tag_005', name: 'Presale Ticket', used_count: 95 },
-  { id: 'tag_006', name: 'Photocard', used_count: 52 },
-  { id: 'tag_007', name: 'Anime Fan Hub', used_count: 34 },
-  { id: 'tag_008', name: 'Cosplay Festival', used_count: 27 },
-  { id: 'tag_009', name: 'Esports Finals', used_count: 73 },
-  { id: 'tag_010', name: 'Lightstick Offical', used_count: 61 },
-  { id: 'tag_011', name: 'Album Unboxing', used_count: 40 },
-  { id: 'tag_012', name: 'Fan Meeting', used_count: 82 },
-];
+
 
 export default function AdminTagsPage() {
   const { language } = useAdminLanguage();
@@ -155,14 +142,9 @@ export default function AdminTagsPage() {
         throw new Error('Invalid JSON format');
       }
     } catch (err) {
-      console.warn('API /api/v1/admin/tags offline, loading fallback tags:', err);
+      console.warn('API /api/v1/admin/tags offline or error:', err);
       setIsConnectionError(true);
-
-      let filtered = [...FALLBACK_TAGS];
-      if (searchQuery.trim()) {
-        filtered = filtered.filter((t) => t.name.toLowerCase().includes(searchQuery.toLowerCase().trim()));
-      }
-      setTags(filtered);
+      setTags([]);
     } finally {
       setIsLoading(false);
     }
@@ -402,51 +384,79 @@ export default function AdminTagsPage() {
             </div>
           )}
 
-          {/* Page Title & Status Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200">
-            <div>
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-xs">
-                  <TagIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
-                    {isVi ? 'Quản Lý Thẻ (Tags)' : 'Tag Management'}
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-mono">
-                      /api/v1/admin/tags
-                    </span>
-                  </h1>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    {isVi
-                      ? 'Tạo thẻ định danh bài viết, quản lý tần suất sử dụng (used_count) và xóa thẻ không hợp lệ.'
-                      : 'Create and organize content tags, track usage counts, and clean up obsolete labels.'}
-                  </p>
-                </div>
+          {/* Page Title & Top Actions Header */}
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+            <div className="text-left flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
+                <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
+                <span>/</span>
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {isVi ? 'Quản lý Thẻ' : 'Tag Management'}
+                </span>
               </div>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 shadow-2xs shrink-0">
+                  <TagIcon className="w-5 h-5" />
+                </div>
+                <span>{isVi ? 'Quản Lý Thẻ (Tags)' : 'Tag Management'}</span>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
+                  {totalTags} {isVi ? 'thẻ' : 'tags'}
+                </span>
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 text-left">
+                {isVi
+                  ? 'Tạo thẻ định danh bài viết, quản lý tần suất sử dụng và xóa thẻ không hợp lệ.'
+                  : 'Create and organize content tags, track usage counts, and clean up obsolete labels.'}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2 self-start md:self-auto">
-              {/* + Create New Tag Button */}
+            {/* Quick Action Buttons (Right-aligned) */}
+            <div className="flex items-center gap-2.5 shrink-0 ml-auto">
               <button
+                type="button"
+                onClick={fetchTags}
+                disabled={isLoading}
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  border: '1px solid #cbd5e1',
+                  padding: '9px 16px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+                className="hover:bg-slate-50 transition-colors shadow-2xs"
+              >
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                <span>{isVi ? 'LÀM MỚI' : 'REFRESH'}</span>
+              </button>
+              <button
+                type="button"
                 onClick={() => {
                   setCreateTagName('');
                   setIsCreateModalOpen(true);
                 }}
-                className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs rounded-xl transition-all cursor-pointer"
+                style={{
+                  borderRadius: '12px',
+                  backgroundColor: '#4f46e5',
+                  color: '#ffffff',
+                  padding: '9px 18px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  border: 'none',
+                }}
+                className="hover:bg-indigo-700 transition-colors shadow-2xs"
               >
                 <Plus className="w-4 h-4" />
-                <span>{isVi ? 'Tạo thẻ mới' : 'Add Tag'}</span>
-              </button>
-
-              {/* Refresh Button */}
-              <button
-                onClick={fetchTags}
-                disabled={isLoading}
-                className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
-                title="Làm mới danh sách từ API"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-indigo-600' : ''}`} />
-                <span>{isVi ? 'Làm mới' : 'Refresh'}</span>
+                <span>{isVi ? 'TẠO THỂ MỚI' : 'CREATE NEW TAG'}</span>
               </button>
             </div>
           </div>
@@ -606,8 +616,44 @@ export default function AdminTagsPage() {
             <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">
               <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
               <p className="text-sm font-semibold text-slate-700">
-                {isVi ? 'Đang tải danh sách thẻ từ /api/v1/admin/tags...' : 'Fetching tags...'}
+                {isVi ? 'Đang tải thẻ...' : 'Fetching tags...'}
               </p>
+            </div>
+          ) : isConnectionError ? (
+            <div className="py-20 px-4 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs my-6">
+              <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-1">
+                  <WifiOff className="w-7 h-7" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  {isVi ? 'Lỗi kết nối máy chủ' : 'Server Connection Error'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+                  {isVi
+                    ? 'Không thể kết nối đến máy chủ backend. Dữ liệu sẽ tự động đồng bộ khi dịch vụ hoạt động.'
+                    : 'Could not connect to backend server. Data will sync automatically when service is online.'}
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={fetchTags}
+                    style={{
+                      borderRadius: '12px',
+                      backgroundColor: '#4f46e5',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 24px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.35)',
+                    }}
+                    className="hover:bg-indigo-700 transition-all uppercase tracking-wider"
+                  >
+                    {isVi ? 'THỬ KẾT NỐI LẠI' : 'RETRY CONNECTION'}
+                  </button>
+                </div>
+              </div>
             </div>
           ) : displayedTags.length === 0 ? (
             <div className="p-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs">

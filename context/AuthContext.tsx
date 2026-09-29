@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserProfile } from '../types';
+import { clearAllAuthData, getAccessToken } from '../utils/authUtils';
 
 export interface UserActivity {
   id: string;
@@ -35,10 +36,10 @@ const defaultGuestUser: UserProfile = {
 };
 
 const initialActivities: UserActivity[] = [
-  { id: 'act-1', title: 'Rated 5★ on NewJeans "Supernatural" Comeback MV trailer', type: 'media', timestamp: '10 mins ago', link: '/multimedia' },
+  { id: 'act-1', title: 'Rated 5★ for NewJeans "Supernatural" Comeback MV', type: 'media', timestamp: '10 mins ago', link: '/multimedia' },
   { id: 'act-2', title: 'Saved SEVENTEEN World Tour [RIGHT HERE] to calendar', type: 'event', timestamp: '1 hour ago', link: '/event' },
-  { id: 'act-3', title: 'Added aespa "Whiplash" Mini Album to wishlist', type: 'bookmark', timestamp: 'Yesterday', link: '/#albums' },
-  { id: 'act-4', title: 'Joined Bunnies community (NewJeans Official Fandom)', type: 'fandom', timestamp: '3 days ago', link: '/#artists' },
+  { id: 'act-3', title: 'Bookmarked aespa "Whiplash" Mini Album to favorites', type: 'bookmark', timestamp: 'Yesterday', link: '/#albums' },
+  { id: 'act-4', title: 'Joined Bunnies (NewJeans Official Fandom) community', type: 'fandom', timestamp: '3 days ago', link: '/#artists' },
 ];
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -48,15 +49,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activities, setActivities] = useState<UserActivity[]>(initialActivities);
 
+  const logout = () => {
+    setUser(defaultGuestUser);
+    setIsLoggedIn(false);
+    clearAllAuthData();
+  };
+
   useEffect(() => {
     const fetchMe = async () => {
-      let token = '';
-      if (typeof window !== 'undefined') {
-        const match = document.cookie.match(/access_token=([^;]+)/);
-        if (match && match[1]) token = decodeURIComponent(match[1]);
-        if (!token) token = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
-      }
-
+      const token = getAccessToken();
       if (token) {
         try {
           const res = await fetch('/api/v1/auth/me', {
@@ -64,16 +65,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               'Authorization': `Bearer ${token}`
             }
           });
-          const data = await res.json();
+
+          // Nếu API /api/v1/auth/me trả về 401 Unauthorized -> nick bị văng, phải xóa hết cookie và đăng xuất
+          if (res.status === 401 || res.status === 403) {
+            logout();
+            return;
+          }
+
+          const text = await res.text();
+          const data = text ? JSON.parse(text) : {};
           if (res.ok && data.data) {
             const userData = data.data;
-            const roles: string[] = Array.isArray(userData.roles) ? userData.roles : (userData.role ? [userData.role] : []);
-            const isAdmin = roles.some((r: string) => String(r).toLowerCase() === 'admin') ||
-              (userData.email && (userData.email.toLowerCase() === 'lumanhgioi.vn@gmail.com' || userData.email.toLowerCase().includes('admin')));
-            const role = isAdmin ? 'admin' : 'registered';
+            const role = (
+              (userData.roles && Array.isArray(userData.roles) && userData.roles.some((r: string) => String(r).toLowerCase() === 'admin')) ||
+              (userData.role && String(userData.role).toLowerCase() === 'admin')
+            ) ? 'admin' : 'registered';
+
             const loggedInUser: UserProfile = {
               id: userData.id,
-              name: userData.fullName || (userData.firstName ? `${userData.firstName} ${userData.lastName || ''}`.trim() : userData.name) || 'K-Pop Fan',
+              name: ((userData.firstName || '') + ' ' + (userData.lastName || userData.name || '')).trim() || userData.email || 'User',
               email: userData.email,
               role: role,
               avatar: userData.avatarUrl || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
@@ -82,42 +92,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             };
             setUser(loggedInUser);
             setIsLoggedIn(true);
-            localStorage.setItem('kpop_user', JSON.stringify(loggedInUser));
+            try {
+              localStorage.setItem('kpop_user', JSON.stringify(loggedInUser));
+            } catch { }
             return;
           }
-        } catch {
-          // If auth/me endpoint is offline, decode JWT token payload directly
-          try {
-            const parts = token.split('.');
-            if (parts.length >= 2) {
-              const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-              const payload = JSON.parse(decodeURIComponent(escape(atob(base64))));
-              const emailClaim = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || payload['email'];
-              const roleClaim = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || payload['role'] || payload['roles'];
-              const isAdmin = (Array.isArray(roleClaim) ? roleClaim.some((r: string) => String(r).toLowerCase() === 'admin') : String(roleClaim).toLowerCase() === 'admin') ||
-                (emailClaim && (String(emailClaim).toLowerCase() === 'lumanhgioi.vn@gmail.com' || String(emailClaim).toLowerCase().includes('admin')));
-              const nameClaim = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || payload['name'] || payload['fullName'];
-              const idClaim = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || payload['sub'] || payload['id'];
-
-              const fallbackUser: UserProfile = {
-                id: idClaim || 'usr_jwt',
-                name: nameClaim || 'K-Pop Fan',
-                email: emailClaim || 'user@fanhub.com',
-                role: isAdmin ? 'admin' : 'registered',
-                avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
-                favoriteFandoms: [],
-                memberSince: '2024'
-              };
-              setUser(fallbackUser);
-              setIsLoggedIn(true);
-              localStorage.setItem('kpop_user', JSON.stringify(fallbackUser));
-              return;
-            }
-          } catch {}
+        } catch (err) {
+          console.error("Failed to fetch user profile", err);
         }
       }
 
-      // Fallback to localStorage if no token or API failed
+      // Fallback to localStorage ONLY if no token or non-401 fetch error
       const saved = localStorage.getItem('kpop_user');
       if (saved) {
         try {
@@ -127,7 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } catch { }
       }
     };
-    
+
     fetchMe();
 
     const savedActs = localStorage.getItem('kpop_user_activities');
@@ -154,19 +139,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(newUser);
     setIsLoggedIn(true);
     localStorage.setItem('kpop_user', JSON.stringify(newUser));
+    if (role === 'admin') {
+      localStorage.setItem('access_token', 'mock_admin_token_srs_eval');
+    }
 
-    addActivity('Signed in successfully to Fan Hub Universe', 'fandom');
+    addActivity('Successfully signed into Fan Hub Universe', 'fandom');
+
+    // Simulate New Device Login Notification
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('fanhub_local_push', {
+        detail: {
+          type: 'system',
+          title: 'Security Alert',
+          message: 'Your account was just logged in from a new device (Chrome - Windows).',
+        }
+      }));
+    }, 2000);
+
+    // Simulate Registration Welcome Notification
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('fanhub_local_push', {
+        detail: {
+          type: 'social',
+          title: 'Welcome to FanHub!',
+          message: 'Account created successfully. Explore all live fandom events now!',
+        }
+      }));
+    }, 4000);
   };
 
-  const logout = () => {
-    setUser(defaultGuestUser);
-    setIsLoggedIn(false);
-    localStorage.removeItem('kpop_user');
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;';
-    document.cookie = 'refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;';
-  };
 
   const updateProfile = (data: Partial<UserProfile>) => {
     setUser((prev) => {
@@ -187,7 +188,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('kpop_user', JSON.stringify(nextUser));
       return nextUser;
     });
-    addActivity(`${user.favoriteFandoms.includes(fandom) ? 'Unfollowed' : 'Followed fandom'} ${fandom}`, 'fandom');
+    addActivity(`${user.favoriteFandoms.includes(fandom) ? 'Unfollowed' : 'Followed'} ${fandom} fandom`, 'fandom');
   };
 
   const addActivity = (title: string, type: UserActivity['type'], link?: string) => {
@@ -212,7 +213,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return {
       success: true,
       token,
-      message: `Password reset verification code has been sent to ${email}. (Simulation demo token: ${token})`,
+      message: `Password reset verification token has been dispatched to ${email}. (Demo token: ${token})`,
     };
   };
 
@@ -224,15 +225,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const parsed = JSON.parse(stored);
       if (parsed.token !== token.trim().toUpperCase()) {
-        return { success: false, message: 'Invalid verification token. Please double check.' };
+        return { success: false, message: 'Invalid verification token. Please verify and try again.' };
       }
       if (Date.now() > parsed.expires) {
-        return { success: false, message: 'Verification code has expired (exceeded 15 minutes).' };
+        return { success: false, message: 'Verification token has expired (exceeded 15 minutes).' };
       }
       localStorage.removeItem(`pwd_reset_${email}`);
       return { success: true, message: 'Your password has been successfully updated! Please sign in again.' };
     } catch {
-      return { success: false, message: 'Authentication verification error.' };
+      return { success: false, message: 'Authentication processing error.' };
     }
   };
 

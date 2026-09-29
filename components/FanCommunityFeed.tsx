@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 interface Post {
   id: number;
@@ -31,7 +32,7 @@ const initialPosts: Post[] = [
     comments: 45,
     tag: '#NewJeans',
     fandomBadge: '★ BUNNIES VERIFIED',
-    badgeBg: 'bg-[#ff2e93]',
+    badgeBg: 'bg-[#d91470]',
     badgeText: 'text-white',
     categories: ['Trending', 'Fan Art', 'Following'],
   },
@@ -91,10 +92,10 @@ export const FanCommunityFeed: React.FC = () => {
   const [copiedPostId, setCopiedPostId] = useState<number | null>(null);
 
   const tabs = [
-    { id: 'Trending', label: '★ Trending', count: posts.filter(p => p.categories.includes('Trending')).length, color: 'bg-[#ff2e93]' },
-    { id: 'Following', label: '✦ Following', count: posts.filter(p => p.categories.includes('Following')).length, color: 'bg-[#00f0ff]' },
-    { id: 'Fan Art', label: '⚡ Fan Art', count: posts.filter(p => p.categories.includes('Fan Art')).length, color: 'bg-[#ffd60a]' },
-    { id: 'Discussions', label: '✪ Discussions', count: posts.filter(p => p.categories.includes('Discussions')).length, color: 'bg-[#ccff00]' },
+    { id: 'Trending', label: '★ Trending', count: posts.filter(p => p.categories.includes('Trending')).length, color: 'bg-[#d91470]', textColor: 'text-white' },
+    { id: 'Following', label: '✦ Following', count: posts.filter(p => p.categories.includes('Following')).length, color: 'bg-[#00f0ff]', textColor: 'text-black' },
+    { id: 'Fan Art', label: '⚡ Fan Art', count: posts.filter(p => p.categories.includes('Fan Art')).length, color: 'bg-[#ffd60a]', textColor: 'text-black' },
+    { id: 'Discussions', label: '✪ Discussions', count: posts.filter(p => p.categories.includes('Discussions')).length, color: 'bg-[#ccff00]', textColor: 'text-black' },
   ];
 
   const filteredPosts = posts.filter(post => {
@@ -136,7 +137,7 @@ export const FanCommunityFeed: React.FC = () => {
       comments: 0,
       tag: selectedTag,
       fandomBadge: '★ YOU [VIP MEMBER]',
-      badgeBg: 'bg-[#ff2e93]',
+      badgeBg: 'bg-[#d91470]',
       badgeText: 'text-white',
       categories: ['Trending', 'Following', attachImage ? 'Fan Art' : 'Discussions'],
       isLiked: true,
@@ -163,8 +164,8 @@ export const FanCommunityFeed: React.FC = () => {
           {/* Eyebrow */}
           <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 bg-[#ff2e93] border border-black animate-pulse" />
-              <span className="font-mono text-xs font-black uppercase tracking-widest text-[#ff2e93] bg-[#fdf2f8] px-2.5 py-1 border border-black shadow-[2px_2px_0px_#000]">
+              <span className="w-3 h-3 bg-[#d91470] border border-black animate-pulse" />
+              <span className="font-mono text-xs font-black uppercase tracking-widest text-[#be185d] bg-[#fdf2f8] px-2.5 py-1 border border-black shadow-[2px_2px_0px_#000]">
                 SECTION 07 // GLOBAL COMMUNITY LORE &amp; FANDOM WIRE
               </span>
             </div>
@@ -183,7 +184,7 @@ export const FanCommunityFeed: React.FC = () => {
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-black leading-tight tracking-tight">
                 Fan Community &amp;{' '}
-                <em className="font-serif italic font-normal text-[#ff2e93] drop-shadow-[1px_1px_0px_#000000]">
+                <em className="font-serif italic font-normal text-[#d91470] drop-shadow-[1px_1px_0px_#000000]">
                   Lore Wire
                 </em>
               </h2>
@@ -204,7 +205,7 @@ export const FanCommunityFeed: React.FC = () => {
                     style={{ borderRadius: '0px' }}
                     className={`px-4 py-2.5 font-black uppercase tracking-wider cursor-pointer transition-all border-2 border-black ${
                       isActive 
-                        ? `${tab.color} text-black shadow-[4px_4px_0px_#000000] -translate-y-0.5` 
+                        ? `${tab.color} ${tab.textColor || 'text-black'} shadow-[4px_4px_0px_#000000] -translate-y-0.5` 
                         : 'bg-white text-black shadow-[2px_2px_0px_#000000] hover:bg-[#fff9db] hover:shadow-[3px_3px_0px_#000000]'
                     }`}
                   >
@@ -240,7 +241,7 @@ export const FanCommunityFeed: React.FC = () => {
                   style={{ borderRadius: '0px' }}
                   className={`px-2.5 py-1 text-[11px] font-black uppercase cursor-pointer border-2 border-black transition-all ${
                     selectedTag === tag 
-                      ? 'bg-[#ff2e93] text-white shadow-[2px_2px_0px_#000] -translate-y-0.5' 
+                      ? 'bg-[#d91470] text-white shadow-[2px_2px_0px_#000] -translate-y-0.5' 
                       : 'bg-white text-black hover:bg-[#ecfeff]'
                   }`}
                 >
@@ -255,12 +256,14 @@ export const FanCommunityFeed: React.FC = () => {
             <div className="flex items-start gap-4">
               <div 
                 style={{ borderRadius: '0px' }}
-                className="w-12 h-12 border-2 border-black overflow-hidden shrink-0 bg-[#ecfeff] shadow-[2px_2px_0px_#000]"
+                className="relative w-12 h-12 border-2 border-black overflow-hidden shrink-0 bg-[#ecfeff] shadow-[2px_2px_0px_#000]"
               >
-                <img 
+                <Image 
                   src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" 
                   alt="You" 
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="48px"
+                  className="object-cover"
                 />
               </div>
 
@@ -268,6 +271,7 @@ export const FanCommunityFeed: React.FC = () => {
                 <textarea 
                   value={newPostText}
                   onChange={(e) => setNewPostText(e.target.value)}
+                  aria-label="Compose a fan community dispatch"
                   placeholder="COMPOSE LOG OR THEORETICAL ANALYSIS (DROP YOUR FAN THEORIES HERE)..."
                   rows={3}
                   style={{ borderRadius: '0px' }}
@@ -283,7 +287,7 @@ export const FanCommunityFeed: React.FC = () => {
                     <button 
                       type="button" 
                       onClick={() => setAttachImage(false)}
-                      className="font-black text-[#ff2e93] underline hover:no-underline cursor-pointer"
+                      className="font-black text-[#d91470] underline hover:no-underline cursor-pointer"
                     >
                       [REMOVE ✕]
                     </button>
@@ -312,7 +316,7 @@ export const FanCommunityFeed: React.FC = () => {
                 type="submit"
                 disabled={!newPostText.trim()}
                 style={{ borderRadius: '0px' }}
-                className="px-6 py-2.5 bg-[#ff2e93] text-white hover:bg-[#e11d48] disabled:opacity-40 border-2 border-black text-xs font-black uppercase tracking-widest cursor-pointer shadow-[3px_3px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                className="px-6 py-2.5 bg-[#d91470] text-white hover:bg-[#be185d] disabled:opacity-40 border-2 border-black text-xs font-black uppercase tracking-widest cursor-pointer shadow-[3px_3px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition-all"
               >
                 [DISPATCH TO FEED →]
               </button>
@@ -337,12 +341,14 @@ export const FanCommunityFeed: React.FC = () => {
                     <div className="flex items-center gap-3">
                       <div 
                         style={{ borderRadius: '0px' }}
-                        className="w-12 h-12 border-2 border-black bg-[#ffd60a] overflow-hidden shrink-0 shadow-[2px_2px_0px_#000]"
+                        className="relative w-12 h-12 border-2 border-black bg-[#ffd60a] overflow-hidden shrink-0 shadow-[2px_2px_0px_#000]"
                       >
-                        <img 
+                        <Image 
                           src={post.avatar} 
                           alt={post.user} 
-                          className="w-full h-full object-cover" 
+                          fill
+                          sizes="48px"
+                          className="object-cover" 
                         />
                       </div>
                       <div>
@@ -376,7 +382,7 @@ export const FanCommunityFeed: React.FC = () => {
 
                   {/* Post Content */}
                   <div className="mb-4">
-                    <p className={`font-sans font-medium text-sm leading-relaxed text-black bg-[#fdfbf7] p-3 border-l-4 border-[#ff2e93]`}>
+                    <p className={`font-sans font-medium text-sm leading-relaxed text-black bg-[#fdfbf7] p-3 border-l-4 border-[#d91470]`}>
                       &ldquo;{post.content}&rdquo;
                     </p>
                   </div>
@@ -387,10 +393,12 @@ export const FanCommunityFeed: React.FC = () => {
                       style={{ borderRadius: '0px' }}
                       className="relative w-full h-64 border-2 border-black overflow-hidden bg-neutral-100 shadow-[3px_3px_0px_#000]"
                     >
-                      <img 
+                      <Image 
                         src={post.image} 
                         alt="Fan Content" 
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute top-2 left-2 bg-black text-[#ffd60a] border border-black font-mono text-[9px] font-black px-2 py-0.5 uppercase shadow-[1px_1px_0px_#000]">
                         ★ ORIGINAL FANWORK
@@ -408,7 +416,7 @@ export const FanCommunityFeed: React.FC = () => {
                       style={{ borderRadius: '0px' }}
                       className={`px-3 py-1.5 border-2 border-black font-black uppercase tracking-wider text-[11px] cursor-pointer shadow-[2px_2px_0px_#000] transition-all active:translate-y-0.5 ${
                         post.isLiked 
-                          ? 'bg-[#ff2e93] text-white' 
+                          ? 'bg-[#d91470] text-white' 
                           : 'bg-white text-black hover:bg-[#ffd60a]'
                       }`}
                     >

@@ -1,5 +1,5 @@
 export type MediaType = 'trailer' | 'video' | 'podcast' | 'livestream' | 'soundtrack';
-export type FandomCategory = 'K-Pop' | 'V-Pop' | 'Anime' | 'Gaming' | 'Cinema';
+export type FandomCategory = 'K-Pop' | 'V-Pop' | 'Anime' | 'Gaming' | 'Cinema' | 'Manga' | 'Cosplay' | 'Comics' | 'TV Shows' | 'Movies';
 
 export interface LiveChatMessage {
   id: string;
@@ -578,5 +578,491 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
       lyricsSnippet: 'If the world was ending, I’d wanna be next to you...'
     },
     tags: ['Die With A Smile', 'Bruno Mars', 'Lady Gaga', 'Vinyl Master', 'Acoustic']
+  },
+
+  // 13. MANGA: Chainsaw Man Chapter 180 Motion Comic & Audio Drama
+  {
+    id: 'media-manga-1',
+    title: 'Chainsaw Man Chapter 180: Official Motion Manga & Voice Drama Teaser',
+    subtitle: 'Dynamic motion manga comic release • Shueisha & MAPPA',
+    artist: 'Tatsuki Fujimoto / Shueisha',
+    agency: 'Weekly Shonen Jump',
+    type: 'trailer',
+    category: 'Manga',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/f9X6GkHnS9E?autoplay=1&mute=0',
+    duration: '03:15',
+    durationSeconds: 195,
+    views: 8900000,
+    releaseDate: '2024-10-15',
+    description: 'Special official motion comic presentation with dynamic ink transitions, screen screentone effects, and intense voiceover soundscape for the latest Chainsaw Man climax.',
+    qualityBadge: '4K MOTION INK • 60FPS',
+    rating: {
+      average: 4.95,
+      count: 14200,
+      distribution: { 5: 92, 4: 6, 3: 2, 2: 0, 1: 0 },
+      thumbsUp: 340000,
+      thumbsDown: 850,
+    },
+    chapters: [
+      { time: '00:00', seconds: 0, title: 'Denji in the ruined city' },
+      { time: '01:10', seconds: 70, title: 'War Devil Yoru awakening' },
+      { time: '02:30', seconds: 150, title: 'Black Chainsaw Man descent' }
+    ],
+    tags: ['Chainsaw Man', 'Manga', 'Motion Comic', 'Fujimoto', 'Shonen Jump']
+  },
+
+  // 14. MANGA SOUNDSTAGE: Berserk Memorial Audio Archive
+  {
+    id: 'media-manga-2',
+    title: 'Berserk Memorial Vinyl Soundstage: "Guts" & "Forces" Symphonic Suite',
+    subtitle: 'Susumu Hirasawa Memorial Compositions • Lossless 24-bit Vinyl Rip',
+    artist: 'Susumu Hirasawa & Shiro Sagisu',
+    agency: 'Hakusensha',
+    type: 'soundtrack',
+    category: 'Manga',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/8t3X32_1YkU?autoplay=1&mute=0',
+    duration: '05:40',
+    durationSeconds: 340,
+    views: 12400000,
+    releaseDate: '2024-05-20',
+    description: 'Immortal tribute to the legendary dark fantasy magnum opus by Kentaro Miura. Haunting vocals, acoustic strings, and relentless marching rhythms.',
+    qualityBadge: 'FLAC 24-BIT / 192KHZ',
+    rating: {
+      average: 5.0,
+      count: 28900,
+      distribution: { 5: 97, 4: 2, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 620000,
+      thumbsDown: 420,
+    },
+    soundtrackMeta: {
+      albumName: 'Berserk Sound Chronicle Vinyl Suite',
+      trackNumber: 1,
+      totalTracks: 14,
+      bitrate: '24-bit 192kHz Audiophile Master',
+      composer: 'Susumu Hirasawa',
+      lyricsSnippet: 'Tell me what you see, beyond the eternal sacrifice...'
+    },
+    tags: ['Berserk', 'Manga', 'Susumu Hirasawa', 'Guts Theme', 'Vinyl Master']
+  },
+
+  // 15. COSPLAY: World Cosplay Summit Nagoya 2024 Finals
+  {
+    id: 'media-cosplay-1',
+    title: '🔴 World Cosplay Summit Nagoya 2024: Championship Stage & Grand Parade 4K',
+    subtitle: 'Live broadcast from Nagoya Oasis 21 • 36 Country Champion Teams',
+    artist: 'World Cosplay Summit Committee',
+    agency: 'WCS Executive Office Japan',
+    type: 'livestream',
+    category: 'Cosplay',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/zSQ48zyWZrY?autoplay=1&mute=1',
+    duration: 'LIVE',
+    durationSeconds: 0,
+    views: 1480000,
+    releaseDate: 'Today',
+    description: 'The premier worldwide craftsmanship and performance showdown featuring custom mechanical armor, LED-embedded wings, and championship stage acting.',
+    qualityBadge: '4K BROADCAST 60FPS',
+    isLive: true,
+    liveViewers: 28900,
+    liveStatusText: '28,900 cosplay artisans streaming live worldwide',
+    rating: {
+      average: 4.96,
+      count: 19800,
+      distribution: { 5: 93, 4: 5, 3: 2, 2: 0, 1: 0 },
+      thumbsUp: 390000,
+      thumbsDown: 610,
+    },
+    chatMessages: [
+      { id: 'cc1', user: 'EvaArmorMaster_VN', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80', badge: 'PRO MAKER', badgeColor: '#3b82f6', message: 'The mechanical wings on Team Japan are insane! 3D printed servo joints!', timestamp: '14:20' },
+      { id: 'cc2', user: 'Nagoya_Fan_Live', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80', badge: 'WCS VIP', badgeColor: '#ec4899', message: 'Team Vietnam Monster Hunter armor details are top 3 for sure!! 🔥', timestamp: '14:21' }
+    ],
+    tags: ['Cosplay', 'WCS 2024', 'Nagoya', 'Craftsmanship', 'Stage Performance']
+  },
+
+  // 16. COMICS: Across The Spider-Verse Motion Masterclass & Score
+  {
+    id: 'media-comics-1',
+    title: 'Spider-Man: Across The Spider-Verse - Comic Art Motion Masterclass & OST',
+    subtitle: 'Pop-Art Halftone Animation & Daniel Pemberton Metro Synth Score',
+    artist: 'Sony Pictures Animation & Daniel Pemberton',
+    agency: 'Marvel Comics / Sony Pictures',
+    type: 'video',
+    category: 'Comics',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/hT_nvWreIhg?autoplay=1&mute=0',
+    duration: '18:40',
+    durationSeconds: 1120,
+    views: 22100000,
+    releaseDate: '2024-03-12',
+    description: 'Visual breakdown of the Ben-Day dots, comic ink line boiling, and the iconic orchestral synth breakdown for Miguel O’Hara’s Spider-Man 2099 theme.',
+    qualityBadge: 'IMAX ENHANCED 4K',
+    rating: {
+      average: 4.98,
+      count: 48900,
+      distribution: { 5: 96, 4: 3, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1100000,
+      thumbsDown: 1300,
+    },
+    chapters: [
+      { time: '00:00', seconds: 0, title: 'Earth-65 Gwen Stacy watercolor style' },
+      { time: '06:15', seconds: 375, title: 'Spider-Punk hand-cut zine animation' },
+      { time: '12:30', seconds: 750, title: '2099 Synth Elephant sound breakdown' }
+    ],
+    tags: ['Spider-Verse', 'Comics', 'Pop-Art', 'Miles Morales', 'Daniel Pemberton']
+  },
+
+  // 17. TV SHOWS: Stranger Things 5 Hawkins Synth Lab
+  {
+    id: 'media-tv-1',
+    title: 'Stranger Things Season 5: Hawkins Sound Lab & The Upside Down Synth Suite',
+    subtitle: 'Behind The Scenes 4K • Kyle Dixon & Michael Stein Modular Synthesizer Demo',
+    artist: 'SURVIVE (Kyle Dixon & Michael Stein)',
+    agency: 'Netflix / Lakeshore Records',
+    type: 'soundtrack',
+    category: 'TV Shows',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/kPa7bsKwL-8?autoplay=1&mute=0',
+    duration: '06:22',
+    durationSeconds: 382,
+    views: 15400000,
+    releaseDate: '2024-09-01',
+    description: 'Analog synth magic featuring vintage Prophet-5 and Arp 2600 modular systems creating the eerie Hawkins atmosphere and heart-pounding climax arpeggios.',
+    qualityBadge: '24-BIT 96KHZ ANALOG MASTER',
+    rating: {
+      average: 4.95,
+      count: 24300,
+      distribution: { 5: 94, 4: 5, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 510000,
+      thumbsDown: 820,
+    },
+    soundtrackMeta: {
+      albumName: 'Stranger Things Final Season Sound Archives',
+      trackNumber: 1,
+      totalTracks: 20,
+      bitrate: 'Analog Master 24-bit',
+      composer: 'Kyle Dixon & Michael Stein',
+      lyricsSnippet: 'Echoes from the Upside Down reverberate through the analog circuits...'
+    },
+    tags: ['Stranger Things', 'TV Shows', 'Synthwave', 'Netflix', 'Hawkins']
+  },
+
+  // 18. GAMING: Genshin Impact Symphonic Concert Tour 4K
+  {
+    id: 'media-gaming-symphony',
+    title: 'HoYo-MiX: Genshin Impact Global Concert Tour 2024 - Full Philharmonic 4K',
+    subtitle: 'London Philharmonic Orchestra live at Royal Albert Hall',
+    artist: 'HoYo-MiX & London Philharmonic',
+    agency: 'miHoYo / HoYoverse',
+    type: 'video',
+    category: 'Gaming',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/pnSsgrjpC88?autoplay=1&mute=0',
+    duration: '42:15',
+    durationSeconds: 2535,
+    views: 28400000,
+    releaseDate: '2024-08-10',
+    description: 'Symphonic tour featuring Fontaine, Sumeru, Inazuma, and Liyue battle suites with authentic regional instruments, choir chants, and guitar solos.',
+    qualityBadge: '4K ULTRA HD • DOLBY ATMOS',
+    rating: {
+      average: 5.0,
+      count: 76000,
+      distribution: { 5: 98, 4: 2, 3: 0, 2: 0, 1: 0 },
+      thumbsUp: 1820000,
+      thumbsDown: 1100,
+    },
+    chapters: [
+      { time: '00:00', seconds: 0, title: 'Fontaine Symphony: Pluie sur la ville' },
+      { time: '12:40', seconds: 760, title: 'Inazuma Duel Before the Throne' },
+      { time: '26:10', seconds: 1570, title: 'Liyue Harbor Moonlit Festival' },
+      { time: '38:00', seconds: 2280, title: 'Grand Finale & Standing Ovation' }
+    ],
+    tags: ['Genshin Impact', 'HoYo-MiX', 'Gaming', 'Concert 4K', 'Symphony']
+  },
+
+  // 19. TRAILER: BLACKPINK - BORN PINK World Tour Finale 4K Trailer
+  {
+    id: 'media-blackpink-1',
+    title: "BLACKPINK (블랙핑크) - 'BORN PINK' World Tour Finale Stadium 4K Trailer",
+    subtitle: 'Official World Tour Encore Concert Movie & Stage Teaser • YG Entertainment',
+    artist: 'BLACKPINK',
+    agency: 'YG Entertainment',
+    type: 'trailer',
+    category: 'K-Pop',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/gQlMMD8auMs?autoplay=1&mute=0',
+    duration: '03:15',
+    durationSeconds: 195,
+    views: 38400000,
+    releaseDate: '10/08/2024',
+    description: 'High-octane stadium concert trailer featuring Jennie, Jisoo, Rosé, and Lisa across sold-out nights with laser pyrotechnics and iconic choreographies.',
+    qualityBadge: '4K DOLBY VISION • THEATRICAL',
+    rating: {
+      average: 5.0,
+      count: 62000,
+      distribution: { 5: 96, 4: 3, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1450000,
+      thumbsDown: 1100,
+    },
+    chapters: [
+      { time: '00:00', seconds: 0, title: 'Stadium pyrotechnics & Pink Venom intro' },
+      { time: '01:10', seconds: 70, title: 'Solo member highlights & crowd energy' },
+      { time: '02:30', seconds: 150, title: 'Grand finale: As If It\'s Your Last' }
+    ],
+    tags: ['BLACKPINK', 'BORN PINK', 'BLINK', 'K-Pop', 'Trailer 4K', 'YG Entertainment']
+  },
+
+  // 20. TRAILER: IVE - 'HEYA' Official Comeback Music Video 4K
+  {
+    id: 'media-ive-1',
+    title: "IVE (아이브) - 'HEYA' (해야) Official Comeback Music Video 4K",
+    subtitle: 'Official Concept Film & Visual Comeback • Starship Entertainment',
+    artist: 'IVE',
+    agency: 'Starship Entertainment',
+    type: 'trailer',
+    category: 'K-Pop',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/07EzZB4_dQ0?autoplay=1&mute=0',
+    duration: '03:28',
+    durationSeconds: 208,
+    views: 24200000,
+    releaseDate: '29/04/2024',
+    description: 'Breathtaking oriental aesthetics meeting modern hip-hop beats in IVE explosive visual comeback with Jang Wonyoung and An Yujin.',
+    qualityBadge: '4K HDR • 60FPS',
+    rating: {
+      average: 4.95,
+      count: 31200,
+      distribution: { 5: 92, 4: 6, 3: 2, 2: 0, 1: 0 },
+      thumbsUp: 670000,
+      thumbsDown: 920,
+    },
+    tags: ['IVE', 'HEYA', 'DIVE', 'K-Pop', 'Comeback 4K', 'Starship']
+  },
+
+  // 21. TRAILER: Stray Kids - 'Chk Chk Boom' Official Cinematic MV
+  {
+    id: 'media-straykids-1',
+    title: "Stray Kids (스트레이 키즈) - 'Chk Chk Boom' Official Cinematic MV",
+    subtitle: 'Blockbuster comeback with Hugh Jackman & Ryan Reynolds cameo • JYP',
+    artist: 'Stray Kids',
+    agency: 'JYP Entertainment',
+    type: 'trailer',
+    category: 'K-Pop',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/0P0aQrlbpJg?autoplay=1&mute=0',
+    duration: '03:40',
+    durationSeconds: 220,
+    views: 45000000,
+    releaseDate: '19/07/2024',
+    description: 'Cinematic Latin-infused hip-hop anthem from 3RACHA, set in New York City with Deadpool and Wolverine guest appearances.',
+    qualityBadge: '4K ULTRA HD • 60FPS',
+    rating: {
+      average: 5.0,
+      count: 78000,
+      distribution: { 5: 97, 4: 2, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1980000,
+      thumbsDown: 1300,
+    },
+    tags: ['Stray Kids', 'Chk Chk Boom', 'STAY', 'K-Pop', 'JYP', 'Deadpool']
+  },
+
+  // 22. TRAILER: Son Tung M-TP - Dung Lam Trai Tim Anh Dau 4K MV
+  {
+    id: 'media-sontung-1',
+    title: "Sơn Tùng M-TP - 'Đừng Làm Trái Tim Anh Đau' Official Music Video 4K",
+    subtitle: 'Top trending #1 blockbuster visual comeback • M-TP Entertainment',
+    artist: 'Son Tung M-TP',
+    agency: 'M-TP Entertainment',
+    type: 'trailer',
+    category: 'V-Pop',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/abPmZCZZrFA?autoplay=1&mute=0',
+    duration: '05:25',
+    durationSeconds: 325,
+    views: 68000000,
+    releaseDate: '08/06/2024',
+    description: 'Joyful, romantic retro office love story MV starring Son Tung M-TP and Pimtha that dominated global YouTube music trending for weeks.',
+    qualityBadge: '4K DCI COLOR MASTER',
+    rating: {
+      average: 5.0,
+      count: 98000,
+      distribution: { 5: 98, 4: 2, 3: 0, 2: 0, 1: 0 },
+      thumbsUp: 2400000,
+      thumbsDown: 1800,
+    },
+    tags: ['Son Tung M-TP', 'SKY', 'V-Pop', 'MV 4K', 'M-TP Entertainment']
+  },
+
+  // 23. VIDEO: Anh Trai Vuot Ngan Chong Gai - Live Stadium 4K
+  {
+    id: 'media-chonggai-1',
+    title: "Anh Trai Vượt Ngàn Chông Gai - 'Trống Cơm' & 'Dòng Máu Lạc Hồng' Live Concert 4K",
+    subtitle: 'Massive 30,000 stadium live performance • Fire & Cultural Heritage',
+    artist: 'Anh Trai Vuot Ngan Chong Gai',
+    agency: 'YAE Entertainment / VTV3',
+    type: 'video',
+    category: 'V-Pop',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/hT_nvWreIhg?autoplay=1&mute=0',
+    duration: '22:40',
+    durationSeconds: 1360,
+    views: 18900000,
+    releaseDate: '19/10/2024',
+    description: 'Monumental red-ocean stadium concert combining traditional Vietnamese folk drums, rock guitars, and contemporary rap from 33 master artists.',
+    qualityBadge: '4K BROADCAST 60FPS',
+    rating: {
+      average: 5.0,
+      count: 54000,
+      distribution: { 5: 96, 4: 3, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1120000,
+      thumbsDown: 950,
+    },
+    tags: ['Anh Trai Vuot Ngan Chong Gai', 'Trong Com', 'V-Pop', 'Concert 4K']
+  },
+
+  // 24. TRAILER: One Piece Egghead Island Climax 4K Trailer
+  {
+    id: 'media-onepiece-1',
+    title: "One Piece 'Egghead Island Arc' - Official Climax Anime Trailer 4K",
+    subtitle: 'Gear 5 Luffy vs Saturn & Kizaru • Toei Animation & Eiichiro Oda',
+    artist: 'One Piece',
+    agency: 'Toei Animation / Shueisha',
+    type: 'trailer',
+    category: 'Manga',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/zSQ48zyWZrY?autoplay=1&mute=0',
+    duration: '02:50',
+    durationSeconds: 170,
+    views: 31200000,
+    releaseDate: '2024-07-07',
+    description: 'The futuristic island of Dr. Vegapunk under Buster Call assault as Luffy activates Sun God Nika in full cinematic Sakuga animation.',
+    qualityBadge: '4K SAKUGA HDR',
+    rating: {
+      average: 5.0,
+      count: 48900,
+      distribution: { 5: 96, 4: 3, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1190000,
+      thumbsDown: 880,
+    },
+    tags: ['One Piece', 'Gear 5', 'Egghead Island', 'Manga', 'Trailer 4K', 'Luffy']
+  },
+
+  // 25. TRAILER: Jujutsu Kaisen Season 3 Culling Game Teaser Trailer 4K
+  {
+    id: 'media-jjk-1',
+    title: "Jujutsu Kaisen Season 3: 'Culling Game Arc' Official Production Teaser 4K",
+    subtitle: 'MAPPA Studio sakuga animation showcase • Shibuya aftermath',
+    artist: 'Jujutsu Kaisen',
+    agency: 'Studio MAPPA / Toho',
+    type: 'trailer',
+    category: 'Anime',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/f9X6GkHnS9E?autoplay=1&mute=0',
+    duration: '02:30',
+    durationSeconds: 150,
+    views: 36700000,
+    releaseDate: '2024-08-25',
+    description: 'Official MAPPA production preview of the deadly Culling Game ritual orchestrated by Kenjaku, starring Yuta Okkotsu and Yuji Itadori.',
+    qualityBadge: '4K MAPPA MASTER',
+    rating: {
+      average: 4.98,
+      count: 52100,
+      distribution: { 5: 95, 4: 4, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 1340000,
+      thumbsDown: 910,
+    },
+    tags: ['Jujutsu Kaisen', 'MAPPA', 'Culling Game', 'Anime', 'Trailer 4K', 'Gojo']
+  },
+
+  // 26. TRAILER: Christopher Nolan 70mm IMAX Suite 4K
+  {
+    id: 'media-nolan-1',
+    title: "Christopher Nolan & Hans Zimmer: The 70mm IMAX Retrospective & Suite 4K",
+    subtitle: 'Oppenheimer, Interstellar & Inception Theatrical Symphony Suite',
+    artist: 'Christopher Nolan',
+    agency: 'Syncopy / Universal Pictures',
+    type: 'trailer',
+    category: 'Cinema',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1200&q=80',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/kPa7bsKwL-8?autoplay=1&mute=0',
+    duration: '05:10',
+    durationSeconds: 310,
+    views: 29800000,
+    releaseDate: '2024-06-15',
+    description: 'A monument to photochemical 70mm analog film craft with the titanic musical scores of Ludwig Göransson and Hans Zimmer.',
+    qualityBadge: '70MM IMAX 4K DCI',
+    rating: {
+      average: 5.0,
+      count: 41200,
+      distribution: { 5: 97, 4: 2, 3: 1, 2: 0, 1: 0 },
+      thumbsUp: 980000,
+      thumbsDown: 650,
+    },
+    tags: ['Christopher Nolan', 'Oppenheimer', 'Interstellar', 'Hans Zimmer', 'Cinema 70mm']
   }
 ];
+
+export const CATEGORY_ARTISTS_MAP: Record<string, { label: string; query: string }[]> = {
+  'K-Pop': [
+    { label: 'Tất cả K-Pop', query: '' },
+    { label: 'NewJeans', query: 'NewJeans' },
+    { label: 'BLACKPINK', query: 'BLACKPINK' },
+    { label: 'BTS', query: 'BTS' },
+    { label: 'SEVENTEEN', query: 'SEVENTEEN' },
+    { label: 'aespa', query: 'aespa' },
+    { label: 'IVE', query: 'IVE' },
+    { label: 'Stray Kids', query: 'Stray Kids' },
+  ],
+  'V-Pop': [
+    { label: 'Tất cả V-Pop', query: '' },
+    { label: 'Say Hi All-Stars', query: 'Say Hi' },
+    { label: 'Anh Trai Vượt Ngàn Chông Gai', query: 'Chong Gai' },
+    { label: 'Sơn Tùng M-TP', query: 'Son Tung' },
+  ],
+  'Anime': [
+    { label: 'Tất cả Anime', query: '' },
+    { label: 'Demon Slayer', query: 'Demon Slayer' },
+    { label: 'Jujutsu Kaisen', query: 'Jujutsu' },
+    { label: 'Solo Leveling', query: 'Solo Leveling' },
+  ],
+  'Manga': [
+    { label: 'Tất cả Manga', query: '' },
+    { label: 'One Piece', query: 'One Piece' },
+    { label: 'Chainsaw Man', query: 'Chainsaw Man' },
+    { label: 'Berserk', query: 'Berserk' },
+  ],
+  'Gaming': [
+    { label: 'Tất cả Gaming', query: '' },
+    { label: 'T1 & Faker', query: 'Faker' },
+    { label: 'Genshin Impact', query: 'Genshin' },
+    { label: 'Black Myth: Wukong', query: 'Wukong' },
+  ],
+  'Comics': [
+    { label: 'Tất cả Comics', query: '' },
+    { label: 'Spider-Man & Spider-Verse', query: 'Spider' },
+  ],
+  'Cinema': [
+    { label: 'Tất cả Cinema', query: '' },
+    { label: 'Christopher Nolan', query: 'Christopher Nolan' },
+    { label: 'Lady Gaga & Bruno Mars', query: 'Bruno Mars' },
+    { label: 'Queen of Tears OST', query: 'Queen of Tears' },
+  ],
+  'Movies': [
+    { label: 'Tất cả Movies', query: '' },
+    { label: 'Christopher Nolan', query: 'Christopher Nolan' },
+    { label: 'Lady Gaga & Bruno Mars', query: 'Bruno Mars' },
+    { label: 'Queen of Tears OST', query: 'Queen of Tears' },
+  ],
+  'TV Shows': [
+    { label: 'Tất cả TV Shows', query: '' },
+    { label: 'Stranger Things', query: 'Stranger Things' },
+  ],
+  'Cosplay': [
+    { label: 'Tất cả Cosplay', query: '' },
+    { label: 'World Cosplay Summit', query: 'Cosplay' },
+  ],
+};
+
