@@ -177,7 +177,6 @@ export default function AdminUsersPage() {
   const [selectedUser, setSelectedUser] = useState<AdminUserItem | null>(null);
   const [confirmActionUser, setConfirmActionUser] = useState<AdminUserItem | null>(null);
   const [banningUserId, setBanningUserId] = useState<string | number | null>(null);
-  const [updatingRoleId, setUpdatingRoleId] = useState<string | number | null>(null);
   const [actionToast, setActionToast] = useState<{ type: 'success' | 'error' | 'warning'; message: string } | null>(null);
   const [copiedId, setCopiedId] = useState(false);
 
@@ -323,67 +322,6 @@ export default function AdminUsersPage() {
     } finally {
       setBanningUserId(null);
       setConfirmActionUser(null);
-    }
-  };
-
-  // Update User Role: PUT /api/v1/admin/users/{id}/role
-  const handleChangeUserRole = async (targetUser: AdminUserItem, newRole: UserRole) => {
-    setUpdatingRoleId(targetUser.id);
-    setActionToast(null);
-
-    const token = getAccessToken();
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    try {
-      const response = await fetch(`/api/v1/admin/users/${encodeURIComponent(targetUser.id)}/role`, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({
-          role: newRole,
-          title: 'Update user role',
-        }),
-      });
-
-      // Update state locally
-      setUsers((prev) =>
-        prev.map((u) => (u.id === targetUser.id ? { ...u, role: newRole } : u))
-      );
-      if (selectedUser && selectedUser.id === targetUser.id) {
-        setSelectedUser((prev) => (prev ? { ...prev, role: newRole } : null));
-      }
-
-      setActionToast({
-        type: 'success',
-        message: isVi
-          ? `Đã cập nhật vai trò của "${targetUser.fullName || targetUser.name || targetUser.username || targetUser.id}" thành ${newRole}!`
-          : `Successfully updated role of "${targetUser.fullName || targetUser.name || targetUser.username || targetUser.id}" to ${newRole}!`,
-      });
-      setTimeout(() => setActionToast(null), 4000);
-    } catch (err: any) {
-      console.warn('Backend API role update offline, updated locally:', err);
-      // Fallback local update
-      setUsers((prev) =>
-        prev.map((u) => (u.id === targetUser.id ? { ...u, role: newRole } : u))
-      );
-      if (selectedUser && selectedUser.id === targetUser.id) {
-        setSelectedUser((prev) => (prev ? { ...prev, role: newRole } : null));
-      }
-
-      setActionToast({
-        type: 'success',
-        message: isVi
-          ? `Đã cập nhật vai trò của "${targetUser.fullName || targetUser.name || targetUser.username || targetUser.id}" thành ${newRole}!`
-          : `Updated role of "${targetUser.fullName || targetUser.name || targetUser.username || targetUser.id}" to ${newRole}!`,
-      });
-      setTimeout(() => setActionToast(null), 4000);
-    } finally {
-      setUpdatingRoleId(null);
     }
   };
 
@@ -753,7 +691,6 @@ export default function AdminUsersPage() {
                       const isActive = status === 'active';
                       const isBanned = status === 'banned' || status === 'locked';
                       const isProcessingThis = banningUserId === item.id;
-                      const isUpdatingRole = updatingRoleId === item.id;
 
                       return (
                         <tr
@@ -817,44 +754,26 @@ export default function AdminUsersPage() {
                             </div>
                           </td>
 
-                          {/* Role Badge with Interactive 4-Role Selector (Admin, User, Moderator, EventOwner) */}
+                          {/* Role Badge (Admin, User, Moderator, EventOwner) */}
                           <td className="py-3 px-4">
-                            <div className="relative inline-flex items-center">
-                              <select
-                                value={userRole}
-                                onChange={(e) => handleChangeUserRole(item, e.target.value as UserRole)}
-                                disabled={isUpdatingRole}
-                                style={{ borderRadius: '6px' }}
-                                className={`appearance-none cursor-pointer pl-6 pr-5 py-1 text-[11px] font-bold tracking-wide transition-all border outline-none font-sans ${
-                                  userRole === 'Admin'
-                                    ? 'bg-amber-100/90 text-amber-900 border-amber-300 dark:bg-amber-950/80 dark:text-amber-300 dark:border-amber-700 hover:bg-amber-200/90'
-                                    : userRole === 'EventOwner'
-                                    ? 'bg-sky-100/90 text-sky-900 border-sky-300 dark:bg-sky-950/80 dark:text-sky-300 dark:border-sky-700 hover:bg-sky-200/90'
-                                    : userRole === 'Moderator'
-                                    ? 'bg-purple-100/90 text-purple-900 border-purple-300 dark:bg-purple-950/80 dark:text-purple-300 dark:border-purple-700 hover:bg-purple-200/90'
-                                    : 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 hover:bg-slate-200/80'
-                                }`}
-                                title={isVi ? 'Nhấp để đổi vai trò' : 'Click to change role'}
-                              >
-                                <option value="Admin">Admin</option>
-                                <option value="User">User</option>
-                                <option value="Moderator">Moderator</option>
-                                <option value="EventOwner">EventOwner</option>
-                              </select>
-
-                              {/* Left Role Icon */}
-                              <div className="pointer-events-none absolute left-1.5 top-1/2 -translate-y-1/2 flex items-center">
-                                {userRole === 'Admin' && <Shield className="w-3 h-3 text-amber-700 dark:text-amber-400" />}
-                                {userRole === 'EventOwner' && <Calendar className="w-3 h-3 text-sky-700 dark:text-sky-400" />}
-                                {userRole === 'Moderator' && <CheckCircle2 className="w-3 h-3 text-purple-700 dark:text-purple-400" />}
-                                {userRole === 'User' && <UserCheck className="w-3 h-3 text-slate-500" />}
-                              </div>
-
-                              {/* Right Chevron Icon */}
-                              <div className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center opacity-60">
-                                <ChevronDown className="w-2.5 h-2.5" />
-                              </div>
-                            </div>
+                            <span
+                              style={{ borderRadius: '6px' }}
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold uppercase border font-sans whitespace-nowrap ${
+                                userRole === 'Admin'
+                                  ? 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/80 dark:text-amber-300 dark:border-amber-700'
+                                  : userRole === 'EventOwner'
+                                  ? 'bg-sky-100 text-sky-900 border-sky-300 dark:bg-sky-950/80 dark:text-sky-300 dark:border-sky-700'
+                                  : userRole === 'Moderator'
+                                  ? 'bg-purple-100 text-purple-900 border-purple-300 dark:bg-purple-950/80 dark:text-purple-300 dark:border-purple-700'
+                                  : 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                              }`}
+                            >
+                              {userRole === 'Admin' && <Shield className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />}
+                              {userRole === 'EventOwner' && <Calendar className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" />}
+                              {userRole === 'Moderator' && <CheckCircle2 className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />}
+                              {userRole === 'User' && <UserCheck className="w-3.5 h-3.5 text-slate-500 shrink-0" />}
+                              <span>{userRole}</span>
+                            </span>
                           </td>
 
                           {/* Status Badge */}
@@ -1298,37 +1217,24 @@ export default function AdminUsersPage() {
                         <span className="text-slate-400 block text-[11px] font-semibold uppercase tracking-wider mb-1">
                           {isVi ? 'Vai trò:' : 'Role:'}
                         </span>
-                        <div className="relative inline-flex items-center">
-                          <select
-                            value={normalizeRole(selectedUser.role)}
-                            onChange={(e) => handleChangeUserRole(selectedUser, e.target.value as UserRole)}
-                            disabled={updatingRoleId === selectedUser.id}
-                            style={{ borderRadius: '6px' }}
-                            className={`appearance-none cursor-pointer pl-6 pr-5 py-1 text-[11px] font-bold uppercase transition-all border outline-none font-sans ${
-                              normalizeRole(selectedUser.role) === 'Admin'
-                                ? 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/80 dark:text-amber-300 dark:border-amber-700'
-                                : normalizeRole(selectedUser.role) === 'EventOwner'
-                                ? 'bg-sky-100 text-sky-900 border-sky-300 dark:bg-sky-950/80 dark:text-sky-300 dark:border-sky-700'
-                                : normalizeRole(selectedUser.role) === 'Moderator'
-                                ? 'bg-purple-100 text-purple-900 border-purple-300 dark:bg-purple-950/80 dark:text-purple-300 dark:border-purple-700'
-                                : 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
-                            }`}
-                          >
-                            <option value="Admin">Admin</option>
-                            <option value="User">User</option>
-                            <option value="Moderator">Moderator</option>
-                            <option value="EventOwner">EventOwner</option>
-                          </select>
-                          <div className="pointer-events-none absolute left-1.5 top-1/2 -translate-y-1/2 flex items-center">
-                            {normalizeRole(selectedUser.role) === 'Admin' && <Shield className="w-3 h-3 text-amber-700 dark:text-amber-400" />}
-                            {normalizeRole(selectedUser.role) === 'EventOwner' && <Calendar className="w-3 h-3 text-sky-700 dark:text-sky-400" />}
-                            {normalizeRole(selectedUser.role) === 'Moderator' && <CheckCircle2 className="w-3 h-3 text-purple-700 dark:text-purple-400" />}
-                            {normalizeRole(selectedUser.role) === 'User' && <UserCheck className="w-3 h-3 text-slate-500" />}
-                          </div>
-                          <div className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center opacity-60">
-                            <ChevronDown className="w-2.5 h-2.5" />
-                          </div>
-                        </div>
+                        <span
+                          style={{ borderRadius: '6px' }}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold uppercase border font-sans whitespace-nowrap ${
+                            normalizeRole(selectedUser.role) === 'Admin'
+                              ? 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/80 dark:text-amber-300 dark:border-amber-700'
+                              : normalizeRole(selectedUser.role) === 'EventOwner'
+                              ? 'bg-sky-100 text-sky-900 border-sky-300 dark:bg-sky-950/80 dark:text-sky-300 dark:border-sky-700'
+                              : normalizeRole(selectedUser.role) === 'Moderator'
+                              ? 'bg-purple-100 text-purple-900 border-purple-300 dark:bg-purple-950/80 dark:text-purple-300 dark:border-purple-700'
+                              : 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                          }`}
+                        >
+                          {normalizeRole(selectedUser.role) === 'Admin' && <Shield className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />}
+                          {normalizeRole(selectedUser.role) === 'EventOwner' && <Calendar className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" />}
+                          {normalizeRole(selectedUser.role) === 'Moderator' && <CheckCircle2 className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />}
+                          {normalizeRole(selectedUser.role) === 'User' && <UserCheck className="w-3.5 h-3.5 text-slate-500 shrink-0" />}
+                          <span>{normalizeRole(selectedUser.role)}</span>
+                        </span>
                       </div>
                       <div>
                         <span className="text-slate-400 block text-[11px] font-semibold uppercase tracking-wider mb-1">
