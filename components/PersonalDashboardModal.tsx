@@ -55,6 +55,8 @@ const ALL_FANDOM_OPTIONS = [
   { id: 'gaming', name: 'T1 & League of Legends', tag: 'Gaming', color: '#00f0ff' },
 ];
 
+const CATEGORY_OPTIONS = ['K-POP', 'MANGA', 'ANIME', 'GAMING', 'COMICS', 'MOVIES', 'TV SHOWS', 'COSPLAY', 'V-POP'];
+
 export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ isOpen, onClose }) => {
   const { user, logout, updateProfile, toggleFavoriteFandom, activities } = useAuth();
   const { wishlist } = useCartWishlist();
@@ -66,7 +68,14 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
   const [selectedAvatar, setSelectedAvatar] = useState(user.avatar);
   const [customAvatarUrl, setCustomAvatarUrl] = useState('');
   const [editBio, setEditBio] = useState('Music lover, photocard collector, and passionate concert enthusiast!');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(['K-POP', 'MANGA', 'ANIME']);
   const [saveToast, setSaveToast] = useState(false);
+
+  const toggleCategory = (cat: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
+  };
 
   // Personalized Greeting calculation
   const greeting = useMemo(() => {
@@ -135,10 +144,28 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 <span>{user.role === 'admin' ? 'SYSTEM ADMINISTRATOR (ADMIN)' : '★ FANDOM ELITE VIP MEMBER ✦'}</span>
               </div>
 
-              <h2 className="text-xl sm:text-2xl font-black text-black uppercase font-sans">
-                {greeting.text}, {user.name}! 🌟
-              </h2>
-              <p className="text-xs text-neutral-800 font-medium">
+              <div className="flex flex-wrap items-center justify-between gap-2.5 pt-0.5">
+                <h2 className="text-xl sm:text-2xl font-black text-black uppercase font-sans">
+                  {greeting.text}, {user.name}!
+                </h2>
+
+                {/* NÚT ĐĂNG XUẤT CẠNH TÊN */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    onClose();
+                  }}
+                  style={{ borderRadius: '0px' }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#ef4444] hover:bg-red-700 text-white text-xs font-black uppercase border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer transition-all active:translate-y-0.5 shrink-0"
+                  title="Đăng xuất tài khoản"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Đăng Xuất</span>
+                </button>
+              </div>
+
+              <p className="text-xs text-neutral-800 font-medium" style={{ margin: "10px 0px" }}>
                 {greeting.sub}
               </p>
 
@@ -146,8 +173,6 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 <span>EMAIL: <strong className="text-black bg-white px-1 border border-black">{user.email}</strong></span>
                 <span>•</span>
                 <span>SINCE: <strong className="text-black">{user.memberSince || '2024'}</strong></span>
-                <span>•</span>
-                <span className="bg-[#ccff00] text-black px-1.5 py-0.2 border border-black font-black">DIAMOND STAN ⭐</span>
               </div>
 
               {checkIsAdmin(user) && (
@@ -155,10 +180,11 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   <Link
                     href="/admin"
                     onClick={onClose}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-xs rounded-xl shadow-md transition-all active:scale-95 no-underline"
+                    style={{ borderRadius: '0px' }}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-xs border-2 border-black shadow-[2px_2px_0px_#000] transition-all active:scale-95 no-underline"
                   >
                     <ShieldCheck className="w-4 h-4 text-white" />
-                    <span>Vào Bảng Điều Khiển Admin (Dashboard)</span>
+                    <span>Admin (Dashboard)</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
@@ -185,8 +211,8 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 onClick={() => setActiveTab(tab.id as any)}
                 style={{ borderRadius: '0px' }}
                 className={`flex items-center gap-2 py-2 px-3 text-xs font-black uppercase border-2 transition-all whitespace-nowrap cursor-pointer ${isActive
-                    ? 'bg-[#ff2e93] text-white border-black shadow-[3px_3px_0px_#000] -translate-y-0.5'
-                    : 'bg-white text-black border-black hover:bg-[#fff9db] shadow-[1px_1px_0px_#000]'
+                  ? 'bg-[#ff2e93] text-white border-black shadow-[3px_3px_0px_#000] -translate-y-0.5'
+                  : 'bg-white text-black border-black hover:bg-[#fff9db] shadow-[1px_1px_0px_#000]'
                   }`}
               >
                 <span>{tab.label}</span>
@@ -221,51 +247,51 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {/* Quick Stat Tiles */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 my-2">
                 <div style={{ borderRadius: '0px' }} className="p-4 bg-white border-2 border-black text-center shadow-[4px_4px_0px_#000]">
                   <span className="text-[10px] font-black text-neutral-600 uppercase">Fandoms Followed</span>
-                  <div className="text-2xl font-black text-black mt-1">{user.favoriteFandoms.length}</div>
+                  <div className="text-2xl font-black text-black mt-1 font-sans">{user.favoriteFandoms.length}</div>
                   <span className="text-[10px] text-[#ff2e93] font-bold">Official communities</span>
                 </div>
                 <div style={{ borderRadius: '0px' }} className="p-4 bg-white border-2 border-black text-center shadow-[4px_4px_0px_#000]">
                   <span className="text-[10px] font-black text-neutral-600 uppercase">Saved Items</span>
-                  <div className="text-2xl font-black text-black mt-1">{wishlist.length}</div>
+                  <div className="text-2xl font-black text-black mt-1 font-sans">{wishlist.length}</div>
                   <span className="text-[10px] text-cyan-600 font-bold">In your wishlist</span>
                 </div>
                 <div style={{ borderRadius: '0px' }} className="p-4 bg-white border-2 border-black text-center shadow-[4px_4px_0px_#000]">
                   <span className="text-[10px] font-black text-neutral-600 uppercase">Interaction History</span>
-                  <div className="text-2xl font-black text-black mt-1">{activities.length}</div>
+                  <div className="text-2xl font-black text-black mt-1 font-sans">{activities.length}</div>
                   <span className="text-[10px] text-emerald-600 font-bold">Reviews &amp; streams</span>
                 </div>
                 <div style={{ borderRadius: '0px' }} className="p-4 bg-white border-2 border-black text-center shadow-[4px_4px_0px_#000]">
                   <span className="text-[10px] font-black text-neutral-600 uppercase">Contribution Points</span>
-                  <div className="text-2xl font-black text-black mt-1">2,450</div>
+                  <div className="text-2xl font-black text-black mt-1 font-sans">2,450</div>
                   <span className="text-[10px] bg-[#ffd60a] px-1 border border-black font-black">Diamond Tier ⭐</span>
                 </div>
               </div>
 
               {/* Fandom Highlight Row */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="space-y-3 my-5">
+                <div className="flex items-center justify-between pb-1.5 border-b-2 border-black">
                   <h4 className="text-xs font-black uppercase text-black tracking-wider flex items-center gap-1.5">
-                    <Heart className="w-3.5 h-3.5 text-[#ff2e93] fill-[#ff2e93]" /> Your Fandoms
+                    <Heart className="w-3.5 h-3.5 text-[#ff2e93] fill-[#ff2e93]" /> YOUR SUBSCRIBED FANDOMS ({user.favoriteFandoms.length})
                   </h4>
                   <button
                     onClick={() => setActiveTab('fandoms')}
                     className="text-xs font-black text-[#ff2e93] hover:underline cursor-pointer"
                   >
-                    [MANAGE // + ADD FANDOM]
+                    [+ CREATE FANDOM // BROWSE ALL]
                   </button>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2.5 my-3">
                   {user.favoriteFandoms.map((fandom, idx) => (
                     <span
                       key={idx}
                       style={{ borderRadius: '0px' }}
-                      className="px-3 py-1.5 bg-[#fdf2f8] text-[#ff2e93] border-2 border-black text-xs font-black flex items-center gap-1.5 shadow-[2px_2px_0px_#000]"
+                      className="px-3.5 py-2 my-1 bg-[#fdf2f8] text-[#ff2e93] border-2 border-black text-xs font-black flex items-center gap-2 shadow-[2px_2px_0px_#000]"
                     >
-                      <Heart className="w-3 h-3 fill-[#ff2e93] text-[#ff2e93]" />
+                      <Heart className="w-3.5 h-3.5 fill-[#ff2e93] text-[#ff2e93]" />
                       {fandom}
                     </span>
                   ))}
@@ -273,31 +299,31 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
               </div>
 
               {/* Recent Activity Snapshot */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="space-y-3 my-5">
+                <div className="flex items-center justify-between pb-1.5 border-b-2 border-black">
                   <h4 className="text-xs font-black uppercase text-black tracking-wider flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-neutral-600" /> Recent Activity
+                    <Clock className="w-3.5 h-3.5 text-neutral-600" /> RECENT ACTIVITY
                   </h4>
                   <button
                     onClick={() => setActiveTab('activities')}
                     className="text-xs font-black text-[#ff2e93] hover:underline cursor-pointer"
                   >
-                    [VIEW ALL ({activities.length})]
+                    [VIEW ALL ({activities.length}) →]
                   </button>
                 </div>
 
-                <div className="space-y-2">
-                  {activities.slice(0, 3).map((act) => (
+                <div className="space-y-3 my-3">
+                  {activities.slice(0, 4).map((act) => (
                     <div
                       key={act.id}
                       style={{ borderRadius: '0px' }}
-                      className="p-3 bg-white border-2 border-black flex items-center justify-between text-xs shadow-[2px_2px_0px_#000]"
+                      className="p-3.5 my-2.5 bg-white border-2 border-black flex items-center justify-between text-xs shadow-[3px_3px_0px_#000] hover:translate-x-1 transition-transform"
                     >
-                      <div className="flex items-center gap-2.5">
-                        <span className="w-2.5 h-2.5 bg-[#ff2e93] border border-black" />
+                      <div className="flex items-center gap-3">
+                        <span className="w-2.5 h-2.5 bg-[#ff2e93] border border-black flex-shrink-0" />
                         <span className="font-bold text-black">{act.title}</span>
                       </div>
-                      <span className="text-[11px] text-neutral-600 font-mono whitespace-nowrap ml-2">
+                      <span className="text-[11px] text-neutral-600 font-mono whitespace-nowrap ml-3">
                         {act.timestamp}
                       </span>
                     </div>
@@ -318,7 +344,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
                 {ALL_FANDOM_OPTIONS.map((item) => {
                   const isFollowed = user.favoriteFandoms.includes(item.name);
                   return (
@@ -326,9 +352,9 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       key={item.id}
                       onClick={() => toggleFavoriteFandom(item.name)}
                       style={{ borderRadius: '0px' }}
-                      className={`p-3.5 border-2 border-black transition-all cursor-pointer flex items-center justify-between ${isFollowed
-                          ? 'bg-[#ecfeff] shadow-[3px_3px_0px_#000] -translate-y-0.5'
-                          : 'bg-white hover:bg-[#fff9db] shadow-[1px_1px_0px_#000]'
+                      className={`p-4 my-1.5 border-2 border-black transition-all cursor-pointer flex items-center justify-between ${isFollowed
+                        ? 'bg-[#ecfeff] shadow-[3px_3px_0px_#000] -translate-y-0.5'
+                        : 'bg-white hover:bg-[#fff9db] shadow-[1px_1px_0px_#000]'
                         }`}
                     >
                       <div className="flex items-center gap-3">
@@ -346,8 +372,8 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                         type="button"
                         style={{ borderRadius: '0px' }}
                         className={`px-3 py-1 text-xs font-black border-2 border-black uppercase transition-colors ${isFollowed
-                            ? 'bg-[#ff2e93] text-white shadow-[1px_1px_0px_#000]'
-                            : 'bg-white text-black hover:bg-[#ffd60a]'
+                          ? 'bg-[#ff2e93] text-white shadow-[1px_1px_0px_#000]'
+                          : 'bg-white text-black hover:bg-[#ffd60a]'
                           }`}
                       >
                         {isFollowed ? '✓ FOLLOWING' : '+ FOLLOW'}
@@ -361,7 +387,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
 
           {/* TAB 3: ACTIVITIES TIMELINE */}
           {activeTab === 'activities' && (
-            <div className="space-y-4">
+            <div className="space-y-5 my-2">
               <div>
                 <h4 className="text-sm font-black text-black uppercase">YOUR ACTIVITY HISTORY</h4>
                 <p className="text-xs text-neutral-600 font-medium">
@@ -369,13 +395,13 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 </p>
               </div>
 
-              <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-1 before:bg-black">
+              <div className="relative pl-6 space-y-4 my-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-1 before:bg-black">
                 {activities.map((act) => (
-                  <div key={act.id} className="relative group">
-                    <span className="absolute -left-6 top-1.5 w-3.5 h-3.5 bg-[#ffd60a] border-2 border-black shadow-[1px_1px_0px_#000]" />
+                  <div key={act.id} className="relative group my-3">
+                    <span className="absolute -left-6 top-3 w-3.5 h-3.5 bg-[#ffd60a] border-2 border-black shadow-[1px_1px_0px_#000]" />
                     <div
                       style={{ borderRadius: '0px' }}
-                      className="p-3.5 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-between"
+                      className="p-4 my-1.5 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-between"
                     >
                       <div>
                         <p className="text-xs font-bold text-black">{act.title}</p>
@@ -401,7 +427,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
 
           {/* TAB 4: BOOKMARKS */}
           {activeTab === 'bookmarks' && (
-            <div className="space-y-4">
+            <div className="space-y-5 my-2">
               <div>
                 <h4 className="text-sm font-black text-black uppercase">SAVED ITEMS &amp; MEDIA</h4>
                 <p className="text-xs text-neutral-600 font-medium">
@@ -410,18 +436,18 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
               </div>
 
               {wishlist.length === 0 ? (
-                <div style={{ borderRadius: '0px' }} className="py-12 text-center bg-white border-2 border-black p-6 space-y-2 shadow-[3px_3px_0px_#000]">
+                <div style={{ borderRadius: '0px' }} className="py-12 my-4 text-center bg-white border-2 border-black p-6 space-y-2 shadow-[3px_3px_0px_#000]">
                   <Bookmark className="w-8 h-8 text-neutral-400 mx-auto" />
                   <p className="text-xs font-bold text-black uppercase">NO SAVED ITEMS YET</p>
                   <p className="text-[11px] text-neutral-500">Click the bookmark button on products and trailers to save them here.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
                   {wishlist.map((item) => (
                     <div
                       key={item.album.id}
                       style={{ borderRadius: '0px' }}
-                      className="p-3 border-2 border-black flex items-center gap-3 bg-white shadow-[3px_3px_0px_#000]"
+                      className="p-3.5 my-1 border-2 border-black flex items-center gap-3 bg-white shadow-[3px_3px_0px_#000]"
                     >
                       <img
                         src={item.album.coverImage}
@@ -445,31 +471,31 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
 
           {/* TAB 5: PROFILE & SETTINGS */}
           {activeTab === 'profile' && (
-            <form onSubmit={handleSaveProfile} className="space-y-5">
+            <form onSubmit={handleSaveProfile} className="space-y-6 my-2">
               <div>
-                <h4 className="text-sm font-black text-black uppercase">MANAGE PERSONAL PROFILE</h4>
+                <h4 className="text-sm font-black text-black uppercase">Profile & Preferences</h4>
                 <p className="text-xs text-neutral-600 font-medium">
-                  Update your display name, avatar, and fandom motto.
+                  Customize your fan presence, avatar identity, and display preferences.
                 </p>
               </div>
 
               {/* Name */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-black uppercase text-black">FANDOM DISPLAY NAME:</label>
+              <div className="space-y-1.5 my-3">
+                <label className="text-xs font-black uppercase text-black">FANDOM DISPLAY NAME</label>
                 <input
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   style={{ borderRadius: '0px' }}
-                  className="w-full px-3 py-2 border-2 border-black text-xs bg-white focus:outline-none focus:border-[#ff2e93]"
+                  className="w-full px-3 py-2 border-2 border-black text-xs bg-white focus:outline-none focus:border-[#ff2e93] shadow-[1px_1px_0px_#000]"
                   required
                 />
               </div>
 
               {/* Avatar Preset Selection */}
-              <div className="space-y-2">
-                <label className="text-xs font-black uppercase text-black">QUICK AVATAR SELECTION:</label>
-                <div className="flex flex-wrap gap-2.5">
+              <div className="space-y-2 my-3">
+                <label className="text-xs font-black uppercase text-black">QUICK AVATAR SELECTION</label>
+                <div className="flex flex-wrap gap-2.5 my-1.5">
                   {AVATAR_PRESETS.map((url, idx) => (
                     <img
                       key={idx}
@@ -481,14 +507,14 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       }}
                       style={{ borderRadius: '0px' }}
                       className={`w-12 h-12 object-cover cursor-pointer transition-all border-2 ${selectedAvatar === url && !customAvatarUrl
-                          ? 'border-[#ff2e93] shadow-[3px_3px_0px_#000] scale-105'
-                          : 'border-black opacity-70 hover:opacity-100'
+                        ? 'border-[#ff2e93] shadow-[3px_3px_0px_#000] scale-105'
+                        : 'border-black opacity-70 hover:opacity-100'
                         }`}
                     />
                   ))}
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-2 my-2">
                   <label className="text-[11px] font-bold text-neutral-600">OR PASTE CUSTOM AVATAR URL:</label>
                   <input
                     type="url"
@@ -496,25 +522,52 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                     value={customAvatarUrl}
                     onChange={(e) => setCustomAvatarUrl(e.target.value)}
                     style={{ borderRadius: '0px' }}
-                    className="w-full px-3 py-2 border-2 border-black text-xs bg-white focus:outline-none focus:border-[#ff2e93] mt-1"
+                    className="w-full px-3 py-2 border-2 border-black text-xs bg-white focus:outline-none focus:border-[#ff2e93] mt-1 shadow-[1px_1px_0px_#000]"
                   />
                 </div>
               </div>
 
               {/* Bio */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-black uppercase text-black">FANDOM BIO / MOTTO:</label>
+              <div className="space-y-1.5 my-3">
+                <label className="text-xs font-black uppercase text-black">FANDOM BIO / MOTTO</label>
                 <textarea
                   value={editBio}
                   onChange={(e) => setEditBio(e.target.value)}
                   rows={2}
                   style={{ borderRadius: '0px' }}
-                  className="w-full px-3 py-2 border-2 border-black text-xs bg-white focus:outline-none focus:border-[#ff2e93]"
+                  className="w-full px-3 py-2 border-2 border-black text-xs bg-white focus:outline-none focus:border-[#ff2e93] shadow-[1px_1px_0px_#000]"
                 />
               </div>
 
+              {/* Categories of Interest */}
+              <div className="space-y-2 my-4">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-black uppercase text-black">CATEGORIES OF INTEREST</label>
+                  <span className="text-[11px] font-mono text-neutral-600 font-bold">{selectedCategories.length} selected</span>
+                </div>
+                <div className="flex flex-wrap gap-2 my-2">
+                  {CATEGORY_OPTIONS.map((cat) => {
+                    const isSelected = selectedCategories.includes(cat);
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => toggleCategory(cat)}
+                        style={{ borderRadius: '0px' }}
+                        className={`px-3 py-1.5 text-xs font-black uppercase border-2 transition-all cursor-pointer ${isSelected
+                          ? 'bg-[#ff2e93] text-white border-black shadow-[2px_2px_0px_#000]'
+                          : 'bg-white text-black border-black hover:bg-[#fff9db] shadow-[1px_1px_0px_#000]'
+                          }`}
+                      >
+                        {isSelected ? `✓ ${cat}` : `+ ${cat}`}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Submit Buttons */}
-              <div className="pt-3 flex items-center justify-between border-t-2 border-black">
+              <div className="pt-4 flex items-center justify-between border-t-2 border-black my-3">
                 <button
                   type="button"
                   onClick={() => {
@@ -522,7 +575,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                     onClose();
                   }}
                   style={{ borderRadius: '0px' }}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-black uppercase text-white bg-[#ef4444] border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer hover:bg-red-700"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-black uppercase text-white bg-[#ef4444] border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer hover:bg-red-700 active:translate-y-0.5 transition-all"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>SIGN OUT</span>
@@ -533,7 +586,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   style={{ borderRadius: '0px' }}
                   className="px-6 py-2.5 bg-[#ff2e93] hover:bg-[#e11d48] text-white text-xs font-black uppercase tracking-wider cursor-pointer border-2 border-black shadow-[3px_3px_0px_#000] active:translate-y-0.5 transition-all"
                 >
-                  [SAVE PROFILE CHANGES]
+                  SAVE PROFILE CHANGES
                 </button>
               </div>
 
@@ -543,7 +596,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         </div>
 
       </div>
-    </div>
+    </div >
   );
 };
 
