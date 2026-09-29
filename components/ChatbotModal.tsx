@@ -448,7 +448,7 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
                       <span className="w-2.5 h-2.5 bg-[#ffd60a] rounded-full animate-bounce border border-black shadow-[1px_1px_0px_#000]" />
                     </div>
                     <span className="text-[11px] font-mono font-bold text-neutral-600 ml-1.5 tracking-wider animate-pulse">
-                      ĐANG TẢI PHẢN HỒI...
+                      LOADING RESPONSE...
                     </span>
                   </div>
                 </div>
@@ -470,9 +470,9 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({ onFilterArtist, onOp
               type="text"
               placeholder={
                 streamingMsgId !== null
-                  ? '[AI ĐANG STREAM DỮ LIỆU...]'
+                  ? '[AI STREAMING DATA...]'
                   : isTyping
-                  ? '[AI ĐANG SOẠN PHẢN HỒI...]'
+                  ? '[AI COMPOSING RESPONSE...]'
                   : 'ENTER SYSTEM QUERY...'
               }
               disabled={isTyping || streamingMsgId !== null}

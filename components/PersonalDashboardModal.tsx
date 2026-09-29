@@ -144,7 +144,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   {greeting.text}, {user.name}! 🌟
                 </h2>
 
-                {/* NÚT ĐĂNG XUẤT CẠNH TÊN */}
+                {/* LOGOUT BUTTON NEXT TO NAME */}
                 <button
                   type="button"
                   onClick={() => {
@@ -153,10 +153,10 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   }}
                   style={{ borderRadius: '0px' }}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#ef4444] hover:bg-red-700 text-white text-xs font-black uppercase border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer transition-all active:translate-y-0.5 shrink-0"
-                  title="Đăng xuất tài khoản"
+                  title="Sign out / Logout"
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  <span>Đăng Xuất</span>
+                  <span>LOGOUT</span>
                 </button>
               </div>
 
@@ -181,7 +181,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                     className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-xs border-2 border-black shadow-[2px_2px_0px_#000] transition-all active:scale-95 no-underline"
                   >
                     <ShieldCheck className="w-4 h-4 text-white" />
-                    <span>Vào Bảng Điều Khiển Admin (Dashboard)</span>
+                    <span>ACCESS ADMIN DASHBOARD</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
@@ -238,13 +238,13 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         {/* ========================================================= */}
         {/* 3. TAB CONTENT VIEWS                                      */}
         {/* ========================================================= */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6 bg-[#fdfbf7]">
+        <div className="p-6 sm:p-8 overflow-y-auto flex-1 space-y-8 bg-[#fdfbf7]">
 
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Quick Stat Tiles */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 my-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-1 mb-8">
                 <div style={{ borderRadius: '0px' }} className="p-4 bg-white border-2 border-black text-center shadow-[4px_4px_0px_#000]">
                   <span className="text-[10px] font-black text-neutral-600 uppercase">Fandoms Followed</span>
                   <div className="text-2xl font-black text-black mt-1 font-sans">{user.favoriteFandoms.length}</div>
@@ -268,10 +268,11 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
               </div>
 
               {/* Fandom Highlight Row */}
-              <div className="space-y-3 my-5">
-                <div className="flex items-center justify-between pb-1.5 border-b-2 border-black">
-                  <h4 className="text-xs font-black uppercase text-black tracking-wider flex items-center gap-1.5">
-                    <Heart className="w-3.5 h-3.5 text-[#ff2e93] fill-[#ff2e93]" /> YOUR SUBSCRIBED FANDOMS ({user.favoriteFandoms.length})
+              <div className="mt-8 mb-8 space-y-4">
+                <div className="flex items-center justify-between pb-2.5 border-b-2 border-black">
+                  <h4 className="text-xs font-black uppercase text-black tracking-wider flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-[#ff2e93] fill-[#ff2e93]" />
+                    <span>YOUR SUBSCRIBED FANDOMS ({user.favoriteFandoms.length})</span>
                   </h4>
                   <button
                     onClick={() => setActiveTab('fandoms')}
@@ -281,12 +282,12 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   </button>
                 </div>
 
-                <div className="flex flex-wrap gap-2.5 my-3">
+                <div className="flex flex-wrap gap-3 py-1">
                   {user.favoriteFandoms.map((fandom, idx) => (
                     <span
                       key={idx}
                       style={{ borderRadius: '0px' }}
-                      className="px-3.5 py-2 my-1 bg-[#fdf2f8] text-[#ff2e93] border-2 border-black text-xs font-black flex items-center gap-2 shadow-[2px_2px_0px_#000]"
+                      className="px-4 py-2.5 bg-[#fdf2f8] text-[#ff2e93] border-2 border-black text-xs font-black flex items-center gap-2 shadow-[2px_2px_0px_#000]"
                     >
                       <Heart className="w-3.5 h-3.5 fill-[#ff2e93] text-[#ff2e93]" />
                       {fandom}
@@ -296,10 +297,11 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
               </div>
 
               {/* Recent Activity Snapshot */}
-              <div className="space-y-3 my-5">
-                <div className="flex items-center justify-between pb-1.5 border-b-2 border-black">
-                  <h4 className="text-xs font-black uppercase text-black tracking-wider flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-neutral-600" /> RECENT ACTIVITY
+              <div className="mt-8 mb-4 space-y-4">
+                <div className="flex items-center justify-between pb-2.5 border-b-2 border-black">
+                  <h4 className="text-xs font-black uppercase text-black tracking-wider flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-neutral-600" />
+                    <span>RECENT ACTIVITY</span>
                   </h4>
                   <button
                     onClick={() => setActiveTab('activities')}
@@ -309,18 +311,18 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                   </button>
                 </div>
 
-                <div className="space-y-3 my-3">
+                <div className="space-y-3.5">
                   {activities.slice(0, 4).map((act) => (
                     <div
                       key={act.id}
                       style={{ borderRadius: '0px' }}
-                      className="p-3.5 my-2.5 bg-white border-2 border-black flex items-center justify-between text-xs shadow-[3px_3px_0px_#000] hover:translate-x-1 transition-transform"
+                      className="p-4 bg-white border-2 border-black flex items-center justify-between text-xs shadow-[3px_3px_0px_#000] hover:translate-x-1 transition-transform"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="w-2.5 h-2.5 bg-[#ff2e93] border border-black flex-shrink-0" />
+                        <span className="w-3 h-3 bg-[#ff2e93] border border-black flex-shrink-0" />
                         <span className="font-bold text-black">{act.title}</span>
                       </div>
-                      <span className="text-[11px] text-neutral-600 font-mono whitespace-nowrap ml-3">
+                      <span className="text-[11px] text-neutral-600 font-mono whitespace-nowrap ml-4">
                         {act.timestamp}
                       </span>
                     </div>
@@ -333,15 +335,15 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
 
           {/* TAB 2: FANDOMS MANAGEMENT */}
           {activeTab === 'fandoms' && (
-            <div className="space-y-4">
-              <div>
+            <div className="space-y-6">
+              <div className="pb-3 border-b-2 border-black">
                 <h4 className="text-sm font-black text-black uppercase">CHOOSE YOUR FAVORITE FANDOMS</h4>
-                <p className="text-xs text-neutral-600 font-medium">
+                <p className="text-xs text-neutral-600 font-medium mt-1">
                   Click on fandoms to toggle following. Your newsfeed, recommendations, and interface will prioritize content from fandoms you follow.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-2">
                 {ALL_FANDOM_OPTIONS.map((item) => {
                   const isFollowed = user.favoriteFandoms.includes(item.name);
                   return (
@@ -349,7 +351,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                       key={item.id}
                       onClick={() => toggleFavoriteFandom(item.name)}
                       style={{ borderRadius: '0px' }}
-                      className={`p-4 my-1.5 border-2 border-black transition-all cursor-pointer flex items-center justify-between ${isFollowed
+                      className={`p-4 border-2 border-black transition-all cursor-pointer flex items-center justify-between ${isFollowed
                           ? 'bg-[#ecfeff] shadow-[3px_3px_0px_#000] -translate-y-0.5'
                           : 'bg-white hover:bg-[#fff9db] shadow-[1px_1px_0px_#000]'
                         }`}
@@ -384,38 +386,39 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
 
           {/* TAB 3: ACTIVITIES TIMELINE */}
           {activeTab === 'activities' && (
-            <div className="space-y-5 my-2">
-              <div>
+            <div className="space-y-6">
+              <div className="pb-3 border-b-2 border-black">
                 <h4 className="text-sm font-black text-black uppercase">YOUR ACTIVITY HISTORY</h4>
-                <p className="text-xs text-neutral-600 font-medium">
+                <p className="text-xs text-neutral-600 font-medium mt-1">
                   Complete record of your interactions: trailer reviews, saved concert events, playlist additions, and community feedback.
                 </p>
               </div>
 
-              <div className="relative pl-6 space-y-4 my-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-1 before:bg-black">
+              <div className="space-y-3.5 py-2">
                 {activities.map((act) => (
-                  <div key={act.id} className="relative group my-3">
-                    <span className="absolute -left-6 top-3 w-3.5 h-3.5 bg-[#ffd60a] border-2 border-black shadow-[1px_1px_0px_#000]" />
-                    <div
-                      style={{ borderRadius: '0px' }}
-                      className="p-4 my-1.5 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-between"
-                    >
+                  <div
+                    key={act.id}
+                    style={{ borderRadius: '0px' }}
+                    className="p-4 sm:p-5 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-between text-xs hover:translate-x-1 transition-transform"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <span className="w-3.5 h-3.5 bg-[#ffd60a] border-2 border-black flex-shrink-0 shadow-[1px_1px_0px_#000]" />
                       <div>
-                        <p className="text-xs font-bold text-black">{act.title}</p>
-                        <span className="text-[10px] text-neutral-500 font-mono mt-0.5 inline-block">{act.timestamp}</span>
+                        <p className="font-bold text-black text-xs sm:text-sm">{act.title}</p>
+                        <span className="text-[10px] text-neutral-500 font-mono mt-1 inline-block">{act.timestamp}</span>
                       </div>
-                      {act.link && (
-                        <Link
-                          href={act.link}
-                          onClick={onClose}
-                          style={{ borderRadius: '0px' }}
-                          className="text-[11px] font-black text-black bg-[#ffd60a] px-2 py-0.5 border border-black hover:bg-[#ff2e93] hover:text-white flex items-center gap-1 shadow-[1px_1px_0px_#000]"
-                        >
-                          <span>OPEN</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </Link>
-                      )}
                     </div>
+                    {act.link && (
+                      <Link
+                        href={act.link}
+                        onClick={onClose}
+                        style={{ borderRadius: '0px' }}
+                        className="text-[11px] font-black text-black bg-[#ffd60a] px-3.5 py-1.5 border-2 border-black hover:bg-[#ff2e93] hover:text-white flex items-center gap-1.5 shadow-[2px_2px_0px_#000] transition-colors ml-4 shrink-0"
+                      >
+                        <span>OPEN</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </Link>
+                    )}
                   </div>
                 ))}
               </div>

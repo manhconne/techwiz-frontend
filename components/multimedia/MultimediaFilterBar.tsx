@@ -33,7 +33,7 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
 }) => {
   // Format tabs
   const formatTabs = [
-    { id: 'all' as const, label: 'TẤT CẢ MEDIA', count: mediaList.length },
+    { id: 'all' as const, label: 'ALL MEDIA', count: mediaList.length },
     { id: 'trailer' as const, label: 'TRAILERS & MV', count: mediaList.filter((m) => m.type === 'trailer').length },
     { id: 'video' as const, label: 'ORIGINAL SHOWS', count: mediaList.filter((m) => m.type === 'video').length },
     { id: 'podcast' as const, label: 'PODCAST RADIO', count: mediaList.filter((m) => m.type === 'podcast').length },
@@ -59,7 +59,7 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
   const activeArtistList = useMemo(() => {
     if (selectedUniverse === 'all') {
       return [
-        { label: 'Tất cả Nhóm nhạc & Nghệ sĩ', query: '' },
+        { label: 'All Artists & Groups', query: '' },
         { label: 'NewJeans', query: 'NewJeans' },
         { label: 'BLACKPINK', query: 'BLACKPINK' },
         { label: 'BTS', query: 'BTS' },
@@ -73,7 +73,7 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
       ];
     }
     return CATEGORY_ARTISTS_MAP[selectedUniverse] || [
-      { label: `Tất cả ${selectedUniverse}`, query: '' },
+      { label: `All ${selectedUniverse}`, query: '' },
     ];
   }, [selectedUniverse]);
 
@@ -199,23 +199,23 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
             <span className="w-8 h-[3px] bg-[#00f0ff]" />
             <span className="w-3 h-3 bg-[#ffd60a] border-2 border-black dark:border-[#2a364f]" />
             <h3 className="font-mono font-black uppercase tracking-widest text-black dark:text-[#f8fafc] text-xs sm:text-sm flex items-center gap-2">
-              <span>THANH CHUYỂN DANH MỤC VŨ TRỤ // SECTORS</span>
+              <span>UNIVERSE SECTORS // CATEGORIES</span>
               <span className="text-[10px] px-2 py-0.5 bg-[#ffd60a] text-black border border-black font-mono">
-                {selectedUniverse === 'all' ? 'TẤT CẢ' : selectedUniverse.toUpperCase()}
+                {selectedUniverse === 'all' ? 'ALL' : selectedUniverse.toUpperCase()}
               </span>
             </h3>
           </div>
 
           <div className="flex items-center gap-3">
             <span className="text-[11px] text-neutral-500 font-bold hidden sm:inline">
-              Kéo chuột hoặc bấm mũi tên để duyệt toàn bộ danh mục ↔
+              Drag or use arrows to explore categories ↔
             </span>
             <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={() => scrollCategoryDir('left')}
                 disabled={!canScrollLeft}
-                aria-label="Cuộn danh mục sang trái"
+                aria-label="Scroll categories left"
                 className={`p-1.5 border-2 border-black transition-all cursor-pointer ${
                   canScrollLeft
                     ? 'bg-white hover:bg-[#ffd60a] text-black shadow-[2px_2px_0px_#000000] active:translate-x-0.5'
@@ -228,7 +228,7 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
                 type="button"
                 onClick={() => scrollCategoryDir('right')}
                 disabled={!canScrollRight}
-                aria-label="Cuộn danh mục sang phải"
+                aria-label="Scroll categories right"
                 className={`p-1.5 border-2 border-black transition-all cursor-pointer ${
                   canScrollRight
                     ? 'bg-white hover:bg-[#ffd60a] text-black shadow-[2px_2px_0px_#000000] active:translate-x-0.5'
@@ -311,14 +311,14 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
         <div className="flex items-center justify-between text-[11px] font-black uppercase tracking-wider">
           <div className="flex items-center gap-2 text-black dark:text-[#f8fafc]">
             <Users className="w-3.5 h-3.5 text-[#ff2e93]" />
-            <span>NHÓM NHẠC &amp; NGHỆ SĨ ({selectedUniverse === 'all' ? 'TỔNG HỢP' : selectedUniverse.toUpperCase()}):</span>
+            <span>ARTISTS &amp; GROUPS ({selectedUniverse === 'all' ? 'ALL' : selectedUniverse.toUpperCase()}):</span>
           </div>
           {selectedArtist && (
             <button
               onClick={() => onSelectArtist('', '')}
               className="text-[#ff2e93] hover:underline cursor-pointer"
             >
-              [XÓA LỌC NGHỆ SĨ]
+              [CLEAR ARTIST FILTER]
             </button>
           )}
         </div>
@@ -421,7 +421,7 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
           <div className="relative flex-1 sm:w-64">
             <input
               type="text"
-              placeholder="[//] TÌM TRAILER, VIDEO..."
+              placeholder="[//] SEARCH TRAILER, VIDEO..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               style={{ borderRadius: '0px' }}
@@ -437,9 +437,9 @@ export const MultimediaFilterBar: React.FC<MultimediaFilterBarProps> = ({
             aria-label="Sort multimedia clips"
             className="border-2 border-black dark:border-[#334155] bg-white dark:bg-[#0f172a] text-black dark:text-white px-2.5 py-1.5 text-xs font-mono font-black uppercase cursor-pointer focus:outline-none shadow-[2px_2px_0px_#000000] hover:bg-[#fefce8]"
           >
-            <option value="views">LƯỢT XEM CAO</option>
-            <option value="rating">ĐÁNH GIÁ CAO</option>
-            <option value="duration">THỜI LƯỢNG DÀI</option>
+            <option value="views">MOST POPULAR</option>
+            <option value="rating">TOP RATED</option>
+            <option value="duration">LONGEST DURATION</option>
           </select>
         </div>
       </div>

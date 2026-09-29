@@ -1417,54 +1417,16 @@ export const Header: React.FC<HeaderProps> = ({
             {isLoggedIn ? (
               /* LOGGED IN USER PROFILE CARD — Fully themed to match category style */
               <div style={{ fontFamily: loginTheme.fontFamily }}>
-                {/* Category Header Badge & Title */}
-                <div style={{ textAlign: 'center', marginBottom: '18px' }}>
-                  <div
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      padding: '4px 12px',
-                      backgroundColor: loginTheme.accentColor,
-                      color: isCinema || isAnime ? '#000000' : '#ffffff',
-                      fontSize: '10px',
-                      fontWeight: 900,
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
-                      border: loginTheme.inputBorder,
-                      borderRadius: loginTheme.inputRadius,
-                      marginBottom: '14px',
-                      boxShadow: loginTheme.primaryBtnShadow !== 'none' ? '2px 2px 0px rgba(0,0,0,0.2)' : 'none',
-                    }}
-                  >
-                    <Sparkles style={{ width: '12px', height: '12px' }} />
-                    <span>
-                      {isManga
-                        ? 'MANGA GUILD PASSPORT'
-                        : isAnime
-                        ? 'SAKUGA VAULT OTACRED'
-                        : isComics
-                        ? 'HERO SECRET IDENTITY'
-                        : isGaming
-                        ? 'ARENA PLAYER DOSSIER'
-                        : isCinema
-                        ? 'CINEMA 70MM PATRON GUILD'
-                        : isTvShows
-                        ? 'TV BROADCAST SUBSCRIBER'
-                        : isCosplay
-                        ? 'BAUHAUS ATELIER RUNWAY'
-                        : 'FAN HUB PLUS PROFILE'}
-                    </span>
-                  </div>
-
-                  {/* Avatar with dynamic frame */}
-                  <div style={{ position: 'relative', display: 'inline-block', margin: '0 auto 10px auto' }}>
+                {/* User Avatar & Info */}
+                <div style={{ textAlign: 'center', marginBottom: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                  {/* Centered Avatar */}
+                  <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 12px auto' }}>
                     <img
                       src={user.avatar}
                       alt={user.name}
                       style={{
-                        width: '78px',
-                        height: '78px',
+                        width: '80px',
+                        height: '80px',
                         borderRadius: '0px',
                         objectFit: 'cover',
                         border: loginTheme.primaryBtnBorder,
