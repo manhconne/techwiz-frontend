@@ -16,8 +16,23 @@ import {
   BookOpen,
 } from 'lucide-react';
 
+interface FooterLink {
+  label: string;
+  href: string;
+  onClick?: () => void;
+  highlight?: boolean;
+}
+
+interface FooterColumn {
+  heading: string;
+  badgeColor: string;
+  badgeTextColor: string;
+  icon: React.ReactNode;
+  links: FooterLink[];
+}
+
 interface FooterProps {
-  onOpenAdmin: () => void;
+  onOpenAdmin?: () => void;
   onOpenFeedback: () => void;
 }
 
@@ -45,7 +60,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
     return () => observer.disconnect();
   }, [pathname]);
 
-  const footerLinks = isGamingTheme ? [
+  const footerLinks: FooterColumn[] = isGamingTheme ? [
     {
       heading: 'Arena Soundtracks',
       badgeColor: '#000000',
@@ -86,7 +101,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
       ],
     },
     {
-      heading: 'Editorial & Admin',
+      heading: 'Editorial & Community',
       badgeColor: '#000000',
       badgeTextColor: '#ffffff',
       icon: <Settings size={12} strokeWidth={2.5} />,
@@ -94,7 +109,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
         { label: 'London O2 Acoustic Analysis', href: '/#editorial-drops' },
         { label: 'Authentic Audiophile Pressings', href: '/#gaming-catalog' },
         { label: '★ Send User Feedback', href: '#', onClick: onOpenFeedback },
-        { label: '⚡ Admin Control Panel', href: '/admin', highlight: true },
       ],
     },
   ] : isMangaTheme ? [
@@ -138,7 +152,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
       ],
     },
     {
-      heading: 'Support & Admin',
+      heading: 'Customer Support',
       badgeColor: '#ccff00',
       badgeTextColor: '#000000',
       icon: <Settings size={12} strokeWidth={2.5} />,
@@ -146,7 +160,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
         { label: 'Global DHL Courier Dispatch', href: '#' },
         { label: 'Authentic Import Guarantee', href: '/manga' },
         { label: '★ Send User Feedback', href: '#', onClick: onOpenFeedback },
-        { label: '⚡ Admin Control Panel', href: '/admin', highlight: true },
       ],
     },
   ] : isCosplayTheme ? [
@@ -198,7 +211,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
         { label: 'Atelier Dispatch & Logistics', href: '#' },
         { label: '100% Certified Bauhaus Guarantee', href: '#' },
         { label: '★ Send User Feedback', href: '#', onClick: onOpenFeedback },
-        { label: '⚡ Admin Control Panel', href: '/admin', highlight: true },
       ],
     },
   ] : isAnimeTheme ? [
@@ -242,7 +254,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
       ],
     },
     {
-      heading: 'Harajuku Admin',
+      heading: 'Harajuku Services',
       badgeColor: '#000000',
       badgeTextColor: '#ffffff',
       icon: <Settings size={12} strokeWidth={2.5} />,
@@ -250,7 +262,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
         { label: 'Tokyo Express DHL Dispatch', href: '#' },
         { label: '100% Certified Import Guarantee', href: '#' },
         { label: '★ Send User Feedback', href: '#', onClick: onOpenFeedback },
-        { label: '⚡ Admin Control Panel', href: '/admin', highlight: true },
       ],
     },
   ] : [
@@ -296,7 +307,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
       ],
     },
     {
-      heading: 'Support & Admin',
+      heading: 'Customer Support',
       badgeColor: '#ccff00',
       badgeTextColor: '#000000',
       icon: <Settings size={12} strokeWidth={2.5} />,
@@ -304,7 +315,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenFeedback }) =
         { label: 'Global DHL Courier Dispatch', href: '#' },
         { label: 'Official Ticketing Verification', href: '/#tours' },
         { label: '★ Send User Feedback', href: '#', onClick: onOpenFeedback },
-        { label: '⚡ Admin Control Panel', href: '/admin', highlight: true },
       ],
     },
   ];

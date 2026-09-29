@@ -76,7 +76,6 @@ export const SitemapSection: React.FC<SitemapSectionProps> = ({ onOpenAdmin, onO
         { label: 'World Tour & Stadium Arenas', href: '#tours' },
         { label: 'Fan Community Social Feed', href: '#community' },
         { label: 'Collector Wishlist & Notes', href: '#', onClick: onOpenWishlist },
-        { label: 'Admin Control Panel', href: '/admin' },
         { label: 'Feedback & Bug Submission', href: '#', onClick: onOpenFeedback },
       ],
     },
