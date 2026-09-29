@@ -141,26 +141,11 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 <span>{user.role === 'admin' ? 'SYSTEM ADMINISTRATOR (ADMIN)' : '★ FANDOM ELITE VIP MEMBER ✦'}</span>
               </div>
 
-              {/* Tên & Nút Đăng Xuất cạnh nhau */}
-              <div className="flex flex-wrap items-center justify-between gap-2.5 pt-0.5">
+              {/* Tên chào mừng */}
+              <div className="pt-0.5">
                 <h2 className="text-xl sm:text-2xl font-black text-black uppercase font-sans">
                   {greeting.text}, {user.name}! 🌟
                 </h2>
-
-                {/* LOGOUT BUTTON NEXT TO NAME */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    logout();
-                    onClose();
-                  }}
-                  style={{ borderRadius: '0px' }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#ef4444] hover:bg-red-700 text-white text-xs font-black uppercase border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer transition-all active:translate-y-0.5 shrink-0"
-                  title="Sign out / Logout"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>LOGOUT</span>
-                </button>
               </div>
 
               <p className="text-xs text-neutral-800 font-medium">
@@ -175,8 +160,9 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                 <span className="bg-[#ccff00] text-black px-1.5 py-0.2 border border-black font-black">DIAMOND STAN ⭐</span>
               </div>
 
-              {checkIsAdmin(user) && (
-                <div className="pt-2 flex justify-center sm:justify-start">
+              {/* Action Buttons Row: ACCESS ADMIN DASHBOARD & LOGOUT */}
+              <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                {checkIsAdmin(user) && (
                   <Link
                     href="/admin"
                     onClick={onClose}
@@ -187,8 +173,22 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
                     <span>ACCESS ADMIN DASHBOARD</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
-                </div>
-              )}
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    onClose();
+                  }}
+                  style={{ borderRadius: '0px' }}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#ef4444] hover:bg-red-700 text-white text-xs font-black uppercase border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer transition-all active:scale-95 shrink-0"
+                  title="Sign out / Logout"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>LOGOUT</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
