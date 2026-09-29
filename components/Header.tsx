@@ -11,6 +11,7 @@ import { useDomainTheme } from '../context/DomainContext';
 import { NotificationDropdown } from './NotificationDropdown';
 import { PersonalDashboardModal } from './PersonalDashboardModal';
 import { getActiveFandomTheme } from '../utils/fandomTheme';
+import { checkIsAdmin } from '../utils/authUtils';
 import {
   Menu,
   Search,
@@ -75,6 +76,16 @@ const extractApiError = (data: any, fallbackMsg: string): string => {
   if (typeof data.title === 'string' && data.title.trim()) return data.title;
   if (typeof data.error === 'string' && data.error.trim()) return data.error;
   return fallbackMsg;
+};
+
+const getUserDisplayName = (u: any): string => {
+  if (!u) return 'USER';
+  let raw = u.fullName || u.name || u.username || '';
+  if (!raw || raw.includes('@')) {
+    raw = raw.includes('@') ? raw.split('@')[0] : (u.email ? u.email.split('@')[0] : 'USER');
+  }
+  const parts = raw.trim().split(/\s+/);
+  return (parts[0] || 'USER').toUpperCase();
 };
 
 export const Header: React.FC<HeaderProps> = ({
@@ -1579,12 +1590,10 @@ export const Header: React.FC<HeaderProps> = ({
                     <span>OPEN PERSONAL DASHBOARD</span>
                   </button>
 
-                  {user.role === 'admin' && (
-                    <button
-                      onClick={() => {
-                        setIsAuthModalOpen(false);
-                        onOpenAdmin();
-                      }}
+                  {checkIsAdmin(user) && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsAuthModalOpen(false)}
                       style={{
                         width: '100%',
                         padding: '10px 14px',
@@ -1602,12 +1611,13 @@ export const Header: React.FC<HeaderProps> = ({
                         justifyContent: 'center',
                         gap: '8px',
                         fontFamily: loginTheme.fontFamily,
+                        textDecoration: 'none',
+                        boxSizing: 'border-box',
                       }}
-                      type="button"
                     >
                       <ShieldCheck style={{ width: '15px', height: '15px' }} />
                       <span>ADMIN MANAGEMENT PANEL</span>
-                    </button>
+                    </Link>
                   )}
 
                   {/* Sign Out Button */}
