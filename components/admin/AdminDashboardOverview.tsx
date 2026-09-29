@@ -332,7 +332,7 @@ export const AdminDashboardOverview: React.FC<AdminDashboardOverviewProps> = ({
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const analyticsBase = (typeof window !== 'undefined' && (process.env.NEXT_PUBLIC_ANALYTICS_SERVICE_URL || process.env.NEXT_PUBLIC_API_URL)) || 'http://localhost:5015';
+    const analyticsBase = (typeof window !== 'undefined' && (process.env.NEXT_PUBLIC_ANALYTICS_SERVICE_URL || process.env.NEXT_PUBLIC_API_URL)) || '';
     const apiBase = (typeof window !== 'undefined' && (process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || process.env.NEXT_PUBLIC_API_URL)) || '';
     let successCount = 0;
 

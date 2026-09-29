@@ -474,3 +474,45 @@ input.pl-10 {
   left: 0.875rem !important;
   /* 14px from left */
 }
+
+/* ==========================================================================
+   VERTICAL SPACING (MARGIN TOP & BOTTOM) FOR ALL ADMIN PAGES & CARDS
+   Ensures cards, metric grids, filter bars, and tables never touch each other
+   ========================================================================== */
+
+/* Spacing between adjacent sections in main and page wrappers */
+.admin-portal main > * + *,
+.admin-portal .space-y-6 > * + *,
+.admin-portal div[class*="space-y-6"] > * + * {
+  margin-top: 1.5rem !important;
+}
+
+/* Margin bottom on direct section blocks of admin pages */
+.admin-portal main > div,
+.admin-portal main > section,
+.admin-portal div.p-6.space-y-6 > div,
+.admin-portal .admin-card,
+.admin-portal .admin-stat-card,
+.admin-portal .admin-filter-bar,
+.admin-portal .admin-content-card,
+.admin-portal .admin-item-card {
+  margin-bottom: 1.5rem;
+}
+
+.admin-portal main > div:last-child,
+.admin-portal main > section:last-child {
+  margin-bottom: 0;
+}
+
+/* Ensure grids have proper gap */
+.admin-portal .grid {
+  row-gap: 1rem;
+}
+
+/* Modals and absolute dialogs should never inherit card section margins */
+.admin-portal .fixed div,
+.admin-portal [role="dialog"],
+.admin-portal [role="dialog"] div {
+  margin-top: initial;
+  margin-bottom: initial;
+}

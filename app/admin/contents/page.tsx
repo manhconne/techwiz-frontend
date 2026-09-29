@@ -813,7 +813,7 @@ export default function AdminEventsPage() {
           )}
 
           {/* Page Title & Top Actions Header */}
-          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left">
+          <div className="flex flex-row items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs w-full text-left mb-6">
             <div className="text-left flex-1 min-w-0">
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1.5 text-left">
                 <Link href="/admin" className="hover:text-indigo-600 transition-colors">Admin</Link>
@@ -887,7 +887,7 @@ export default function AdminEventsPage() {
           </div>
 
           {/* Quick Metrics KPI Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
               <div className="flex items-center justify-between text-slate-500 text-xs font-semibold mb-2">
                 <span>{isVi ? 'Tổng nội dung' : 'Total Items'}</span>
@@ -926,7 +926,7 @@ export default function AdminEventsPage() {
           </div>
 
           {/* Filtering and Search Controls */}
-          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+          <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-4 mb-6">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               {/* Status Filter Tabs */}
               <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-lg border border-slate-200 overflow-x-auto">
@@ -1141,7 +1141,7 @@ export default function AdminEventsPage() {
             </div>
           ) : viewMode === 'table' ? (
             /* TABLE VIEW */
-            <div className="overflow-x-auto rounded-xl border border-slate-200/80 bg-white shadow-xs">
+            <div className="overflow-x-auto rounded-xl border border-slate-200/80 bg-white shadow-xs mb-6">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
@@ -1299,7 +1299,7 @@ export default function AdminEventsPage() {
             </div>
           ) : (
             /* GRID VIEW */
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {displayedItems.map((item) => (
                 <div
                   key={item.id}
@@ -1394,7 +1394,7 @@ export default function AdminEventsPage() {
           )}
 
           {/* Pagination Controls */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs mt-6">
             <div className="text-xs text-slate-500 font-mono">
               {isVi
                 ? `Hiển thị ${displayedItems.length} trên tổng ${totalCount} mục (Trang ${page} / ${totalPages})`

@@ -96,7 +96,7 @@ export default function AdminFinancialPage() {
         group_by: groupBy,
       });
 
-      const apiBase = (typeof window !== 'undefined' && (process.env.NEXT_PUBLIC_ANALYTICS_SERVICE_URL || process.env.NEXT_PUBLIC_API_URL)) || 'http://localhost:5015';
+      const apiBase = (typeof window !== 'undefined' && (process.env.NEXT_PUBLIC_ANALYTICS_SERVICE_URL || process.env.NEXT_PUBLIC_API_URL)) || '';
       const url = `${apiBase}/api/v1/admin/financial/reports?${params.toString()}`;
       const res = await fetch(url, {
         headers: {
