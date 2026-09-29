@@ -381,72 +381,76 @@ button.admin-btn-primary {
 }
 
 /* ==========================================================================
-   GLOBAL 12PX BORDER RADIUS & MARGIN SPACING FOR ALL ADMIN PAGES & CARDS
+   ADMIN PORTAL SYNCHRONIZED DESIGN SYSTEM
+   Professional, harmonious modern SaaS dashboard styling (Dedicated Admin CSS)
    ========================================================================== */
 
-/* Force 12px border-radius on all admin cards, stat blocks, toolbars, tables, inputs, buttons */
-.admin-card,
-.admin-stat-card,
-.admin-filter-bar,
-.admin-content-card,
-.admin-item-card,
-.admin-header,
-aside.admin-sidebar,
-div[class*="border"],
-div[class*="bg-white"],
-div[class*="bg-slate-900"],
-div[class*="bg-slate-800"],
-input[type="text"],
-input[type="search"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
-input[type="datetime-local"],
-select,
-textarea,
-button {
-  border-radius: 12px !important;
-  border: 1px solid #e5e5e5;
-  margin: 5px 0px;
-}
-
-/* Ensure image thumbnails and card headers fit cleanly inside 12px rounded containers */
-.group>div>div>img,
-.group img,
-div[class*="overflow-hidden"] {
-  border-radius: 12px !important;
-}
+/* Restore and harmonize Tailwind Border-Radius tokens inside Admin Portal */
+.admin-portal .rounded-none { border-radius: 0px !important; }
+.admin-portal .rounded-xs { border-radius: 2px !important; }
+.admin-portal .rounded-sm { border-radius: 4px !important; }
+.admin-portal .rounded,
+.admin-portal .rounded-md { border-radius: 6px !important; }
+.admin-portal .rounded-lg { border-radius: 8px !important; }
+.admin-portal .rounded-xl { border-radius: 12px !important; }
+.admin-portal .rounded-2xl { border-radius: 16px !important; }
+.admin-portal .rounded-3xl { border-radius: 24px !important; }
 
 /* Keep full round circles for avatars, indicators, and status dots ONLY */
-.rounded-full,
-div.rounded-full,
-span.rounded-full,
-img.rounded-full {
+.admin-portal .rounded-full,
+.admin-portal span.rounded-full,
+.admin-portal div.rounded-full,
+.admin-portal img.rounded-full {
   border-radius: 9999px !important;
 }
 
-/* Vertical Spacing (Margin Top & Margin Bottom) for cards and sections so elements don't touch */
-.grid>div,
-.admin-card,
-.admin-stat-card,
-.admin-filter-bar,
-.admin-item-card,
-.space-y-6>*+*,
-.space-y-4>*+* {
-  margin-top: 0.5rem !important;
-  margin-bottom: 1.25rem !important;
+/* Stat Cards & Main Panels - Harmonious 12px/16px Rounded Cards */
+.admin-portal .admin-card,
+.admin-portal .admin-stat-card,
+.admin-portal .admin-content-card,
+.admin-portal .admin-item-card {
+  border-radius: 14px !important;
+  border: 1px solid #e2e8f0;
 }
 
-/* Ensure grid gap spacing is generous */
-.grid {
-  gap: 1.25rem !important;
+.dark .admin-portal .admin-card,
+.dark .admin-portal .admin-stat-card,
+.dark .admin-portal .admin-content-card,
+.dark .admin-portal .admin-item-card {
+  border-color: #1e293b;
 }
 
-/* Outer layout margins for main content containers */
-main {
-  padding-top: 1.5rem !important;
-  padding-bottom: 2rem !important;
+/* Icon containers inside cards (e.g. w-9 h-9, w-10 h-10, w-12 h-12) */
+.admin-portal .w-9.h-9,
+.admin-portal .w-10.h-10,
+.admin-portal .w-11.h-11,
+.admin-portal .w-12.h-12 {
+  border-radius: 8px !important;
 }
+
+/* Input Fields & Selects */
+.admin-portal input[type="text"],
+.admin-portal input[type="search"],
+.admin-portal input[type="email"],
+.admin-portal input[type="password"],
+.admin-portal input[type="number"],
+.admin-portal input[type="datetime-local"],
+.admin-portal select,
+.admin-portal textarea {
+  border-radius: 8px !important;
+}
+
+/* Buttons in Admin */
+.admin-portal button:not(.rounded-full) {
+  border-radius: 8px !important;
+}
+
+/* Ensure images and media inside admin cards fit cleanly */
+.admin-portal .group img,
+.admin-portal div.overflow-hidden img {
+  border-radius: 8px !important;
+}
+
 
 /* Fix Input Field Icon Overlap (Ensure icon never clobbers placeholder text) */
 .relative>svg~input,

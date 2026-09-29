@@ -3362,22 +3362,23 @@ article:hover,
 }
 
 /* =========================================================================
-   UNIVERSAL NEO-BRUTALIST FLAT SQUARE UI OVERRIDE
-   Strictly 0px border-radius everywhere per design requirement
+   UNIVERSAL NEO-BRUTALIST FLAT SQUARE UI OVERRIDE (CLIENT STORE PAGES ONLY)
+   Strictly 0px border-radius everywhere per design requirement.
+   Explicitly excludes .admin-portal so Admin maintains its own dedicated system.
    ========================================================================= */
-button,
-input,
-select,
-textarea,
-a.btn,
-.btn,
-.btn-primary,
-.btn-secondary,
-.btn-accent,
-.btn-outline,
-.btn-sm,
-.btn-lg,
-.btn-pill,
+body:not(:has(.admin-portal)) button:not(.admin-portal *),
+body:not(:has(.admin-portal)) input:not(.admin-portal *),
+body:not(:has(.admin-portal)) select:not(.admin-portal *),
+body:not(:has(.admin-portal)) textarea:not(.admin-portal *),
+body:not(:has(.admin-portal)) a.btn:not(.admin-portal *),
+body:not(:has(.admin-portal)) .btn:not(.admin-portal *),
+body:not(:has(.admin-portal)) .btn-primary:not(.admin-portal *),
+body:not(:has(.admin-portal)) .btn-secondary:not(.admin-portal *),
+body:not(:has(.admin-portal)) .btn-accent:not(.admin-portal *),
+body:not(:has(.admin-portal)) .btn-outline:not(.admin-portal *),
+body:not(:has(.admin-portal)) .btn-sm:not(.admin-portal *),
+body:not(:has(.admin-portal)) .btn-lg:not(.admin-portal *),
+body:not(:has(.admin-portal)) .btn-pill:not(.admin-portal *),
 .header-action-btn,
 .header-lang-btn,
 .header-badge,
@@ -3385,19 +3386,17 @@ a.btn,
 .header-allmd-btn,
 .header-subnav,
 .desktop-subnav,
-.modal-container,
-.card,
-.domain-card,
-.domain-hero-badge,
-.domain-hero-btn-primary,
-.domain-hero-btn-secondary,
-.badge,
-.tag,
-[class*="rounded"],
-[style*="border-radius"],
-[style*="borderRadius"] {
+.modal-container:not(.admin-portal *),
+.domain-card:not(.admin-portal *),
+.domain-hero-badge:not(.admin-portal *),
+.domain-hero-btn-primary:not(.admin-portal *),
+.domain-hero-btn-secondary:not(.admin-portal *),
+body:not(:has(.admin-portal)) [class*="rounded"]:not(.admin-portal *),
+body:not(:has(.admin-portal)) [style*="border-radius"]:not(.admin-portal *),
+body:not(:has(.admin-portal)) [style*="borderRadius"]:not(.admin-portal *) {
   border-radius: 0px !important;
 }
+
 
 
 

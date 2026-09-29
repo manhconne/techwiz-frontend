@@ -14,7 +14,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div translate="no" className="notranslate">
+    <div translate="no" className="notranslate admin-portal min-h-screen">
       <AdminGuard>
         <AdminLanguageProvider>
           {children}
