@@ -4,38 +4,38 @@ import QRCode from 'react-qr-code';
 import React, { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
-const RealGpsMap = dynamic(() => import('./RealGpsMap'), { 
-  ssr: false, 
-  loading: () => <div className="w-full h-[460px] flex items-center justify-center bg-slate-900 text-slate-400 font-mono font-bold">Loading GPS Radar Map...</div> 
+const RealGpsMap = dynamic(() => import('./RealGpsMap'), {
+  ssr: false,
+  loading: () => <div className="w-full h-[460px] flex items-center justify-center bg-slate-900 text-slate-400 font-mono font-bold">Loading GPS Radar Map...</div>
 });
 
-const Map = dynamic(() => import('./Map'), { 
-  ssr: false, 
-  loading: () => <div className="w-full h-full flex items-center justify-center bg-slate-900 text-slate-400 font-mono font-bold">Loading Map...</div> 
+const Map = dynamic(() => import('./Map'), {
+  ssr: false,
+  loading: () => <div className="w-full h-full flex items-center justify-center bg-slate-900 text-slate-400 font-mono font-bold">Loading Map...</div>
 });
 
-import { 
-  MapPin, 
-  Navigation, 
-  Compass, 
-  Calendar as CalendarIcon, 
-  Clock, 
-  Ticket, 
-  ExternalLink, 
-  Radio, 
-  Users, 
-  Check, 
-  X, 
-  Search, 
-  ChevronRight, 
-  ShieldCheck, 
-  Sparkles, 
-  Coffee, 
-  Heart, 
-  Globe, 
-  LocateFixed, 
-  Eye, 
-  Share2, 
+import {
+  MapPin,
+  Navigation,
+  Compass,
+  Calendar as CalendarIcon,
+  Clock,
+  Ticket,
+  ExternalLink,
+  Radio,
+  Users,
+  Check,
+  X,
+  Search,
+  ChevronRight,
+  ShieldCheck,
+  Sparkles,
+  Coffee,
+  Heart,
+  Globe,
+  LocateFixed,
+  Eye,
+  Share2,
   Layers,
   ArrowUpRight,
   Filter,
@@ -45,11 +45,11 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { useCartWishlist } from '../context/CartWishlistContext';
-import { 
-  LocationEvent, 
-  CITIES_CONFIG, 
-  mockLocationEvents, 
-  calculateDistanceKm 
+import {
+  LocationEvent,
+  CITIES_CONFIG,
+  mockLocationEvents,
+  calculateDistanceKm
 } from '../data/locationEventsData';
 import { useActiveFandom, getFandomThemeKeyFromCategory, getFandomCategoryFromTheme } from '../utils/fandomTheme';
 
@@ -595,16 +595,16 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
   };
 
   return (
-    <section 
+    <section
       id="location-events"
-      style={{ 
+      style={{
         scrollMarginTop: '100px',
-        backgroundColor: themeTokens.sectionBg 
+        backgroundColor: themeTokens.sectionBg
       }}
       className={`py-16 sm:py-24 w-full ${themeTokens.sectionBorder} transition-colors duration-300`}
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
-        
+
         {/* ==================== 1. Editorial Section Header ==================== */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
@@ -614,7 +614,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
               <span>Location-Aware Event Radar &amp; GPS Discovery</span>
             </div>
 
-            <h2 
+            <h2
               style={{ fontFamily: themeTokens.headingFont }}
               className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight uppercase m-0 ${themeTokens.textColor}`}
             >
@@ -630,9 +630,8 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
             <button
               type="button"
               onClick={() => setViewMode('map')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider transition-all cursor-pointer rounded-none ${
-                viewMode === 'map' ? themeTokens.btnActive : themeTokens.btnInactive
-              }`}
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider transition-all cursor-pointer rounded-none ${viewMode === 'map' ? themeTokens.btnActive : themeTokens.btnInactive
+                }`}
             >
               <Navigation size={13} />
               <span>GPS Map</span>
@@ -641,9 +640,8 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
             <button
               type="button"
               onClick={() => setViewMode('calendar')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider transition-all cursor-pointer rounded-none ${
-                viewMode === 'calendar' ? themeTokens.btnActive : themeTokens.btnInactive
-              }`}
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider transition-all cursor-pointer rounded-none ${viewMode === 'calendar' ? themeTokens.btnActive : themeTokens.btnInactive
+                }`}
             >
               <CalendarIcon size={13} />
               <span>Event Calendar</span>
@@ -652,9 +650,8 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
             <button
               type="button"
               onClick={() => setViewMode('list')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider transition-all cursor-pointer rounded-none ${
-                viewMode === 'list' ? themeTokens.btnActive : themeTokens.btnInactive
-              }`}
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider transition-all cursor-pointer rounded-none ${viewMode === 'list' ? themeTokens.btnActive : themeTokens.btnInactive
+                }`}
             >
               <Users size={13} />
               <span>List View ({filteredEvents.length})</span>
@@ -664,7 +661,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
 
         {/* ==================== 2. GPS Locator Bar & City Pills ==================== */}
         <div className={`p-4 sm:p-5 mb-8 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 rounded-none ${themeTokens.gpsBar}`}>
-          
+
           {/* GPS Auto-Detect Button & Current Coordinates indicator */}
           <div className="flex items-center gap-3 flex-wrap">
             <button
@@ -705,9 +702,8 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                   key={city.id}
                   type="button"
                   onClick={() => handleSelectCityPreset(city.id)}
-                  className={`px-3 py-1.5 text-xs font-bold transition-all cursor-pointer shrink-0 flex items-center gap-1 rounded-none ${
-                    isActive ? themeTokens.cityActive : themeTokens.cityInactive
-                  }`}
+                  className={`px-3 py-1.5 text-xs font-bold transition-all cursor-pointer shrink-0 flex items-center gap-1 rounded-none ${isActive ? themeTokens.cityActive : themeTokens.cityInactive
+                    }`}
                 >
                   <span>{city.flag}</span>
                   <span>{city.name}</span>
@@ -720,7 +716,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
 
         {/* ==================== 3. Filter Controls: Radius, Type, Search ==================== */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6 flex-wrap">
-          
+
           {/* Radius Selector Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 sm:pb-0">
             <span className={`text-[10.5px] font-mono font-bold uppercase tracking-wider shrink-0 mr-1 ${themeTokens.textMuted}`}>
@@ -736,9 +732,8 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                 key={r.val}
                 type="button"
                 onClick={() => setMaxRadiusKm(r.val)}
-                className={`px-3 py-1 text-xs font-bold transition-all cursor-pointer rounded-none ${
-                  maxRadiusKm === r.val ? themeTokens.radiusActive : themeTokens.radiusInactive
-                }`}
+                className={`px-3 py-1 text-xs font-bold transition-all cursor-pointer rounded-none ${maxRadiusKm === r.val ? themeTokens.radiusActive : themeTokens.radiusInactive
+                  }`}
               >
                 {r.label}
               </button>
@@ -760,9 +755,8 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                   key={t.id}
                   type="button"
                   onClick={() => setSelectedType(t.id)}
-                  className={`px-2.5 py-1 font-bold transition-all cursor-pointer rounded-none ${
-                    selectedType === t.id ? themeTokens.btnActive : themeTokens.btnInactive
-                  }`}
+                  className={`px-2.5 py-1 font-bold transition-all cursor-pointer rounded-none ${selectedType === t.id ? themeTokens.btnActive : themeTokens.btnInactive
+                    }`}
                 >
                   {t.label}
                 </button>
@@ -789,10 +783,10 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
         {/* --- VIEW MODE 1: INTERACTIVE GPS RADAR MAP + SPLIT LIST --- */}
         {viewMode === 'map' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            
+
             {/* Left 7 Columns: High-Tech GPS Interactive Map Canvas / Radar */}
             <div className={`lg:col-span-7 overflow-hidden relative min-h-[460px] sm:min-h-[540px] flex flex-col justify-between rounded-none ${themeTokens.cardBg}`}>
-              
+
               {/* Map Top Overlay HUD: GPS Status & Stats */}
               <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between gap-3 pointer-events-none">
                 <div className={`pointer-events-auto px-3 py-1.5 flex items-center gap-2 rounded-none bg-black/90 border-2 border-white text-white font-mono shadow-[2px_2px_0px_#000000]`}>
@@ -811,7 +805,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
 
               {/* REAL LEAFLET GPS MAP OVERLAY */}
               <div className="relative w-full h-[460px] sm:h-[540px] z-10 overflow-hidden rounded-none border-b-2 border-black">
-                <RealGpsMap 
+                <RealGpsMap
                   events={filteredEvents}
                   activeEvent={activeEvent}
                   onEventClick={(ev) => setSelectedEventId(ev.id)}
@@ -857,11 +851,11 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
 
             {/* Right 5 Columns: Active Event Spotlight Card & Quick List */}
             <div className="lg:col-span-5 flex flex-col gap-4">
-              
+
               {/* Highlight Card for Active Selected Pin */}
               {activeEvent ? (
                 <div className={`p-5 sm:p-6 relative overflow-hidden transition-all rounded-none ${themeTokens.cardBg}`}>
-                  
+
                   {/* Category Pill & Distance Badge */}
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 rounded-none ${getEventTypeBadge(activeEvent.type).color}`}>
@@ -877,8 +871,8 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
 
                   {/* Image & Title */}
                   <div className="relative aspect-[16/9] overflow-hidden mb-4 rounded-none border-2 border-black bg-slate-900">
-                    <img 
-                      src={activeEvent.coverImage} 
+                    <img
+                      src={activeEvent.coverImage}
                       alt={activeEvent.title}
                       className="w-full h-full object-cover"
                     />
@@ -887,7 +881,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                       <span className={`text-[10px] font-mono uppercase tracking-widest font-bold block mb-0.5 ${themeTokens.accentText}`}>
                         {activeEvent.artistOrHost}
                       </span>
-                      <h3 
+                      <h3
                         className="text-base sm:text-lg font-black leading-tight text-white m-0 tracking-wide"
                         style={{
                           fontFamily: themeTokens.headingFont
@@ -993,11 +987,10 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                     <div
                       key={ev.id}
                       onClick={() => setSelectedEventId(ev.id)}
-                      className={`p-3 transition-all cursor-pointer flex items-center justify-between gap-3 rounded-none ${
-                        isCurrent 
-                          ? themeTokens.listItemActive 
-                          : themeTokens.listItemInactive
-                      }`}
+                      className={`p-3 transition-all cursor-pointer flex items-center justify-between gap-3 rounded-none ${isCurrent
+                        ? themeTokens.listItemActive
+                        : themeTokens.listItemInactive
+                        }`}
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
@@ -1036,7 +1029,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
           <div className={`p-6 sm:p-8 rounded-none ${themeTokens.cardBg}`}>
             <div className={`flex items-center justify-between mb-6 flex-wrap gap-4 pb-4 border-b ${themeTokens.cardSubtleBorder}`}>
               <div>
-                <h3 
+                <h3
                   className={`text-lg sm:text-xl font-black uppercase ${themeTokens.cardTitleColor}`}
                   style={{ fontFamily: themeTokens.headingFont }}
                 >
@@ -1069,9 +1062,8 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                     key={dateStr}
                     type="button"
                     onClick={() => setSelectedDate(isSelected ? '' : dateStr)}
-                    className={`p-3 text-center transition-all cursor-pointer min-w-[100px] shrink-0 rounded-none ${
-                      isSelected ? themeTokens.listItemActive : themeTokens.listItemInactive
-                    }`}
+                    className={`p-3 text-center transition-all cursor-pointer min-w-[100px] shrink-0 rounded-none ${isSelected ? themeTokens.listItemActive : themeTokens.listItemInactive
+                      }`}
                   >
                     <span className={`text-[10px] font-mono uppercase font-bold block ${themeTokens.textMuted}`}>
                       {new Date(dateStr).toLocaleDateString('en-US', { weekday: 'short' })}
@@ -1079,9 +1071,8 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                     <span className="text-base font-black block my-0.5">
                       {dateStr.split('-').slice(1).join('/')}
                     </span>
-                    <span className={`text-[9.5px] font-bold px-1.5 py-0.5 inline-block rounded-none ${
-                      isSelected ? 'bg-black text-white border border-white' : 'bg-black/20 text-current border border-current'
-                    }`}>
+                    <span className={`text-[9.5px] font-bold px-1.5 py-0.5 inline-block rounded-none ${isSelected ? 'bg-black text-white border border-white' : 'bg-black/20 text-current border border-current'
+                      }`}>
                       {count} {count === 1 ? 'event' : 'events'}
                     </span>
                   </button>
@@ -1113,7 +1104,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                     <span className={`text-[10px] font-mono font-bold block uppercase mb-1 ${themeTokens.textMuted}`}>
                       {ev.artistOrHost}
                     </span>
-                    <h4 
+                    <h4
                       className={`text-base font-bold line-clamp-1 mb-2 ${themeTokens.cardTitleColor}`}
                       style={{ fontFamily: themeTokens.headingFont }}
                     >
@@ -1154,9 +1145,8 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
               {filteredEvents.map(ev => (
                 <div
                   key={ev.id}
-                  className={`p-4 sm:p-6 transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
-                    isDark ? 'hover:bg-white/5' : 'hover:bg-black/5'
-                  }`}
+                  className={`p-4 sm:p-6 transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${isDark ? 'hover:bg-white/5' : 'hover:bg-black/5'
+                    }`}
                 >
                   <div className="flex items-start gap-4 min-w-0 flex-1">
                     <img
@@ -1175,7 +1165,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                         <span className={`text-xs ${themeTokens.textMuted}`}>• {ev.date} ({ev.time})</span>
                       </div>
 
-                      <h4 
+                      <h4
                         className={`text-base font-bold leading-snug ${themeTokens.cardTitleColor}`}
                         style={{ fontFamily: themeTokens.headingFont }}
                       >
@@ -1230,7 +1220,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
       {bookingEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-200">
           <div className={`max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative rounded-none ${themeTokens.modalBg}`}>
-            
+
             {/* Close Button */}
             <button
               type="button"
@@ -1254,7 +1244,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                   </span>
                 </div>
 
-                <h3 
+                <h3
                   className={`text-xl sm:text-2xl font-black uppercase pr-8 mb-2 ${themeTokens.cardTitleColor}`}
                   style={{ fontFamily: themeTokens.headingFont }}
                 >
@@ -1276,11 +1266,10 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                         <label
                           key={idx}
                           onClick={() => setSelectedTierIndex(idx)}
-                          className={`p-3.5 border flex items-center justify-between cursor-pointer transition-all rounded-none ${
-                            selectedTierIndex === idx
-                              ? themeTokens.listItemActive
-                              : themeTokens.listItemInactive
-                          }`}
+                          className={`p-3.5 border flex items-center justify-between cursor-pointer transition-all rounded-none ${selectedTierIndex === idx
+                            ? themeTokens.listItemActive
+                            : themeTokens.listItemInactive
+                            }`}
                         >
                           <div className="min-w-0 pr-2">
                             <div className="flex items-center gap-2">
@@ -1376,9 +1365,9 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                       {bookingEvent.freeEntry
                         ? '$0.00 (Free)'
                         : formatPrice(
-                            (bookingEvent.seatTiers?.[selectedTierIndex]?.priceUSD || bookingEvent.priceUSD) * ticketQuantity,
-                            (bookingEvent.seatTiers?.[selectedTierIndex]?.priceVND || bookingEvent.priceVND) * ticketQuantity
-                          )}
+                          (bookingEvent.seatTiers?.[selectedTierIndex]?.priceUSD || bookingEvent.priceUSD) * ticketQuantity,
+                          (bookingEvent.seatTiers?.[selectedTierIndex]?.priceVND || bookingEvent.priceVND) * ticketQuantity
+                        )}
                     </strong>
                   </div>
 
@@ -1398,7 +1387,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                   <CheckCircle2 size={32} />
                 </div>
 
-                <h3 
+                <h3
                   className={`text-2xl font-black uppercase mb-1 ${themeTokens.cardTitleColor}`}
                   style={{ fontFamily: themeTokens.headingFont }}
                 >
@@ -1419,7 +1408,7 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                     </span>
                   </div>
 
-                  <h4 
+                  <h4
                     className={`text-sm font-bold truncate ${themeTokens.cardTitleColor}`}
                     style={{ fontFamily: themeTokens.headingFont }}
                   >
@@ -1432,15 +1421,15 @@ export const LocationAwareEventExplorer: React.FC<LocationAwareEventExplorerProp
                   {/* Blockchain QR Code Simulation */}
                   <div className="mt-4 pt-4 border-t border-slate-700 border-dashed flex flex-col items-center">
                     <div className="p-2 bg-white rounded-none border-2 border-black">
-                      <QRCode 
-                        value={`https://sepolia.etherscan.io/tx/0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa`} 
-                        size={100} 
+                      <QRCode
+                        value={`https://sepolia.etherscan.io/tx/0x90703192ff97553566b2cd6bf73f916c6b57687d569898a63f161ce47be49aa`}
+                        size={100}
                         style={{ height: "auto", maxWidth: "100px", width: "100%" }}
                         viewBox={`0 0 100 100`}
                       />
                     </div>
                   </div>
-                  
+
                   <div className="mt-4 text-left p-3 bg-black rounded-none border-2 border-white">
                     <div className="text-[10px] text-slate-400 font-mono uppercase mb-1 flex items-center justify-between">
                       <span>Blockchain Ticket</span>
