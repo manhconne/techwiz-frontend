@@ -102,7 +102,10 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         {/* ========================================================= */}
         {/* 1. DASHBOARD HEADER & PERSONAL GREETING                   */}
         {/* ========================================================= */}
-        <div className="bg-[#ffd60a] text-black p-6 relative border-b-3 border-black select-none">
+        <div 
+          style={{ flexShrink: 0 }}
+          className="bg-[#ffd60a] text-black p-5 sm:p-6 relative border-b-3 border-black select-none shrink-0"
+        >
           <button
             onClick={onClose}
             style={{ borderRadius: '0px' }}
@@ -193,7 +196,10 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         {/* ========================================================= */}
         {/* 2. NAVIGATION TABS BAR                                    */}
         {/* ========================================================= */}
-        <div className="px-6 border-b-2 border-black bg-[#ecfeff] flex items-center gap-2 overflow-x-auto scrollbar-none py-2">
+        <div 
+          style={{ flexShrink: 0 }}
+          className="px-4 sm:px-6 border-b-2 border-black bg-[#ecfeff] flex items-center gap-2 sm:gap-2.5 overflow-x-auto scrollbar-none py-3 shrink-0"
+        >
           {[
             { id: 'overview', label: 'OVERVIEW', icon: Sparkles },
             { id: 'fandoms', label: 'FAVORITE FANDOMS', icon: Heart, count: user.favoriteFandoms.length },
@@ -206,8 +212,8 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                style={{ borderRadius: '0px' }}
-                className={`flex items-center gap-2 py-2 px-3 text-xs font-black uppercase border-2 transition-all whitespace-nowrap cursor-pointer ${isActive
+                style={{ borderRadius: '0px', flexShrink: 0 }}
+                className={`flex items-center gap-2 py-2 px-3.5 text-xs font-black uppercase border-2 transition-all whitespace-nowrap cursor-pointer shrink-0 ${isActive
                     ? 'bg-[#ff2e93] text-white border-black shadow-[3px_3px_0px_#000] -translate-y-0.5'
                     : 'bg-white text-black border-black hover:bg-[#fff9db] shadow-[1px_1px_0px_#000]'
                   }`}
@@ -227,8 +233,8 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         {/* Toast alert */}
         {saveToast && (
           <div
-            style={{ borderRadius: '0px' }}
-            className="mx-6 mt-4 p-3 bg-[#ccff00] border-2 border-black text-black text-xs font-black flex items-center gap-2 shadow-[3px_3px_0px_#000]"
+            style={{ borderRadius: '0px', flexShrink: 0 }}
+            className="mx-6 mt-4 p-3 bg-[#ccff00] border-2 border-black text-black text-xs font-black flex items-center gap-2 shadow-[3px_3px_0px_#000] shrink-0"
           >
             <Check className="w-4 h-4 text-black" />
             <span>★ YOUR PROFILE HAS BEEN SUCCESSFULLY SYNCHRONIZED!</span>
@@ -238,7 +244,7 @@ export const PersonalDashboardModal: React.FC<PersonalDashboardModalProps> = ({ 
         {/* ========================================================= */}
         {/* 3. TAB CONTENT VIEWS                                      */}
         {/* ========================================================= */}
-        <div className="p-6 sm:p-8 overflow-y-auto flex-1 space-y-8 bg-[#fdfbf7]">
+        <div className="p-6 sm:p-8 overflow-y-auto flex-1 min-h-0 space-y-8 bg-[#fdfbf7]">
 
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
